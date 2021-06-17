@@ -1,0 +1,12 @@
+{
+	"name": "ddo-audit-react",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"start": "concurrently --kill-others \"yarn --cwd .\\server\\ start\" \"yarn --cwd .\\client\\ start\""
+	},
+	"dependencies": {
+		"concurrently": "^6.2.0"
+	}
+}

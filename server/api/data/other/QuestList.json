@@ -1,0 +1,2262 @@
+﻿[
+  {
+    "Name": "The Deadly Package: Agent of the Dargul",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Whisperdoom's Spawn",
+    "Type": "Quest"
+  },
+  {
+    "Name": "First Strike",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Hobgoblins' Captives",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Last Move: Yarkuch's Last Stand",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Yarkuch's War-plans",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Doom of the Witch-doctor: Zulkash, Herald of Woe",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Mystery of Delera's Tomb",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Guard Duty",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Scoundrel's Run",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Kobolds' Den: Clan Gnashtooth",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Kobold's Den: Rescuing Arlos",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Venn's Trail: Clan Tunnelworm",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Venn's Trail: Venn's Fate",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Valak's Mausoleum",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Free Delera",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cloven-jaw Scourge: Blockade",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cloven-jaw Scourge: Caverns of Shaagh",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sacred Helm",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Halls of Shan-To-Kor",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Return to Delera's Tomb",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Missing Party",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Thrall of the Necromancer",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Smuggler's Gem",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Return to the Sanctuary",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Secure the Area",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Library of Threnal",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Escort the Expedition",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Hold for Reinforcements",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Missing Expedition",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Old Archives",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Crypt of Gerard Dryden",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Friar's Niece",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Fane of the Six: Cleansing the Temple",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sanctum: Quench the Flames",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sanctum: Church of the Fury",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Fane of the Six: Fall of the Prelate",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Temple Outpost: Captives of the Cult",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Temple Outpost: The Libram of the Six",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Grey Moon's Den: The Trollish Scourge",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Grey Moon's Den: Extermination",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Iron Mines: Freeing Achka",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Iron Mines: Justice for Grust",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sorrowdusk Isle",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Endgame: The Archbishop's Fate",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Setting the Wards: The Lower Cathedral",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Setting the Wards: The Patriarchs' Crypt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Endgame: Marguerite",
+    "Type": "Quest"
+  },
+  {
+    "Name": "In Need of Supplies",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Rescue",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Big Trouble",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Giants' Lair",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Giant Lieutenants",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Giants' Supplies",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Entering the Gate Chamber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Gate Chamber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Kobold Assault",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Kobolds' New Ringleader",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Dread Wraith Cometh",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tangleroot Gorge",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Swiped Signet",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Deadly Package: The Stronghold Key",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Doom of the Witch-doctor: The Way to Zulkash",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Last Move: The Way to Yarkuch",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Mirra's Sleepless Nights",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Freshen The Air",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Garrison's Missing Pack",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Redfang the Unruled",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Irestone Inlet",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Gladewatch Outpost Defense",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Waterworks",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Collaborator",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Thwarting the Threat",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Protect Baudry's Interests",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stop Hazadill's Shipment",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Retrieve the Stolen Goods",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Miller's Debt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cannith Crystal",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Haverdasher",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Necromancer's Doom",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Information is Key",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Bringing the Light",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Recovering the Lost Tome",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Archer Point Defense",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Smuggler's Warehouse",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stealthy Repossession",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Missing in Action",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Rest for the Restless",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Durk's Got A Secret",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sunken Sewer",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Walk the Butcher's Path",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Search for the Kryl'theris Stone",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stormcleave Outpost",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Caged Trolls",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Stones Run Red",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Brood of Flame",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Troglodytes' Get",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Old Grey Garl",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Dead Predators",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Taming the Flames",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Three-Barrel Cove",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Redwillow's Ruins",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Purge the Heretics",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Caverns of Korromar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Redemption",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Storehouse's Secret",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Heyton's Rest",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stopping the Sahuagin",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Gwylan's Stand",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tempest's Spine",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Haunted Library",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Seek Dryden's Counsel",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Depths of Despair",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Depths of Darkness",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Depths of Discord",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Depths of Doom",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Combat Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Advanced Movement Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Lockpick and Disable Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Cleric Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Arcane Spell Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ruined Halls",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Chamber of Insanity",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Lair of Summoning",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Forgotten Caverns",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Church and the Cult",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Euphonia's Mission",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Combat Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ruins of Threnal",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Stealth Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Combat Magic Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Healing Magic Training",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Steam Tunnels",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Postern Gate Wilds",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Xorian Cipher",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Tear of Dhakaan",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Path to Madness",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Haywire Foundry",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tharashk Arena",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Pit",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stromvauld's Mine",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Gateway to Khyber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Jungle of Khyber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Graverobber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Vault of Night",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Plane of Night",
+    "Type": "Raid"
+  },
+  {
+    "Name": "The Prisoner",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Kobold Island",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Bounty Hunter",
+    "Type": "Quest"
+  },
+  {
+    "Name": "qa test",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Vartogs Challenge - 2 Rooms",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Vartog's Challenge - 3 rooms",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Vartog's Challenge - 4 rooms",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Vartog's Challenge - 5 rooms",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Vartog's Challenge - 6 rooms",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Invaders!",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Relic of a Sovereign Past",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Restless Isles",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "An Explosive Situation",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Arachnophobia",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Home Sweet Sewer",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sylvan Hill",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Bring Me the Head of Ghola-Fan!",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Slavers of the Shrieking Mines",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Hiding in Plain Sight",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Shadow Lord",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Shadow Knight",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Shadow King",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Shadow Guard",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Shadow Crypt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Bloody Crypt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Burning Heart",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Crimson Heart",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Immortal Heart",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Sanguine Heart",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Litany of the Dead",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Tormented",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cursed Crypt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Damned",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Forbidden",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of the Unhallowed",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Keeper's Sanctuary",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Blood Crypt Junction",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Titan Awakes",
+    "Type": "Raid"
+  },
+  {
+    "Name": "The Twilight Forge",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Faithful Departed",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Chamber of Kourush",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Chamber of Rahmat",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Purge the Fallen Shrine",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Raid the Vulkoorim",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Maraud the Mines",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Raid the Windlashers",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Zawabi's Revenge",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Against the Demon Queen",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Chains of Flame",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Feast of the Wicked",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Chamber of Raiyum",
+    "Type": "Quest"
+  },
+  {
+    "Name": "An Offering of Blood",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sands of Menechtarun",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "From Beyond the Grave",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Spawn of Whisperdoom",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Made to Order",
+    "Type": "Quest"
+  },
+  {
+    "Name": "And the Dead Shall Rise...",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Enemy Within",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Dreams of Insanity",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Path to Whisperdoom",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Death Match: The Stash",
+    "Type": "Quest"
+  },
+  {
+    "Name": "CTF: Quickfoot Arena",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Black Anvil Forest",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Desert Caravan",
+    "Type": "Quest"
+  },
+  {
+    "Name": "CTF: Menechtarun",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Faithful Departed",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Pool of Reflection",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "QA BVT",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Crucible",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tangleroot Gorge",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Ruins of Gianthold",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Trial by Fire",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Maze of Madness",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Feast or Famine",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Broken Lyceum",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Madstone Crater",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Cabal for One",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Cry for Help",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Foundation of Discord",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cerulean Hills",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Prison of the Planes",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Gianthold Tor",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Reaver's Fate",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Orchard of the Macabre",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Reclamation",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sykros' Jewel",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ataraxia's Haven",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Tomb of the Blighted",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Hall of the Mark",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ghosts of Perdition",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Desecrated Temple of Vol",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ascension Chamber",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Inferno of the Damned",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Flesh Maker's Laboratory",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Proof is in the Poison",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Searing Heights",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Shroud",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Vale of Twilight",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Ritual Sacrifice",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Time Bandits",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Let Sleeping Dust Lie",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Rainbow in the Dark",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Running with the Devils",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Worst Case Scenario",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Coalescence Chamber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Subterrane - Central",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Subterrane - East",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Subterrane - North",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Vision of Destruction",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Phiarlan",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Kundarak",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Hound of Xoriat",
+    "Type": "Raid"
+  },
+  {
+    "Name": "West Wind's Mistress",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fulgur Gulch",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Crimson Cay",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ghost of a Chance",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Devil Assault",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Legend of Two-Toed Tobias",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Shipwrecked Spy",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Prove Your Worth",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Misery's Peak",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Grotto",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Korthos Island",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Sacrifices",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stealer of Souls",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Prey on the Hunter",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Enter the Kobold",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Monastery of the Scorpion",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Soami Gardens",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Eerie Forest",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Aussircaex's Valley",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Mount Reysalon",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Devil Battlefield",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Genesis Point",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tower of Despair",
+    "Type": "Raid"
+  },
+  {
+    "Name": "A New Invasion",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ternathear",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Bastion of Power",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sins of Attrition",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Spies in the House",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Devil Pit",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Where There's Smoke...",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Captives",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Stormreaver Fresco",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Dirty Laundry",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Repossession",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Weapons Shipment",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Wrath of the Flame",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stand Your Ground",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Come Out and Slay",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Bookbinder Rescue",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Dream Conspiracy",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Mining for Ancient Secrets",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Finding the Path",
+    "Type": "Quest"
+  },
+  {
+    "Name": "I Dream of Jeets",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Mindsunder",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Eye of the Titan",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Raiding the Giants' Vault",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Dreaming Dark",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Reclaiming Memories",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Black Loch",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Tide Turns",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Storm the Beaches",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Bargain of Blood",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Delirium",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Acid Wit",
+    "Type": "Quest"
+  },
+  {
+    "Name": "In the Demon's Den",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Mired in Kobolds",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Partycrashers",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Under the Big Top",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Small Problem",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Snitch",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Funhouse of Doom",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Red Fens",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Fathom the Depths",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Claw of Vulkoor",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Last Stand",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Into the Deep",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Siegebreaker",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Diplomatic Impunity",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Blockade Buster",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Frame Work",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Chronoscope",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Eyes of Stone",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Undermine",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Assault on Summerfield",
+    "Type": "Quest"
+  },
+  {
+    "Name": "In The Flesh",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fear Factory",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sinister Storage",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Missing",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Lord of Stone",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Acute Delirium",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Lord of Eyes",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sane Asylum",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Crystal Cove",
+    "Type": "Quest"
+  },
+  {
+    "Name": "House Cannith Manufactury",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Blown to Bits",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Power Play",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Schemes of the Enemy",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Master Artificer",
+    "Type": "Raid"
+  },
+  {
+    "Name": "The Lord Of Blades",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Colossal Crystals",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Buying Time",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Kobold Chaos",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Temple of Planar Bounds",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Behind the Door",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Artificer Workshops",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Research Facility",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Gauntlet Challenge A",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Circles of Power",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Time is Money",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Dragon's Hoard",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Labor Shortage",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Disruptor",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Short Cuts",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Moving Targets",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Picture Portals",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Lords of Dust",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Servants of the Overlord",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Spinner of Shadows",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Colossal Crystals - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Time is Money - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Buying Time - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Dragon's Hoard - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Labor Shortage - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Disruptor - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Short Cuts - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Moving Targets - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Picture Portals - EPIC",
+    "Type": "Quest"
+  },
+  {
+    "Name": "King's Forest",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Impossible Demands",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Riddle",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Unquiet Graves",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Beyond the Rift",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Murder By Night",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Lost Thread",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Battle for Eveningstar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sschindylryn",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The House of Death Undone",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The House of Broken Chains",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The House of Rusted Blades",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Don't Drink the Water",
+    "Type": "Quest"
+  },
+  {
+    "Name": "In The Belly of the Beast",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Underdark",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Portal Opens",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Demonweb",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Reclaiming the Rift",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Trial By Fury",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Deal and the Demon",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Caught in the Web",
+    "Type": "Raid"
+  },
+  {
+    "Name": "D N T Not Used",
+    "Type": "Quest"
+  },
+  {
+    "Name": "D N T Not Used",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sunset Ritual",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Azure Skies",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fight to the Finish",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Ring of Fire",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Great Tree",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Defenseless",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Druid's Curse",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Thorn and Paw",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Lost in the Swamp",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Overgrowth",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Outbreak",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Detour",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The End of the Road",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Rest Stop",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Stay at the Inn",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The High Road",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Fall of Truth",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Through a Mirror Darkly",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Friends in Low Places",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Army of Shadow",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Lesson in Deception",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Wheloon Prison",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "The Thrill of the Hunt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Breaking the Ranks",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Lines of Supply",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Break In the Ice",
+    "Type": "Quest"
+  },
+  {
+    "Name": "What Goes Up",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Tracker's Trap",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Storm Horns",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Escape Plan",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Shadow of a Doubt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Disciples of Shar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Haunted Halls of Eveningstar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Study in Sable",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Brothers of the Forge",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fire on Thunder Peak",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Temple of the Deathwyrm",
+    "Type": "Raid"
+  },
+  {
+    "Name": "The Ruins of Thunderholme",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "It Came From the Desert",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Commentary: Haunted Halls of Eveningstar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Extended Content: Haunted Halls of Eveningstar",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Precious Cargo",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Mark of Death",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Extreme Mode: Tomb of Horrors",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Commentary: Tomb of Horrors",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tomb of Horrors",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Temple Depths",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Temple of Elemental Evil Pt. 2",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Temple of Elemental Evil Pt. 1",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Mask of Deception",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tyranny of Dragons",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Terminal Delirium",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Palace of Stone",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fashion Madness",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Demon Assault",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Devil's Details",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Defiler of the Just",
+    "Type": "Raid"
+  },
+  {
+    "Name": "The Archons' Trial",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Under New Ravagement - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Haverdashed - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Kobolds' Newest Ringleader - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Hayweird Foundry",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Snitch and the Lich - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Getting Ahead in Lordsmarch Palace - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Multitude of Menace",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Subversion",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Grim and Barett",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tower of Frost",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Tavern Brawl",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Legendary Shroud",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Legendary Hound of Xoriat",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Legendary Tempest's Spine",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Creeping Death",
+    "Type": "Quest"
+  },
+  {
+    "Name": "To Curse the Sky",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Anniversary Party",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Good Intentions",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Memoirs of an Illusory Larcener",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Search and Rescue",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Secret of the Slavers' Stockade",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Slave Pits of the Undercity",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Assault on the Aerie of the Slave Lords",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Newcomers",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Black and Blue",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Riding the Storm Out",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Killing Time",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Festival Games",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stonelands Two",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stonelands Three",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stonelands Four",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Stonelands One",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Fresh-baked Dreams",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Into the Mists",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Death House",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Land of Barovia",
+    "Type": "Quest"
+  },
+  {
+    "Name": "An Invitation to Dinner",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Oath of Vengeance",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Raven at the Door",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sealed in Amber",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Mad Tea Party",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Old Baba's Hut",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Wrath of the Earth",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Ravens' Bane",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Sunrise",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Final Vintage",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Curse of Strahd",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Graveyard Shift",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Records of the Past",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Desire in the Dark",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Third Time's a Charm",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Strike Back",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Resurrection Chamber - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Quarantine",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Toxic Treatment",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Age of Rage",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Madness of Crowds",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Night Falls on Stormreach",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Night Revels in Delera's Graveyard",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Grave Work - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Smashing Pumpkins - The Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Eternity Unleashed - Night Revels",
+    "Type": "Quest"
+  },
+  {
+    "Name": "White Plume Mountain",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Another Man's Treasure",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Kind of a Big Deal",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Price of Freedom",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Memory Lapse",
+    "Type": "Quest"
+  },
+  {
+    "Name": "A Sharn Welcome",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Best Laid Plans",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Lost at Sea",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Red Rain",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Just Business",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Same Old Song",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Blown Deadline",
+    "Type": "Quest"
+  },
+  {
+    "Name": "House of Pain",
+    "Type": "Quest"
+  },
+  {
+    "Name": "No Refunds",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Too Hot to Handle",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Reach for the Sky",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Cogs",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Ruinous Schemes",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Wraithcallers",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Magma Must Flow",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Smash and Burn",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Security Detail",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Roll Call",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Scavenger Hunt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Thralls of the Fungus Lord",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Project Nemesis",
+    "Type": "Raid"
+  },
+  {
+    "Name": "Finding Dorris",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Offshore Account",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Members Only",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Soul Survivor",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Safety in Numbers",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Underlane Assignment",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Hobgoblin Horde",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Watch Your Step",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Caged Beast",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Obstructing the Orcs",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Violent Delights",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Treasure Hunt",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Bugbear Bandits",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Total Chaos",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Borderlands",
+    "Type": "Wilderness"
+  },
+  {
+    "Name": "Heart of the Problem",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Sacred Bounty",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Rosemary's Ballad",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Home of Memory",
+    "Type": "Quest"
+  },
+  {
+    "Name": "Housekeeping",
+    "Type": "Quest"
+  },
+  {
+    "Name": "The Temple of Flame",
+    "Type": "Quest"
+  }
+]

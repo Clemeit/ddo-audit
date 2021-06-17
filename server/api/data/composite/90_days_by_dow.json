@@ -1,0 +1,86 @@
+[
+  {
+    "day": "Sunday",
+    "Argonnessen": 345.22,
+    "Cannith": 261.71,
+    "Ghallanda": 245.44,
+    "Khyber": 260.97,
+    "Orien": 218.89,
+    "Sarlona": 260.9,
+    "Thelanis": 299.62,
+    "Wayfinder": 56.68,
+    "Hardcore": 463.01
+  },
+  {
+    "day": "Monday",
+    "Argonnessen": 270.87,
+    "Cannith": 209.48,
+    "Ghallanda": 193.21,
+    "Khyber": 195.3,
+    "Orien": 161.96,
+    "Sarlona": 208.09,
+    "Thelanis": 228.55,
+    "Wayfinder": 44.51,
+    "Hardcore": 368.77
+  },
+  {
+    "day": "Tuesday",
+    "Argonnessen": 253.98,
+    "Cannith": 200.25,
+    "Ghallanda": 184.52,
+    "Khyber": 179.89,
+    "Orien": 153.37,
+    "Sarlona": 205.27,
+    "Thelanis": 212.85,
+    "Wayfinder": 41.09,
+    "Hardcore": 345.24
+  },
+  {
+    "day": "Wednesday",
+    "Argonnessen": 249.18,
+    "Cannith": 197.21,
+    "Ghallanda": 177.99,
+    "Khyber": 176.08,
+    "Orien": 150.71,
+    "Sarlona": 198.3,
+    "Thelanis": 209.33,
+    "Wayfinder": 40.66,
+    "Hardcore": 353.21
+  },
+  {
+    "day": "Thursday",
+    "Argonnessen": 256.78,
+    "Cannith": 202.35,
+    "Ghallanda": 180.28,
+    "Khyber": 183.21,
+    "Orien": 156.64,
+    "Sarlona": 198.48,
+    "Thelanis": 209.61,
+    "Wayfinder": 41.68,
+    "Hardcore": 377.42
+  },
+  {
+    "day": "Friday",
+    "Argonnessen": 258.2,
+    "Cannith": 205.98,
+    "Ghallanda": 191.22,
+    "Khyber": 191.15,
+    "Orien": 160.06,
+    "Sarlona": 207.5,
+    "Thelanis": 216.99,
+    "Wayfinder": 42.11,
+    "Hardcore": 370.61
+  },
+  {
+    "day": "Saturday",
+    "Argonnessen": 319.56,
+    "Cannith": 246.72,
+    "Ghallanda": 233.44,
+    "Khyber": 236.52,
+    "Orien": 198.38,
+    "Sarlona": 244.74,
+    "Thelanis": 275.93,
+    "Wayfinder": 54.29,
+    "Hardcore": 458.14
+  }
+]

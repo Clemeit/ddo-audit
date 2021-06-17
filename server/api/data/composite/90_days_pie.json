@@ -1,0 +1,56 @@
+[
+  {
+    "id": "Argonnessen",
+    "label": "Argonnessen",
+    "value": 279.3,
+    "color": "hsl(205, 70%, 41%)"
+  },
+  {
+    "id": "Cannith",
+    "label": "Cannith",
+    "value": 217.86,
+    "color": "hsl(28, 100%, 53%)"
+  },
+  {
+    "id": "Ghallanda",
+    "label": "Ghallanda",
+    "value": 200.93,
+    "color": "hsl(120, 57%, 40%)"
+  },
+  {
+    "id": "Khyber",
+    "label": "Khyber",
+    "value": 203.37,
+    "color": "hsl(360, 69%, 50%)"
+  },
+  {
+    "id": "Orien",
+    "label": "Orien",
+    "value": 171.56,
+    "color": "hsl(271, 39%, 57%)"
+  },
+  {
+    "id": "Sarlona",
+    "label": "Sarlona",
+    "value": 217.69,
+    "color": "hsl(10, 30%, 42%)"
+  },
+  {
+    "id": "Thelanis",
+    "label": "Thelanis",
+    "value": 236.11,
+    "color": "hsl(318, 66%, 68%)"
+  },
+  {
+    "id": "Wayfinder",
+    "label": "Wayfinder",
+    "value": 45.84,
+    "color": "hsl(0, 0%, 50%)"
+  },
+  {
+    "id": "Hardcore",
+    "label": "Hardcore",
+    "value": 398.94,
+    "color": "hsl(60, 70%, 44%)"
+  }
+]

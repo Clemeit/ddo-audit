@@ -1,0 +1,7 @@
+[
+	{ "Name": "Monday", "Players": 100, "LFMs": 12 },
+	{ "Name": "Tuesday", "Players": 120, "LFMs": 16 },
+	{ "Name": "Wednesday", "Players": 170, "LFMs": 13 },
+	{ "Name": "Thursday", "Players": 250, "LFMs": 19 },
+	{ "Name": "Friday", "Players": 320, "LFMs": 50 }
+]
