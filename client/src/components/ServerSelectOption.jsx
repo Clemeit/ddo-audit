@@ -2,6 +2,17 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const ServerSelectOption = (props) => {
+    function GetS() {
+        if (
+            props.number === null ||
+            props.number === undefined ||
+            props.number === 1
+        )
+            return "";
+
+        return "s";
+    }
+
     return (
         <Link
             to={"grouping/" + props.server.toLowerCase()}
@@ -18,7 +29,7 @@ const ServerSelectOption = (props) => {
             </span>
             <span style={{ fontSize: "x-large", marginLeft: "5px" }}>
                 {props.word}
-                {props.number === 1 ? "" : props.number !== null ? "s" : ""}
+                {GetS()}
             </span>
         </Link>
     );

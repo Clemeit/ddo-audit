@@ -8,6 +8,8 @@ import MiniGroup from "./MiniGroup";
 import CanvasLfmPanel from "./CanvasLfmPanel";
 import LfmFilter from "./LfmFilterBar";
 import LevelRangeSlider from "./LevelRangeSlider";
+import { Fetch, VerifyLfmData } from "./DataLoader";
+import Group from "./Group";
 
 const TITLE = "DDO Live LFM Viewer";
 
@@ -27,12 +29,16 @@ const GroupingSpecific = (props) => {
     // Data
     var [currentServer, set_currentServer] = React.useState(null);
     var [groupDataMaster, set_groupDataMaster] = React.useState(null);
-    var [groupDataServer, set_groupDataServer] = React.useState(null);
+    var [groupDataServer, set_groupDataServer] = React.useState({
+        timestamp: 0,
+        data: null,
+    });
     var [groupCount, set_groupCount] = React.useState(null);
     var [adjustedGroupCount, set_adjustedGroupCount] = React.useState(4);
     var [serverStatusData, set_serverStatusData] = React.useState(null);
     var [isServerOnline, set_isServerOnline] = React.useState(null);
-    var [failedFetchAttempts, set_failedFetchAttempts] = React.useState(0);
+    var [eligibleCount, set_eligibleCount] = React.useState(null);
+    // var [failedFetchAttempts, set_failedFetchAttempts] = React.useState(0);
 
     var [attemptedServerStatusFetch, set_attemptedServerStatusFetch] =
         React.useState(false);
@@ -45,12 +51,16 @@ const GroupingSpecific = (props) => {
     var [fontModifier, set_fontModifier] = React.useState(0);
     var [highVisibility, set_highVisibility] = React.useState(false);
     var [filterPanelVisible, set_filterPanelVisible] = React.useState(false);
+    var [classicLook, set_classicLook] = React.useState(false);
+    var [theme, set_theme] = React.useState(true);
+
+    var [expandedGroups, set_expandedGroups] = React.useState([]);
 
     // LFM filters
     var [minimumLevel, set_minimumLevel] = React.useState(1);
     var [maximumLevel, set_maximumLevel] = React.useState(30);
     var [showNotEligible, set_showNotEligible] = React.useState(true);
-    var [sortOrder, set_sortOrder] = React.useState(0);
+    var [sortAscending, set_sortAscending] = React.useState(false);
     var [difficulty, set_difficulty] = React.useState([
         true,
         true,
@@ -59,98 +69,210 @@ const GroupingSpecific = (props) => {
         true,
     ]);
 
+    function IsExpanded(group) {
+        let val = false;
+        expandedGroups.forEach((g) => {
+            if (g.Leader.Name === group.Leader.Name) val = true;
+        });
+        return val;
+    }
+
+    function ToggleTheme() {
+        let theme = localStorage.getItem("theme");
+        if (theme === "light-theme") {
+            theme = "dark";
+
+            document.body.classList.replace("light-theme", "dark-theme");
+            localStorage.setItem("theme", "dark-theme");
+            set_theme("dark-theme");
+        } else {
+            theme = "light";
+
+            document.body.classList.replace("dark-theme", "light-theme");
+            localStorage.setItem("theme", "light-theme");
+            set_theme("light-theme");
+        }
+    }
+
     React.useEffect(() => {
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
+        // Load local storage
+        let theme = localStorage.getItem("theme");
+        set_theme(theme);
 
-        async function run(timeout) {
-            let ret = new Promise(async (resolve, reject) => {
-                setTimeout(() => {
-                    if (!ret.isResolved) {
-                        reject();
-                    }
-                }, timeout);
+        let minlevel = localStorage.getItem("minimum-level");
+        set_minimumLevel(minlevel || 1);
 
-                await fetchArbitraryData(
-                    "https://www.playeraudit.com/api/groups",
-                    "json"
-                )
-                    .then((val) => {
-                        set_lastFetchTime(Date.now());
-                        set_attemptedGroupDataFetch(true);
-                        // Data verification
-                        if (val === null) return;
-                        if (val.length !== 9) return;
-                        let missingfields = false;
-                        val.forEach((server) => {
-                            if (server.Name === undefined) missingfields = true;
-                            if (server.LastUpdateTime === undefined)
-                                missingfields = true;
-                            if (server.Groups === undefined)
-                                missingfields = true;
-                            if (server.GroupCount === undefined)
-                                missingfields = true;
-                        });
-                        if (missingfields) return;
+        let maxlevel = localStorage.getItem("maximum-level");
+        set_maximumLevel(maxlevel || 30);
 
-                        resolve(val);
-                    })
-                    .catch((val) => {
-                        set_lastFetchTime(Date.now());
-                        set_attemptedGroupDataFetch(true);
-                        // console.error("Failed to fetch group data");
-                    });
-            });
-            return ret;
-        }
-        run(5000)
-            .then((val) => {
-                set_groupDataMaster(val);
-            })
-            .catch(function () {
-                set_popupMessages([
-                    ...popupMessages,
-                    {
-                        title: "We're stuck on a loading screen",
-                        message:
-                            "This is taking longer than usual. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "This is the report message",
-                    },
-                ]);
-            });
+        let shownoteligible = localStorage.getItem("show-not-eligible");
+        set_showNotEligible(
+            shownoteligible !== null ? shownoteligible === "true" : true
+        );
 
-        var failedAttemptCount = 0;
-        const interval = setInterval(() => {
-            set_failedFetchAttempts(failedFetchAttempts + 1);
-            run(10000)
+        let sortascending = localStorage.getItem("sort-order");
+        set_sortAscending(
+            sortascending !== null ? sortascending === "true" : true
+        );
+
+        let classiclook = localStorage.getItem("classic-look");
+        set_classicLook(classiclook !== null ? classiclook === "true" : true);
+
+        let highvisibility = localStorage.getItem("high-visibility");
+        set_highVisibility(
+            highvisibility !== null ? highvisibility === "true" : false
+        );
+
+        let fontmodifier = localStorage.getItem("font-modifier");
+        set_fontModifier(fontmodifier !== null ? +fontmodifier : 0);
+
+        // async function fetchArbitraryData(url, type) {
+        //     let response = await fetch(url);
+        //     if (type === "json") response = await response.json();
+        //     else if (type === "text") response = await response.text();
+        //     return response;
+        // }
+
+        // async function run(timeout) {
+        //     let ret = new Promise(async (resolve, reject) => {
+        //         setTimeout(() => {
+        //             if (!ret.isResolved) {
+        //                 reject();
+        //             }
+        //         }, timeout);
+
+        //         await fetchArbitraryData(
+        //             "https://www.playeraudit.com/api/groups",
+        //             "json"
+        //         )
+        //             .then((val) => {
+        //                 set_lastFetchTime(Date.now());
+        //                 set_attemptedGroupDataFetch(true);
+        //                 // Data verification
+        //                 if (val === null) return;
+        //                 if (val.length !== 9) return;
+        //                 let missingfields = false;
+        //                 val.forEach((server) => {
+        //                     if (server.Name === undefined) missingfields = true;
+        //                     if (server.LastUpdateTime === undefined)
+        //                         missingfields = true;
+        //                     if (server.Groups === undefined)
+        //                         missingfields = true;
+        //                     if (server.GroupCount === undefined)
+        //                         missingfields = true;
+        //                 });
+        //                 if (missingfields) return;
+
+        //                 resolve(val);
+        //             })
+        //             .catch((val) => {
+        //                 set_lastFetchTime(Date.now());
+        //                 set_attemptedGroupDataFetch(true);
+        //                 // console.error("Failed to fetch group data");
+        //             });
+        //     });
+        //     return ret;
+        // }
+        var failedAttemptCount = 5;
+
+        function FetchLfmData() {
+            Fetch("https://www.playeraudit.com/api/groups", 5000)
                 .then((val) => {
-                    set_groupDataMaster(val);
-                    set_popupMessages([]);
-                    failedAttemptCount = 0;
+                    set_lastFetchTime(Date.now());
+                    set_attemptedGroupDataFetch(true);
+                    if (VerifyLfmData(val)) {
+                        set_popupMessages([]);
+                        failedAttemptCount = 0;
+                        set_groupDataMaster(val);
+                    } else {
+                        failedAttemptCount++;
+                        if (failedAttemptCount > 5) {
+                            set_popupMessages([
+                                ...popupMessages,
+                                {
+                                    title: "Something went wrong",
+                                    message:
+                                        "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                    icon: "warning",
+                                    fullscreen: false,
+                                    reportMessage:
+                                        val || "Group data returned null",
+                                },
+                            ]);
+                        }
+                    }
                 })
-                .catch(function () {
+                .catch(() => {
                     failedAttemptCount++;
-                    if (failedAttemptCount === 8) {
+                    set_lastFetchTime(Date.now());
+                    set_attemptedGroupDataFetch(true);
+                    if (failedAttemptCount > 5) {
                         set_popupMessages([
+                            ...popupMessages,
                             {
                                 title: "We're stuck on a loading screen",
                                 message:
                                     "This is taking longer than usual. You can refresh the page or report the issue.",
                                 icon: "warning",
                                 fullscreen: false,
-                                reportMessage: "This is the report message",
+                                reportMessage:
+                                    "Could not fetch Group data. Timeout",
                             },
                         ]);
                     }
                 });
+        }
+        FetchLfmData();
+
+        const refreshdata = setInterval(() => {
+            FetchLfmData();
         }, 8000);
-        return () => clearInterval(interval);
+        return () => clearInterval(refreshdata);
+
+        // run(5000)
+        //     .then((val) => {
+        //         set_groupDataMaster(val);
+        //     })
+        //     .catch(function () {
+        //         set_popupMessages([
+        //             ...popupMessages,
+        //             {
+        //                 title: "We're stuck on a loading screen",
+        //                 message:
+        //                     "This is taking longer than usual. You can refresh the page or report the issue.",
+        //                 icon: "warning",
+        //                 fullscreen: false,
+        //                 reportMessage: "This is the report message",
+        //             },
+        //         ]);
+        //     });
+
+        // var failedAttemptCount = 0;
+        // const interval = setInterval(() => {
+        //     set_failedFetchAttempts(failedFetchAttempts + 1);
+        //     run(10000)
+        //         .then((val) => {
+        //             set_groupDataMaster(val);
+        //             set_popupMessages([]);
+        //             failedAttemptCount = 0;
+        //         })
+        //         .catch(function () {
+        //             failedAttemptCount++;
+        //             if (failedAttemptCount === 8) {
+        //                 set_popupMessages([
+        //                     {
+        //                         title: "We're stuck on a loading screen",
+        //                         message:
+        //                             "This is taking longer than usual. You can refresh the page or report the issue.",
+        //                         icon: "warning",
+        //                         fullscreen: false,
+        //                         reportMessage: "This is the report message",
+        //                     },
+        //                 ]);
+        //             }
+        //         });
+        // }, 8000);
+        // return () => clearInterval(interval);
     }, []);
 
     React.useEffect(() => {
@@ -172,7 +294,6 @@ const GroupingSpecific = (props) => {
                     set_serverStatusData(null);
                     return;
                 }
-                console.log(currentServer);
                 val.Worlds.forEach((server) => {
                     if (server === null) return;
                     if (
@@ -226,23 +347,26 @@ const GroupingSpecific = (props) => {
         }
 
         set_groupDataServer({
-            ServerName: currentServer,
-            Groups: [
-                {
-                    Leader: {
-                        Name: "DDO Audit",
-                        Gender: "Male",
-                        Race: "Human",
+            timestamp: Date.now(),
+            data: {
+                ServerName: currentServer,
+                Groups: [
+                    {
+                        Leader: {
+                            Name: "DDO Audit",
+                            Gender: "Male",
+                            Race: "Human",
+                        },
+                        Members: [],
+                        Eligible: true,
+                        Comment: specialComment,
+                        Quest: {
+                            Name: "Feed the Hamsters",
+                        },
+                        Difficulty: "Reaper 11",
                     },
-                    Members: [],
-                    Eligible: true,
-                    Comment: specialComment,
-                    Quest: {
-                        Name: "Feed the Hamsters",
-                    },
-                    Difficulty: "Reaper 11",
-                },
-            ],
+                ],
+            },
         });
     }, [
         groupDataMaster,
@@ -292,23 +416,26 @@ const GroupingSpecific = (props) => {
                 return (
                     (a.MaximumLevel === b.MaximumLevel
                         ? a.Leader.Name > b.Leader.Name
-                        : a.MaximumLevel > b.MaximumLevel) ^ sortOrder
+                        : a.MaximumLevel > b.MaximumLevel) ^
+                    (sortAscending === true ? 1 : -1)
                 );
             });
 
             let eligiblegroupcount = 0;
-            if (showNotEligible) {
+            if (showNotEligible && classicLook === true) {
                 eligiblegroupcount = serverdata.Groups.length;
             } else {
                 serverdata.Groups.forEach((group) => {
                     if (group.Eligible) eligiblegroupcount++;
                 });
             }
+            set_eligibleCount(eligiblegroupcount);
             let adjustedCount = Math.max(4, eligiblegroupcount);
             set_adjustedGroupCount(adjustedCount);
 
             set_lastFetchTime(Date.now());
-            set_groupDataServer(serverdata);
+            console.log("Data update");
+            set_groupDataServer({ timestamp: Date.now(), data: serverdata });
         } else {
             set_groupCount(0);
         }
@@ -318,7 +445,7 @@ const GroupingSpecific = (props) => {
         minimumLevel,
         maximumLevel,
         showNotEligible,
-        sortOrder,
+        sortAscending,
         difficulty,
     ]);
 
@@ -441,139 +568,248 @@ const GroupingSpecific = (props) => {
                             alignItems: "center",
                         }}
                     >
-                        <CanvasLfmPanel
-                            internalUpdate={lastFetchTime}
-                            data={groupDataServer}
-                            showNotEligible={showNotEligible}
-                            adjustedGroupCount={adjustedGroupCount}
-                            fontModifier={fontModifier}
-                            highVisibility={highVisibility}
+                        <LfmFilter
+                            currentServer={currentServer}
+                            handleFilterButton={() =>
+                                set_filterPanelVisible(!filterPanelVisible)
+                            }
                         >
-                            <LfmFilter
-                                currentServer={currentServer}
-                                handleFilterButton={() =>
-                                    set_filterPanelVisible(!filterPanelVisible)
-                                }
+                            <div
+                                className="filter-panel-overlay"
+                                style={{
+                                    display: filterPanelVisible
+                                        ? "block"
+                                        : "none",
+                                }}
+                                onClick={() => set_filterPanelVisible(false)}
+                            />
+                            <div
+                                className="filter-panel"
+                                style={{
+                                    display: filterPanelVisible
+                                        ? "block"
+                                        : "none",
+                                    padding: "10px",
+                                }}
                             >
                                 <div
-                                    className="filter-panel-overlay"
-                                    style={{
-                                        display: filterPanelVisible
-                                            ? "block"
-                                            : "none",
-                                    }}
-                                    onClick={() =>
-                                        set_filterPanelVisible(false)
-                                    }
-                                />
-                                <div
-                                    className="filter-panel"
-                                    style={{
-                                        display: filterPanelVisible
-                                            ? "block"
-                                            : "none",
-                                        padding: "10px",
-                                    }}
+                                    className="filter-panel-group"
+                                    style={{ marginBottom: "10px" }}
                                 >
+                                    <h4>Filter Groups</h4>
+                                    <div style={{ padding: "15px" }}>
+                                        <LevelRangeSlider
+                                            handleChange={(e) => {
+                                                if (e.length) {
+                                                    set_minimumLevel(e[0]);
+                                                    set_maximumLevel(e[1]);
+                                                    localStorage.setItem(
+                                                        "minimum-level",
+                                                        e[0]
+                                                    );
+                                                    localStorage.setItem(
+                                                        "maximum-level",
+                                                        e[1]
+                                                    );
+                                                }
+                                            }}
+                                            minimumLevel={minimumLevel}
+                                            maximumLevel={maximumLevel}
+                                        />
+                                    </div>
                                     <div
-                                        className="filter-panel-group"
-                                        style={{ marginBottom: "10px" }}
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "left",
+                                            flexDirection: "column",
+                                            alignItems: "start",
+                                        }}
                                     >
-                                        <h4>Filter Groups</h4>
-                                        <div style={{ padding: "15px" }}>
-                                            <LevelRangeSlider
-                                                handleChange={(e) => {
-                                                    if (e.length) {
-                                                        set_minimumLevel(e[0]);
-                                                        set_maximumLevel(e[1]);
-                                                    }
+                                        <label className="filter-panel-group-option">
+                                            <input
+                                                className="input-radio"
+                                                name="noteligible"
+                                                type="checkbox"
+                                                checked={showNotEligible}
+                                                onChange={() => {
+                                                    localStorage.setItem(
+                                                        "show-not-eligible",
+                                                        !showNotEligible
+                                                    );
+                                                    set_showNotEligible(
+                                                        !showNotEligible
+                                                    );
                                                 }}
                                             />
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "left",
-                                                flexDirection: "column",
-                                                alignItems: "start",
-                                            }}
-                                        >
-                                            <label className="filter-panel-group-option">
-                                                <input
-                                                    className="input-radio"
-                                                    name="noteligible"
-                                                    type="checkbox"
-                                                    checked={showNotEligible}
-                                                    onChange={() =>
-                                                        set_showNotEligible(
-                                                            !showNotEligible
-                                                        )
-                                                    }
-                                                />
-                                                Show groups I am not eligible
-                                                for
-                                            </label>
-                                            <label className="filter-panel-group-option">
-                                                <input
-                                                    className="input-radio"
-                                                    name="setsortorder"
-                                                    type="checkbox"
-                                                    checked={!sortOrder}
-                                                    onChange={() =>
-                                                        set_sortOrder(
-                                                            !sortOrder
-                                                        )
-                                                    }
-                                                />
-                                                Sort groups ascending
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="filter-panel-group">
-                                        <h4>Accessibility</h4>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "left",
-                                                flexDirection: "column",
-                                                alignItems: "start",
-                                            }}
-                                        >
-                                            <label className="filter-panel-group-option">
-                                                <input
-                                                    className="input-radio"
-                                                    name="highvis"
-                                                    type="checkbox"
-                                                    checked={highVisibility}
-                                                    onChange={() =>
-                                                        set_highVisibility(
-                                                            !highVisibility
-                                                        )
-                                                    }
-                                                />
-                                                High Contrast
-                                            </label>
-                                            <label className="filter-panel-group-option">
-                                                <input
-                                                    className="input-radio"
-                                                    name="largefont"
-                                                    type="checkbox"
-                                                    checked={fontModifier === 5}
-                                                    onChange={() => {
-                                                        set_fontModifier(
-                                                            fontModifier === 0
-                                                                ? 5
-                                                                : 0
-                                                        );
-                                                    }}
-                                                />
-                                                Large Font
-                                            </label>
-                                        </div>
+                                            Show groups I am not eligible for
+                                        </label>
+                                        <label className="filter-panel-group-option">
+                                            <input
+                                                className="input-radio"
+                                                name="setsortorder"
+                                                type="checkbox"
+                                                checked={!sortAscending}
+                                                onChange={() => {
+                                                    localStorage.setItem(
+                                                        "sort-order",
+                                                        !sortAscending
+                                                    );
+                                                    set_sortAscending(
+                                                        !sortAscending
+                                                    );
+                                                }}
+                                            />
+                                            Sort groups ascending
+                                        </label>
                                     </div>
                                 </div>
-                            </LfmFilter>
-                        </CanvasLfmPanel>
+                                <div className="filter-panel-group">
+                                    <h4>Accessibility</h4>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "left",
+                                            flexDirection: "column",
+                                            alignItems: "start",
+                                        }}
+                                    >
+                                        <label className="filter-panel-group-option show-on-mobile">
+                                            <input
+                                                className="input-radio"
+                                                name="darktheme"
+                                                type="checkbox"
+                                                checked={theme === "dark-theme"}
+                                                onChange={() => {
+                                                    ToggleTheme();
+                                                }}
+                                            />
+                                            Dark theme
+                                        </label>
+                                        <label className="filter-panel-group-option">
+                                            <input
+                                                className="input-radio"
+                                                name="classislook"
+                                                type="checkbox"
+                                                checked={classicLook}
+                                                onChange={() => {
+                                                    localStorage.setItem(
+                                                        "classic-look",
+                                                        !classicLook
+                                                    );
+                                                    set_classicLook(
+                                                        !classicLook
+                                                    );
+                                                }}
+                                            />
+                                            Classic Look (may be difficult to
+                                            see on mobile)
+                                        </label>
+                                        <label className="filter-panel-group-option">
+                                            <input
+                                                className="input-radio"
+                                                name="highvis"
+                                                type="checkbox"
+                                                checked={highVisibility}
+                                                onChange={() => {
+                                                    localStorage.setItem(
+                                                        "high-visibility",
+                                                        !highVisibility
+                                                    );
+                                                    set_highVisibility(
+                                                        !highVisibility
+                                                    );
+                                                }}
+                                            />
+                                            High Contrast
+                                        </label>
+                                        <label className="filter-panel-group-option">
+                                            <input
+                                                className="input-radio"
+                                                name="largefont"
+                                                type="checkbox"
+                                                checked={fontModifier === 5}
+                                                onChange={() => {
+                                                    localStorage.setItem(
+                                                        "font-modifier",
+                                                        fontModifier === 0
+                                                            ? 5
+                                                            : 0
+                                                    );
+                                                    set_fontModifier(
+                                                        fontModifier === 0
+                                                            ? 5
+                                                            : 0
+                                                    );
+                                                }}
+                                            />
+                                            Large Font
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </LfmFilter>
+                        {classicLook ? (
+                            <CanvasLfmPanel
+                                data={groupDataServer}
+                                showNotEligible={showNotEligible}
+                                adjustedGroupCount={adjustedGroupCount}
+                                fontModifier={fontModifier}
+                                highVisibility={highVisibility}
+                                // showNotEligible={showNotEligible}
+                                // sortOrder={sortOrder}
+                                // minimumLevel={minimumLevel}
+                                // maximumLevel={maximumLevel}
+                            ></CanvasLfmPanel>
+                        ) : (
+                            <div className="group-container">
+                                {groupDataServer.data &&
+                                    groupDataServer.data.Groups.map(
+                                        (group, i) =>
+                                            group.Eligible && (
+                                                <Group
+                                                    key={i}
+                                                    handleClick={() => {
+                                                        if (IsExpanded(group)) {
+                                                            set_expandedGroups(
+                                                                expandedGroups.filter(
+                                                                    (g) => {
+                                                                        return (
+                                                                            g
+                                                                                .Leader
+                                                                                .Name !==
+                                                                            group
+                                                                                .Leader
+                                                                                .Name
+                                                                        );
+                                                                    }
+                                                                )
+                                                            );
+                                                        } else {
+                                                            set_expandedGroups([
+                                                                ...expandedGroups,
+                                                                group,
+                                                            ]);
+                                                        }
+                                                    }}
+                                                    group={group}
+                                                    expanded={IsExpanded(group)}
+                                                />
+                                            )
+                                    )}
+                                {eligibleCount === 0 && (
+                                    <span
+                                        style={{
+                                            fontSize: "1.6rem",
+                                            width: "100%",
+                                            textAlign: "center",
+                                        }}
+                                    >
+                                        No groups meet your current filter
+                                        settings
+                                    </span>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </Card>
             </div>

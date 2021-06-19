@@ -6,26 +6,78 @@ const CanvasLfmPanel = (props) => {
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
 
-    const PanelHeader = [0, 0, 848, 72]; // TODO: Figure out how to destructure this for a drawImage() call
+    var [isImageLoaded, set_isImageLoaded] = React.useState(false);
+    // var [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
+    // var [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
+    var [groupSelection, set_groupSelection] = React.useState({
+        groupIndex: -1,
+        cursorPosition: [0, 0],
+    });
+
     const panelWidth = 848;
     const lfmHeight = 90;
     const classCount = 15;
 
-    React.useEffect(() => {
-        if (
-            canvasRef === null ||
-            spriteRef === null ||
-            props.adjustedGroupCount === null
-        )
+    function HandleMouseOnCanvas(e) {
+        var rect = e.target.getBoundingClientRect();
+        var x = (e.clientX - rect.left) * (848 / rect.width); //x position within the element.
+        var y = (e.clientY - rect.top) * (848 / rect.width); //y position within the element.
+
+        if (x > 605) {
+            // 375 border between group and quest
+            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+            // drawPanel();
             return;
-        // if () return;
+        }
+        if (x < 30) {
+            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+            // drawPanel();
+            return;
+        }
+
+        let index = Math.floor((y - 72) / 89);
+        // if (groupSelection.groupIndex === index) {
+        //     if (x < 375 && lastSide === "left") return;
+        //     else if (x > 375 && lastSide === "right") return;
+        // }
+
+        // if (x < 375) lastSide = "left";
+        // else if (x > 375) lastSide = "right";
+
+        set_groupSelection({
+            groupIndex: index,
+            cursorPosition: [x, y],
+        });
+    }
+
+    React.useEffect(() => {
+        var overlayTimeout;
+        canvasRef.current.addEventListener("mousemove", (e) => {
+            clearTimeout(overlayTimeout);
+            overlayTimeout = setTimeout(() => {
+                HandleMouseOnCanvas(e);
+            }, 300);
+        });
+        canvasRef.current.addEventListener("click", (e) => {
+            HandleMouseOnCanvas(e);
+        });
+        canvasRef.current.addEventListener("mouseleave", () => {
+            clearTimeout(overlayTimeout);
+            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+        });
+    }, [canvasRef]);
+
+    React.useEffect(() => {
+        if (!isImageLoaded) {
+            console.log("Waiting on resources");
+            return;
+        }
         // Render canvas
+        // console.log("render");
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
         const sprite = spriteRef.current;
-
-        if (canvas === null || ctx === null || sprite === null) return;
 
         // Draw the header
         OpenPanel();
@@ -35,7 +87,7 @@ const CanvasLfmPanel = (props) => {
 
         // Draw lfms
         DrawFiller();
-        if (props.data !== null) DrawLfms();
+        if (props.data.data !== null) DrawLfms();
 
         // Draws the header and the lastUpdateTime string
         function OpenPanel() {
@@ -82,7 +134,11 @@ const CanvasLfmPanel = (props) => {
         }
 
         function DrawLfms() {
-            props.data.Groups.filter((group) => {
+            if (props.data.data === null) {
+                console.log("Waiting on data");
+                return;
+            }
+            props.data.data.Groups.filter((group) => {
                 return group.Eligible || props.showNotEligible;
             }).forEach((group, index) => {
                 // Draw background and borders
@@ -140,6 +196,7 @@ const CanvasLfmPanel = (props) => {
                     : group.Eligible
                     ? "#f6f1d3"
                     : "#988f80";
+                ctx.textBaseline = "alphabetic";
                 ctx.font = `${18 + props.fontModifier}px 'Trebuchet MS'`;
                 ctx.textAlign = "left";
                 ctx.fillText(
@@ -376,6 +433,247 @@ const CanvasLfmPanel = (props) => {
                     );
                 }
             });
+
+            if (
+                groupSelection.groupIndex !== -1 &&
+                groupSelection.groupIndex < props.data.data.Groups.length
+            )
+                DrawPlayerOverlay(
+                    props.data.data.Groups[groupSelection.groupIndex],
+                    groupSelection.cursorPosition
+                );
+        }
+
+        function DrawPlayerOverlay(group, cursorPosition) {
+            if (group === null) return;
+
+            var estimatedBottom =
+                cursorPosition[1] + 3 + (group.Members.length + 1) * 41 + 26;
+            if (estimatedBottom > canvas.height) {
+                cursorPosition[1] -= estimatedBottom - canvas.height;
+            }
+
+            var fontModifier = props.fontModifier === 0 ? 0 : 4;
+
+            ctx.drawImage(
+                sprite,
+                0,
+                189,
+                287,
+                2,
+                cursorPosition[0],
+                cursorPosition[1],
+                287,
+                2
+            );
+
+            // Each player in the party is 41px in height
+            let memberList = [group.Leader, ...group.Members];
+            if (memberList !== null) {
+                memberList.forEach((member, i) => {
+                    ctx.drawImage(
+                        sprite,
+                        0,
+                        191,
+                        287,
+                        41,
+                        cursorPosition[0],
+                        cursorPosition[1] + 2 + 41 * i,
+                        287,
+                        41
+                    );
+                    var grad = ctx.createLinearGradient(
+                        0,
+                        cursorPosition[1] + 2 + 41 * i,
+                        0,
+                        cursorPosition[1] + 2 + 41 * (i + 1)
+                    );
+                    grad.addColorStop(0, "#404947");
+                    grad.addColorStop(0.25, "#4d5955");
+                    grad.addColorStop(0.75, "#4d5955");
+                    grad.addColorStop(1, "#404947");
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(
+                        cursorPosition[0] + 4,
+                        cursorPosition[1] + 3 + 41 * i,
+                        269,
+                        39
+                    );
+
+                    // Race
+                    if (member.Gender == "Unknown") member.Gender = "Male";
+                    let raceIconPosition = getRaceIconPosition(
+                        member.Gender + " " + member.Race,
+                        true
+                    );
+                    ctx.drawImage(
+                        sprite,
+                        raceIconPosition[0],
+                        raceIconPosition[1],
+                        18,
+                        18,
+                        cursorPosition[0] + 4,
+                        cursorPosition[1] + 2 + 41 * i,
+                        18,
+                        18
+                    );
+
+                    // Name
+                    ctx.fillStyle = "#f6f1d3";
+                    ctx.textBaseline = "middle";
+                    ctx.font = 18 + fontModifier + "px 'Trebuchet MS'"; // 18px
+                    ctx.textAlign = "left";
+                    ctx.fillText(
+                        member.Name,
+                        cursorPosition[0] + 26,
+                        cursorPosition[1] + 3 + 41 * i + 10
+                    );
+                    var memberWidth = ctx.measureText(member.Name).width;
+                    if (member.Name.startsWith("Clemei")) {
+                        memberWidth += 22;
+                        ctx.drawImage(
+                            sprite,
+                            746,
+                            189,
+                            17,
+                            18,
+                            cursorPosition[0] + 8 + memberWidth,
+                            cursorPosition[1] + 3 + 41 * i,
+                            17,
+                            18
+                        );
+                    }
+
+                    // Location
+                    if (member.Location != null) {
+                        ctx.font = 12 + "px 'Trebuchet MS'";
+                        ctx.textAlign = "center";
+                        ctx.fillText(
+                            member.Location.Name,
+                            cursorPosition[0] + 102,
+                            cursorPosition[1] + 3 + 41 * i + 30
+                        );
+                    }
+
+                    // Level
+                    ctx.textAlign = "center";
+                    ctx.font = 17 + fontModifier + "px Arial"; // 15px
+                    ctx.fillText(
+                        member.TotalLevel,
+                        cursorPosition[0] + 4 + 256,
+                        cursorPosition[1] + 3 + 41 * i + 11
+                    );
+
+                    // Classes
+                    ctx.font = "13px Arial";
+                    ctx.textBaseline = "alphabetic";
+                    ctx.textAlign = "right";
+                    if (member.Classes !== null && member.Classes !== undefined)
+                        for (var c = 0; c < member.Classes.length; c++) {
+                            // First pass for icons
+                            var xp = cursorPosition[0] + 166 + 21 * c;
+                            var yp = cursorPosition[1] + 4 + 41 * i;
+
+                            ctx.fillStyle = "#3e4641";
+                            ctx.fillRect(xp - 1, yp - 1, 20, 20);
+
+                            let classIconPosition = getClassIconPosition(
+                                member.Classes[c].Name,
+                                true
+                            );
+                            ctx.drawImage(
+                                sprite,
+                                classIconPosition[0],
+                                classIconPosition[1],
+                                18,
+                                18,
+                                xp,
+                                yp,
+                                18,
+                                18
+                            );
+                        }
+                    if (member.Classes !== null && member.Classes !== undefined)
+                        for (var c = 0; c < member.Classes.length; c++) {
+                            // Second pass for levels
+                            var xp = cursorPosition[0] + 166 + 21 * c;
+                            var yp = cursorPosition[1] + 4 + 41 * i;
+
+                            ctx.fillStyle = "black";
+                            ctx.fillText(
+                                member.Classes[c].Level,
+                                xp + 22,
+                                yp + 18
+                            );
+                            ctx.fillStyle = "white";
+                            ctx.fillText(
+                                member.Classes[c].Level,
+                                xp + 21,
+                                yp + 17
+                            );
+                        }
+                });
+            }
+
+            ctx.drawImage(
+                sprite,
+                0,
+                232,
+                287,
+                26,
+                cursorPosition[0],
+                cursorPosition[1] + 2 + memberList.length * 41,
+                287,
+                26
+            );
+
+            // Comment
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = fontModifier > 0 ? "white" : "#bfbfbf";
+            ctx.font = 15 + fontModifier + "px Arial"; // 15px
+            ctx.textAlign = "left";
+            var textLines = wrapText(group.Comment, 269);
+
+            for (var i = 0; i < textLines.length; i++) {
+                ctx.drawImage(
+                    sprite,
+                    0,
+                    232,
+                    287,
+                    23,
+                    cursorPosition[0],
+                    cursorPosition[1] +
+                        2 +
+                        memberList.length * 41 +
+                        i * (19 + (fontModifier < 0 ? -3 : 0)),
+                    287,
+                    23
+                );
+                ctx.fillText(
+                    textLines[i],
+                    cursorPosition[0] + 4,
+                    cursorPosition[1] +
+                        memberList.length * 41 +
+                        13 +
+                        i * (19 + (fontModifier < 0 ? -3 : 0))
+                );
+            }
+
+            ctx.drawImage(
+                sprite,
+                0,
+                255,
+                287,
+                3,
+                cursorPosition[0],
+                cursorPosition[1] +
+                    2 +
+                    memberList.length * 41 +
+                    textLines.length * (19 + (fontModifier < 0 ? -3 : 0)) +
+                    (fontModifier < 0 ? 4 : 3),
+                287,
+                3
+            );
         }
 
         // Helper function for wrapping text
@@ -607,11 +905,16 @@ const CanvasLfmPanel = (props) => {
             return [xsrc + 287 + (eligible ? 0 : 103), ysrc + 189];
         }
     }, [
-        props.data,
-        props.internalUpdate,
+        props.data.timestamp,
+        props.data.data,
+        // props.showNotEligible,
+        // props.sortOrder,
+        // props.minimumLevel,
+        // props.maximumLevel,
         props.fontModifier,
         props.highVisibility,
-        // props.showNotEligible,
+        isImageLoaded,
+        groupSelection.groupIndex,
     ]);
 
     return (
@@ -625,6 +928,7 @@ const CanvasLfmPanel = (props) => {
             <img
                 ref={spriteRef}
                 src={PanelSprite}
+                onLoad={() => set_isImageLoaded(true)}
                 style={{ display: "none" }}
             />
             {props.children}

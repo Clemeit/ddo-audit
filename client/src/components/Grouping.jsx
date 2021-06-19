@@ -5,6 +5,7 @@ import ReportIssueForm from "./ReportIssueForm";
 import PopupMessage from "./PopupMessage";
 import MiniGroup from "./MiniGroup";
 import ServerSelectOption from "./ServerSelectOption";
+import { Fetch, VerifyLfmData } from "./DataLoader";
 
 const TITLE = "DDO Live LFM Viewer";
 
@@ -32,66 +33,49 @@ const Grouping = (props) => {
     var [groupCount, set_groupCount] = React.useState(null);
 
     React.useEffect(() => {
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
-
-        async function run(timeout) {
-            let ret = new Promise(async (resolve, reject) => {
-                setTimeout(() => {
-                    if (!ret.isResolved) {
-                        reject();
+        function FetchLfmData() {
+            Fetch("https://www.playeraudit.com/api/groups", 5000)
+                .then((val) => {
+                    if (VerifyLfmData(val)) {
+                        set_popupMessages([]);
+                        set_groupData(val);
+                    } else {
+                        set_popupMessages([
+                            ...popupMessages,
+                            {
+                                title: "Something went wrong",
+                                message:
+                                    "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                icon: "warning",
+                                fullscreen: false,
+                                reportMessage:
+                                    val || "Group data returned null",
+                            },
+                        ]);
+                        set_groupData(null);
                     }
-                }, timeout);
-
-                await fetchArbitraryData(
-                    "https://www.playeraudit.com/api/groups",
-                    "json"
-                )
-                    .then((val) => {
-                        // Data verification
-                        if (val === null) return;
-                        if (val.length !== 9) return;
-                        let missingfields = false;
-                        val.forEach((server) => {
-                            if (server.Name === undefined) missingfields = true;
-                            if (server.LastUpdateTime === undefined)
-                                missingfields = true;
-                            if (server.Groups === undefined)
-                                missingfields = true;
-                            if (server.GroupCount === undefined)
-                                missingfields = true;
-                        });
-                        if (missingfields) return;
-
-                        resolve(val);
-                    })
-                    .catch((val) => {
-                        console.error("Failed to fetch group data");
-                    });
-            });
-            return ret;
+                })
+                .catch(() => {
+                    set_popupMessages([
+                        ...popupMessages,
+                        {
+                            title: "We're stuck on a loading screen",
+                            message:
+                                "This is taking longer than usual. You can refresh the page or report the issue.",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage:
+                                "Could not fetch Group data. Timeout",
+                        },
+                    ]);
+                });
         }
-        run(5000)
-            .then((val) => {
-                set_groupData(val);
-            })
-            .catch(function () {
-                set_popupMessages([
-                    ...popupMessages,
-                    {
-                        title: "We're stuck on a loading screen",
-                        message:
-                            "This is taking longer than usual. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "This is the report message",
-                    },
-                ]);
-            });
+        FetchLfmData();
+
+        const refreshdata = setInterval(() => {
+            FetchLfmData();
+        }, 60000);
+        return () => clearInterval(refreshdata);
     }, []);
 
     React.useEffect(() => {

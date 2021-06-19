@@ -44,7 +44,7 @@ const LevelRangeSlider = (props) => {
             domain={[1, 30]}
             step={1}
             mode={2}
-            values={[1, 30]}
+            values={[props.minimumLevel, props.maximumLevel]}
             onChange={props.handleChange}
         >
             <Rail>

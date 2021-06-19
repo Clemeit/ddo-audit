@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactComponent as ServerSelectSVG } from "../assets/global/server.svg";
 import { ReactComponent as FilterSVG } from "../assets/global/filter.svg";
+import { ReactComponent as SettingsSVG } from "../assets/global/settings.svg";
 import { ReactComponent as NotificationSVG } from "../assets/global/notification.svg";
 import { ReactComponent as FullscreenSVG } from "../assets/global/fullscreen.svg";
 import { ReactComponent as FullscreenExitSVG } from "../assets/global/fullscreen-exit.svg";
@@ -42,7 +43,7 @@ const LfmFilterBar = (props) => {
                     style={{ marginLeft: "auto" }}
                     onClick={props.handleFilterButton}
                 >
-                    <FilterSVG
+                    <SettingsSVG
                         className="link-icon"
                         style={{
                             width: "30px",
@@ -50,7 +51,9 @@ const LfmFilterBar = (props) => {
                             paddingRight: "5px",
                         }}
                     />
-                    <span className="lfm-filter-bar-text">Filter</span>
+                    <span className="lfm-filter-bar-text settings">
+                        Settings
+                    </span>
                 </div>
                 <div className="lfm-filter-bar-item">
                     <NotificationSVG
@@ -61,7 +64,9 @@ const LfmFilterBar = (props) => {
                             paddingRight: "5px",
                         }}
                     />
-                    <span className="lfm-filter-bar-text">Notifications</span>
+                    <span className="lfm-filter-bar-text notifications">
+                        Notifications
+                    </span>
                 </div>
                 <div
                     className="lfm-filter-bar-item hide-on-mobile"

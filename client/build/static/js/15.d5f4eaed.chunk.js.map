@@ -1,0 +1,1 @@
+{"version":3,"sources":["components/Who.jsx"],"names":["Who","props"],"mappings":"yGAAA,2BAMeA,UAJH,SAACC,GACT,OAAO","file":"static/js/15.d5f4eaed.chunk.js","sourcesContent":["import React from \"react\";\r\n\r\nconst Who = (props) => {\r\n    return <div></div>;\r\n};\r\n\r\nexport default Who;\r\n"],"sourceRoot":""}
