@@ -15,7 +15,7 @@ const ServerSelectOption = (props) => {
 
     return (
         <Link
-            to={"grouping/" + props.server.toLowerCase()}
+            to={props.destination + "/" + props.server.toLowerCase()}
             className="server-select-option"
         >
             <h3 style={{ fontWeight: "bold", marginBottom: "0px" }}>

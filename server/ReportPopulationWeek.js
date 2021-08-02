@@ -426,7 +426,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"./api/data/composite/1_week_by_hour.json",
+			"api_v1/data/composite/1_week_by_hour.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

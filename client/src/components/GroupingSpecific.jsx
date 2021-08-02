@@ -51,7 +51,7 @@ const GroupingSpecific = (props) => {
     var [fontModifier, set_fontModifier] = React.useState(0);
     var [highVisibility, set_highVisibility] = React.useState(false);
     var [filterPanelVisible, set_filterPanelVisible] = React.useState(false);
-    var [classicLook, set_classicLook] = React.useState(false);
+    var [alternativeLook, set_alternativeLook] = React.useState(false);
     var [theme, set_theme] = React.useState(true);
 
     var [expandedGroups, set_expandedGroups] = React.useState([]);
@@ -115,8 +115,10 @@ const GroupingSpecific = (props) => {
             sortascending !== null ? sortascending === "true" : true
         );
 
-        let classiclook = localStorage.getItem("classic-look");
-        set_classicLook(classiclook !== null ? classiclook === "true" : true);
+        let alternativelook = localStorage.getItem("alternative-look");
+        set_alternativeLook(
+            alternativelook !== null ? alternativelook === "true" : false
+        );
 
         let highvisibility = localStorage.getItem("high-visibility");
         set_highVisibility(
@@ -196,7 +198,8 @@ const GroupingSpecific = (props) => {
                                     icon: "warning",
                                     fullscreen: false,
                                     reportMessage:
-                                        val || "Group data returned null",
+                                        JSON.stringify(val) ||
+                                        "Group data returned null",
                                 },
                             ]);
                         }
@@ -356,6 +359,11 @@ const GroupingSpecific = (props) => {
                             Name: "DDO Audit",
                             Gender: "Male",
                             Race: "Human",
+                            Location: {
+                                Name: "Somewhere in the aether",
+                                IsPublicSpace: 0,
+                                HexId: 0,
+                            },
                         },
                         Members: [],
                         Eligible: true,
@@ -422,7 +430,7 @@ const GroupingSpecific = (props) => {
             });
 
             let eligiblegroupcount = 0;
-            if (showNotEligible && classicLook === true) {
+            if (showNotEligible && alternativeLook === false) {
                 eligiblegroupcount = serverdata.Groups.length;
             } else {
                 serverdata.Groups.forEach((group) => {
@@ -529,6 +537,7 @@ const GroupingSpecific = (props) => {
                     hideReportForm={hideReportForm}
                 />
                 <PopupMessage
+                    page={"grouping/" + currentServer.toLowerCase()}
                     messages={popupMessages}
                     popMessage={() => {
                         if (popupMessages.length) {
@@ -690,19 +699,19 @@ const GroupingSpecific = (props) => {
                                                 className="input-radio"
                                                 name="classislook"
                                                 type="checkbox"
-                                                checked={classicLook}
+                                                checked={alternativeLook}
                                                 onChange={() => {
                                                     localStorage.setItem(
-                                                        "classic-look",
-                                                        !classicLook
+                                                        "alternative-look",
+                                                        !alternativeLook
                                                     );
-                                                    set_classicLook(
-                                                        !classicLook
+                                                    set_alternativeLook(
+                                                        !alternativeLook
                                                     );
                                                 }}
                                             />
-                                            Classic Look (may be difficult to
-                                            see on mobile)
+                                            Alternative View (easier to see on
+                                            mobile)
                                         </label>
                                         <label className="filter-panel-group-option">
                                             <input
@@ -748,7 +757,7 @@ const GroupingSpecific = (props) => {
                                 </div>
                             </div>
                         </LfmFilter>
-                        {classicLook ? (
+                        {alternativeLook === false ? (
                             <CanvasLfmPanel
                                 data={groupDataServer}
                                 showNotEligible={showNotEligible}
@@ -761,7 +770,7 @@ const GroupingSpecific = (props) => {
                                 // maximumLevel={maximumLevel}
                             ></CanvasLfmPanel>
                         ) : (
-                            <div className="group-container">
+                            <div className="social-container">
                                 {groupDataServer.data &&
                                     groupDataServer.data.Groups.map(
                                         (group, i) =>

@@ -23,7 +23,10 @@ var con = mysql.createConnection({
 });
 
 con.connect(function (err) {
-	if (err) throw err;
+	if (err) {
+		console.log("Misc error");
+		throw err;
+	}
 	let q =
 		"SELECT * FROM `population` WHERE `datetime` BETWEEN '" +
 		GetDateString(new Date(Date.now() - 60000 * (60 * 24 + 5))) +
@@ -31,7 +34,10 @@ con.connect(function (err) {
 		GetDateString(new Date(Date.now())) +
 		"';";
 	con.query(q, function (err, result, fields) {
-		if (err) throw err;
+		if (err) {
+			console.log("Couldn't connect");
+			throw err;
+		}
 
 		let Argonnessen = {
 			id: "Argonnessen",
@@ -166,7 +172,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"./api/data/composite/24hr_by_minute.json",
+			"../var/www/npafrequency.xyz/server/api_v1/data/composite/24hr_by_minute.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

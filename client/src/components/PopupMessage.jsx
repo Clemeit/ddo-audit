@@ -3,7 +3,7 @@ import { ReactComponent as InfoSVG } from "../assets/global/info.svg";
 import { ReactComponent as WarningSVG } from "../assets/global/warning.svg";
 import { ReactComponent as ErrorSVG } from "../assets/global/error.svg";
 import { ReactComponent as CloseSVG } from "../assets/global/close.svg";
-import Report from "./GenerateReport";
+import { Submit } from "./ReportIssueService";
 
 /*
  ** Use with preset messages:
@@ -29,13 +29,15 @@ const PopupMessage = (props) => {
 
     React.useEffect(() => {
         if (props.messages.length) {
-            set_currentMessageType(props.messages[0].messageType);
-            set_currentTitle(props.messages[0].title);
-            set_currentMessage(props.messages[0].message);
-            set_currentFullscreen(props.messages[0].fullscreen);
-            set_currentReportMessage(props.messages[0].reportMessage);
-            set_currentIcon(props.messages[0].icon);
-            set_visibilityClass("visible");
+            if (!userClosed) {
+                set_currentMessageType(props.messages[0].messageType);
+                set_currentTitle(props.messages[0].title);
+                set_currentMessage(props.messages[0].message);
+                set_currentFullscreen(props.messages[0].fullscreen);
+                set_currentReportMessage(props.messages[0].reportMessage);
+                set_currentIcon(props.messages[0].icon);
+                set_visibilityClass("visible");
+            }
         } else {
             set_visibilityClass("");
         }
@@ -93,9 +95,8 @@ const PopupMessage = (props) => {
                 <div
                     className="overlay"
                     onClick={function () {
-                        // props.closeEvent();
-                        // set_userClosed(true);
                         props.popMessage();
+                        set_userClosed(true);
                     }}
                 />
             ) : (
@@ -104,9 +105,10 @@ const PopupMessage = (props) => {
             <div
                 className={"popup-message " + visibilityclass}
                 onClick={() => {
-                    // props.closeEvent();
-                    // set_userClosed(true);
-                    if (currentReportMessage === undefined) props.popMessage();
+                    if (currentReportMessage === undefined) {
+                        props.popMessage();
+                        set_userClosed(true);
+                    }
                 }}
             >
                 <CloseSVG
@@ -118,9 +120,8 @@ const PopupMessage = (props) => {
                         cursor: "pointer",
                     }}
                     onClick={function () {
-                        // props.closeEvent();
-                        // set_userClosed(true);
                         props.popMessage();
+                        set_userClosed(true);
                     }}
                 />
                 <div
@@ -152,8 +153,14 @@ const PopupMessage = (props) => {
                             }
                             onClick={() => {
                                 if (reported === false) {
-                                    Report(currentReportMessage);
+                                    Submit(
+                                        props.page,
+                                        null,
+                                        currentReportMessage,
+                                        null
+                                    );
                                     set_reported(true);
+                                    set_userClosed(true);
                                 }
                             }}
                         >

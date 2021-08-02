@@ -84,6 +84,10 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
+                <NavItem to="/quests">
+                    <TrendsSVG className="nav-icon" />
+                    Quests
+                </NavItem>
 
                 <NavDropdown
                     to="/who"
@@ -94,6 +98,8 @@ const NavMenu = (props) => {
                         </div>
                     }
                 >
+                    <NavSubItem to={"/who"}>Overview</NavSubItem>
+                    <NavDivider />
                     {serverNames.map((server) => (
                         <NavSubItem
                             key={server}

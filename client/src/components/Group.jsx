@@ -33,9 +33,11 @@ const Group = (props) => {
                 <span style={{ fontWeight: "bold", fontSize: "2rem" }}>
                     {props.group.Leader.Name}
                 </span>
-                <span style={{ marginLeft: "auto", fontSize: "1.8rem" }}>
-                    {props.group.MinimumLevel} - {props.group.MaximumLevel}
-                </span>
+                {props.group.MinimumLevel && props.group.MaximumLevel && (
+                    <span style={{ marginLeft: "auto", fontSize: "1.8rem" }}>
+                        {props.group.MinimumLevel} - {props.group.MaximumLevel}
+                    </span>
+                )}
             </div>
             {props.group.Quest ? (
                 <span
@@ -54,12 +56,18 @@ const Group = (props) => {
                     "{props.group.Comment}"
                 </span>
             )}
-            {props.group.AdventureActive !== 0 && (
-                <span style={{ fontSize: "1.4rem", color: "var(--blue-text)" }}>
-                    Adventure Active: {props.group.AdventureActive} minute
-                    {props.group.AdventureActive !== 1 ? "s" : ""}
-                </span>
-            )}
+            {props.group.AdventureActive !== 0 &&
+                props.group.AdventureActive !== undefined && (
+                    <span
+                        style={{
+                            fontSize: "1.4rem",
+                            color: "var(--blue-text)",
+                        }}
+                    >
+                        Adventure Active: {props.group.AdventureActive} minute
+                        {props.group.AdventureActive !== 1 ? "s" : ""}
+                    </span>
+                )}
             {props.expanded ? (
                 <div
                     style={{
@@ -69,12 +77,12 @@ const Group = (props) => {
                         marginTop: "5px",
                     }}
                 >
-                    <div className="group-member">
+                    <div className="social-member">
                         <table>
                             <tbody>
-                                <tr className="group-member-entry">
+                                <tr className="social-member-entry">
                                     <td
-                                        className="group-member-entry name"
+                                        className="social-member-entry name"
                                         style={{
                                             paddingRight: "20px",
                                         }}
@@ -106,17 +114,18 @@ const Group = (props) => {
                                             paddingRight: "20px",
                                         }}
                                     >
-                                        {props.group.Leader.Location.Name}
+                                        {props.group.Leader.Location &&
+                                            props.group.Leader.Location.Name}
                                     </td>
                                 </tr>
                                 {props.group.Members &&
                                     props.group.Members.map((member, i) => (
                                         <tr
                                             key={i}
-                                            className="group-member-entry"
+                                            className="social-member-entry"
                                         >
                                             <td
-                                                className="group-member-entry name"
+                                                className="social-member-entry name"
                                                 style={{
                                                     paddingRight: "20px",
                                                 }}

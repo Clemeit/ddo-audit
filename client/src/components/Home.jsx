@@ -36,7 +36,7 @@ const Home = (props) => {
         }
 
         fetchArbitraryData(
-            "http://localhost:3001/api/v1/population/day",
+            "https://api.npafrequency.xyz/population/day",
             "json"
         )
             .then((val) => {
@@ -52,14 +52,14 @@ const Home = (props) => {
             });
 
         fetchArbitraryData(
-            "http://localhost:3001/api/v1/population/week",
+            "https://api.npafrequency.xyz/population/week",
             "json"
         ).then((val) => {
             set_population1WeekData(val);
         });
 
         fetchArbitraryData(
-            "http://localhost:3001/api/v1/population/quarter",
+            "https://api.npafrequency.xyz/population/quarter",
             "json"
         ).then((val) => {
             set_population1QuarterData(val);
@@ -381,7 +381,7 @@ const Home = (props) => {
                     }
                 }}
             />
-            <WhatIsCard />
+            <WhatIsCard className="on-home" />
             <div className="home-card-splitter">
                 <QuickInfo
                     className="card home-card-splitter-pane1"

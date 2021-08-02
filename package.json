@@ -7,6 +7,7 @@
 		"start": "concurrently --kill-others \"yarn --cwd .\\server\\ start\" \"yarn --cwd .\\client\\ start\""
 	},
 	"dependencies": {
-		"concurrently": "^6.2.0"
+		"concurrently": "^6.2.0",
+		"mathjs": "^9.4.4"
 	}
 }

@@ -23,6 +23,9 @@ cron.schedule("* * * * *", () => {
 	//
 });
 
+run("../var/www/npafrequency.xyz/server/ReportPopulationDay.js").catch((err) =>
+	console.error(err)
+);
 // Every 5 minutes
 cron.schedule("0-55/5 * * * *", () => {
 	run("./ReportPopulationDay.js").catch((err) => console.error(err));

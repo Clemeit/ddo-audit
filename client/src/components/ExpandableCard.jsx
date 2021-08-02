@@ -12,7 +12,7 @@ const ExpandableCard = (props) => {
 
     return (
         <div
-            className={"card " + props.className}
+            className={"card expandable " + (props.className || "")}
             style={{
                 maxHeight:
                     viewState === "expanded"

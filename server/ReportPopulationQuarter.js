@@ -434,7 +434,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"./api/data/composite/90_days_by_day.json",
+			"api_v1/data/composite/90_days_by_day.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

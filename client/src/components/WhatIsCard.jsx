@@ -1,9 +1,10 @@
 import React from "react";
 import ExpandableCard from "./ExpandableCard";
 
-const WhatIsCard = () => {
+const WhatIsCard = (props) => {
     return (
         <ExpandableCard
+            className={props.className}
             smallHeight="200px"
             largeHeight="1200px"
             style={{ paddingTop: "20px", position: "absolute" }}

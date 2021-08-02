@@ -1,3 +1,5 @@
+import { defaultMotionDamping } from "@nivo/core";
+
 async function fetchArbitraryData(url, type) {
     let response = await fetch(url);
     if (type === "json") response = await response.json();
@@ -18,7 +20,8 @@ export async function Fetch(url, timeout) {
                 resolve(val);
             })
             .catch((val) => {
-                console.log("Failed to fetch group data");
+                console.log("Failed to fetch data");
+                reject();
             });
     });
     return ret;
@@ -38,4 +41,10 @@ export function VerifyLfmData(data) {
     return true;
 }
 
-// export default run;
+export function VerifyPlayerData(data) {
+    if (data === null) return false;
+    if (data.Population === undefined) return false;
+    if (data.Server === undefined) return false;
+    if (data.Players === undefined) return false;
+    return true; // TODO
+}

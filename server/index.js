@@ -1,55 +1,24 @@
-// server/index.js
+// const express = require("express");
+// var cors = require("cors");
 
-const express = require("express");
-//const webpush = require("web-push");
-//const bodyParser = require("body-parser");
-//const path = require("path");
-var cors = require("cors");
+// var app = express();
 
-const app = express();
+// app.use(cors({ credentials: true, origin: true }));
 
-app.use(cors());
-//app.use(bodyParser.json());
+// const PORT = process.env.PORT || 3001;
 
-// PUSH ///////////////
-// const vapidKeys = {
-// 	publicKey:
-// 		"BLHgHfWx0GfeaHhiMFzYj3Q4qDcSYAV65jrCaNgArov7d5PsT3t_MYLIqmtxCcSsd-9pOEslxOZulKc7sMgc0tY",
-// 	privateKey: "arQ36BcTIT_vg_T2BD68D8qCuNXvIsyRo6ec63z_ILQ",
-// };
+// // app.all("/", function (req, res, next) {
+// // 	res.header("Access-Control-Allow-Origin", "*");
+// // 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+// // 	next();
+// // });
 
-// webpush.setVapidDetails(
-// 	"mailto:ddoaudit@fastmail.com",
-// 	vapidKeys.publicKey,
-// 	vapidKeys.privateKey
-// );
+// var api_population = require("./api_v1/population");
+// api_population(app);
 
-// app.post("/subscribe", (req, res) => {
-// 	const subscription = req.body;
+// // Tasks
+// require("./cron");
 
-// 	// Send status back to client
-// 	res.status(201).json({});
-
-// 	// Payload
-// 	const payload = JSON.stringify({ title: "Push Test" });
-
-// 	// Pass object into sendNotification function
-// 	webpush.sendNotification(subscription, payload).catch((err) => {
-// 		console.error(err);
-// 	});
+// app.listen(PORT, () => {
+// 	console.log(`Server listening on ${PORT}`);
 // });
-////////////////////////
-
-const PORT = process.env.PORT || 3001;
-
-var api_population = require("./api/population");
-api_population(app);
-
-// Tasks
-require("./cron");
-
-//require("./push");
-
-app.listen(PORT, () => {
-	console.log(`Server listening on ${PORT}`);
-});

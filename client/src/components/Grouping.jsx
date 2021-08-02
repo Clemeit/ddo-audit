@@ -49,7 +49,8 @@ const Grouping = (props) => {
                                 icon: "warning",
                                 fullscreen: false,
                                 reportMessage:
-                                    val || "Group data returned null",
+                                    JSON.stringify(val) ||
+                                    "Group data returned null",
                             },
                         ]);
                         set_groupData(null);
@@ -140,13 +141,14 @@ const Grouping = (props) => {
                 />
             </Helmet>
             <ReportIssueForm
-                page="servers"
+                page="grouping"
                 showLink={false}
                 visibility={reportFormVisibility}
                 componentReference={reportFormReference}
                 hideReportForm={hideReportForm}
             />
             <PopupMessage
+                page="grouping"
                 messages={popupMessages}
                 popMessage={() => {
                     if (popupMessages.length) {
@@ -170,7 +172,7 @@ const Grouping = (props) => {
                                 {groupCount
                                     ? "If you're not in one, you're missing out!"
                                     : noGroupsMessages[
-                                          Math.floor(Math.random() * 4)
+                                          Math.floor(Math.random() * 3)
                                       ]}
                             </div>
                             <div
@@ -202,6 +204,7 @@ const Grouping = (props) => {
                             {groupData.map((server, i) => (
                                 <ServerSelectOption
                                     key={i}
+                                    destination="grouping"
                                     server={server.Name}
                                     number={server.GroupCount}
                                     word="group"
@@ -218,7 +221,7 @@ const Grouping = (props) => {
                 )}
             </Card>
             <Card
-                className="grouping-extra-info"
+                className="social-extra-info"
                 pageName="grouping"
                 showLink={false}
                 title=""
@@ -230,10 +233,24 @@ const Grouping = (props) => {
                             <div>
                                 <p style={{ fontSize: "larger" }}>
                                     Every LFM on every server, all in one place.
+                                    Live.
+                                </p>
+                                <h4>Notifications for Your Favorite Quests.</h4>
+                                <p>
+                                    Desktop notifications and mobile
+                                    push-notifications. You're never going to
+                                    miss your favorite quests again.
+                                </p>
+                                <h4>Accessible. Installable.</h4>
+                                <p>
+                                    If you're reading this, you're probably not
+                                    on a mobile device. You should try it out!
                                 </p>
                                 <p>
-                                    The Live LFM Viewer updates every 15
-                                    seconds.
+                                    You can now install DDO Audit on your mobile
+                                    device. Quickly check groups, set
+                                    notification alerts, and experience a whole
+                                    new way to view the LFM panel!
                                 </p>
                                 <hr />
                                 <h4>API</h4>

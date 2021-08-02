@@ -1,5 +1,6 @@
 import React from "react";
 import { ReactComponent as CloseSVG } from "../assets/global/close.svg";
+import { Submit } from "./ReportIssueService";
 
 // Browser check
 // Opera 8.0+
@@ -64,25 +65,18 @@ const ReportIssueForm = (props) => {
         else if (isOpera) browser = "opera";
         else browser = "unknown";
 
-        let page = props.page;
-        let element = JSON.stringify(props.componentReference);
-        let comment = usercomment;
         let options = {
             emptyset: emptyset,
             badset: badset,
             badload: badload,
         };
-        options = JSON.stringify(options);
 
-        const url = "https://www.playeraudit.com/api/submit";
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ browser, page, element, options, comment }),
-        };
-        fetch(url, requestOptions)
-            .then((response) => console.log("Submitted successfully"))
-            .catch((error) => console.log("Form submit error", error));
+        Submit(
+            props.page,
+            JSON.stringify(props.componentReference),
+            usercomment,
+            JSON.stringify(options)
+        );
 
         setTimeout(props.hideReportForm, 2000);
 
