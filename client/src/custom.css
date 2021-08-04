@@ -51,6 +51,7 @@
     --text-lfm-number: var(--orange2);
     --text-disabled: var(--gray3);
     --text-faded: var(--gray6);
+    --text-xfaded: var(--gray3);
     --text-slight-green: var(--green3);
 
     --red-text: var(--red1);
@@ -58,6 +59,7 @@
     --blue-text: #0026d1;
 
     --table-odd-rows: var(--gray2);
+    --table-highlight: var(--gray3);
 
     --link-icon-invert: 100%;
     --link-icon-inverted: 0%;
@@ -99,6 +101,7 @@
     --text-lfm-number: var(--orange1);
     --text-disabled: var(--gray4);
     --text-faded: var(--gray3);
+    --text-xfaded: var(--gray5);
     --text-slight-green: var(--green4);
 
     --red-text: var(--red1);
@@ -106,6 +109,7 @@
     --blue-text: #00aaff;
 
     --table-odd-rows: var(--gray7);
+    --table-highlight: var(--gray6);
 
     --link-icon-invert: 0%;
     --link-icon-inverted: 100%;
@@ -591,6 +595,14 @@ input[type="radio"] {
 .content-table {
     border-collapse: collapse;
     width: 100%;
+}
+
+.content-table-row-highlight {
+    cursor: pointer;
+}
+
+.content-table-row-highlight:hover {
+    background-color: var(--table-highlight) !important;
 }
 
 .content-table td,
