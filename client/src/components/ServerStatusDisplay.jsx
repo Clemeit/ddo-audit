@@ -64,7 +64,7 @@ const ServerStatusDisplay = (props) => {
                     : ServerNames.map((world, i) => (
                           <div key={i} className="server-status-indicator">
                               <div style={{ paddingRight: "5px" }}>
-                                  <PendingSVG />
+                                  {props.data ? <OfflineSVG /> : <PendingSVG />}
                               </div>
                               {world}
                           </div>

@@ -11,6 +11,18 @@ import PopupMessage from "./PopupMessage";
 
 const TITLE = "DDO Audit";
 
+const serverNames = [
+    "Argonnessen",
+    "Cannith",
+    "Ghallanda",
+    "Khyber",
+    "Orien",
+    "Sarlona",
+    "Thelanis",
+    "Wayfinder",
+    "Hardcore",
+];
+
 const Home = (props) => {
     const [population24HoursData, set_population24HoursData] =
         React.useState(null);
@@ -98,14 +110,18 @@ const Home = (props) => {
                 ]);
             } else {
                 let offlineWorlds = [];
-                val.Worlds.forEach(function (World) {
-                    if (!World.hasOwnProperty("Status")) {
-                        // Status is missing from this World
-                    } else if (World.Status === 0) {
-                        // This World is offline
-                        offlineWorlds.push(World.Name);
-                    }
-                });
+                if (val.Worlds === null) {
+                    offlineWorlds.push(...serverNames);
+                } else {
+                    val.Worlds.forEach(function (World) {
+                        if (!World.hasOwnProperty("Status")) {
+                            // Status is missing from this World
+                        } else if (World.Status === 0) {
+                            // This World is offline
+                            offlineWorlds.push(World.Name);
+                        }
+                    });
+                }
                 if (offlineWorlds.length >= 8) {
                     set_popupMessages([
                         ...popupMessages,

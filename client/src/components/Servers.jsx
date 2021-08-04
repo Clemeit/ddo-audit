@@ -285,14 +285,18 @@ const Servers = (props) => {
                 ]);
             } else {
                 let offlineWorlds = [];
-                val.Worlds.forEach(function (World) {
-                    if (!World.hasOwnProperty("Status")) {
-                        // Status is missing from this World
-                    } else if (World.Status === 0) {
-                        // This World is offline
-                        offlineWorlds.push(World.Name);
-                    }
-                });
+                if (val.Worlds === null) {
+                    offlineWorlds.push(...serverNames);
+                } else {
+                    val.Worlds.forEach(function (World) {
+                        if (!World.hasOwnProperty("Status")) {
+                            // Status is missing from this World
+                        } else if (World.Status === 0) {
+                            // This World is offline
+                            offlineWorlds.push(World.Name);
+                        }
+                    });
+                }
                 if (offlineWorlds.length >= 8) {
                     set_popupMessages([
                         ...popupMessages,
