@@ -6,7 +6,7 @@ import NavPush from "./NavPush";
 
 export default (props: { children?: React.ReactNode }) => (
     <React.Fragment>
-        <Banner />
+        {/* <Banner /> */}
         <NavMenu />
         <div className="content">{props.children}</div>
         <Footer />

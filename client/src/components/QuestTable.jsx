@@ -19,6 +19,26 @@ const ContentTable = (props) => {
         }
     }
 
+    function questLevelString(quest) {
+        return `${quest.HeroicCr ? "Heroic: " + quest.HeroicCr : ""}${
+            quest.HeroicCr && quest.EpicCr ? ", " : ""
+        }${quest.EpicCr ? "Epic: " + quest.EpicCr : ""}`;
+    }
+
+    function questXpPerMinuteString(quest) {
+        return `${
+            quest.HeroicCr
+                ? "HE: " +
+                  Math.round(quest.HeroicEliteXp / (quest.AverageTime / 60))
+                : ""
+        }${quest.HeroicCr && quest.EpicCr ? ", " : ""}${
+            quest.EpicCr
+                ? "EE: " +
+                  Math.round(quest.EpicEliteXp / (quest.AverageTime / 60))
+                : ""
+        }`;
+    }
+
     return (
         <div>
             <div
@@ -40,7 +60,7 @@ const ContentTable = (props) => {
                             alignItems: "center",
                         }}
                     >
-                        <h4>Loading data. Please wait...</h4>
+                        <h4>Running audit. Please wait...</h4>
                     </div>
                 ) : (
                     <table className="content-table">
@@ -57,6 +77,41 @@ const ContentTable = (props) => {
                                     }}
                                 >
                                     Quest <SortSVG />
+                                </th>
+                                <th
+                                    onClick={() => props.handleSort("level")}
+                                    style={{
+                                        cursor: "pointer",
+                                        // display: "flex",
+                                        // flexDirection: "row",
+                                        // alignItems: "center",
+                                    }}
+                                >
+                                    Level <SortSVG />
+                                </th>
+                                <th
+                                    onClick={() =>
+                                        props.handleSort("adventure pack")
+                                    }
+                                    style={{
+                                        cursor: "pointer",
+                                        // display: "flex",
+                                        // flexDirection: "row",
+                                        // alignItems: "center",
+                                    }}
+                                >
+                                    Adventure Pack <SortSVG />
+                                </th>
+                                <th
+                                    onClick={() => props.handleSort("xp")}
+                                    style={{
+                                        cursor: "pointer",
+                                        // display: "flex",
+                                        // flexDirection: "row",
+                                        // alignItems: "center",
+                                    }}
+                                >
+                                    XP/Min <SortSVG />
                                 </th>
                                 <th
                                     onClick={() => props.handleSort("duration")}
@@ -113,6 +168,9 @@ const ContentTable = (props) => {
                                             />
                                         </div>
                                     </td>
+                                    <td>{questLevelString(quest)}</td>
+                                    <td>{quest.AdventurePack || ""}</td>
+                                    <td>{questXpPerMinuteString(quest)}</td>
                                     <td>
                                         {averageTimeString(quest.AverageTime)}
                                     </td>

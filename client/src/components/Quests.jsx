@@ -11,8 +11,7 @@ import ServerStatusDisplay from "./ServerStatusDisplay";
 import QuestTable from "./QuestTable";
 import PopupMessage from "./PopupMessage";
 import ChartQuestActivity from "./ChartQuestActivity";
-import { range } from "mathjs";
-import { SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG } from "constants";
+import { Fetch } from "./DataLoader";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
@@ -46,32 +45,108 @@ const Quests = (props) => {
     const [outlierCount, set_outlierCount] = React.useState(null);
     const [questName, set_questName] = React.useState(null);
     const [questNameFilter, set_questNameFilter] = React.useState("");
+    const [levelFilter, set_levelFilter] = React.useState("");
     const [sortStyle, set_sortStyle] = React.useState("name");
+    const [isRunning, set_isRunning] = React.useState(false);
+    const [tableSize, set_tableSize] = React.useState(null);
+    const [ellapsedTime, set_ellapsedTime] = React.useState(0);
+    const [startTime, set_startTime] = React.useState(null);
 
     const PAGE_SIZE = 20;
 
     // Fetch the data on page load
-    React.useEffect(() => {
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
+    let updateTime;
+    function runAudit() {
+        let starttime = new Date();
+        set_startTime(new Date());
+        updateTime = setInterval(() => {
+            set_ellapsedTime(new Date() - starttime);
+        }, 1000);
+        set_isRunning(true);
 
-        fetchArbitraryData(
-            "https://www.playeraudit.com/api/activity",
-            "json"
-        ).then((val) => {
-            set_questList(val);
-        });
-    }, []);
+        let questlist = [];
+        Fetch("https://www.playeraudit.com/api/activity?c=true", 5000)
+            .then((val) => {
+                set_tableSize(val.Count);
+                Fetch(
+                    "https://www.playeraudit.com/api/activity?type=heroic",
+                    10000
+                )
+                    .then((val) => {
+                        questlist = val;
+                        Fetch(
+                            "https://www.playeraudit.com/api/activity?type=epic",
+                            10000
+                        )
+                            .then((val) => {
+                                let epics = val;
+                                epics.forEach((quest) => {
+                                    quest.QuestName =
+                                        quest.QuestName + " (Epic)";
+                                    quest.IsEpic = true;
+                                });
+                                Array.prototype.push.apply(questlist, epics);
+                                clearTimeout(updateTime);
+                                set_ellapsedTime(new Date() - starttime);
+                                set_isRunning(false);
+                                set_questList(questlist);
+                            })
+                            .catch(() => {
+                                clearTimeout(updateTime);
+                                set_ellapsedTime(new Date() - starttime);
+                                set_isRunning(false);
+                                set_popupMessages([
+                                    {
+                                        title: "Failed to run audit",
+                                        message:
+                                            "The report timed out. You can refresh the page or report the issue.",
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage:
+                                            "Activity report timed out",
+                                    },
+                                ]);
+                            });
+                    })
+                    .catch(() => {
+                        clearTimeout(updateTime);
+                        set_ellapsedTime(new Date() - starttime);
+                        set_isRunning(false);
+                        set_popupMessages([
+                            {
+                                title: "Failed to run audit",
+                                message:
+                                    "The report timed out. You can refresh the page or report the issue.",
+                                icon: "warning",
+                                fullscreen: false,
+                                reportMessage: "Activity report timed out",
+                            },
+                        ]);
+                    });
+            })
+            .catch(() => {
+                clearTimeout(updateTime);
+                set_ellapsedTime(new Date() - starttime);
+                set_isRunning(false);
+                set_popupMessages([
+                    {
+                        title: "Failed to connect to database",
+                        message:
+                            "We couldn't reach the database. You can refresh the page or report the issue.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage: "Could not fetch Activity data. Timeout",
+                    },
+                ]);
+            });
+    }
 
     React.useEffect(() => {
         if (questList === null) {
             set_filteredQuestList(null);
             return;
         }
+        let levelFilters = levelFilter.split(",");
         set_filteredQuestList(
             questList
                 .filter((entry) =>
@@ -79,18 +154,74 @@ const Quests = (props) => {
                         questNameFilter.toLowerCase()
                     )
                 )
+                .filter((entry) => {
+                    if (levelFilter === "") return true;
+                    let valid = false;
+                    levelFilters.forEach((f) => {
+                        if (!isNaN(f)) {
+                            if (
+                                entry.HeroicCr === parseInt(f) ||
+                                entry.EpicCr === parseInt(f)
+                            ) {
+                                valid = true;
+                            }
+                        } else {
+                            if (f.split("-").length !== 2) {
+                                valid = false;
+                                return;
+                            }
+                            let lower = f.split("-")[0];
+                            let upper = f.split("-")[1];
+                            if (
+                                (entry.HeroicCr <= parseInt(upper) &&
+                                    entry.HeroicCr >= parseInt(lower)) ||
+                                (entry.EpicCr <= parseInt(upper) &&
+                                    entry.EpicCr >= parseInt(lower))
+                            ) {
+                                valid = true;
+                            }
+                        }
+                    });
+                    return valid;
+                })
                 .sort(function (a, b) {
                     if (sortStyle === "duration") {
                         return b.AverageTime - a.AverageTime;
                     } else if (sortStyle === "name") {
                         return a.QuestName.localeCompare(b.QuestName);
+                    } else if (sortStyle === "level") {
+                        let alevel = a.HeroicCr || a.EpicCr;
+                        let blevel = b.HeroicCr || b.EpicCr;
+                        return alevel - blevel;
+                    } else if (sortStyle === "adventure pack") {
+                        let aadventurepack = a.AdventurePack || "";
+                        let badventurepack = b.AdventurePack || "";
+                        return aadventurepack.localeCompare(badventurepack);
+                    } else if (sortStyle === "xp") {
+                        let axp = 0;
+                        if (a.IsEpic) {
+                            axp = a.EpicEliteXp / a.AverageTime;
+                        } else {
+                            axp = a.HeroicEliteXp / a.AverageTime;
+                        }
+                        let bxp = 0;
+                        if (b.IsEpic) {
+                            bxp = b.EpicEliteXp / b.AverageTime;
+                        } else {
+                            bxp = b.HeroicEliteXp / b.AverageTime;
+                        }
+                        return a.IsEpic && !b.IsEpic
+                            ? true
+                            : !a.IsEpic && b.IsEpic
+                            ? false
+                            : bxp - axp;
                     } else {
                         return b.Count - a.Count;
                     }
                 })
         );
         set_pageNumber(0);
-    }, [questList, questNameFilter, sortStyle]);
+    }, [questList, questNameFilter, levelFilter, sortStyle]);
 
     React.useEffect(() => {
         if (filteredQuestList === null) return;
@@ -106,7 +237,8 @@ const Quests = (props) => {
     }, [pageNumber, filteredQuestList]);
 
     function loadQuest(quest) {
-        if (questName === quest.QuestName) return;
+        let low = quest.IsEpic ? 20 : 1;
+        let high = quest.IsEpic ? 30 : 20;
 
         async function fetchArbitraryData(url, type) {
             let response = await fetch(url);
@@ -116,7 +248,12 @@ const Quests = (props) => {
         }
 
         fetchArbitraryData(
-            "https://www.playeraudit.com/api/activity?quest=" + quest.Id,
+            "https://www.playeraudit.com/api/activity?quest=" +
+                quest.Id +
+                "&low=" +
+                low +
+                "&high=" +
+                high,
             "json"
         ).then((val) => {
             const HOUR_BIN_WIDTH = 1;
@@ -139,7 +276,7 @@ const Quests = (props) => {
             });
 
             let std = Math.round(math.std(values) / 60);
-            let ave = Math.round(quest.AverageTime / 60);
+            let ave = Math.round(total / values.length / 60);
 
             bincount = max / 60;
             let bins = [];
@@ -176,7 +313,7 @@ const Quests = (props) => {
             );
             set_questName(quest.QuestName);
             set_standardDeviation(std > 20 ? ">20" : std);
-            set_average(Math.round((quest.AverageTime / 60) * 10) / 10);
+            set_average(Math.round(ave * 10) / 10);
             set_outlierCount(outlierCount);
             set_totalTime(Math.round(total / 60));
             set_totalDataPoints(val.length);
@@ -256,6 +393,31 @@ const Quests = (props) => {
         }, 500);
     }
 
+    let levelfiltertimeout;
+    function HandleLevelFilter() {
+        clearTimeout(levelfiltertimeout);
+        levelfiltertimeout = setTimeout(() => {
+            let levelfilter = document.getElementById("levelfilter").value;
+            set_levelFilter(levelfilter);
+        }, 500);
+    }
+
+    const [minLevel, set_minLevel] = React.useState(1);
+    function HandleMinimumLevelFilter() {
+        let minlevel = document.getElementById("minlevel").value;
+        if (!isNaN(minlevel)) {
+            set_minLevel(minlevel);
+        }
+    }
+
+    const [maxLevel, set_maxLevel] = React.useState(30);
+    function HandleMaximumLevelFilter() {
+        let maxlevel = document.getElementById("maxlevel").value;
+        if (!isNaN(maxlevel)) {
+            set_maxLevel(maxlevel);
+        }
+    }
+
     // Report Form
     var [reportFormVisibility, setReportFormVisibility] =
         React.useState("none");
@@ -307,238 +469,360 @@ const Quests = (props) => {
                     }
                 }}
             />
-            <Card
-                pageName="quests"
-                showLink={true}
-                title="Quest Activity"
-                subtitle=""
-                tiles={[
-                    {
-                        title: "Quest Selection",
-                        description: (
-                            <p>
-                                Select a quest or slayer area from the table
-                                below to show stats.
-                            </p>
-                        ),
-                        content: (
-                            <div>
-                                <div
-                                    className="player-filter-input"
-                                    style={{ flexDirection: "row" }}
-                                >
-                                    <label
-                                        htmlFor="questname"
-                                        style={{
-                                            fontSize: "1.2rem",
-                                        }}
-                                    >
-                                        Filter by quest name:
-                                    </label>
-                                    <input
-                                        style={{
-                                            maxWidth: "250px",
-                                            width: "100%",
-                                            height: "max-content",
-                                            marginLeft: "7px",
-                                        }}
-                                        type="text"
-                                        id="questname"
-                                        name="questname"
-                                        onChange={() => HandleQuestNameFilter()}
-                                    />
-                                </div>
-                                <QuestTable
-                                    data={paginatedQuestList}
-                                    showLastUpdated={false}
-                                    reportReference={showReportForm}
-                                    handleSelection={(quest) =>
-                                        loadQuest(quest)
-                                    }
-                                    collapsed={false}
-                                    pageNumber={pageNumber}
-                                    pageSize={PAGE_SIZE}
-                                    handleSort={(style) => set_sortStyle(style)}
-                                />
+            {!questList && (
+                <Card
+                    pageName="quests"
+                    showLink={false}
+                    title=""
+                    subtitle=""
+                    tiles={[
+                        {
+                            title: "",
+                            description: "",
+                            content: (
                                 <div
                                     style={{
                                         display: "flex",
-                                        flexDirection: "row",
-                                        gap: "5px",
                                         justifyContent: "center",
                                         alignItems: "center",
-                                        flexWrap: "wrap",
+                                        flexDirection: "column",
+                                        paddingBottom: "20px",
                                     }}
                                 >
-                                    {filteredQuestList &&
-                                        [
-                                            ...Array(
-                                                Math.ceil(
-                                                    filteredQuestList.length /
-                                                        PAGE_SIZE
-                                                )
-                                            ),
-                                        ].map((o, i) => (
+                                    <p
+                                        style={{
+                                            fontSize: "xx-large",
+                                            marginBottom: "5px",
+                                        }}
+                                    >
+                                        Run a new quest activity audit
+                                    </p>
+                                    <p
+                                        style={{
+                                            fontSize: "larger",
+                                            marginTop: "0px",
+                                        }}
+                                    >
+                                        The report may take up to 20 seconds to
+                                        run
+                                    </p>
+                                    <button
+                                        disabled={isRunning}
+                                        onClick={() => runAudit()}
+                                        style={{ fontSize: "larger" }}
+                                    >
+                                        {isRunning
+                                            ? "Please wait"
+                                            : "Run Audit"}
+                                    </button>
+                                    {isRunning &&
+                                        (tableSize ? (
                                             <div
-                                                key={i}
                                                 style={{
                                                     display: "flex",
                                                     justifyContent: "center",
                                                     alignItems: "center",
-                                                    padding: "7px",
-                                                    width: "40px",
-                                                    cursor: "pointer",
-                                                    color:
-                                                        i === pageNumber
-                                                            ? "var(--text)"
-                                                            : "var(--text-xfaded)",
-                                                    border:
-                                                        i === pageNumber
-                                                            ? "1px solid var(--text)"
-                                                            : "1px solid var(--text-xfaded)",
-                                                    borderRadius: "6px",
-                                                }}
-                                                onClick={() => {
-                                                    set_pageNumber(i);
+                                                    flexDirection: "column",
+                                                    gap: "5px",
                                                 }}
                                             >
-                                                {i + 1}
+                                                <p
+                                                    style={{
+                                                        margin: "10px 0px 0px 0px",
+                                                    }}
+                                                >
+                                                    Summarizing{" "}
+                                                    <span className="lfm-number">
+                                                        {tableSize}
+                                                    </span>{" "}
+                                                    unique data points
+                                                </p>
+                                                <p style={{ margin: "0px" }}>
+                                                    Ellapsed time:{" "}
+                                                    <span className="lfm-number">
+                                                        {Math.round(
+                                                            ellapsedTime / 1000
+                                                        )}
+                                                    </span>{" "}
+                                                    second
+                                                    {Math.round(
+                                                        ellapsedTime / 1000
+                                                    ) === 1
+                                                        ? ""
+                                                        : "s"}
+                                                </p>
                                             </div>
+                                        ) : (
+                                            <p style={{ marginTop: "10px" }}>
+                                                Connecting...
+                                            </p>
                                         ))}
                                 </div>
-                                <hr />
-                                <h4>{questName || "No quest selected"}</h4>
-                                <p
-                                    style={{
-                                        fontSize: "large",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Average duration:{" "}
-                                    <span className="lfm-number">
-                                        {average !== null
-                                            ? `${average} minutes`
-                                            : "N/A"}
-                                    </span>{" "}
-                                    | Standard deviation:{" "}
-                                    <span className="lfm-number">
-                                        {standardDeviation !== null
-                                            ? `${standardDeviation} minutes`
-                                            : "N/A"}
-                                    </span>{" "}
-                                    | Outliers excluded:{" "}
-                                    <span className="lfm-number">
-                                        {outlierCount !== null
-                                            ? `${outlierCount}`
-                                            : "N/A"}
+                            ),
+                        },
+                    ]}
+                />
+            )}
+            {questList && (
+                <Card
+                    pageName="quests"
+                    showLink={true}
+                    title="Quest Activity"
+                    subtitle=""
+                    tiles={[
+                        {
+                            title: "Quest Selection",
+                            description: (
+                                <p>
+                                    Select a quest from the table below to show
+                                    stats.
+                                </p>
+                            ),
+                            content: (
+                                <div>
+                                    <div
+                                        className="player-filter-input"
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                            gap: "10px",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="questname"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                            }}
+                                        >
+                                            Filter by quest name
+                                        </label>
+                                        <input
+                                            style={{
+                                                maxWidth: "250px",
+                                                width: "100%",
+                                                height: "max-content",
+                                                marginLeft: "7px",
+                                            }}
+                                            type="text"
+                                            id="questname"
+                                            name="questname"
+                                            onChange={() =>
+                                                HandleQuestNameFilter()
+                                            }
+                                        />
+                                        <label
+                                            htmlFor="levelfilter"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                            }}
+                                        >
+                                            or level (e.g. "1,3,5-9")
+                                        </label>
+                                        <input
+                                            style={{
+                                                maxWidth: "100px",
+                                                width: "100%",
+                                                height: "max-content",
+                                                marginLeft: "7px",
+                                            }}
+                                            type="text"
+                                            id="levelfilter"
+                                            name="levelfilter"
+                                            onChange={() => HandleLevelFilter()}
+                                        />
+                                    </div>
+                                    <div className="audit-report-time">
+                                        <p style={{ fontSize: "medium" }}>
+                                            Audit performed{" "}
+                                            {startTime.toString()} ran for{" "}
+                                            {ellapsedTime / 1000}s
+                                        </p>
+                                    </div>
+                                    <QuestTable
+                                        data={paginatedQuestList}
+                                        showLastUpdated={false}
+                                        reportReference={showReportForm}
+                                        handleSelection={(quest) =>
+                                            loadQuest(quest)
+                                        }
+                                        collapsed={false}
+                                        pageNumber={pageNumber}
+                                        pageSize={PAGE_SIZE}
+                                        handleSort={(style) =>
+                                            set_sortStyle(style)
+                                        }
+                                    />
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            gap: "5px",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            flexWrap: "wrap",
+                                        }}
+                                    >
+                                        {filteredQuestList &&
+                                            [
+                                                ...Array(
+                                                    Math.ceil(
+                                                        filteredQuestList.length /
+                                                            PAGE_SIZE
+                                                    )
+                                                ),
+                                            ].map((o, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={
+                                                        pageNumber === i
+                                                            ? "paginationPage active"
+                                                            : "paginationPage"
+                                                    }
+                                                    onClick={() => {
+                                                        set_pageNumber(i);
+                                                    }}
+                                                >
+                                                    {i + 1}
+                                                </div>
+                                            ))}
+                                    </div>
+                                    <hr />
+                                    <h4>{questName || "No quest selected"}</h4>
+                                    <p
+                                        style={{
+                                            fontSize: "large",
+                                            marginBottom: "0px",
+                                        }}
+                                    >
+                                        Average duration:{" "}
+                                        <span className="lfm-number">
+                                            {average !== null
+                                                ? `${average} minutes`
+                                                : "N/A"}
+                                        </span>{" "}
+                                        | Standard deviation:{" "}
+                                        <span className="lfm-number">
+                                            {standardDeviation !== null
+                                                ? `${standardDeviation} minutes`
+                                                : "N/A"}
+                                        </span>{" "}
+                                        | Outliers excluded:{" "}
+                                        <span className="lfm-number">
+                                            {outlierCount !== null
+                                                ? `${outlierCount}`
+                                                : "N/A"}
+                                        </span>
+                                    </p>
+                                    <p
+                                        style={{
+                                            fontSize: "large",
+                                            marginBottom: "0px",
+                                        }}
+                                    >
+                                        Total time recorded:{" "}
+                                        <span className="lfm-number">
+                                            {totalTime !== null
+                                                ? `${totalTime} minutes`
+                                                : "N/A"}
+                                        </span>{" "}
+                                        | Total data points:{" "}
+                                        <span className="lfm-number">
+                                            {totalDataPoints !== null
+                                                ? `${totalDataPoints}`
+                                                : "N/A"}
+                                        </span>
+                                    </p>
+                                    <span
+                                        className="blue-link"
+                                        style={{ paddingLeft: "0px" }}
+                                    >
+                                        Download quest data
                                     </span>
-                                </p>
-                                <p
-                                    style={{
-                                        fontSize: "large",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Total time recorded:{" "}
-                                    <span className="lfm-number">
-                                        {totalTime !== null
-                                            ? `${totalTime} minutes`
-                                            : "N/A"}
-                                    </span>{" "}
-                                    | Total data points:{" "}
-                                    <span className="lfm-number">
-                                        {totalDataPoints !== null
-                                            ? `${totalDataPoints}`
-                                            : "N/A"}
+                                    <ChartQuestActivity
+                                        keys={["Frequency"]}
+                                        indexBy={"Duration"}
+                                        legendBottom={"Duration (miuntes)"}
+                                        legendLeft={"Frequency"}
+                                        data={durationData}
+                                    />
+                                    <hr />
+                                    <h4>{questName || "No quest selected"}</h4>
+                                    <p
+                                        style={{
+                                            fontSize: "large",
+                                            marginBottom: "0px",
+                                        }}
+                                    >
+                                        Popularity per server.
+                                    </p>
+                                    <span
+                                        className="blue-link"
+                                        style={{ paddingLeft: "0px" }}
+                                    >
+                                        Download quest data
                                     </span>
-                                </p>
-                                <span
-                                    className="blue-link"
-                                    style={{ paddingLeft: "0px" }}
-                                >
-                                    Download quest data
-                                </span>
-                                <ChartQuestActivity
-                                    keys={["Frequency"]}
-                                    indexBy={"Duration"}
-                                    legendBottom={"Duration (miuntes)"}
-                                    legendLeft={"Frequency"}
-                                    data={durationData}
-                                />
-                                <hr />
-                                <h4>{questName || "No quest selected"}</h4>
-                                <p
-                                    style={{
-                                        fontSize: "large",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Popularity per server.
-                                </p>
-                                <span
-                                    className="blue-link"
-                                    style={{ paddingLeft: "0px" }}
-                                >
-                                    Download quest data
-                                </span>
-                                <ChartServerDistributionPie
-                                    data={serverDistData}
-                                />
-                                <hr />
-                                <h4>{questName || "No quest selected"}</h4>
-                                <p
-                                    style={{
-                                        fontSize: "large",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Popularity throughout the week.
-                                </p>
-                                <span
-                                    className="blue-link"
-                                    style={{ paddingLeft: "0px" }}
-                                >
-                                    Download quest data
-                                </span>
-                                <ChartQuestActivity
-                                    keys={["Instances"]}
-                                    indexBy={"Time"}
-                                    legendBottom={
-                                        "Time of Week (Hours, offset from Sunday 00:00)"
-                                    }
-                                    legendLeft={"Instances"}
-                                    data={datetimeData}
-                                />
-                                <hr />
-                                <h4>{questName || "No quest selected"}</h4>
-                                <p
-                                    style={{
-                                        fontSize: "large",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Popularity throughout the day.
-                                </p>
-                                <span
-                                    className="blue-link"
-                                    style={{ paddingLeft: "0px" }}
-                                >
-                                    Download quest data
-                                </span>
-                                <ChartQuestActivity
-                                    keys={["Instances"]}
-                                    indexBy={"Time"}
-                                    legendBottom={
-                                        "Time of Day (24-hour format)"
-                                    }
-                                    legendLeft={"Instances"}
-                                    data={todData}
-                                />
-                            </div>
-                        ),
-                    },
-                ]}
-            />
+                                    <ChartServerDistributionPie
+                                        data={serverDistData}
+                                        loadingMessage="Click on a quest to view data"
+                                    />
+                                    <hr />
+                                    <h4>{questName || "No quest selected"}</h4>
+                                    <p
+                                        style={{
+                                            fontSize: "large",
+                                            marginBottom: "0px",
+                                        }}
+                                    >
+                                        Popularity throughout the week.
+                                    </p>
+                                    <span
+                                        className="blue-link"
+                                        style={{ paddingLeft: "0px" }}
+                                    >
+                                        Download quest data
+                                    </span>
+                                    <ChartQuestActivity
+                                        keys={["Instances"]}
+                                        indexBy={"Time"}
+                                        legendBottom={
+                                            "Time of Week (Hours, offset from Sunday 00:00)"
+                                        }
+                                        legendLeft={"Instances"}
+                                        data={datetimeData}
+                                    />
+                                    <hr />
+                                    <h4>{questName || "No quest selected"}</h4>
+                                    <p
+                                        style={{
+                                            fontSize: "large",
+                                            marginBottom: "0px",
+                                        }}
+                                    >
+                                        Popularity throughout the day.
+                                    </p>
+                                    <span
+                                        className="blue-link"
+                                        style={{ paddingLeft: "0px" }}
+                                    >
+                                        Download quest data
+                                    </span>
+                                    <ChartQuestActivity
+                                        keys={["Instances"]}
+                                        indexBy={"Time"}
+                                        legendBottom={
+                                            "Time of Day (24-hour format)"
+                                        }
+                                        legendLeft={"Instances"}
+                                        data={todData}
+                                    />
+                                </div>
+                            ),
+                        },
+                    ]}
+                />
+            )}
         </div>
     );
 };

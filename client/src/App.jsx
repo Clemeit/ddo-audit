@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { Route } from "react-router";
 import Layout from "./components/Layout";
-import "./custom.css";
+import "./default.css";
 
 // Most visited pages. Don't lazy-load
 import Grouping from "./components/Grouping";
 import GroupingSpecific from "./components/GroupingSpecific";
+
+const Directory = lazy(() => import("./components/directory/Directory"));
 
 const Home = lazy(() => import("./components/Home"));
 const Servers = lazy(() => import("./components/Servers"));
@@ -35,7 +37,7 @@ export default () => {
     return (
         <Suspense fallback={<div></div>}>
             <Layout>
-                <Route exact path="/" component={Home} />
+                <Route exact path="/" component={Directory} />
                 <Route exact path="/servers" component={Servers} />
                 <Route path="/servers/:serverName" component={ServerSpecific} />
                 <Route exact path="/quests" component={Quests} />

@@ -12,8 +12,7 @@ export default class Footer extends Component {
                             lineHeight: "20px",
                         }}
                     >
-                        All scripts and databases written by Clemeit of
-                        Thelanis.
+                        Brought to you by Clemeit of Thelanis.
                         <br />
                         This free utility generates no revenue and is subject to
                         change without notice.

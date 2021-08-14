@@ -1,5 +1,5 @@
 import React from "react";
-import background from "../assets/global/banner.jpg";
+import background from "../assets/directory/banner.jpg";
 import { ReactComponent as DarkThemeSVG } from "../assets/global/dark_theme.svg";
 
 const Banner = (props) => {

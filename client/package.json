@@ -17,7 +17,7 @@
         "connected-react-router": "6.5.2",
         "d3": "^7.0.0",
         "history": "4.10.1",
-        "jquery": "^3.4.1",
+        "jquery": "^3.6.0",
         "mathjs": "^9.4.4",
         "merge": "1.2.1",
         "popper.js": "^1.16.0",

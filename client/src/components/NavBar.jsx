@@ -4,7 +4,11 @@ import "./NavMenu.css";
 import { ReactComponent as ExpandSVG } from "../assets/global/expand.svg";
 
 const NavBar = (props) => {
-    return <div className="nav-bar">{props.children}</div>;
+    return (
+        <div className="nav-bar" id="nav-bar">
+            {props.children}
+        </div>
+    );
 };
 
 const NavItem = (props) => {

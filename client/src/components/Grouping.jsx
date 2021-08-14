@@ -24,7 +24,7 @@ const serverNames = [
 const noGroupsMessages = [
     "Everyone is so shy today.",
     "A travesty!",
-    "Well, you could always go solo...",
+    "Well, you could always go solo.",
 ];
 
 const Grouping = (props) => {

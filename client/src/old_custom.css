@@ -139,6 +139,46 @@
     --slider-rail: var(--gray4);
 }
 
+.nav-box {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    /* background-color: rgba(255, 255, 255, 0.03); */
+    /* box-shadow: 45px 45px 2px -43px rgba(0, 204, 255, 0.08),
+        -45px -45px 2px -43px rgba(0, 140, 255, 0.03); */
+    width: 450px;
+    height: 150px;
+    padding: 10px 30px 10px 30px;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: background-color 200ms;
+}
+
+.nav-box-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+}
+
+.main-button {
+    padding: 10px 20px;
+    background-color: rgb(233, 233, 233);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: box-shadow 250ms;
+    font-size: larger;
+}
+
+.main-button:hover {
+    box-shadow: 0px 0px 10px 0px var(--white);
+}
+
+.nav-box:hover {
+    background-color: var(--mini-group);
+}
+
 a {
     color: var(--text-link);
 }
@@ -226,6 +266,23 @@ ul {
 
 /* (end) Banner */
 
+.directory-top-space {
+    position: fixed;
+    z-index: 2;
+    background-image: linear-gradient(
+            to bottom,
+            rgba(97, 97, 97, 0.466),
+            rgba(15, 15, 15, 0.774)
+        ),
+        url("./assets/global/banner.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 500px;
+    width: 100%;
+    background-color: #1d061d;
+}
+
 .population-number {
     color: var(--text-player-number);
 }
@@ -234,9 +291,9 @@ ul {
     color: var(--text-lfm-number);
 }
 
-.content {
+/* .content {
     padding: 10px 0px 0px 0px;
-}
+} */
 
 code {
     color: #e01a76;
@@ -249,11 +306,12 @@ code {
 }
 
 .footer {
+    position: absolute;
+    z-index: 4;
     width: 100%;
     color: white;
     background-color: #333;
     margin-bottom: 0px;
-    margin-top: 10px;
     padding-top: 4px;
     padding-bottom: 6px;
 }
@@ -984,6 +1042,30 @@ hr {
     opacity: 1;
 }
 
+.paginationPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    width: 40px;
+    cursor: pointer;
+    color: var(--text-xfaded);
+    border: 1px solid var(--text-xfaded);
+    border-radius: 6px;
+}
+
+.paginationPage:hover,
+.paginationPage.active {
+    color: var(--text);
+    border: 1px solid var(--text);
+}
+
+.audit-report-time {
+    position: absolute;
+    transform: translateY(-100%);
+    right: 25px;
+}
+
 @media (max-width: 1600px) {
     .home-card-splitter {
         flex-direction: column;
@@ -1019,6 +1101,9 @@ hr {
         margin-bottom: 5px;
         align-items: center;
         justify-content: center;
+    }
+    .audit-report-time {
+        display: none;
     }
 }
 

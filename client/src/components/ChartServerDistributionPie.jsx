@@ -106,7 +106,11 @@ const ChartServerDistributionPie = (props) => {
                 />
             ) : (
                 <div className="loading-data-message">
-                    <h5>Loading data...</h5>
+                    <h5>
+                        {props.loadingMessage
+                            ? props.loadingMessage
+                            : "Loading data..."}
+                    </h5>
                 </div>
             )}
         </div>
