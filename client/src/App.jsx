@@ -10,7 +10,7 @@ import GroupingSpecific from "./components/GroupingSpecific";
 const Directory = lazy(() => import("./components/directory/Directory"));
 
 const Home = lazy(() => import("./components/Home"));
-const Servers = lazy(() => import("./components/Servers"));
+const Servers = lazy(() => import("./components/servers/Servers"));
 const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
 //const Grouping = lazy(() => import("./components/Grouping"));
 //const GroupingSpecific = lazy(() => import("./components/GroupingSpecific"));

@@ -1,0 +1,116 @@
+:root {
+    --push-height: 500px;
+    --short-push-height: 300px;
+}
+
+#banner-image {
+    position: fixed;
+    z-index: 2;
+    background-image: linear-gradient(
+            to bottom,
+            rgba(97, 97, 97, 0.466),
+            rgba(15, 15, 15, 0.774)
+        ),
+        url("../../assets/directory/banner.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: var(--push-height);
+    width: 100%;
+    background-color: var(--base);
+}
+
+#content-push-top {
+    height: var(--push-height);
+    visibility: hidden;
+    z-index: 1;
+}
+
+#banner-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
+    width: 100%;
+    top: 160px;
+    z-index: 3;
+    padding: 0px 20px;
+    user-select: none;
+}
+
+#main-title {
+    font-weight: bold;
+    font-size: xxx-large;
+    color: white;
+}
+
+#main-subtitle {
+    text-align: center;
+    font-weight: bold;
+    font-size: xx-large;
+    color: white;
+}
+
+#action-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#theme-icon {
+    transform: rotate(0deg);
+    transition: transform 200ms;
+}
+
+#theme-container:hover > #theme-icon {
+    transform: rotate(45deg);
+}
+
+#theme-container {
+    opacity: 0.7;
+    position: fixed;
+    color: white;
+    top: 10px;
+    right: 15px;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+#theme-container:hover {
+    opacity: 1;
+}
+
+@media (max-width: 600px) {
+    #action-button-container {
+        flex-direction: column;
+        --push-height: 300px;
+    }
+
+    #main-title {
+        font-size: xx-large;
+    }
+
+    #main-subtitle {
+        font-size: x-large;
+    }
+}
+
+@media (max-width: 850px) {
+    #banner-image {
+        height: var(--short-push-height);
+    }
+
+    #content-push-top {
+        height: var(--short-push-height);
+    }
+
+    #banner-text-container {
+        top: 30px;
+    }
+}

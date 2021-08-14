@@ -2,14 +2,12 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    text-decoration: none !important;
     width: 450px;
     height: 150px;
     padding: 10px 30px 10px 30px;
     cursor: pointer;
     border-radius: 7px;
     transition: background-color 200ms;
-    user-select: none;
 }
 
 .nav-box-title {
@@ -72,6 +70,24 @@
     color: var(--text-faded);
     font-size: larger;
     margin: 0px;
+}
+
+.server-status-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    color: var(--text);
+    font-size: large;
+}
+
+.server-status-indicator {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 @media (max-width: 1000px) {

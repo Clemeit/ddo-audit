@@ -5,7 +5,7 @@ import ReportIssueForm from "./ReportIssueForm";
 import { useLocation } from "react-router-dom";
 import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
 import ServerDemographicsContainer from "./ServerDemographicsContainer";
-import PopupMessage from "./PopupMessage";
+import PopupMessage from "./global/PopupMessage";
 import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
 import ChartPopulationHistory from "./ChartPopulationHistory";
 import ContentTable from "./ContentTable";

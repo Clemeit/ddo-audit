@@ -1,9 +1,11 @@
 import React from "react";
 import { NavBar, NavItem, NavDropdown, NavSubItem, NavDivider } from "./NavBar";
 import { ReactComponent as HomeSVG } from "../assets/global/home.svg";
+import { ReactComponent as LiveSVG } from "../assets/global/live.svg";
 import { ReactComponent as ServersSVG } from "../assets/global/servers.svg";
 import { ReactComponent as GroupingSVG } from "../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../assets/global/who.svg";
+import { ReactComponent as QuestsSVG } from "../assets/global/quests.svg";
 //import { ReactComponent as GeographySVG } from "../assets/global/geography.svg";
 import { ReactComponent as TrendsSVG } from "../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../assets/global/about.svg";
@@ -42,6 +44,10 @@ const NavMenu = (props) => {
                 <NavItem to="/">
                     <HomeSVG className="nav-icon" />
                     <span className="nav-text">Home</span>
+                </NavItem>
+                <NavItem to="/live">
+                    <LiveSVG className="nav-icon" />
+                    <span className="nav-text">Live</span>
                 </NavItem>
                 <NavDropdown
                     to="/servers"
@@ -85,7 +91,7 @@ const NavMenu = (props) => {
                     ))}
                 </NavDropdown>
                 <NavItem to="/quests">
-                    <TrendsSVG className="nav-icon" />
+                    <QuestsSVG className="nav-icon" />
                     Quests
                 </NavItem>
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Card from "../components/Card";
 import ReportIssueForm from "./ReportIssueForm";
-import PopupMessage from "./PopupMessage";
+import PopupMessage from "./global/PopupMessage";
 import ServerSelectOption from "./ServerSelectOption";
 import { Fetch, VerifyLfmData } from "./DataLoader";
 

@@ -162,19 +162,6 @@
     margin-bottom: 5px;
 }
 
-.main-button {
-    padding: 10px 20px;
-    background-color: rgb(233, 233, 233);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: box-shadow 250ms;
-    font-size: larger;
-}
-
-.main-button:hover {
-    box-shadow: 0px 0px 10px 0px var(--white);
-}
-
 .nav-box:hover {
     background-color: var(--mini-group);
 }
@@ -518,23 +505,6 @@ input[type="radio"] {
 
 .header-bold {
     font-weight: bold;
-}
-
-.theme-icon {
-    transform: rotate(0deg);
-    transition: transform 200ms;
-}
-
-.theme-container:hover > .theme-icon {
-    transform: rotate(45deg);
-}
-
-.theme-container {
-    opacity: 0.7;
-}
-
-.theme-container:hover {
-    opacity: 1;
 }
 
 .link-icon {

@@ -7,7 +7,7 @@ import QuickInfo from "./QuickInfo";
 import WhatIsCard from "./WhatIsCard";
 import ReportIssueForm from "./ReportIssueForm";
 import ChartPopulationHistory from "./ChartPopulationHistory";
-import PopupMessage from "./PopupMessage";
+import PopupMessage from "./global/PopupMessage";
 
 const TITLE = "DDO Audit";
 

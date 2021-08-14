@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./NavMenu.css";
 import { ReactComponent as ExpandSVG } from "../assets/global/expand.svg";
+import $ from "jquery";
 
 const NavBar = (props) => {
     return (
@@ -38,8 +39,31 @@ const NavItem = (props) => {
 const NavDropdown = (props) => {
     const location = useLocation();
 
+    let isDroppedDown = false;
+    $(document).on("mouseenter", `#nav-item-to-${props.to.slice(1)}`, () => {
+        if (isDroppedDown === false) {
+            isDroppedDown = true;
+            $(`#nav-dropdown-to-${props.to.slice(1)}`).slideDown(
+                "fast",
+                () => (isDroppedDown = true)
+            );
+        }
+    });
+    $(document).on("mouseleave", `#nav-item-to-${props.to.slice(1)}`, () => {
+        if (isDroppedDown === true) {
+            $(`#nav-dropdown-to-${props.to.slice(1)}`).slideUp(
+                "fast",
+                () => (isDroppedDown = false)
+            );
+        }
+    });
+
     return (
-        <div className="nav-item" style={{ padding: "0px" }}>
+        <div
+            id={`nav-item-to-${props.to.slice(1)}`}
+            className="nav-item"
+            style={{ padding: "0px" }}
+        >
             <Link
                 to={props.to}
                 className={
@@ -52,19 +76,14 @@ const NavDropdown = (props) => {
                         ? "active"
                         : "")
                 }
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "10px 15px 10px 15px",
-                    cursor: "pointer",
-                }}
             >
                 {props.title}
                 <ExpandSVG className="nav-icon-dropdown" />
             </Link>
-            <div className="nav-dropdown">
+            <div
+                id={`nav-dropdown-to-${props.to.slice(1)}`}
+                className="nav-dropdown"
+            >
                 {props.children.map((child) => child)}
             </div>
         </div>

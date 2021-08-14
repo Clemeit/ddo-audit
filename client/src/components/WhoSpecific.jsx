@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import Card from "../components/Card";
 import ReportIssueForm from "./ReportIssueForm";
-import PopupMessage from "./PopupMessage";
+import PopupMessage from "./global/PopupMessage";
 import { Fetch, VerifyPlayerData } from "./DataLoader";
 import Player from "./Player";
 import { ReactComponent as CloseSVG } from "../assets/global/close.svg";
