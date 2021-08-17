@@ -1,6 +1,6 @@
 import React from "react";
-import { ReactComponent as TimelineSVG } from "../assets/global/timeline.svg";
-import { ReactComponent as SortSVG } from "../assets/global/sort.svg";
+import { ReactComponent as TimelineSVG } from "../../assets/global/timeline.svg";
+import { ReactComponent as SortSVG } from "../../assets/global/sort.svg";
 
 const ContentTable = (props) => {
     const [filteredData, set_filteredData] = React.useState(null);

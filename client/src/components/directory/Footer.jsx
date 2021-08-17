@@ -5,17 +5,14 @@ export default class Footer extends Component {
         return (
             <div className="footer">
                 <center>
-                    <p
-                        style={{
-                            fontStyle: "italic",
-                            marginBottom: "0px",
-                            lineHeight: "20px",
-                        }}
-                    >
-                        Brought to you by Clemeit of Thelanis.
+                    <p className="footer-text">
+                        DDO Audit is brought to you by Clemeit of Thelanis.
                         <br />
                         This free utility generates no revenue and is subject to
                         change without notice.
+                        <br />
+                        This website is not affiliated with SSG or Daybreak
+                        Games in any way. SSG does not endorse this product.
                     </p>
                 </center>
             </div>

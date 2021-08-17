@@ -1,6 +1,8 @@
 import React from "react";
+// import { Submit } from "../ReportIssueService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
-import "./default.css";
+import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
+import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import $ from "jquery";
 
 const Banner = (props) => {
@@ -19,10 +21,28 @@ const Banner = (props) => {
         }
     }
 
+    const [voteMessage, set_voteMessage] = React.useState(null);
+    const [hasVoted, set_hasVoted] = React.useState(true);
+    React.useEffect(() => {
+        set_hasVoted(localStorage.getItem("has-voted") === "true");
+    }, []);
+
+    function vote(response) {
+        // Submit("Home", "Voted", response, "");
+        localStorage.setItem("has-voted", "true");
+        set_hasVoted(true);
+        if (response === "Like") {
+            set_voteMessage("Thanks for your feedback!");
+        } else {
+            set_voteMessage("We welcome your suggestions!");
+        }
+    }
+
     let isNavbarSolid = false;
     function handleScroll() {
         var scrollTop = $(window).scrollTop();
-        if (scrollTop > (props.small ? 200 : 450)) return;
+        if (scrollTop > (props.small ? 200 : 450) && isNavbarSolid === true)
+            return;
 
         var offset;
         if (props.small) {
@@ -30,6 +50,7 @@ const Banner = (props) => {
         } else {
             offset = $(document).width() > 850 ? 160 : 30;
         }
+
         $("#banner-text-container").css("top", `${offset - scrollTop / 2}px`);
         if (scrollTop > (props.small ? 40 : 180)) {
             if (isNavbarSolid === false) {
@@ -46,14 +67,16 @@ const Banner = (props) => {
 
     React.useEffect(() => {
         $(window).bind("scroll", handleScroll);
+        $(window).bind("resize", handleScroll);
 
         return function cleanup() {
+            $("#nav-bar").css({ backgroundColor: "" });
             $(window).unbind("scroll", handleScroll);
         };
     });
 
     return (
-        <div>
+        <div className={props.hideOnMobile ? "hide-on-mobile" : ""}>
             <div>
                 <div
                     id="banner-image"
@@ -68,9 +91,58 @@ const Banner = (props) => {
                         <h2 id="main-subtitle">{props.subtitle}</h2>
                     )}
                     {props.showButtons && (
-                        <div id="action-button-container">
-                            <div id="primary-button">Visit our GitHub</div>
-                            <div id="secondary-button">Make a suggestion</div>
+                        <div>
+                            <div id="action-button-container">
+                                <div className="primary-button">
+                                    Visit our GitHub
+                                </div>
+                                <div
+                                    className="secondary-button"
+                                    style={{
+                                        padding:
+                                            voteMessage ===
+                                            "We welcome your suggestions!"
+                                                ? "15px 25px"
+                                                : "",
+                                    }}
+                                >
+                                    Make a suggestion
+                                </div>
+                            </div>
+                            {!hasVoted && (
+                                <div id="action-button-container">
+                                    <span
+                                        style={{
+                                            color: "white",
+                                            fontSize: "large",
+                                        }}
+                                    >
+                                        New Website!
+                                    </span>
+                                    <ThumbsUpSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Like")}
+                                    />
+                                    <ThumbsDownSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Dislike")}
+                                    />
+                                </div>
+                            )}
+                            {voteMessage && (
+                                <div id="action-button-container">
+                                    <span
+                                        style={{
+                                            color: "white",
+                                            fontSize: "large",
+                                        }}
+                                    >
+                                        {voteMessage}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

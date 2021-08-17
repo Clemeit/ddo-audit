@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
-import Card from "./Card";
-import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
-import QuickInfo from "./QuickInfo";
+import Card from "./old_Card";
+import PlayerAndLfmSubtitle from "./live/PlayerAndLfmSubtitle";
+import QuickInfo from "../live/QuickInfo";
 import WhatIsCard from "./WhatIsCard";
 import ReportIssueForm from "./ReportIssueForm";
-import ChartPopulationHistory from "./ChartPopulationHistory";
+import ChartPopulationHistory from "../global/ChartPopulationHistory";
 import PopupMessage from "./global/PopupMessage";
 
 const TITLE = "DDO Audit";

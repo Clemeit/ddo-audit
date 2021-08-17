@@ -7,10 +7,11 @@ import { ReactComponent as QuestsSVG } from "../../assets/global/quests.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
+import { ReactComponent as CommunitySVG } from "../../assets/global/community.svg";
 import { Link, useLocation } from "react-router-dom";
-import "./default.css";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
+import Footer from "./Footer";
 
 const Directory = (props) => {
     const TITLE = "DDO Audit";
@@ -21,8 +22,10 @@ const Directory = (props) => {
             tiles: [
                 {
                     icon: <LiveSVG className="nav-icon-large should-invert" />,
-                    title: "Live Population",
-                    description: "View live and historical game population.",
+                    title: "Quick Info",
+                    description:
+                        "Most populated server, default server, and server status.",
+                    to: "/live",
                 },
                 {
                     icon: (
@@ -39,6 +42,7 @@ const Directory = (props) => {
                     title: "Quest Activity",
                     description:
                         "Content popularity, average completion times, and XP/minute.",
+                    to: "/quests",
                 },
                 {
                     icon: (
@@ -47,6 +51,7 @@ const Directory = (props) => {
                     title: "Population Trends",
                     description:
                         "Long-term trends, daily minimum and maximum population, and important game events.",
+                    to: "/trends",
                 },
             ],
         },
@@ -59,11 +64,13 @@ const Directory = (props) => {
                     ),
                     title: "Live LFM Viewer",
                     description: "A live LFM panel for every server.",
+                    to: "/grouping",
                 },
                 {
                     icon: <WhoSVG className="nav-icon-large should-invert" />,
                     title: "Live Who List",
                     description: "Lookup players on this live Who list.",
+                    to: "/who",
                 },
             ],
         },
@@ -75,12 +82,23 @@ const Directory = (props) => {
                     title: "About This Project",
                     description:
                         "Everything you wanted to know about this project, and plenty of things you didn't.",
+                    to: "/about",
+                },
+                {
+                    icon: (
+                        <CommunitySVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Community Tools",
+                    description:
+                        "Tools developed by the community, for the community.",
+                    to: "/community",
                 },
                 {
                     icon: <ApiSVG className="nav-icon-large should-invert" />,
                     title: "API",
                     description:
-                        "Ditch the pretty website. Get the data for your own projects.",
+                        "Look behind the curtain. Get the data for your own projects.",
+                    to: "/api",
                 },
             ],
         },
@@ -104,41 +122,39 @@ const Directory = (props) => {
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
             <div id="content-container">
-                <div>
-                    {NAV_OPTIONS.map((option, i) => (
-                        <div key={i} className="content-cluster">
-                            <h2 style={{ color: "var(--text)" }}>
-                                {option.title}
-                            </h2>
-                            <hr
-                                style={{
-                                    backgroundColor: "var(--text)",
-                                    opacity: 0.2,
-                                }}
-                            />
-                            <div className="content-cluster-options">
-                                {option.tiles.map((option, i) => (
-                                    <Link
-                                        to={option.to}
-                                        key={i}
-                                        className="nav-box"
-                                    >
-                                        <div className="nav-box-title">
-                                            {option.icon}
-                                            <h2 className="content-option-title">
-                                                {option.title}
-                                            </h2>
-                                        </div>
-                                        <p className="content-option-description">
-                                            {option.description}
-                                        </p>
-                                    </Link>
-                                ))}
-                            </div>
+                <div className="top-content-padding" />
+                {NAV_OPTIONS.map((option, i) => (
+                    <div key={i} className="content-cluster">
+                        <h2 style={{ color: "var(--text)" }}>{option.title}</h2>
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
+                        <div className="content-cluster-options">
+                            {option.tiles.map((option, i) => (
+                                <Link
+                                    to={option.to}
+                                    key={i}
+                                    className="nav-box"
+                                >
+                                    <div className="nav-box-title">
+                                        {option.icon}
+                                        <h2 className="content-option-title">
+                                            {option.title}
+                                        </h2>
+                                    </div>
+                                    <p className="content-option-description">
+                                        {option.description}
+                                    </p>
+                                </Link>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
+            <Footer />
         </div>
     );
 };

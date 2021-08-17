@@ -1,10 +1,10 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
-import Card from "../components/Card";
+import Card from "./old_Card";
 import ReportIssueForm from "./ReportIssueForm";
 import PopupMessage from "./global/PopupMessage";
-import { Fetch, VerifyPlayerData } from "./DataLoader";
+import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import Player from "./Player";
 import { ReactComponent as CloseSVG } from "../assets/global/close.svg";
 

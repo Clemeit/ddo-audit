@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../assets/global/lfmSprite.jpg";
+import PanelSprite from "../../assets/global/lfmSprite.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -75,7 +75,7 @@ const CanvasLfmPanel = (props) => {
         // Render canvas
         // console.log("render");
         const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { alpha: false });
 
         const sprite = spriteRef.current;
 
@@ -87,11 +87,33 @@ const CanvasLfmPanel = (props) => {
 
         // Draw lfms
         DrawFiller();
-        if (props.data.data !== null) DrawLfms();
+        if (props.data !== null) DrawLfms();
 
         // Draws the header and the lastUpdateTime string
         function OpenPanel() {
             ctx.drawImage(sprite, 0, 0, 848, 72, 0, 0, 848, 72);
+            if (props.data) {
+                let lastUpdateTime = new Date(props.data.LastUpdateTime);
+                let hour = lastUpdateTime.getHours() % 12;
+                if (hour == 0) hour = 12;
+                let timeText =
+                    "Last updated " +
+                    hour +
+                    ":" +
+                    ("0" + lastUpdateTime.getMinutes()).slice(-2) +
+                    ":" +
+                    ("0" + lastUpdateTime.getSeconds()).slice(-2) +
+                    (Math.floor(lastUpdateTime.getHours() / 12) == 0
+                        ? " AM"
+                        : " PM");
+                ctx.font = "18px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "white";
+                ctx.fillText(timeText, 212, 19);
+                ctx.textAlign = "left";
+                ctx.textBaseline = "alphabetic";
+            }
         }
 
         // Draws the chin
@@ -103,7 +125,9 @@ const CanvasLfmPanel = (props) => {
                 848,
                 27,
                 0,
-                72 + props.adjustedGroupCount * lfmHeight,
+                72 +
+                    (props.data ? Math.max(props.data.Groups.length, 4) : 4) *
+                        lfmHeight,
                 848,
                 27
             );
@@ -113,10 +137,7 @@ const CanvasLfmPanel = (props) => {
         function DrawFiller() {
             for (
                 let i = 0;
-                i <
-                (props.adjustedGroupCount === null
-                    ? 4
-                    : props.adjustedGroupCount);
+                i < (props.data ? Math.max(props.data.Groups.length, 4) : 4);
                 i++
             ) {
                 ctx.drawImage(
@@ -134,11 +155,11 @@ const CanvasLfmPanel = (props) => {
         }
 
         function DrawLfms() {
-            if (props.data.data === null) {
+            if (props.data === null) {
                 console.log("Waiting on data");
                 return;
             }
-            props.data.data.Groups.filter((group) => {
+            props.data.Groups.filter((group) => {
                 return group.Eligible || props.showNotEligible;
             }).forEach((group, index) => {
                 // Draw background and borders
@@ -436,10 +457,10 @@ const CanvasLfmPanel = (props) => {
 
             if (
                 groupSelection.groupIndex !== -1 &&
-                groupSelection.groupIndex < props.data.data.Groups.length
+                groupSelection.groupIndex < props.data.Groups.length
             )
                 DrawPlayerOverlay(
-                    props.data.data.Groups[groupSelection.groupIndex],
+                    props.data.Groups[groupSelection.groupIndex],
                     groupSelection.cursorPosition
                 );
         }
@@ -905,12 +926,7 @@ const CanvasLfmPanel = (props) => {
             return [xsrc + 287 + (eligible ? 0 : 103), ysrc + 189];
         }
     }, [
-        props.data.timestamp,
-        props.data.data,
-        // props.showNotEligible,
-        // props.sortOrder,
-        // props.minimumLevel,
-        // props.maximumLevel,
+        props.data,
         props.fontModifier,
         props.highVisibility,
         isImageLoaded,
@@ -940,7 +956,11 @@ const CanvasLfmPanel = (props) => {
                     width: "100%",
                 }}
                 width={panelWidth}
-                height={props.adjustedGroupCount * lfmHeight + 99}
+                height={
+                    (props.data ? Math.max(props.data.Groups.length, 4) : 4) *
+                        lfmHeight +
+                    99
+                }
             ></canvas>
         </div>
     );

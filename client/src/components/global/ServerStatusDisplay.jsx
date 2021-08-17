@@ -2,7 +2,6 @@ import React from "react";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
-import "./default.css";
 
 const ServerNames = [
     "Argonnessen",
@@ -34,11 +33,10 @@ const ServerStatusDisplay = (props) => {
     }
 
     return (
-        <div>
+        <div className="content-cluster">
             <center>
-                <h4
+                <h2
                     style={{
-                        fontWeight: "bold",
                         color: "var(--text)",
                     }}
                 >
@@ -48,7 +46,7 @@ const ServerStatusDisplay = (props) => {
                             ? "last updated " +
                               PrettyTime(props.data.LastUpdateTime)
                             : "loading...")}
-                </h4>
+                </h2>
             </center>
             <div className="server-status-container">
                 {props.data && props.data.Worlds

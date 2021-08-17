@@ -1,14 +1,14 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
-import Card from "../components/Card";
+import Card from "./old_Card";
 import ReportIssueForm from "./ReportIssueForm";
 import PopupMessage from "./global/PopupMessage";
 import MiniGroup from "./MiniGroup";
 import CanvasLfmPanel from "./CanvasLfmPanel";
 import LfmFilter from "./LfmFilterBar";
 import LevelRangeSlider from "./LevelRangeSlider";
-import { Fetch, VerifyLfmData } from "./DataLoader";
+import { Fetch, VerifyLfmData } from "../../services/DataLoader";
 import Group from "./Group";
 
 const TITLE = "DDO Live LFM Viewer";

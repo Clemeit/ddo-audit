@@ -1,10 +1,10 @@
 import React from "react";
-import { ReactComponent as ServerSelectSVG } from "../assets/global/server.svg";
-import { ReactComponent as FilterSVG } from "../assets/global/filter.svg";
-import { ReactComponent as SettingsSVG } from "../assets/global/settings.svg";
-import { ReactComponent as NotificationSVG } from "../assets/global/notification.svg";
-import { ReactComponent as FullscreenSVG } from "../assets/global/fullscreen.svg";
-import { ReactComponent as FullscreenExitSVG } from "../assets/global/fullscreen-exit.svg";
+import { ReactComponent as ServerSelectSVG } from "../../assets/global/server.svg";
+import { ReactComponent as FilterSVG } from "../../assets/global/filter.svg";
+import { ReactComponent as SettingsSVG } from "../../assets/global/settings.svg";
+import { ReactComponent as NotificationSVG } from "../../assets/global/notification.svg";
+import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
+import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
 import { Link, useHistory } from "react-router-dom";
 
 const LfmFilterBar = (props) => {
@@ -29,7 +29,7 @@ const LfmFilterBar = (props) => {
                     }}
                 >
                     <ServerSelectSVG
-                        className="link-icon"
+                        className="nav-icon should-invert"
                         style={{
                             width: "30px",
                             height: "30px",
@@ -44,27 +44,27 @@ const LfmFilterBar = (props) => {
                     onClick={props.handleFilterButton}
                 >
                     <SettingsSVG
-                        className="link-icon"
+                        className="nav-icon should-invert"
                         style={{
                             width: "30px",
                             height: "30px",
                             paddingRight: "5px",
                         }}
                     />
-                    <span className="lfm-filter-bar-text settings">
+                    <span className="lfm-filter-bar-text settings hide-on-mobile">
                         Settings
                     </span>
                 </div>
                 <div className="lfm-filter-bar-item">
                     <NotificationSVG
-                        className="link-icon"
+                        className="nav-icon should-invert"
                         style={{
                             width: "30px",
                             height: "30px",
                             paddingRight: "5px",
                         }}
                     />
-                    <span className="lfm-filter-bar-text notifications">
+                    <span className="lfm-filter-bar-text notifications hide-on-mobile">
                         Notifications
                     </span>
                 </div>
@@ -76,7 +76,7 @@ const LfmFilterBar = (props) => {
                 >
                     {fullscreen ? (
                         <FullscreenExitSVG
-                            className="link-icon "
+                            className="nav-icon should-invert "
                             style={{
                                 width: "30px",
                                 height: "30px",
@@ -85,7 +85,7 @@ const LfmFilterBar = (props) => {
                         />
                     ) : (
                         <FullscreenSVG
-                            className="link-icon"
+                            className="nav-icon should-invert"
                             style={{
                                 width: "30px",
                                 height: "30px",

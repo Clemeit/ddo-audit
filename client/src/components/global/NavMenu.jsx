@@ -1,15 +1,15 @@
 import React from "react";
 import { NavBar, NavItem, NavDropdown, NavSubItem, NavDivider } from "./NavBar";
-import { ReactComponent as HomeSVG } from "../assets/global/home.svg";
-import { ReactComponent as LiveSVG } from "../assets/global/live.svg";
-import { ReactComponent as ServersSVG } from "../assets/global/servers.svg";
-import { ReactComponent as GroupingSVG } from "../assets/global/grouping.svg";
-import { ReactComponent as WhoSVG } from "../assets/global/who.svg";
-import { ReactComponent as QuestsSVG } from "../assets/global/quests.svg";
+import { ReactComponent as HomeSVG } from "../../assets/global/home.svg";
+import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
+import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
+import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
+import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
+import { ReactComponent as QuestsSVG } from "../../assets/global/quests.svg";
 //import { ReactComponent as GeographySVG } from "../assets/global/geography.svg";
-import { ReactComponent as TrendsSVG } from "../assets/global/trends.svg";
-import { ReactComponent as AboutSVG } from "../assets/global/about.svg";
-import { ReactComponent as MenuSVG } from "../assets/global/menu.svg";
+import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
+import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
+import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
 
 const serverNames = [
     "Argonnessen",
@@ -69,7 +69,6 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-
                 <NavDropdown
                     to="/grouping"
                     title={
@@ -90,11 +89,10 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-                <NavItem to="/quests">
+                {/* <NavItem to="/quests">
                     <QuestsSVG className="nav-icon" />
                     Quests
-                </NavItem>
-
+                </NavItem> */}
                 <NavDropdown
                     to="/who"
                     title={
@@ -115,11 +113,10 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-
-                <NavItem to="/trends">
+                {/* <NavItem to="/trends">
                     <TrendsSVG className="nav-icon" />
                     <span className="nav-text">Trends</span>
-                </NavItem>
+                </NavItem> */}
                 <NavItem to="/about">
                     <AboutSVG className="nav-icon" />
                     <span className="nav-text">About</span>

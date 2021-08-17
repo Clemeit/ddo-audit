@@ -1,13 +1,13 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import Card from "../components/Card";
+import Card from "./old_Card";
 import ReportIssueForm from "./ReportIssueForm";
 import { useLocation } from "react-router-dom";
 import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
 import ServerDemographicsContainer from "./ServerDemographicsContainer";
 import PopupMessage from "./global/PopupMessage";
-import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
-import ChartPopulationHistory from "./ChartPopulationHistory";
+import PlayerAndLfmSubtitle from "./live/PlayerAndLfmSubtitle";
+import ChartPopulationHistory from "../global/ChartPopulationHistory";
 import ContentTable from "./ContentTable";
 
 const TITLE = "DDO Server Status";

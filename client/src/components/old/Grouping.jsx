@@ -1,10 +1,11 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import Card from "../components/Card";
+import Card from "./old_Card";
 import ReportIssueForm from "./ReportIssueForm";
 import PopupMessage from "./global/PopupMessage";
+import MiniGroup from "./MiniGroup";
 import ServerSelectOption from "./ServerSelectOption";
-import { Fetch, VerifyLfmData } from "./DataLoader";
+import { Fetch, VerifyLfmData } from "../../services/DataLoader";
 
 const TITLE = "DDO Live LFM Viewer";
 
@@ -20,23 +21,24 @@ const serverNames = [
     "Hardcore",
 ];
 
-const noPlayersMessages = [
-    "The apocalypse!",
-    "Maybe they're all anonymous.",
-    "Everyone got banned.",
+const noGroupsMessages = [
+    "Everyone is so shy today.",
+    "A travesty!",
+    "Well, you could always go solo.",
 ];
 
-const Who = (props) => {
+const Grouping = (props) => {
     // Data
-    var [playerData, set_playerData] = React.useState(null);
-    var [playerCount, set_playerCount] = React.useState(null);
+    var [groupData, set_groupData] = React.useState(null);
+    var [groupCount, set_groupCount] = React.useState(null);
 
     React.useEffect(() => {
-        function FetchPlayerData() {
-            Fetch("https://www.playeraudit.com/api/playersoverview", 5000)
+        function FetchLfmData() {
+            Fetch("https://www.playeraudit.com/api/groups", 5000)
                 .then((val) => {
-                    if (val !== null && val.Timestamp !== undefined) {
-                        set_playerData(val);
+                    if (VerifyLfmData(val)) {
+                        set_popupMessages([]);
+                        set_groupData(val);
                     } else {
                         set_popupMessages([
                             ...popupMessages,
@@ -51,7 +53,7 @@ const Who = (props) => {
                                     "Group data returned null",
                             },
                         ]);
-                        set_playerData(null);
+                        set_groupData(null);
                     }
                 })
                 .catch(() => {
@@ -64,36 +66,45 @@ const Who = (props) => {
                             icon: "warning",
                             fullscreen: false,
                             reportMessage:
-                                "Could not fetch Day Population data. Timeout",
+                                "Could not fetch Group data. Timeout",
                         },
                     ]);
                 });
         }
-        FetchPlayerData();
+        FetchLfmData();
 
         const refreshdata = setInterval(() => {
-            FetchPlayerData();
+            FetchLfmData();
         }, 60000);
         return () => clearInterval(refreshdata);
     }, []);
 
     React.useEffect(() => {
-        if (playerData) {
+        if (groupData) {
             let total = 0;
-            total += playerData.Argonnessen;
-            total += playerData.Cannith;
-            total += playerData.Ghallanda;
-            total += playerData.Khyber;
-            total += playerData.Orien;
-            total += playerData.Sarlona;
-            total += playerData.Thelanis;
-            total += playerData.Wayfinder;
-            total += playerData.Hardcore;
-            set_playerCount(total);
+            groupData.forEach((server) => {
+                total += server.GroupCount;
+            });
+            set_groupCount(total);
         } else {
-            set_playerCount(0);
+            set_groupCount(0);
         }
-    }, [playerData]);
+    }, [groupData]);
+
+    function GetRaidGroups() {
+        if (groupData === null) return [];
+        let raidgroups = [];
+        groupData.forEach((server) => {
+            let ServerName = server.Name;
+            server.Groups.forEach((group) => {
+                if (group.Quest !== null && group.Quest.GroupSize === "Raid") {
+                    raidgroups.push({ ...group, ServerName });
+                }
+            });
+        });
+
+        return raidgroups;
+    }
 
     // Report Form
     var [reportFormVisibility, setReportFormVisibility] =
@@ -126,18 +137,18 @@ const Who = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Browse players from any server with a live Who panel! Are your friends online? Is your guild forming up for a late-night raid? Now you know!"
+                    content="Browse LFMs from any server with a live LFM panel! Check the LFM panel before you login, or setup notifications and never miss raid night again!"
                 />
             </Helmet>
             <ReportIssueForm
-                page="who"
+                page="grouping"
                 showLink={false}
                 visibility={reportFormVisibility}
                 componentReference={reportFormReference}
                 hideReportForm={hideReportForm}
             />
             <PopupMessage
-                page="who"
+                page="grouping"
                 messages={popupMessages}
                 popMessage={() => {
                     if (popupMessages.length) {
@@ -148,21 +159,19 @@ const Who = (props) => {
                 }}
             />
             <Card
-                pageName="who"
+                pageName="grouping"
                 showLink={false}
-                title="Live Who Viewer"
+                title="Live LFM Viewer"
                 subtitle={
-                    playerData ? (
+                    groupData ? (
                         <div>
                             <div className="grouping-subtitle">
                                 There are currently{" "}
-                                <span className="population-number">
-                                    {playerCount}
-                                </span>{" "}
-                                players.{" "}
-                                {playerCount
-                                    ? "Are you one of them?"
-                                    : noPlayersMessages[
+                                <span className="lfm-number">{groupCount}</span>{" "}
+                                groups posted.{" "}
+                                {groupCount
+                                    ? "If you're not in one, you're missing out!"
+                                    : noGroupsMessages[
                                           Math.floor(Math.random() * 3)
                                       ]}
                             </div>
@@ -174,67 +183,33 @@ const Who = (props) => {
                             </div>
                         </div>
                     ) : (
-                        <div>Loading player data...</div>
+                        <div>Loading group data...</div>
                     )
                 }
             >
-                {playerData ? (
+                {groupData ? (
                     <div>
+                        <div className="grouping-raid-group-container">
+                            {GetRaidGroups().map((group, i) => (
+                                <MiniGroup
+                                    key={i}
+                                    server={group.ServerName}
+                                    questName={group.Quest.Name}
+                                    leaderName={group.Leader.Name}
+                                    memberCount={group.Members.length}
+                                />
+                            ))}
+                        </div>
                         <div className="grouping-server-select-container">
-                            <ServerSelectOption
-                                destination="who"
-                                server="Argonnessen"
-                                number={playerData.Argonnessen}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Cannith"
-                                number={playerData.Cannith}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Ghallanda"
-                                number={playerData.Ghallanda}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Khyber"
-                                number={playerData.Khyber}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Orien"
-                                number={playerData.Orien}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Sarlona"
-                                number={playerData.Sarlona}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Thelanis"
-                                number={playerData.Thelanis}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Wayfinder"
-                                number={playerData.Wayfinder}
-                                word="player"
-                            />
-                            <ServerSelectOption
-                                destination="who"
-                                server="Hardcore"
-                                number={playerData.Hardcore}
-                                word="player"
-                            />
+                            {groupData.map((server, i) => (
+                                <ServerSelectOption
+                                    key={i}
+                                    destination="grouping"
+                                    server={server.Name}
+                                    number={server.GroupCount}
+                                    word="group"
+                                />
+                            ))}
                         </div>
                     </div>
                 ) : (
@@ -253,26 +228,44 @@ const Who = (props) => {
                 description=""
                 tiles={[
                     {
-                        title: "Live Who Viewer",
+                        title: "Live LFM Viewer",
                         content: (
                             <div>
                                 <p style={{ fontSize: "larger" }}>
-                                    Every player on every server, all in one
-                                    place. Live.
+                                    Every LFM on every server, all in one place.
+                                    Live.
+                                </p>
+                                <h4>Notifications for Your Favorite Quests.</h4>
+                                <p>
+                                    Desktop notifications and mobile
+                                    push-notifications. You're never going to
+                                    miss your favorite quests again.
                                 </p>
                                 <h4>Accessible. Installable.</h4>
-                                <p>Visited us on mobile yet? Try it out!</p>
+                                <p>
+                                    If you're reading this, you're probably not
+                                    on a mobile device. You should try it out!
+                                </p>
                                 <p>
                                     You can now install DDO Audit on your mobile
-                                    device. Quickly browse online player, check
-                                    if your friends are online, and experience a
-                                    whole new way to view the Who panel!
+                                    device. Quickly check groups, set
+                                    notification alerts, and experience a whole
+                                    new way to view the LFM panel!
                                 </p>
                                 <hr />
                                 <h4>API</h4>
                                 <p>
                                     Need the data for a project of your own?
                                     Visit the API page for more information!
+                                </p>
+                                <h4>Contributions</h4>
+                                <p>
+                                    A special thanks to the incredible people
+                                    over at Vault of Kundarak for their
+                                    invaluable contributions to the Live LFM
+                                    Viewer project. This tool would not have
+                                    been possible without their knowledge and
+                                    data.
                                 </p>
                             </div>
                         ),
@@ -283,4 +276,4 @@ const Who = (props) => {
     );
 };
 
-export default Who;
+export default Grouping;

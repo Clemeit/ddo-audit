@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./NavMenu.css";
-import { ReactComponent as ExpandSVG } from "../assets/global/expand.svg";
+import { ReactComponent as ExpandSVG } from "../../assets/global/expand.svg";
 import $ from "jquery";
 
 const NavBar = (props) => {
