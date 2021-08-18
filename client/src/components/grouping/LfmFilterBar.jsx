@@ -55,7 +55,11 @@ const LfmFilterBar = (props) => {
                         Settings
                     </span>
                 </div>
-                <div className="lfm-filter-bar-item">
+                <Link
+                    to="/notifications"
+                    className="lfm-filter-bar-item"
+                    style={{ color: "var(--text)", textDecoration: "none" }}
+                >
                     <NotificationSVG
                         className="nav-icon should-invert"
                         style={{
@@ -67,7 +71,7 @@ const LfmFilterBar = (props) => {
                     <span className="lfm-filter-bar-text notifications hide-on-mobile">
                         Notifications
                     </span>
-                </div>
+                </Link>
                 <div
                     className="lfm-filter-bar-item hide-on-mobile"
                     onClick={() => {

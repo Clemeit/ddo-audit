@@ -58,6 +58,7 @@ const Grouping = () => {
 
     const [groupData, setGroupData] = React.useState(null);
     const [serverStatusData, setServerStatusData] = React.useState(null);
+    const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
 
     React.useEffect(() => {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
@@ -101,6 +102,10 @@ const Grouping = () => {
                 //     },
                 // ]);
             });
+
+        setNotificationRuleCount(
+            JSON.parse(localStorage.getItem("notification-rules")).length
+        );
     }, []);
 
     return (
@@ -157,7 +162,7 @@ const Grouping = () => {
                     </div>
                 </div>
                 <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Matching Groups</h2>
+                    <h2 style={{ color: "var(--text)" }}>Notifications</h2>
                     <hr
                         style={{
                             backgroundColor: "var(--text)",
@@ -166,15 +171,68 @@ const Grouping = () => {
                     />
                     <p
                         style={{
-                            textAlign: "justify",
                             fontSize: "1.5rem",
                             lineHeight: "normal",
                             color: "var(--text-faded)",
                         }}
                     >
-                        Groups that match your filter settings will show up here
+                        You currently have{" "}
+                        <span style={{ color: "var(--text-lfm-number)" }}>
+                            {notificationRuleCount}
+                        </span>{" "}
+                        notification rule
+                        {notificationRuleCount !== 1 ? "s" : ""} setup.
+                        Configure notifications in the{" "}
+                        <Link to="/notifications">notification settings</Link>.
                     </p>
                     <div className="content-cluster-options"></div>
+                </div>
+                <div className="content-cluster">
+                    <h2 style={{ color: "var(--text)" }}>Contributions</h2>
+                    <hr
+                        style={{
+                            backgroundColor: "var(--text)",
+                            opacity: 0.2,
+                        }}
+                    />
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        A huge shout-out to the amazing developers over at Vault
+                        of Kundarak. Their contributions to this project made
+                        the Live LFM Viewer possible. Visit their website at{" "}
+                        <a
+                            href="https://vaultofkundarak.com/"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            vaultofkundarak.com
+                        </a>{" "}
+                        or drop by their{" "}
+                        <a
+                            href="https://discord.com/invite/bfMZnbz"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            Discord server
+                        </a>{" "}
+                        for news and updates on their projects!
+                    </p>
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        And thank <u>you</u> for your continued support. This
+                        project is made possible by your feedback and
+                        suggestions!
+                    </p>
                 </div>
             </div>
         </div>
