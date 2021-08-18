@@ -45,8 +45,8 @@ const About = (props) => {
                         asking for: a Live LFM panel and Live Who list. We're
                         not here to push an agenda or to point fingers.{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
-                            Our goal is, and has always been, to inform in as
-                            unbiased a way as possible.
+                            Our goal is, and has always been, to provide
+                            transparent and unbiased information.
                         </span>
                     </p>
                 </div>
@@ -96,8 +96,8 @@ const About = (props) => {
                         reports. Player data is also used to determine average
                         quest durations. Group data is served from the database
                         directly to this website and is used to draw the LFM
-                        panel on the Grouping page. That's not a screenshot!
-                        It's being drawn right in your browser.
+                        panel on the Grouping page. That's not a screenshot -
+                        it's being drawn right in your browser!
                     </p>
                 </div>
                 <div className="content-cluster">
