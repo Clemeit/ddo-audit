@@ -57,7 +57,7 @@ const theme = {
     },
 };
 
-const ChartPopulationHistory = (props) => {
+const ChartLine = (props) => {
     const [filteredData, set_filteredData] = React.useState(null);
     const [isMobileLoaded, setIsMobileLoaded] = React.useState(false);
 
@@ -191,7 +191,7 @@ const ChartPopulationHistory = (props) => {
                     ></ResponsiveLine>
                 ) : (
                     <div className="loading-data-message">
-                        <h5>Loading data...</h5>
+                        <h5>{props.loadingMessage || "Loading data..."}</h5>
                     </div>
                 )}
             </div>
@@ -199,4 +199,4 @@ const ChartPopulationHistory = (props) => {
     );
 };
 
-export default ChartPopulationHistory;
+export default ChartLine;

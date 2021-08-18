@@ -57,7 +57,7 @@ const theme = {
     },
 };
 
-const ChartClassDistribution = (props) => {
+const ChartBar = (props) => {
     return (
         <div
             className={
@@ -157,4 +157,4 @@ const ChartClassDistribution = (props) => {
     );
 };
 
-export default ChartClassDistribution;
+export default ChartBar;

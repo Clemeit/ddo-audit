@@ -29,7 +29,7 @@ const theme = {
     },
 };
 
-const ChartServerDistributionPie = (props) => {
+const ChartPie = (props) => {
     function GetTotalPopulation() {
         let total = 0;
         for (let i = 0; i < props.data.length; i++) {
@@ -117,4 +117,4 @@ const ChartServerDistributionPie = (props) => {
     );
 };
 
-export default ChartServerDistributionPie;
+export default ChartPie;
