@@ -7,7 +7,7 @@ import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
 import ServerDemographicsContainer from "./ServerDemographicsContainer";
 import PopupMessage from "./global/PopupMessage";
 import PlayerAndLfmSubtitle from "./live/PlayerAndLfmSubtitle";
-import ChartPopulationHistory from "../global/ChartPopulationHistory";
+import ChartLine from "../global/ChartLine";
 import ContentTable from "./ContentTable";
 
 const TITLE = "DDO Server Status";
@@ -454,7 +454,7 @@ const ServerSpecific = (props) => {
                                 </div>
                             ),
                             content: (
-                                <ChartPopulationHistory
+                                <ChartLine
                                     data={population24HoursData}
                                     activeFilter={currentServer}
                                     trendType="day"
@@ -488,7 +488,7 @@ const ServerSpecific = (props) => {
                                 </div>
                             ),
                             content: (
-                                <ChartPopulationHistory
+                                <ChartLine
                                     data={population1WeekData}
                                     trendType="week"
                                     activeFilter={currentServer}
@@ -513,7 +513,7 @@ const ServerSpecific = (props) => {
                                 </div>
                             ),
                             content: (
-                                <ChartPopulationHistory
+                                <ChartLine
                                     data={population1QuarterData}
                                     trendType="quarter"
                                     activeFilter={currentServer}

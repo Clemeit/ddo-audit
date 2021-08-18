@@ -6,7 +6,7 @@ import PlayerAndLfmSubtitle from "./live/PlayerAndLfmSubtitle";
 import QuickInfo from "../live/QuickInfo";
 import WhatIsCard from "./WhatIsCard";
 import ReportIssueForm from "./ReportIssueForm";
-import ChartPopulationHistory from "../global/ChartPopulationHistory";
+import ChartLine from "../global/ChartLine";
 import PopupMessage from "./global/PopupMessage";
 
 const TITLE = "DDO Audit";
@@ -430,7 +430,7 @@ const Home = (props) => {
                                 </div>
                             ),
                             content: (
-                                <ChartPopulationHistory
+                                <ChartLine
                                     data={population24HoursData}
                                     trendType="day"
                                     activeFilter={chart24Hoursfilter}
@@ -478,7 +478,7 @@ const Home = (props) => {
                             </div>
                         ),
                         content: (
-                            <ChartPopulationHistory
+                            <ChartLine
                                 data={population1WeekData}
                                 trendType="week"
                                 activeFilter={chart1WeekFilter}
@@ -517,7 +517,7 @@ const Home = (props) => {
                             </div>
                         ),
                         content: (
-                            <ChartPopulationHistory
+                            <ChartLine
                                 data={population1QuarterData}
                                 trendType="quarter"
                                 activeFilter={chart1QuarterFilter}

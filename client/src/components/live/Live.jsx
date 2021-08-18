@@ -8,7 +8,7 @@ import PopupMessage from "../global/PopupMessage";
 import Card from "../global/Card";
 import QuickInfo from "./QuickInfo";
 import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
-import ChartPopulationHistory from "../global/ChartPopulationHistory";
+import ChartLine from "../global/ChartLine";
 import ServerStatusDisplay from "../global/ServerStatusDisplay";
 // import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
 // import ChartPopulationHistory from "../ChartPopulationHistory";
@@ -86,7 +86,7 @@ const Live = (props) => {
                         }}
                     />
                     <PlayerAndLfmSubtitle data={playerAndLFMCountData} />
-                    <ChartPopulationHistory
+                    <ChartLine
                         data={population24HoursData}
                         trendType="day"
                         activeFilter="Server Activity"

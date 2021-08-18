@@ -464,7 +464,10 @@ html {
     background-color: var(--nav-bar-hover);
 }
 
-@media (max-width: 850px) {
+@media (max-width: 1440px) {
+    .audit-report-time {
+        display: none;
+    }
 }
 
 .nav-box {
@@ -546,9 +549,7 @@ html {
 }
 
 .audit-report-time {
-    position: absolute;
-    transform: translateY(-100%);
-    right: 25px;
+    margin-left: auto;
 }
 
 .content-table-container {
@@ -646,6 +647,7 @@ html {
 .content-cluster {
     margin: 0px 0px 50px 0px;
     padding: 0px 20px;
+    color: var(--text);
 }
 
 .content-cluster-options {
@@ -715,6 +717,7 @@ html {
     background-color: white;
     color: black;
     user-select: none;
+    width: max-content;
 }
 
 .secondary-button {
@@ -996,6 +999,11 @@ input[type="radio"] {
     .footer {
         display: none;
     }
+    .column-on-mobile {
+        justify-content: left !important;
+        align-items: flex-start !important;
+        flex-direction: column !important;
+    }
 }
 
 @media (max-width: 410px) {
@@ -1006,4 +1014,10 @@ input[type="radio"] {
     .social-member-entry.name {
         font-weight: bold;
     }
+}
+
+.notification-table {
+    color: var(--text);
+    font-size: 1.7rem;
+    width: 100%;
 }

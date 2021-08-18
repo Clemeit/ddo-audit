@@ -9,6 +9,9 @@ import Grouping from "./components/grouping/Grouping";
 import GroupingSpecific from "./components/grouping/GroupingSpecific";
 
 const Directory = lazy(() => import("./components/directory/Directory"));
+const NotificationForm = lazy(() =>
+    import("./components/grouping/NotificationForm")
+);
 
 // const Home = lazy(() => import("./components/Home"));
 const Servers = lazy(() => import("./components/servers/Servers"));
@@ -18,8 +21,9 @@ const Servers = lazy(() => import("./components/servers/Servers"));
 // const Who = lazy(() => import("./components/Who"));
 // const WhoSpecific = lazy(() => import("./components/WhoSpecific"));
 // const About = lazy(() => import("./components/About"));
-// const Quests = lazy(() => import("./components/quests/Quests"));
+const Quests = lazy(() => import("./components/quests/Quests"));
 const Live = lazy(() => import("./components/live/Live"));
+const About = lazy(() => import("./components/about/About"));
 
 // import Servers from "./components/Servers";
 // import ServerSpecific from "./components/ServerSpecific";
@@ -44,16 +48,21 @@ export default () => {
                 <Route exact path="/live" component={Live} />
                 <Route exact path="/servers" component={Servers} />
                 {/* <Route path="/servers/:serverName" component={ServerSpecific} /> */}
-                {/* <Route exact path="/quests" component={Quests} /> */}
+                <Route exact path="/quests" component={Quests} />
                 <Route exact path="/grouping" component={Grouping} />
                 <Route
                     exact
                     path="/grouping/:serverName"
                     component={GroupingSpecific}
                 />
+                <Route
+                    exact
+                    path="/notifications"
+                    component={NotificationForm}
+                />
                 {/* <Route exact path="/who" component={Who} /> */}
                 {/* <Route path="/who/:serverName" component={WhoSpecific} /> */}
-                {/* <Route path="/about" component={About} /> */}
+                <Route path="/about" component={About} />
             </Layout>
         </Suspense>
     );

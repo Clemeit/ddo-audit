@@ -34,7 +34,7 @@ const Banner = (props) => {
         if (response === "Like") {
             set_voteMessage("Thanks for your feedback!");
         } else {
-            set_voteMessage("We welcome your suggestions!");
+            set_voteMessage("I welcome your suggestions!");
         }
     }
 
