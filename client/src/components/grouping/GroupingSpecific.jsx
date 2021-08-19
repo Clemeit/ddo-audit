@@ -5,7 +5,7 @@ import CanvasLfmPanel from "./CanvasLfmPanel";
 import Banner from "../global/Banner";
 import { Fetch, VerifyLfmData } from "../../services/DataLoader";
 import LevelRangeSlider from "./LevelRangeSlider";
-import LfmFilter from "./LfmFilterBar";
+import FilterBar from "../global/FilterBar";
 import Group from "./Group";
 
 const GroupingSpecific = (props) => {
@@ -32,7 +32,7 @@ const GroupingSpecific = (props) => {
     const [highVisibility, setHighVisibility] = React.useState();
     const [alternativeLook, setAlternativeLook] = React.useState();
     const [minimumLevel, setMinimumLevel] = React.useState(1);
-    const [maximumLevel, setMaximumLevel] = React.useState(10);
+    const [maximumLevel, setMaximumLevel] = React.useState(30);
     const [sortAscending, setSortAscending] = React.useState();
 
     // Filter bar
@@ -193,8 +193,10 @@ const GroupingSpecific = (props) => {
             </Helmet>
             <div id="content-container">
                 <div className="top-content-padding hide-on-mobile" />
-                <LfmFilter
+                <FilterBar
                     currentServer={currentServer}
+                    showNotifications={true}
+                    returnTo="/grouping"
                     handleFilterButton={() =>
                         setFilterPanelVisible(!filterPanelVisible)
                     }
@@ -378,7 +380,7 @@ const GroupingSpecific = (props) => {
                             </div>
                         </div>
                     </div>
-                </LfmFilter>
+                </FilterBar>
                 {alternativeLook === false ? (
                     <CanvasLfmPanel
                         data={filteredServerData}

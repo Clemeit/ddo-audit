@@ -367,8 +367,29 @@ html {
     height: 50px;
 }
 
+.link-icon.pin {
+    transform: rotate(30deg);
+    transition: transform 300ms;
+    opacity: 0.2;
+}
+
+.link-icon.pin:hover {
+    transform: rotate(0deg);
+}
+
+.link-icon-pinned {
+    opacity: 1;
+}
+
 .population-number {
     color: var(--text-player-number);
+}
+
+.blue-link {
+    color: var(--text-player-number);
+    text-decoration: underline;
+    cursor: pointer;
+    user-select: none;
 }
 
 .lfm-number {
@@ -763,7 +784,7 @@ html {
     height: 100%;
 }
 
-.lfm-filter-bar {
+.filter-bar {
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -773,7 +794,7 @@ html {
     color: var(--text);
 }
 
-.lfm-filter-bar-item {
+.filter-bar-item {
     display: flex;
     z-index: 5;
     flex-direction: row;
@@ -787,7 +808,7 @@ html {
     color: var(--text);
 }
 
-.lfm-filter-bar-item:hover {
+.filter-bar-item:hover {
     background-color: var(--filter-bar-hover);
 }
 
@@ -913,8 +934,8 @@ input[type="radio"] {
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: var(--mini-group);
-    box-shadow: 0px 0px 1px 1px var(--card-border);
+    background-color: var(--highlighted-0);
+    /* box-shadow: 0px 0px 5px 1px var(--text-xfaded); */
     padding: 10px;
     /* cursor: pointer; */
     transition-property: background-color;
@@ -925,6 +946,7 @@ input[type="radio"] {
     border-width: 0px 0px 0px 2px;
     padding-left: 8px;
     border-color: var(--text);
+    color: var(--text);
     border-style: solid;
     font-size: 1.4rem;
 }

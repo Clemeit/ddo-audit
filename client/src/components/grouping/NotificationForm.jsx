@@ -16,7 +16,12 @@ const NotificationForm = (props) => {
     const [rules, setRules] = React.useState([]);
 
     React.useEffect(() => {
-        setRules(JSON.parse(localStorage.getItem("notification-rules")));
+        let loadrules = JSON.parse(localStorage.getItem("notification-rules"));
+        if (loadrules) {
+            setRules(loadrules);
+        } else {
+            setRules([]);
+        }
     }, []);
 
     React.useEffect(() => {

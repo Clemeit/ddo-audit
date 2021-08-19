@@ -1,7 +1,8 @@
 import React from "react";
-import { ReactComponent as StarOutlineSVG } from "../assets/global/star_outline.svg";
-import { ReactComponent as StarFilledSVG } from "../assets/global/star_filled.svg";
-import { ReactComponent as GroupingSVG } from "../assets/global/grouping.svg";
+import { ReactComponent as StarOutlineSVG } from "../../assets/global/star_outline.svg";
+import { ReactComponent as StarFilledSVG } from "../../assets/global/star_filled.svg";
+import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
+import { ReactComponent as PinSVG } from "../../assets/global/pin.svg";
 
 const Player = (props) => {
     const classnames = [
@@ -37,6 +38,7 @@ const Player = (props) => {
                     display: "flex",
                     flexDirection: "column",
                     cursor: "pointer",
+                    color: "var(--text)",
                 }}
                 onClick={props.handleClick}
             >
@@ -50,23 +52,21 @@ const Player = (props) => {
                     }}
                 >
                     {props.starred ? (
-                        <StarFilledSVG
-                            className="link-icon favorite-star lit"
+                        <PinSVG
+                            className="link-icon pinned"
                             onClick={(e) => {
                                 props.handleStarred();
                                 e.stopPropagation();
                             }}
                         />
                     ) : (
-                        props.expanded && (
-                            <StarOutlineSVG
-                                className="link-icon favorite-star"
-                                onClick={(e) => {
-                                    props.handleStarred();
-                                    e.stopPropagation();
-                                }}
-                            />
-                        )
+                        <PinSVG
+                            className="link-icon pin"
+                            onClick={(e) => {
+                                props.handleStarred();
+                                e.stopPropagation();
+                            }}
+                        />
                     )}
                     <span style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                         {props.player.Name}
@@ -99,6 +99,9 @@ const Player = (props) => {
                                 onClick={(e) => {
                                     props.handleAddFilter("Group");
                                     e.stopPropagation();
+                                }}
+                                style={{
+                                    marginRight: "3px",
                                 }}
                             />
                         )}
@@ -175,14 +178,16 @@ const Player = (props) => {
                                     >
                                         {props.player.Guild}
                                     </td>
-                                    <td
-                                        className="blue-text-link"
-                                        onClick={() =>
-                                            props.handleAddFilter("Guild")
-                                        }
-                                    >
-                                        Filter by this guild
-                                    </td>
+                                    {props.player.Guild && (
+                                        <td
+                                            className="blue-link"
+                                            onClick={() =>
+                                                props.handleAddFilter("Guild")
+                                            }
+                                        >
+                                            Filter by this guild
+                                        </td>
+                                    )}
                                 </tr>
                                 <tr className="social-member-entry">
                                     <td
@@ -203,7 +208,7 @@ const Player = (props) => {
                                             props.player.Location.Name}
                                     </td>
                                     <td
-                                        className="blue-text-link"
+                                        className="blue-link"
                                         onClick={() =>
                                             props.handleAddFilter("Location")
                                         }
@@ -230,10 +235,11 @@ const Player = (props) => {
                                     </td>
                                     {props.player.InParty === 1 && (
                                         <td
-                                            className="blue-text-link"
+                                            className="blue-link"
                                             onClick={() =>
                                                 props.handleAddFilter("Group")
                                             }
+                                            style={{ cursor: "pointer" }}
                                         >
                                             Filter by this group
                                         </td>

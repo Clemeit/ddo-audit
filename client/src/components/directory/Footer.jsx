@@ -10,9 +10,6 @@ export default class Footer extends Component {
                         <br />
                         This free utility generates no revenue and is subject to
                         change without notice.
-                        <br />
-                        This website is not affiliated with SSG or Daybreak
-                        Games in any way. SSG does not endorse this product.
                     </p>
                 </center>
             </div>

@@ -728,7 +728,7 @@ hr {
     background-color: var(--mini-group-hover);
 }
 
-.lfm-filter-bar {
+.filter-bar {
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -737,7 +737,7 @@ hr {
     max-width: 848px;
 }
 
-.lfm-filter-bar-item {
+.filter-bar-item {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -749,7 +749,7 @@ hr {
     font-size: larger;
 }
 
-.lfm-filter-bar-item:hover {
+.filter-bar-item:hover {
     background-color: var(--filter-bar-hover);
 }
 

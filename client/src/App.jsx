@@ -5,32 +5,39 @@ import Layout from "./components/Layout";
 import "./default.css";
 
 // Most visited pages. Don't lazy-load
+// import Grouping from "./components/grouping/Grouping";
+// import GroupingSpecific from "./components/grouping/GroupingSpecific";
+
+// const Directory = lazy(() => import("./components/directory/Directory"));
+// const Servers = lazy(() => import("./components/servers/Servers"));
+// // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
+// const Grouping = lazy(() => import("./components/grouping/Grouping"));
+// const GroupingSpecific = lazy(() =>
+//     import("./components/grouping/GroupingSpecific")
+// );
+// const NotificationForm = lazy(() =>
+//     import("./components/grouping/NotificationForm")
+// );
+// const Who = lazy(() => import("./components/who/Who"));
+// const WhoSpecific = lazy(() => import("./components/who/WhoSpecific"));
+// const Quests = lazy(() => import("./components/quests/Quests"));
+// const Live = lazy(() => import("./components/live/Live"));
+// const About = lazy(() => import("./components/about/About"));
+
+// Imports (included in package)
+import Directory from "./components/directory/Directory";
+import Servers from "./components/servers/Servers";
 import Grouping from "./components/grouping/Grouping";
 import GroupingSpecific from "./components/grouping/GroupingSpecific";
+import NotificationForm from "./components/grouping/NotificationForm";
+import Who from "./components/who/Who";
+import WhoSpecific from "./components/who/WhoSpecific";
+import Live from "./components/live/Live";
+import About from "./components/about/About";
 
-const Directory = lazy(() => import("./components/directory/Directory"));
-const NotificationForm = lazy(() =>
-    import("./components/grouping/NotificationForm")
-);
-
-// const Home = lazy(() => import("./components/Home"));
-const Servers = lazy(() => import("./components/servers/Servers"));
+// Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
-//const Grouping = lazy(() => import("./components/Grouping"));
-//const GroupingSpecific = lazy(() => import("./components/GroupingSpecific"));
-// const Who = lazy(() => import("./components/Who"));
-// const WhoSpecific = lazy(() => import("./components/WhoSpecific"));
-// const About = lazy(() => import("./components/About"));
 const Quests = lazy(() => import("./components/quests/Quests"));
-const Live = lazy(() => import("./components/live/Live"));
-const About = lazy(() => import("./components/about/About"));
-
-// import Servers from "./components/Servers";
-// import ServerSpecific from "./components/ServerSpecific";
-// import Grouping from "./components/Grouping";
-// import GroupingSpecific from "./components/GroupingSpecific";
-// import Who from "./components/Who";
-// import About from "./components/About";
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -60,8 +67,8 @@ export default () => {
                     path="/notifications"
                     component={NotificationForm}
                 />
-                {/* <Route exact path="/who" component={Who} /> */}
-                {/* <Route path="/who/:serverName" component={WhoSpecific} /> */}
+                <Route exact path="/who" component={Who} />
+                <Route path="/who/:serverName" component={WhoSpecific} />
                 <Route path="/about" component={About} />
             </Layout>
         </Suspense>

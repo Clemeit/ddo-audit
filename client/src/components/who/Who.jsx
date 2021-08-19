@@ -2,13 +2,13 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyLfmData } from "../../services/DataLoader";
+import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 
-const Grouping = () => {
-    const TITLE = "Live LFM Panel";
+const Who = (props) => {
+    const TITLE = "Live Who Panel";
     const SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
@@ -20,6 +20,9 @@ const Grouping = () => {
         "Wayfinder",
         "Hardcore",
     ];
+
+    var [overviewData, setOverviewData] = React.useState(null);
+    var [serverStatusData, setServerStatusData] = React.useState(null);
 
     function GetSVG(world) {
         if (world === undefined || world === null) return <PendingSVG />;
@@ -35,7 +38,7 @@ const Grouping = () => {
     }
 
     function GetServerDescription(name) {
-        if (groupData === null || groupData === undefined) {
+        if (overviewData === null || overviewData === undefined) {
             return (
                 <p
                     className="content-option-description"
@@ -50,64 +53,44 @@ const Grouping = () => {
                 className="content-option-description"
                 style={{ color: "var(--text-lfm-number)", fontSize: "1.4rem" }}
             >
-                {groupData.filter((server) => server.Name === name)[0]
-                    .GroupCount + " groups"}
+                {overviewData.filter((server) => server.ServerName === name)[0]
+                    .PlayerCount + " players"}
             </p>
         );
     }
 
-    const [groupData, setGroupData] = React.useState(null);
-    const [serverStatusData, setServerStatusData] = React.useState(null);
-    const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
-
     React.useEffect(() => {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
-            .then((val) => {
-                setServerStatusData(val);
-            })
-            .catch(() => {});
-        Fetch("https://www.playeraudit.com/api/groups", 5000)
-            .then((val) => {
-                if (VerifyLfmData(val)) {
-                    // set_popupMessages([]);
-                    setGroupData(val);
-                } else {
+        function FetchPlayerData() {
+            Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+                .then((val) => {
+                    setServerStatusData(val);
+                })
+                .catch(() => {});
+            Fetch("https://www.playeraudit.com/api/playerandlfmoverview", 5000)
+                .then((val) => {
+                    setOverviewData(val);
+                })
+                .catch(() => {
                     // set_popupMessages([
                     //     ...popupMessages,
                     //     {
-                    //         title: "Something went wrong",
+                    //         title: "We're stuck on a loading screen",
                     //         message:
-                    //             "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                    //             "This is taking longer than usual. You can refresh the page or report the issue.",
                     //         icon: "warning",
                     //         fullscreen: false,
                     //         reportMessage:
-                    //             JSON.stringify(val) ||
-                    //             "Group data returned null",
+                    //             "Could not fetch Day Population data. Timeout",
                     //     },
                     // ]);
-                    setGroupData(null);
-                }
-            })
-            .catch(() => {
-                // set_popupMessages([
-                //     ...popupMessages,
-                //     {
-                //         title: "We're stuck on a loading screen",
-                //         message:
-                //             "This is taking longer than usual. You can refresh the page or report the issue.",
-                //         icon: "warning",
-                //         fullscreen: false,
-                //         reportMessage:
-                //             "Could not fetch Group data. Timeout",
-                //     },
-                // ]);
-            });
+                });
+        }
+        FetchPlayerData();
 
-        setNotificationRuleCount(
-            localStorage.getItem("notification-rules")
-                ? JSON.parse(localStorage.getItem("notification-rules")).length
-                : 0
-        );
+        const refreshdata = setInterval(() => {
+            FetchPlayerData();
+        }, 60000);
+        return () => clearInterval(refreshdata);
     }, []);
 
     return (
@@ -118,14 +101,14 @@ const Grouping = () => {
                 showSubtitle={true}
                 showButtons={false}
                 hideOnMobile={true}
-                title="Grouping"
-                subtitle="Live LFM Viewer"
+                title="Who"
+                subtitle="Live Player Lookup"
             />
             <Helmet>
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="View a live LFM panel to find public groups. See which groups are currently looking for more players and what content is currently being run."
+                    content="Browse players from any server with a live Who panel. Are your friends online? Is your guild forming up for a late-night raid? Now you know!"
                 />
             </Helmet>
             <div id="content-container">
@@ -141,7 +124,7 @@ const Grouping = () => {
                     <div className="content-cluster-options">
                         {SERVER_NAMES.map((name, i) => (
                             <Link
-                                to={"/grouping/" + name.toLowerCase()}
+                                to={"/who/" + name.toLowerCase()}
                                 key={i}
                                 className="nav-box shrinkable"
                             >
@@ -163,33 +146,7 @@ const Grouping = () => {
                         ))}
                     </div>
                 </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Notifications</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        You currently have{" "}
-                        <span style={{ color: "var(--text-lfm-number)" }}>
-                            {notificationRuleCount}
-                        </span>{" "}
-                        notification rule
-                        {notificationRuleCount !== 1 ? "s" : ""} setup.
-                        Configure notifications in the{" "}
-                        <Link to="/notifications">notification settings</Link>.
-                    </p>
-                    <div className="content-cluster-options"></div>
-                </div>
-                <div className="content-cluster">
+                {/* <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Contributions</h2>
                     <hr
                         style={{
@@ -235,10 +192,10 @@ const Grouping = () => {
                         project is made possible by your feedback and
                         suggestions!
                     </p>
-                </div>
+                </div> */}
             </div>
         </div>
     );
 };
 
-export default Grouping;
+export default Who;
