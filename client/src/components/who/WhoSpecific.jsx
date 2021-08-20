@@ -203,10 +203,6 @@ const WhoSpecific = (props) => {
             }
         }
 
-        // Pull out starred players to be inserted at the top later
-        let starredplayers = data.filter((p) => IsStarred(p));
-        data = data.filter((p) => !IsStarred(p));
-
         // Apply filters
         if (activeFilters !== null && activeFilters.length !== 0) {
             data = data.filter((player) => {
@@ -250,9 +246,12 @@ const WhoSpecific = (props) => {
                 });
                 return pass;
             });
+        } else {
+            // Pull out starred players to be inserted at the top later
+            let starredplayers = data.filter((p) => IsStarred(p));
+            data = data.filter((p) => !IsStarred(p));
+            data = [...starredplayers, ...data];
         }
-
-        data = [...starredplayers, ...data];
 
         return data;
     }

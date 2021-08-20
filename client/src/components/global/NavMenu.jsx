@@ -89,10 +89,6 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-                {/* <NavItem to="/quests">
-                    <QuestsSVG className="nav-icon" />
-                    Quests
-                </NavItem> */}
                 <NavDropdown
                     to="/who"
                     title={
@@ -113,11 +109,15 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-                {/* <NavItem to="/trends">
+                <NavItem to="/quests" className="hide-on-mobile">
+                    <QuestsSVG className="nav-icon" />
+                    Quests
+                </NavItem>
+                <NavItem to="/trends" className="hide-on-mobile">
                     <TrendsSVG className="nav-icon" />
                     <span className="nav-text">Trends</span>
-                </NavItem> */}
-                <NavItem to="/about">
+                </NavItem>
+                <NavItem to="/about" className="hide-on-mobile">
                     <AboutSVG className="nav-icon" />
                     <span className="nav-text">About</span>
                 </NavItem>

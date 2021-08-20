@@ -352,7 +352,7 @@ html {
 }
 
 .show-on-mobile {
-    display: none;
+    display: none !important;
 }
 
 @media (max-width: 1800px) {
@@ -957,11 +957,8 @@ input[type="radio"] {
         justify-content: center;
         width: 100% !important;
     }
-    .hide-on-mobile {
-        display: none;
-    }
     .show-on-mobile {
-        display: flex;
+        display: flex !important;
     }
     .nav-box.shrinkable {
         width: 100%;
@@ -1025,6 +1022,9 @@ input[type="radio"] {
         justify-content: left !important;
         align-items: flex-start !important;
         flex-direction: column !important;
+    }
+    .hide-on-mobile {
+        display: none;
     }
 }
 

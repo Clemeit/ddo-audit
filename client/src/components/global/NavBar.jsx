@@ -19,7 +19,7 @@ const NavItem = (props) => {
             to={props.to}
             className={
                 "nav-item " +
-                props.className +
+                (props.className && props.className) +
                 " " +
                 (props.to === "/"
                     ? location.pathname === props.to

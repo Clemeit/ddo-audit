@@ -45,8 +45,8 @@ const About = (props) => {
                         asking for: a Live LFM panel and Live Who list. We're
                         not here to push an agenda or to point fingers.{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
-                            Our goal is, and has always been, to provide
-                            transparent and unbiased information.
+                            Our goal is, and has always been, to provide as
+                            transparent and unbiased information as possible.
                         </span>
                     </p>
                 </div>

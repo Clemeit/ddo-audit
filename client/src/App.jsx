@@ -38,6 +38,7 @@ import About from "./components/about/About";
 // Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
 const Quests = lazy(() => import("./components/quests/Quests"));
+const Trends = lazy(() => import("./components/trends/Trends"));
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -68,6 +69,7 @@ export default () => {
                     component={NotificationForm}
                 />
                 <Route exact path="/who" component={Who} />
+                <Route exact path="/trends" component={Trends} />
                 <Route path="/who/:serverName" component={WhoSpecific} />
                 <Route path="/about" component={About} />
             </Layout>

@@ -35,7 +35,7 @@ const Grouping = () => {
     }
 
     function GetServerDescription(name) {
-        if (groupData === null || groupData === undefined) {
+        if (overviewData === null || overviewData === undefined) {
             return (
                 <p
                     className="content-option-description"
@@ -50,13 +50,13 @@ const Grouping = () => {
                 className="content-option-description"
                 style={{ color: "var(--text-lfm-number)", fontSize: "1.4rem" }}
             >
-                {groupData.filter((server) => server.Name === name)[0]
-                    .GroupCount + " groups"}
+                {overviewData.filter((server) => server.ServerName === name)[0]
+                    .LfmCount + " groups"}
             </p>
         );
     }
 
-    const [groupData, setGroupData] = React.useState(null);
+    const [overviewData, setOverviewData] = React.useState(null);
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
 
@@ -66,27 +66,27 @@ const Grouping = () => {
                 setServerStatusData(val);
             })
             .catch(() => {});
-        Fetch("https://www.playeraudit.com/api/groups", 5000)
+        Fetch("https://www.playeraudit.com/api/playerandlfmoverview", 5000)
             .then((val) => {
-                if (VerifyLfmData(val)) {
-                    // set_popupMessages([]);
-                    setGroupData(val);
-                } else {
-                    // set_popupMessages([
-                    //     ...popupMessages,
-                    //     {
-                    //         title: "Something went wrong",
-                    //         message:
-                    //             "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                    //         icon: "warning",
-                    //         fullscreen: false,
-                    //         reportMessage:
-                    //             JSON.stringify(val) ||
-                    //             "Group data returned null",
-                    //     },
-                    // ]);
-                    setGroupData(null);
-                }
+                // if (VerifyLfmData(val)) {
+                // set_popupMessages([]);
+                setOverviewData(val);
+                // } else {
+                // set_popupMessages([
+                //     ...popupMessages,
+                //     {
+                //         title: "Something went wrong",
+                //         message:
+                //             "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                //         icon: "warning",
+                //         fullscreen: false,
+                //         reportMessage:
+                //             JSON.stringify(val) ||
+                //             "Group data returned null",
+                //     },
+                // ]);
+                // setOverviewData(null);
+                // }
             })
             .catch(() => {
                 // set_popupMessages([

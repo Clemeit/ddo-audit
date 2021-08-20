@@ -13,6 +13,8 @@ import QuestTable from "./QuestTable";
 import PopupMessage from "../global/PopupMessage";
 import ChartBar from "../global/ChartBar";
 import { Fetch } from "../../services/DataLoader";
+import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
+import NoMobileOptimization from "../global/NoMobileOptimization";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
@@ -481,6 +483,7 @@ const Quests = (props) => {
             />
             <div id="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
+                <NoMobileOptimization />
                 {!questList && (
                     <div className="content-cluster">
                         <h2 style={{ color: "var(--text)" }}>

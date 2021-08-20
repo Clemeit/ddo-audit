@@ -441,6 +441,7 @@ const GroupingSpecific = (props) => {
                         )}
                     </div>
                 )}
+                <div className="top-content-padding hide-on-mobile" />
             </div>
         </div>
     );
