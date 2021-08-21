@@ -19,9 +19,9 @@ export async function Fetch(url, timeout) {
             .then((val) => {
                 resolve(val);
             })
-            .catch((val) => {
-                console.log("Failed to fetch data");
-                reject();
+            .catch((err) => {
+                console.log("Failed to fetch data " + err);
+                reject(err);
             });
     });
     return ret;

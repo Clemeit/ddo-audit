@@ -96,10 +96,10 @@ const Player = (props) => {
                         {props.player.InParty === 1 && (
                             <GroupingSVG
                                 className="link-icon in-group-icon"
-                                onClick={(e) => {
-                                    props.handleAddFilter("Group");
-                                    e.stopPropagation();
-                                }}
+                                // onClick={(e) => {
+                                //     props.handleAddFilter("Group");
+                                //     e.stopPropagation();
+                                // }}
                                 style={{
                                     marginRight: "3px",
                                 }}
@@ -107,10 +107,10 @@ const Player = (props) => {
                         )}
                         <span
                             className="in-group-icon"
-                            onClick={(e) => {
-                                props.handleAddFilter("Location");
-                                e.stopPropagation();
-                            }}
+                            // onClick={(e) => {
+                            //     props.handleAddFilter("Location");
+                            //     e.stopPropagation();
+                            // }}
                         >
                             {props.player.Location.Name}
                         </span>

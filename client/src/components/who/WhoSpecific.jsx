@@ -8,8 +8,11 @@ import Player from "./Player";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import Banner from "../global/Banner";
 import FilterBar from "../global/FilterBar";
+import CanvasWhoPanel from "./CanvasWhoPanel";
+import PopupMessage from "../global/PopupMessage";
 
 const WhoSpecific = (props) => {
+    // TODO: If this server is currently offline, don't bother checking for players
     const TITLE = "DDO Live LFM Viewer";
 
     const serverNames = [
@@ -50,20 +53,75 @@ const WhoSpecific = (props) => {
     const [lastFetchTime, set_lastFetchTime] = React.useState(null);
     const [attemptedPlayerFetch, set_attemptedPlayerFetch] =
         React.useState(null);
+    const [classFilterStates, setClassFilterStates] = React.useState([
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+    ]);
+    const CLASS_NAMES = [
+        "fighter",
+        "paladin",
+        "barbarian",
+        "rogue",
+        "ranger",
+        "cleric",
+        "wizard",
+        "sorcerer",
+        "bard",
+        "monk",
+        "favored soul",
+        "artificer",
+        "druid",
+        "warlock",
+        "alchemist",
+    ];
+    const [includeRegion, setIncludeRegion] = React.useState(false);
+    const [exactMatch, setExactMatch] = React.useState(false);
+
+    const [failedAttemptCount, setFailedAttemptCount] = React.useState(0);
+    const failedAttemptRef = React.useRef(failedAttemptCount);
+    failedAttemptRef.current = failedAttemptCount;
 
     // Settings
-    const [alternativeLook, set_alternativeLook] = React.useState(true);
-    const [activeFilters, set_activeFilters] = React.useState([]);
-    const [sortingMethod, set_sortingMethod] = React.useState("level");
-    const [sortingDirection, set_sortingDirection] =
-        React.useState("ascending");
+    const [alternativeLook, setAlternativeLook] = React.useState(true);
+    const [activeFilters, setActiveFilter] = React.useState([]);
+    const [sortingMethod, setSortingMethod] = React.useState("level");
+    const [sortingDirection, setSortingDirection] = React.useState("ascending");
 
-    const [pageNumber, set_pageNumber] = React.useState(0);
+    const [pageNumber, setPageNumber] = React.useState(0);
 
-    const [expandedPlayers, set_expandedPlayers] = React.useState([]);
+    const [expandedPlayers, setExpandedPlayers] = React.useState([]);
     const [pinnedPlayers, setPinnedPlayers] = React.useState([]);
 
     const [filterPanelVisible, setFilterPanelVisible] = React.useState(false);
+
+    const [theme, setTheme] = React.useState(true);
+    function toggleTheme() {
+        let theme = localStorage.getItem("theme");
+        if (theme === "light-theme") {
+            setTheme("dark");
+
+            document.body.classList.replace("light-theme", "dark-theme");
+            localStorage.setItem("theme", "dark-theme");
+        } else {
+            setTheme("light");
+
+            document.body.classList.replace("dark-theme", "light-theme");
+            localStorage.setItem("theme", "light-theme");
+        }
+    }
 
     var characterNameTimeout;
     function HandleCharacterNameFilter() {
@@ -71,7 +129,7 @@ const WhoSpecific = (props) => {
         characterNameTimeout = setTimeout(() => {
             let charactername = document.getElementById("charactername").value;
             if (charactername) {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter((filter) => filter.type !== "Name"),
                     {
                         type: "Name",
@@ -79,7 +137,7 @@ const WhoSpecific = (props) => {
                     },
                 ]);
             } else {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter((filter) => filter.type !== "Name"),
                 ]);
             }
@@ -92,7 +150,7 @@ const WhoSpecific = (props) => {
         guildNameTimeout = setTimeout(() => {
             let guildname = document.getElementById("guildname").value;
             if (guildname) {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Guild"
                     ),
@@ -102,7 +160,7 @@ const WhoSpecific = (props) => {
                     },
                 ]);
             } else {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Guild"
                     ),
@@ -117,7 +175,7 @@ const WhoSpecific = (props) => {
         minimumLevelTimeout = setTimeout(() => {
             let minimumlevel = document.getElementById("minimumlevel").value;
             if (minimumlevel) {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Min Level"
                     ),
@@ -127,7 +185,7 @@ const WhoSpecific = (props) => {
                     },
                 ]);
             } else {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Min Level"
                     ),
@@ -142,7 +200,7 @@ const WhoSpecific = (props) => {
         maximumLevelTimeout = setTimeout(() => {
             let maximumlevel = document.getElementById("maximumlevel").value;
             if (maximumlevel) {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Max Level"
                     ),
@@ -152,7 +210,7 @@ const WhoSpecific = (props) => {
                     },
                 ]);
             } else {
-                set_activeFilters([
+                setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Max Level"
                     ),
@@ -163,12 +221,79 @@ const WhoSpecific = (props) => {
 
     function HandleSortFilter() {
         let sortfilter = document.getElementById("sort-type").value;
-        set_sortingMethod(sortfilter.toLowerCase());
+        setSortingMethod(sortfilter.toLowerCase());
     }
 
     function HandleDirectionFilter() {
         let sortfilter = document.getElementById("sort-direction").value;
-        set_sortingDirection(sortfilter.toLowerCase());
+        setSortingDirection(sortfilter.toLowerCase());
+    }
+
+    function handleClassFilter(index) {
+        // const temp = [...classFilterStates];
+        // temp[index] = !temp[index];
+        setClassFilterStates((classFilterStates) =>
+            classFilterStates.map((r, i) =>
+                i === index ? (r === true ? false : true) : r
+            )
+        );
+    }
+
+    function isEveryClassChecked() {
+        let result = true;
+        classFilterStates.forEach((state) => {
+            if (!state) result = false;
+        });
+        console.log(result);
+        return result;
+    }
+
+    function handleAnyClass() {
+        // if (isEveryClassChecked()) {
+        //     setClassFilterStates([
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //         false,
+        //     ]);
+        // } else {
+        setClassFilterStates([
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+        ]);
+        // }
+    }
+
+    function handleIncludeRegion() {
+        setIncludeRegion((includeRegion) => !includeRegion);
+    }
+
+    function handleExactMatch() {
+        setExactMatch((exactMatch) => !exactMatch);
     }
 
     function ApplyFilters(data) {
@@ -204,54 +329,81 @@ const WhoSpecific = (props) => {
         }
 
         // Apply filters
-        if (activeFilters !== null && activeFilters.length !== 0) {
-            data = data.filter((player) => {
-                let pass = true;
-                activeFilters.forEach((filter) => {
-                    switch (filter.type) {
-                        case "Name":
-                            if (
-                                !player.Name.toLowerCase().includes(
-                                    filter.value.toLowerCase()
-                                )
+        data = data.filter(
+            (player) => player.Name !== "Anonymous" && player.Name !== ""
+        );
+
+        // if (activeFilters !== null && activeFilters.length !== 0) {
+        data = data.filter((player) => {
+            let pass = true;
+            activeFilters.forEach((filter) => {
+                switch (filter.type) {
+                    case "Name":
+                        if (
+                            !player.Name.toLowerCase().includes(
+                                filter.value.toLowerCase()
                             )
-                                pass = false;
-                            break;
-                        case "Guild":
-                            if (
-                                !player.Guild.toLowerCase().includes(
-                                    filter.value.toLowerCase()
-                                )
+                        )
+                            pass = false;
+                        break;
+                    case "Guild":
+                        if (
+                            !player.Guild.toLowerCase().includes(
+                                filter.value.toLowerCase()
                             )
-                                pass = false;
-                            break;
-                        case "Location":
-                            if (
-                                !player.Location.Name.toLowerCase().includes(
-                                    filter.value.toLowerCase()
-                                )
+                        )
+                            pass = false;
+                        break;
+                    case "Location":
+                        if (
+                            !player.Location.Name.toLowerCase().includes(
+                                filter.value.toLowerCase()
                             )
-                                pass = false;
-                            break;
-                        case "Group":
-                            if (player.GroupId !== filter.value) pass = false;
-                            break;
-                        case "Min Level":
-                            if (player.TotalLevel < filter.value) pass = false;
-                            break;
-                        case "Max Level":
-                            if (player.TotalLevel > filter.value) pass = false;
-                            break;
-                    }
-                });
-                return pass;
+                        )
+                            pass = false;
+                        break;
+                    case "Group":
+                        if (player.GroupId !== filter.value) pass = false;
+                        break;
+                    case "Min Level":
+                        if (player.TotalLevel < filter.value) pass = false;
+                        break;
+                    case "Max Level":
+                        if (player.TotalLevel > filter.value) pass = false;
+                        break;
+                }
             });
-        } else {
-            // Pull out starred players to be inserted at the top later
-            let starredplayers = data.filter((p) => IsStarred(p));
-            data = data.filter((p) => !IsStarred(p));
-            data = [...starredplayers, ...data];
-        }
+            let classresult = false;
+            classFilterStates.forEach((cls, index) => {
+                if (cls === true) {
+                    let result = false;
+                    player.Classes.forEach((playercls) => {
+                        if (playercls.Name !== null) {
+                            if (
+                                playercls.Name.toLowerCase() ===
+                                CLASS_NAMES[index].toLowerCase()
+                            ) {
+                                result = true;
+                            }
+                        }
+                    });
+                    if (result === true) classresult = true;
+                }
+            });
+            if (classresult === false) pass = false;
+            return pass;
+        });
+        // } else {
+        //     // Pull out starred players to be inserted at the top later
+        //     let starredplayers = data.filter((p) => IsStarred(p));
+        //     data = data.filter((p) => !IsStarred(p));
+        //     data = [...starredplayers, ...data];
+        // }
+
+        // Pull out starred players to be inserted at the top later
+        let starredplayers = data.filter((p) => IsStarred(p));
+        data = data.filter((p) => !IsStarred(p));
+        data = [...starredplayers, ...data];
 
         return data;
     }
@@ -289,6 +441,17 @@ const WhoSpecific = (props) => {
         }
     }, [props.location]);
 
+    React.useEffect(() => {
+        // Load local storage
+        let theme = localStorage.getItem("theme");
+        setTheme(theme);
+
+        let alternativelook = localStorage.getItem("alternative-who-look");
+        setAlternativeLook(
+            alternativelook !== null ? alternativelook === "true" : false
+        );
+    }, []);
+
     function GetSnarkyMessage() {
         if (playerCount === 0) {
             return "Maybe they're all anonymous.";
@@ -307,6 +470,7 @@ const WhoSpecific = (props) => {
         sortingMethod,
         sortingDirection,
         pinnedPlayers,
+        classFilterStates,
     ]);
 
     React.useEffect(() => {
@@ -323,8 +487,10 @@ const WhoSpecific = (props) => {
     }, [filteredPlayerData, pageNumber]);
 
     // Let's get some data
+    let recheck; // TODO: Clearing this timeout doesn't work
     React.useEffect(() => {
-        var failedAttemptCount = 5;
+        clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
+        if (!currentServer) return;
         function FetchPlayerData() {
             Fetch(
                 "https://www.playeraudit.com/api/playersnew?s=" +
@@ -337,45 +503,59 @@ const WhoSpecific = (props) => {
                     set_lastFetchTime(Date.now());
                     set_attemptedPlayerFetch(true);
                     if (VerifyPlayerData(val)) {
-                        set_popupMessages([]);
-                        failedAttemptCount = 0;
+                        setPopupMessages([]);
+                        failedAttemptRef.current = 0;
+                        setFailedAttemptCount(failedAttemptRef.current);
                         set_playerData({ timestamp: Date.now(), data: val });
                     } else {
-                        failedAttemptCount++;
-                        if (failedAttemptCount > 5) {
-                            // set_popupMessages([
-                            //     ...popupMessages,
-                            //     {
-                            //         title: "Something went wrong",
-                            //         message:
-                            //             "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                            //         icon: "warning",
-                            //         fullscreen: false,
-                            //         reportMessage:
-                            //             JSON.stringify(val) ||
-                            //             "Player data returned null",
-                            //     },
-                            // ]);
+                        failedAttemptRef.current++;
+                        setFailedAttemptCount(failedAttemptRef.current);
+                        if (failedAttemptRef.current > 5) {
+                            setPopupMessages([
+                                ...popupMessages,
+                                {
+                                    title: "Something went wrong",
+                                    message:
+                                        "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                    icon: "warning",
+                                    fullscreen: false,
+                                    reportMessage:
+                                        val === null
+                                            ? "Player data returned null"
+                                            : "[A] Verification failed; " +
+                                              val.Population +
+                                              " players online",
+                                },
+                            ]);
+                        } else {
+                            recheck = setTimeout(() => {
+                                FetchPlayerData();
+                            }, 200);
                         }
                     }
                 })
-                .catch(() => {
-                    failedAttemptCount++;
+                .catch((err) => {
+                    failedAttemptRef.current++;
+                    setFailedAttemptCount(failedAttemptRef.current);
                     set_lastFetchTime(Date.now());
                     set_attemptedPlayerFetch(true);
-                    if (failedAttemptCount > 5) {
-                        // set_popupMessages([
-                        //     ...popupMessages,
-                        //     {
-                        //         title: "We're stuck on a loading screen",
-                        //         message:
-                        //             "This is taking longer than usual. You can refresh the page or report the issue.",
-                        //         icon: "warning",
-                        //         fullscreen: false,
-                        //         reportMessage:
-                        //             "Could not fetch Player data. Timeout",
-                        //     },
-                        // ]);
+                    if (failedAttemptRef.current > 5) {
+                        setPopupMessages([
+                            ...popupMessages,
+                            {
+                                title: "Couldn't fetch player data",
+                                message:
+                                    "Try refreshing the page. If the issue continues, please report it.",
+                                submessage: err.toString(),
+                                icon: "warning",
+                                fullscreen: false,
+                                reportMessage: "[A] Timeout",
+                            },
+                        ]);
+                    } else {
+                        recheck = setTimeout(() => {
+                            FetchPlayerData();
+                        }, 250);
                     }
                 });
         }
@@ -384,7 +564,10 @@ const WhoSpecific = (props) => {
         const refreshdata = setInterval(() => {
             FetchPlayerData();
         }, 60000);
-        return () => clearInterval(refreshdata);
+        return () => {
+            clearInterval(refreshdata);
+            clearTimeout(recheck);
+        };
     }, [currentServer]);
 
     React.useEffect(() => {
@@ -439,7 +622,7 @@ const WhoSpecific = (props) => {
     }
 
     // Popup message
-    var [popupMessages, set_popupMessages] = React.useState([]);
+    var [popupMessages, setPopupMessages] = React.useState([]);
 
     return (
         currentServer && (
@@ -466,7 +649,7 @@ const WhoSpecific = (props) => {
                     visibility={reportFormVisibility}
                     componentReference={reportFormReference}
                     hideReportForm={hideReportForm}
-                />
+                /> */}
                 <PopupMessage
                     page={"who/" + currentServer.toLowerCase()}
                     messages={popupMessages}
@@ -474,12 +657,300 @@ const WhoSpecific = (props) => {
                         if (popupMessages.length) {
                             let newMessages = [...popupMessages];
                             newMessages = newMessages.slice(1);
-                            set_popupMessages(newMessages);
+                            setPopupMessages(newMessages);
                         }
                     }}
-                /> */}
+                />
                 <div id="content-container">
                     <div className="top-content-padding hide-on-mobile" />
+                    <FilterBar
+                        currentServer={currentServer}
+                        showNotifications={false}
+                        maxWidth={706}
+                        returnTo="/who"
+                        handleFilterButton={() =>
+                            setFilterPanelVisible(!filterPanelVisible)
+                        }
+                    >
+                        <div
+                            className="filter-panel-overlay"
+                            style={{
+                                display: filterPanelVisible ? "block" : "none",
+                            }}
+                            onClick={() => setFilterPanelVisible(false)}
+                        />
+                        <div
+                            className="filter-panel"
+                            style={{
+                                display: filterPanelVisible ? "block" : "none",
+                                padding: "10px",
+                            }}
+                        >
+                            <div
+                                className="content-cluster"
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <h2
+                                    style={{
+                                        fontSize: "1.5rem",
+                                    }}
+                                >
+                                    Filter Players
+                                </h2>
+                                <hr
+                                    style={{
+                                        backgroundColor: "var(--text)",
+                                        opacity: 0.2,
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "left",
+                                        flexDirection: "column",
+                                        alignItems: "start",
+                                        gap: "10px",
+                                    }}
+                                >
+                                    <div
+                                        className="full-width-mobile column-on-mobile"
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="charactername"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                                marginRight: "10px",
+                                                marginBottom: "0px",
+                                            }}
+                                        >
+                                            Character name:
+                                        </label>
+                                        <input
+                                            className="full-width-mobile"
+                                            type="text"
+                                            id="charactername"
+                                            name="charactername"
+                                            onChange={() =>
+                                                HandleCharacterNameFilter()
+                                            }
+                                        />
+                                    </div>
+                                    <div
+                                        className="full-width-mobile column-on-mobile"
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="guildname"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                                marginRight: "10px",
+                                                marginBottom: "0px",
+                                            }}
+                                        >
+                                            Guild name:
+                                        </label>
+                                        <input
+                                            className="full-width-mobile"
+                                            type="text"
+                                            id="guildname"
+                                            name="guildname"
+                                            onChange={() =>
+                                                HandleGuildNameFilter()
+                                            }
+                                        />
+                                    </div>
+                                    <div
+                                        className="full-width-mobile column-on-mobile"
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                            marginBottom: "10px",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="minimumlevel"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                                marginRight: "10px",
+                                                marginBottom: "0px",
+                                            }}
+                                        >
+                                            Level range:
+                                        </label>
+                                        <div className="full-width-mobile">
+                                            <input
+                                                className="full-width-mobile"
+                                                type="text"
+                                                id="minimumlevel"
+                                                name="minimumlevel"
+                                                onChange={() =>
+                                                    HandleMinimumLevelFilter()
+                                                }
+                                            />
+                                            <label
+                                                htmlFor="maximumlevel"
+                                                style={{
+                                                    padding: "0px 7px 0px 7px",
+                                                    fontSize: "1.1rem",
+                                                }}
+                                            >
+                                                to
+                                            </label>
+                                            <input
+                                                className="full-width-mobile"
+                                                type="text"
+                                                id="maximumlevel"
+                                                name="maximumlevel"
+                                                onChange={() =>
+                                                    HandleMaximumLevelFilter()
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                            gap: "10px",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="sort-type"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                                marginBottom: "0px",
+                                            }}
+                                        >
+                                            Sort by
+                                        </label>
+
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                gap: "10px",
+                                                flexWrap: "wrap",
+                                            }}
+                                        >
+                                            <select
+                                                className="input-select"
+                                                name="sort-type"
+                                                id="sort-type"
+                                                style={{
+                                                    maxWidth: "200px",
+                                                    fontSize: "1.2rem",
+                                                }}
+                                                onChange={() =>
+                                                    HandleSortFilter()
+                                                }
+                                            >
+                                                <option value="level">
+                                                    Level
+                                                </option>
+                                                <option value="name">
+                                                    Name
+                                                </option>
+                                                <option value="guild">
+                                                    Guild
+                                                </option>
+                                                <option value="location">
+                                                    Location
+                                                </option>
+                                            </select>
+                                            <select
+                                                className="input-select"
+                                                name="sort-direction"
+                                                id="sort-direction"
+                                                style={{
+                                                    maxWidth: "200px",
+                                                    fontSize: "1.2rem",
+                                                }}
+                                                onChange={() =>
+                                                    HandleDirectionFilter()
+                                                }
+                                            >
+                                                <option value="ascending">
+                                                    Ascending
+                                                </option>
+                                                <option value="descending">
+                                                    Descending
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                className="content-cluster"
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <h2
+                                    style={{
+                                        fontSize: "1.5rem",
+                                    }}
+                                >
+                                    Accessibility
+                                </h2>
+                                <hr
+                                    style={{
+                                        backgroundColor: "var(--text)",
+                                        opacity: 0.2,
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "left",
+                                        flexDirection: "column",
+                                        alignItems: "start",
+                                    }}
+                                >
+                                    <label className="filter-panel-group-option show-on-mobile">
+                                        <input
+                                            className="input-radio"
+                                            name="darktheme"
+                                            type="checkbox"
+                                            checked={theme === "dark-theme"}
+                                            onChange={() => {
+                                                toggleTheme();
+                                            }}
+                                        />
+                                        Dark theme
+                                    </label>
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="classislook"
+                                            type="checkbox"
+                                            checked={alternativeLook}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "alternative-who-look",
+                                                    !alternativeLook
+                                                );
+                                                setAlternativeLook(
+                                                    !alternativeLook
+                                                );
+                                            }}
+                                        />
+                                        Alternative View (easier to see on
+                                        mobile)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </FilterBar>
                     {paginatedPlayerData ? (
                         <div
                             style={{
@@ -491,18 +962,33 @@ const WhoSpecific = (props) => {
                             }}
                         >
                             {alternativeLook === false ? (
-                                // <CanvasLfmPanel
-                                //     data={groupDataServer}
-                                //     showNotEligible={showNotEligible}
-                                //     adjustedGroupCount={adjustedGroupCount}
-                                //     fontModifier={fontModifier}
-                                //     highVisibility={highVisibility}
-                                //     // showNotEligible={showNotEligible}
-                                //     // sortOrder={sortOrder}
-                                //     // minimumLevel={minimumLevel}
-                                //     // maximumLevel={maximumLevel}
-                                // ></CanvasLfmPanel>
-                                <div></div>
+                                <div>
+                                    <CanvasWhoPanel
+                                        data={filteredPlayerData}
+                                        filters={activeFilters}
+                                        classFilterStates={classFilterStates}
+                                        includeRegion={includeRegion}
+                                        exactMatch={exactMatch}
+                                        handleClassFilter={(i) => {
+                                            handleClassFilter(i);
+                                        }}
+                                        handleAnyClass={() => {
+                                            handleAnyClass();
+                                        }}
+                                        handleIncludeRegion={() => {
+                                            handleIncludeRegion();
+                                        }}
+                                        handleExactMatch={() => {
+                                            handleExactMatch();
+                                        }}
+                                        handleOpenSettings={() =>
+                                            setFilterPanelVisible(
+                                                !filterPanelVisible
+                                            )
+                                        }
+                                    />
+                                    <div className="top-content-padding hide-on-mobile" />
+                                </div>
                             ) : (
                                 <div
                                     style={{
@@ -513,268 +999,6 @@ const WhoSpecific = (props) => {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <FilterBar
-                                        currentServer={currentServer}
-                                        showNotifications={false}
-                                        returnTo="/who"
-                                        handleFilterButton={() =>
-                                            setFilterPanelVisible(
-                                                !filterPanelVisible
-                                            )
-                                        }
-                                    >
-                                        <div
-                                            className="filter-panel-overlay"
-                                            style={{
-                                                display: filterPanelVisible
-                                                    ? "block"
-                                                    : "none",
-                                            }}
-                                            onClick={() =>
-                                                setFilterPanelVisible(false)
-                                            }
-                                        />
-                                        <div
-                                            className="filter-panel"
-                                            style={{
-                                                display: filterPanelVisible
-                                                    ? "block"
-                                                    : "none",
-                                                padding: "10px",
-                                            }}
-                                        >
-                                            <div
-                                                className="content-cluster"
-                                                style={{ marginBottom: "10px" }}
-                                            >
-                                                <h2
-                                                    style={{
-                                                        fontSize: "1.5rem",
-                                                    }}
-                                                >
-                                                    Filter Players
-                                                </h2>
-                                                <hr
-                                                    style={{
-                                                        backgroundColor:
-                                                            "var(--text)",
-                                                        opacity: 0.2,
-                                                    }}
-                                                />
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        justifyContent: "left",
-                                                        flexDirection: "column",
-                                                        alignItems: "start",
-                                                        gap: "10px",
-                                                    }}
-                                                >
-                                                    <div
-                                                        className="full-width-mobile column-on-mobile"
-                                                        style={{
-                                                            display: "flex",
-                                                            flexDirection:
-                                                                "row",
-                                                            flexWrap: "wrap",
-                                                        }}
-                                                    >
-                                                        <label
-                                                            htmlFor="charactername"
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.2rem",
-                                                                marginRight:
-                                                                    "10px",
-                                                                marginBottom:
-                                                                    "0px",
-                                                            }}
-                                                        >
-                                                            Character name:
-                                                        </label>
-                                                        <input
-                                                            className="full-width-mobile"
-                                                            type="text"
-                                                            id="charactername"
-                                                            name="charactername"
-                                                            onChange={() =>
-                                                                HandleCharacterNameFilter()
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div
-                                                        className="full-width-mobile column-on-mobile"
-                                                        style={{
-                                                            display: "flex",
-                                                            flexDirection:
-                                                                "row",
-                                                            flexWrap: "wrap",
-                                                        }}
-                                                    >
-                                                        <label
-                                                            htmlFor="guildname"
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.2rem",
-                                                                marginRight:
-                                                                    "10px",
-                                                                marginBottom:
-                                                                    "0px",
-                                                            }}
-                                                        >
-                                                            Guild name:
-                                                        </label>
-                                                        <input
-                                                            className="full-width-mobile"
-                                                            type="text"
-                                                            id="guildname"
-                                                            name="guildname"
-                                                            onChange={() =>
-                                                                HandleGuildNameFilter()
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div
-                                                        className="full-width-mobile column-on-mobile"
-                                                        style={{
-                                                            display: "flex",
-                                                            flexDirection:
-                                                                "row",
-                                                            flexWrap: "wrap",
-                                                            marginBottom:
-                                                                "10px",
-                                                        }}
-                                                    >
-                                                        <label
-                                                            htmlFor="minimumlevel"
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.2rem",
-                                                                marginRight:
-                                                                    "10px",
-                                                                marginBottom:
-                                                                    "0px",
-                                                            }}
-                                                        >
-                                                            Level range:
-                                                        </label>
-                                                        <div className="full-width-mobile">
-                                                            <input
-                                                                className="full-width-mobile"
-                                                                type="text"
-                                                                id="minimumlevel"
-                                                                name="minimumlevel"
-                                                                onChange={() =>
-                                                                    HandleMinimumLevelFilter()
-                                                                }
-                                                            />
-                                                            <label
-                                                                htmlFor="maximumlevel"
-                                                                style={{
-                                                                    padding:
-                                                                        "0px 7px 0px 7px",
-                                                                    fontSize:
-                                                                        "1.1rem",
-                                                                }}
-                                                            >
-                                                                to
-                                                            </label>
-                                                            <input
-                                                                className="full-width-mobile"
-                                                                type="text"
-                                                                id="maximumlevel"
-                                                                name="maximumlevel"
-                                                                onChange={() =>
-                                                                    HandleMaximumLevelFilter()
-                                                                }
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            flexDirection:
-                                                                "row",
-                                                            flexWrap: "wrap",
-                                                            gap: "10px",
-                                                        }}
-                                                    >
-                                                        <label
-                                                            htmlFor="sort-type"
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.2rem",
-                                                                marginBottom:
-                                                                    "0px",
-                                                            }}
-                                                        >
-                                                            Sort by
-                                                        </label>
-
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                flexDirection:
-                                                                    "row",
-                                                                gap: "10px",
-                                                                flexWrap:
-                                                                    "wrap",
-                                                            }}
-                                                        >
-                                                            <select
-                                                                className="input-select"
-                                                                name="sort-type"
-                                                                id="sort-type"
-                                                                style={{
-                                                                    maxWidth:
-                                                                        "200px",
-                                                                    fontSize:
-                                                                        "1.2rem",
-                                                                }}
-                                                                onChange={() =>
-                                                                    HandleSortFilter()
-                                                                }
-                                                            >
-                                                                <option value="level">
-                                                                    Level
-                                                                </option>
-                                                                <option value="name">
-                                                                    Name
-                                                                </option>
-                                                                <option value="guild">
-                                                                    Guild
-                                                                </option>
-                                                                <option value="location">
-                                                                    Location
-                                                                </option>
-                                                            </select>
-                                                            <select
-                                                                className="input-select"
-                                                                name="sort-direction"
-                                                                id="sort-direction"
-                                                                style={{
-                                                                    maxWidth:
-                                                                        "200px",
-                                                                    fontSize:
-                                                                        "1.2rem",
-                                                                }}
-                                                                onChange={() =>
-                                                                    HandleDirectionFilter()
-                                                                }
-                                                            >
-                                                                <option value="ascending">
-                                                                    Ascending
-                                                                </option>
-                                                                <option value="descending">
-                                                                    Descending
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </FilterBar>
                                     {activeFilters &&
                                         activeFilters.length !== 0 && (
                                             <div
@@ -788,7 +1012,7 @@ const WhoSpecific = (props) => {
                                                     flexWrap: "wrap",
                                                     alignItems: "center",
                                                     width: "100%",
-                                                    maxWidth: "848px",
+                                                    maxWidth: "706px",
                                                 }}
                                             >
                                                 <h4
@@ -852,7 +1076,7 @@ const WhoSpecific = (props) => {
                                                                         "maximumlevel"
                                                                     ).value =
                                                                         "";
-                                                                set_activeFilters(
+                                                                setActiveFilter(
                                                                     activeFilters.filter(
                                                                         (
                                                                             _,
@@ -946,7 +1170,7 @@ const WhoSpecific = (props) => {
                                                                         player
                                                                     )
                                                                 ) {
-                                                                    set_expandedPlayers(
+                                                                    setExpandedPlayers(
                                                                         expandedPlayers.filter(
                                                                             (
                                                                                 p
@@ -959,7 +1183,7 @@ const WhoSpecific = (props) => {
                                                                         )
                                                                     );
                                                                 } else {
-                                                                    set_expandedPlayers(
+                                                                    setExpandedPlayers(
                                                                         [
                                                                             ...expandedPlayers,
                                                                             player,
@@ -974,7 +1198,7 @@ const WhoSpecific = (props) => {
                                                                     type ===
                                                                     "Group"
                                                                 ) {
-                                                                    set_activeFilters(
+                                                                    setActiveFilter(
                                                                         [
                                                                             ...activeFilters,
                                                                             {
@@ -988,7 +1212,7 @@ const WhoSpecific = (props) => {
                                                                     type ===
                                                                     "Guild"
                                                                 ) {
-                                                                    set_activeFilters(
+                                                                    setActiveFilter(
                                                                         [
                                                                             ...activeFilters,
                                                                             {
@@ -1001,7 +1225,7 @@ const WhoSpecific = (props) => {
                                                                     type ===
                                                                     "Location"
                                                                 ) {
-                                                                    set_activeFilters(
+                                                                    setActiveFilter(
                                                                         [
                                                                             ...activeFilters,
                                                                             {
@@ -1065,7 +1289,7 @@ const WhoSpecific = (props) => {
                                                                 : "paginationPage"
                                                         }
                                                         onClick={() => {
-                                                            set_pageNumber(i);
+                                                            setPageNumber(i);
                                                         }}
                                                     >
                                                         {i + 1}
@@ -1083,9 +1307,14 @@ const WhoSpecific = (props) => {
                                 width: "100%",
                                 textAlign: "center",
                                 color: "var(--text)",
+                                marginTop: "20px",
                             }}
                         >
-                            Loading player data...
+                            {failedAttemptCount
+                                ? `Loading player data. Attempt ${
+                                      failedAttemptCount + 1
+                                  }...`
+                                : "Loading player data..."}
                         </span>
                     )}
                 </div>

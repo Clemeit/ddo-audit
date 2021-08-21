@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactComponent as CloseSVG } from "../assets/global/close.svg";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { Submit } from "./ReportIssueService";
 
 // Browser check

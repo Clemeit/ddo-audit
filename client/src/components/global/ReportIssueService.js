@@ -25,10 +25,6 @@ export function Submit(page, element, comment, options) {
     else if (isOpera) browser = "opera";
     else browser = "unknown";
 
-    // let elem = JSON.stringify(element);
-    // let comm = comment;
-    // let opt = JSON.stringify(options);
-
     const url = "https://www.playeraudit.com/api/submit";
     const requestOptions = {
         method: "POST",

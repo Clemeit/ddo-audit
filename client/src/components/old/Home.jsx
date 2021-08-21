@@ -5,7 +5,7 @@ import Card from "./old_Card";
 import PlayerAndLfmSubtitle from "./live/PlayerAndLfmSubtitle";
 import QuickInfo from "../live/QuickInfo";
 import WhatIsCard from "./WhatIsCard";
-import ReportIssueForm from "./ReportIssueForm";
+import ReportIssueForm from "../global/ReportIssueForm";
 import ChartLine from "../global/ChartLine";
 import PopupMessage from "./global/PopupMessage";
 

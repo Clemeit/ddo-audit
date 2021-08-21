@@ -17,7 +17,11 @@ const LfmFilterBar = (props) => {
     return (
         <div
             className="filter-bar"
-            style={{ position: fullscreen ? "fixed" : "relative", top: "0px" }}
+            style={{
+                position: fullscreen ? "fixed" : "relative",
+                top: "0px",
+                maxWidth: props.maxWidth + "px",
+            }}
         >
             <div style={{ display: "flex", flexDirection: "row" }}>
                 <Link

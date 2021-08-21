@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import Card from "./old_Card";
-import ReportIssueForm from "./ReportIssueForm";
+import ReportIssueForm from "../global/ReportIssueForm";
 import PopupMessage from "./global/PopupMessage";
 import ServerSelectOption from "./ServerSelectOption";
 import { Fetch, VerifyLfmData } from "../../services/DataLoader";

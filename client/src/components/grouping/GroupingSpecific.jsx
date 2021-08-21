@@ -94,7 +94,7 @@ const GroupingSpecific = (props) => {
             sortascending !== null ? sortascending === "true" : true
         );
 
-        let alternativelook = localStorage.getItem("alternative-look");
+        let alternativelook = localStorage.getItem("alternative-lfm-look");
         setAlternativeLook(
             alternativelook !== null ? alternativelook === "true" : false
         );
@@ -196,6 +196,7 @@ const GroupingSpecific = (props) => {
                 <FilterBar
                     currentServer={currentServer}
                     showNotifications={true}
+                    maxWidth={848}
                     returnTo="/grouping"
                     handleFilterButton={() =>
                         setFilterPanelVisible(!filterPanelVisible)
@@ -333,7 +334,7 @@ const GroupingSpecific = (props) => {
                                         checked={alternativeLook}
                                         onChange={() => {
                                             localStorage.setItem(
-                                                "alternative-look",
+                                                "alternative-lfm-look",
                                                 !alternativeLook
                                             );
                                             setAlternativeLook(
@@ -431,6 +432,7 @@ const GroupingSpecific = (props) => {
                                     width: "100%",
                                     textAlign: "center",
                                     color: "var(--text)",
+                                    marginTop: "20px",
                                 }}
                             >
                                 {filteredServerData &&

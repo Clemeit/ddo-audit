@@ -51,6 +51,7 @@ const CanvasLfmPanel = (props) => {
     }
 
     React.useEffect(() => {
+        // TODO: Remove listeners
         var overlayTimeout;
         canvasRef.current.addEventListener("mousemove", (e) => {
             clearTimeout(overlayTimeout);
@@ -961,7 +962,7 @@ const CanvasLfmPanel = (props) => {
                         lfmHeight +
                     99
                 }
-            ></canvas>
+            />
         </div>
     );
 };

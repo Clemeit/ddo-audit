@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import Card from "./old_Card";
-import ReportIssueForm from "./ReportIssueForm";
+import ReportIssueForm from "../global/ReportIssueForm";
 import PopupMessage from "./global/PopupMessage";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import Player from "./Player";

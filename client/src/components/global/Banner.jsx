@@ -1,5 +1,5 @@
 import React from "react";
-// import { Submit } from "../ReportIssueService";
+import { Submit } from "../global/ReportIssueService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
@@ -28,13 +28,13 @@ const Banner = (props) => {
     }, []);
 
     function vote(response) {
-        // Submit("Home", "Voted", response, "");
+        Submit("Home", "Voted", response, "");
         localStorage.setItem("has-voted", "true");
         set_hasVoted(true);
         if (response === "Like") {
             set_voteMessage("Thanks for your feedback!");
         } else {
-            set_voteMessage("I welcome your suggestions!");
+            set_voteMessage("We welcome your suggestions!");
         }
     }
 
@@ -48,7 +48,7 @@ const Banner = (props) => {
         if (props.small) {
             offset = 50;
         } else {
-            offset = $(document).width() > 850 ? 160 : 30;
+            offset = $(window).outerWidth() > 850 ? 160 : 30;
         }
 
         $("#banner-text-container").css("top", `${offset - scrollTop / 2}px`);
@@ -91,7 +91,7 @@ const Banner = (props) => {
                         <h2 id="main-subtitle">{props.subtitle}</h2>
                     )}
                     {props.showButtons && (
-                        <div>
+                        <div className="hide-on-mobile">
                             <div id="action-button-container">
                                 <div className="primary-button">
                                     Visit our GitHub
@@ -110,7 +110,10 @@ const Banner = (props) => {
                                 </div>
                             </div>
                             {!hasVoted && (
-                                <div id="action-button-container">
+                                <div
+                                    id="action-button-container"
+                                    style={{ flexDirection: "row" }}
+                                >
                                     <span
                                         style={{
                                             color: "white",

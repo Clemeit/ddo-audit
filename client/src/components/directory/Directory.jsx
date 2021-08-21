@@ -8,6 +8,9 @@ import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
 import { ReactComponent as CommunitySVG } from "../../assets/global/community.svg";
+import { Submit } from "../global/ReportIssueService";
+import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
+import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
@@ -104,6 +107,23 @@ const Directory = (props) => {
         },
     ];
 
+    const [voteMessage, set_voteMessage] = React.useState(null);
+    const [hasVoted, set_hasVoted] = React.useState(true);
+    React.useEffect(() => {
+        set_hasVoted(localStorage.getItem("has-voted") === "true");
+    }, []);
+
+    function vote(response) {
+        Submit("Home", "Voted", "[M] " + response, "");
+        localStorage.setItem("has-voted", "true");
+        set_hasVoted(true);
+        if (response === "Like") {
+            set_voteMessage("Thanks for your feedback!");
+        } else {
+            set_voteMessage("We welcome your suggestions!");
+        }
+    }
+
     return (
         <div>
             <Helmet>
@@ -123,6 +143,54 @@ const Directory = (props) => {
             />
             <div id="content-container">
                 <div className="top-content-padding" />
+                {!hasVoted && (
+                    <div
+                        className="show-on-mobile"
+                        id="action-button-container"
+                        style={{
+                            flexDirection: "row",
+                            marginTop: "-25px",
+                            marginBottom: "15px",
+                        }}
+                    >
+                        <span
+                            style={{
+                                color: "white",
+                                fontSize: "large",
+                            }}
+                        >
+                            New Website!
+                        </span>
+                        <ThumbsUpSVG
+                            className="nav-icon"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => vote("Like")}
+                        />
+                        <ThumbsDownSVG
+                            className="nav-icon"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => vote("Dislike")}
+                        />
+                    </div>
+                )}
+                {voteMessage && (
+                    <div
+                        id="action-button-container"
+                        style={{
+                            marginTop: "-25px",
+                            marginBottom: "15px",
+                        }}
+                    >
+                        <span
+                            style={{
+                                color: "white",
+                                fontSize: "large",
+                            }}
+                        >
+                            {voteMessage}
+                        </span>
+                    </div>
+                )}
                 {NAV_OPTIONS.map((option, i) => (
                     <div key={i} className="content-cluster">
                         <h2 style={{ color: "var(--text)" }}>{option.title}</h2>
