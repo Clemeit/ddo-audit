@@ -490,6 +490,7 @@ const WhoSpecific = (props) => {
     let recheck; // TODO: Clearing this timeout doesn't work
     React.useEffect(() => {
         clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
+        set_filteredPlayerData(null);
         if (!currentServer) return;
         function FetchPlayerData() {
             Fetch(
@@ -563,7 +564,7 @@ const WhoSpecific = (props) => {
 
         const refreshdata = setInterval(() => {
             FetchPlayerData();
-        }, 60000);
+        }, 120000);
         return () => {
             clearInterval(refreshdata);
             clearTimeout(recheck);
@@ -951,7 +952,7 @@ const WhoSpecific = (props) => {
                             </div>
                         </div>
                     </FilterBar>
-                    {paginatedPlayerData ? (
+                    {paginatedPlayerData && filteredPlayerData ? (
                         <div
                             style={{
                                 width: "100%",
