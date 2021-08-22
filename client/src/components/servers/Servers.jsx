@@ -72,6 +72,7 @@ const Directory = (props) => {
     //             subtitle="Server population, demographics, and trends"
     //         />
     //         <div id="content-container" style={{ height: "2000px" }}>
+    // <BannerMessage page="servers" />
     //             <ServerStatusDisplay data={serverStatusData} />
     //         </div>
     //     </div>

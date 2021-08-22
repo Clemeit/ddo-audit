@@ -1,6 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
+import BannerMessage from "../global/BannerMessage";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 
 const Trends = (props) => {
@@ -23,6 +24,7 @@ const Trends = (props) => {
                 subtitle="Long-term trends and custom reports"
             />
             <div id="content-container">
+                <BannerMessage page="trends" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />
                 <div className="content-cluster">

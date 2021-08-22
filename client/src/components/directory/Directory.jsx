@@ -15,6 +15,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import Footer from "./Footer";
+import BannerMessage from "../global/BannerMessage";
 
 const Directory = (props) => {
     const TITLE = "DDO Audit";
@@ -142,6 +143,7 @@ const Directory = (props) => {
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
             <div id="content-container">
+                <BannerMessage page="home" />
                 <div className="top-content-padding" />
                 {!hasVoted && (
                     <div

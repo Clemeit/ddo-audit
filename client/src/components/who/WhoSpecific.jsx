@@ -10,6 +10,7 @@ import Banner from "../global/Banner";
 import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
+import BannerMessage from "../global/BannerMessage";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
@@ -523,9 +524,7 @@ const WhoSpecific = (props) => {
                                     reportMessage:
                                         val === null
                                             ? "Player data returned null"
-                                            : "[A] Verification failed; " +
-                                              val.Population +
-                                              " players online",
+                                            : "[A] Verification failed",
                                 },
                             ]);
                         } else {
@@ -662,7 +661,8 @@ const WhoSpecific = (props) => {
                         }
                     }}
                 />
-                <div id="content-container">
+                <div id="content-container" style={{ minHeight: "500px" }}>
+                    <BannerMessage className="push-on-mobile" page="who" />
                     <div className="top-content-padding hide-on-mobile" />
                     <FilterBar
                         currentServer={currentServer}

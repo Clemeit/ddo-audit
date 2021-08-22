@@ -7,8 +7,11 @@ import { Fetch, VerifyLfmData } from "../../services/DataLoader";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
+import PopupMessage from "../global/PopupMessage";
+import BannerMessage from "../global/BannerMessage";
 
 const GroupingSpecific = (props) => {
+    // TODO: When no groups and in Alternative View mode, the settings panel is too small to change settings
     const TITLE = "Live LFM Viewer";
 
     const SERVER_NAMES = [
@@ -22,6 +25,10 @@ const GroupingSpecific = (props) => {
         "Wayfinder",
         "Hardcore",
     ];
+
+    const [failedAttemptCount, setFailedAttemptCount] = React.useState(0);
+    const failedAttemptRef = React.useRef(failedAttemptCount);
+    failedAttemptRef.current = failedAttemptCount;
 
     const [unfilteredServerData, setUnfilteredServerData] =
         React.useState(null);
@@ -121,16 +128,92 @@ const GroupingSpecific = (props) => {
 
     let groups = [];
     let direction = 1;
+    let recheck;
     function RefreshLfms() {
         if (currentServer === null) return;
-        Fetch("https://www.playeraudit.com/api/groups", 5000).then((val) => {
-            if (VerifyLfmData(val)) {
-                setUnfilteredServerData(
-                    val.filter((server) => server.Name === currentServer)[0]
-                );
-            } else {
-            }
-        });
+        Fetch("https://www.playeraudit.com/api/groups", 5000)
+            .then((val) => {
+                if (VerifyLfmData(val)) {
+                    setPopupMessages([]);
+                    failedAttemptRef.current = 0;
+                    setFailedAttemptCount(failedAttemptRef.current);
+                    setUnfilteredServerData(
+                        val.filter((server) => server.Name === currentServer)[0]
+                    );
+                } else {
+                    failedAttemptRef.current++;
+                    setFailedAttemptCount(failedAttemptRef.current);
+                    // setFilteredServerData({
+                    //     LastUpdateTime: Date.now(),
+                    //     GroupCount: 1,
+                    //     Groups: [
+                    //         {
+                    //             Leader: {
+                    //                 Name: "DDO Audit",
+                    //                 Gender: "Male",
+                    //                 Race: "Human",
+                    //                 TotalLevel: 99,
+                    //                 Classes: [
+                    //                     {
+                    //                         Name: "Epic",
+                    //                         Level: 99,
+                    //                     },
+                    //                 ],
+                    //             },
+                    //             Comment: "Something went wrong",
+                    //             MinimumLevel: 0,
+                    //             MaximumLevel: 99,
+                    //             Difficulty: "Reaper",
+                    //             Quest: {
+                    //                 Name: "Feed the Hampsters",
+                    //             },
+                    //         },
+                    //     ],
+                    // });
+                    if (failedAttemptRef.current > 5) {
+                        setPopupMessages([
+                            ...popupMessages,
+                            {
+                                title: "Something went wrong",
+                                message:
+                                    "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                icon: "warning",
+                                fullscreen: false,
+                                reportMessage:
+                                    val === null
+                                        ? "Group data returned null"
+                                        : "[A] Verification failed",
+                            },
+                        ]);
+                    } else {
+                        recheck = setTimeout(() => {
+                            RefreshLfms();
+                        }, 200);
+                    }
+                }
+            })
+            .catch((err) => {
+                failedAttemptRef.current++;
+                setFailedAttemptCount(failedAttemptRef.current);
+                if (failedAttemptRef.current > 5) {
+                    setPopupMessages([
+                        ...popupMessages,
+                        {
+                            title: "Couldn't fetch group data",
+                            message:
+                                "Try refreshing the page. If the issue continues, please report it.",
+                            submessage: err.toString(),
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage: "[A] Timeout",
+                        },
+                    ]);
+                } else {
+                    recheck = setTimeout(() => {
+                        RefreshLfms();
+                    }, 250);
+                }
+            });
     }
 
     React.useEffect(() => {
@@ -173,279 +256,302 @@ const GroupingSpecific = (props) => {
     }
     var [expandedGroups, set_expandedGroups] = React.useState([]);
 
+    // Popup message
+    var [popupMessages, setPopupMessages] = React.useState([]);
+
     return (
-        <div>
-            <Banner
-                small={true}
-                showTitle={true}
-                showSubtitle={true}
-                showButtons={false}
-                hideOnMobile={true}
-                title="Live LFM Viewer"
-                subtitle={currentServer && currentServer}
-            />
-            <Helmet>
-                <title>{TITLE}</title>
-                <meta
-                    name="description"
-                    content="Browse LFMs from any server with a live LFM panel! Check the LFM panel before you login, or setup notifications and never miss raid night again!"
+        currentServer && (
+            <div>
+                <Banner
+                    small={true}
+                    showTitle={true}
+                    showSubtitle={true}
+                    showButtons={false}
+                    hideOnMobile={true}
+                    title="Live LFM Viewer"
+                    subtitle={currentServer && currentServer}
                 />
-            </Helmet>
-            <div id="content-container">
-                <div className="top-content-padding hide-on-mobile" />
-                <FilterBar
-                    currentServer={currentServer}
-                    showNotifications={true}
-                    maxWidth={848}
-                    returnTo="/grouping"
-                    handleFilterButton={() =>
-                        setFilterPanelVisible(!filterPanelVisible)
-                    }
-                >
-                    <div
-                        className="filter-panel-overlay"
-                        style={{
-                            display: filterPanelVisible ? "block" : "none",
-                        }}
-                        onClick={() => setFilterPanelVisible(false)}
+                <Helmet>
+                    <title>{TITLE}</title>
+                    <meta
+                        name="description"
+                        content="Browse LFMs from any server with a live LFM panel! Check the LFM panel before you login, or setup notifications and never miss raid night again!"
                     />
-                    <div
-                        className="filter-panel"
-                        style={{
-                            display: filterPanelVisible ? "block" : "none",
-                            padding: "10px",
-                        }}
+                </Helmet>
+                <PopupMessage
+                    page={"grouping/" + currentServer.toLowerCase()}
+                    messages={popupMessages}
+                    popMessage={() => {
+                        if (popupMessages.length) {
+                            let newMessages = [...popupMessages];
+                            newMessages = newMessages.slice(1);
+                            setPopupMessages(newMessages);
+                        }
+                    }}
+                />
+                <div id="content-container" style={{ minHeight: "500px" }}>
+                    <BannerMessage className="push-on-mobile" page="grouping" />
+                    <div className="top-content-padding hide-on-mobile" />
+                    <FilterBar
+                        currentServer={currentServer}
+                        showNotifications={true}
+                        maxWidth={848}
+                        returnTo="/grouping"
+                        handleFilterButton={() =>
+                            setFilterPanelVisible(!filterPanelVisible)
+                        }
                     >
                         <div
-                            className="content-cluster"
-                            style={{ marginBottom: "10px" }}
-                        >
-                            <h2 style={{ fontSize: "1.5rem" }}>
-                                Filter Groups
-                            </h2>
-                            <hr
-                                style={{
-                                    backgroundColor: "var(--text)",
-                                    opacity: 0.2,
-                                }}
-                            />
-                            <div style={{ padding: "15px" }}>
-                                <LevelRangeSlider
-                                    handleChange={(e) => {
-                                        if (e.length) {
-                                            setMinimumLevel(e[0]);
-                                            setMaximumLevel(e[1]);
-                                            localStorage.setItem(
-                                                "minimum-level",
-                                                e[0]
-                                            );
-                                            localStorage.setItem(
-                                                "maximum-level",
-                                                e[1]
-                                            );
-                                        }
-                                    }}
-                                    minimumLevel={minimumLevel}
-                                    maximumLevel={maximumLevel}
-                                />
-                            </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "left",
-                                    flexDirection: "column",
-                                    alignItems: "start",
-                                }}
-                            >
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
-                                        name="noteligible"
-                                        type="checkbox"
-                                        checked={showNotEligible}
-                                        onChange={() => {
-                                            localStorage.setItem(
-                                                "show-not-eligible",
-                                                !showNotEligible
-                                            );
-                                            setShowNotEligible(
-                                                !showNotEligible
-                                            );
-                                        }}
-                                    />
-                                    Show groups I am not eligible for
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
-                                        name="setsortorder"
-                                        type="checkbox"
-                                        checked={sortAscending}
-                                        onChange={() => {
-                                            localStorage.setItem(
-                                                "sort-order",
-                                                !sortAscending
-                                            );
-                                            setSortAscending(!sortAscending);
-                                        }}
-                                    />
-                                    Sort groups ascending
-                                </label>
-                            </div>
-                        </div>
+                            className="filter-panel-overlay"
+                            style={{
+                                display: filterPanelVisible ? "block" : "none",
+                            }}
+                            onClick={() => setFilterPanelVisible(false)}
+                        />
                         <div
-                            className="content-cluster"
-                            style={{ marginBottom: "10px" }}
+                            className="filter-panel"
+                            style={{
+                                display: filterPanelVisible ? "block" : "none",
+                                padding: "10px",
+                            }}
                         >
-                            <h2 style={{ fontSize: "1.5rem" }}>
-                                Accessibility
-                            </h2>
-                            <hr
-                                style={{
-                                    backgroundColor: "var(--text)",
-                                    opacity: 0.2,
-                                }}
-                            />
                             <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "left",
-                                    flexDirection: "column",
-                                    alignItems: "start",
-                                }}
+                                className="content-cluster"
+                                style={{ marginBottom: "10px" }}
                             >
-                                <label className="filter-panel-group-option show-on-mobile">
-                                    <input
-                                        className="input-radio"
-                                        name="darktheme"
-                                        type="checkbox"
-                                        checked={theme === "dark-theme"}
-                                        onChange={() => {
-                                            toggleTheme();
+                                <h2 style={{ fontSize: "1.5rem" }}>
+                                    Filter Groups
+                                </h2>
+                                <hr
+                                    style={{
+                                        backgroundColor: "var(--text)",
+                                        opacity: 0.2,
+                                    }}
+                                />
+                                <div style={{ padding: "15px" }}>
+                                    <LevelRangeSlider
+                                        handleChange={(e) => {
+                                            if (e.length) {
+                                                setMinimumLevel(e[0]);
+                                                setMaximumLevel(e[1]);
+                                                localStorage.setItem(
+                                                    "minimum-level",
+                                                    e[0]
+                                                );
+                                                localStorage.setItem(
+                                                    "maximum-level",
+                                                    e[1]
+                                                );
+                                            }
                                         }}
+                                        minimumLevel={minimumLevel}
+                                        maximumLevel={maximumLevel}
                                     />
-                                    Dark theme
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
-                                        name="classislook"
-                                        type="checkbox"
-                                        checked={alternativeLook}
-                                        onChange={() => {
-                                            localStorage.setItem(
-                                                "alternative-lfm-look",
-                                                !alternativeLook
-                                            );
-                                            setAlternativeLook(
-                                                !alternativeLook
-                                            );
-                                        }}
-                                    />
-                                    Alternative View (easier to see on mobile)
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
-                                        name="highvis"
-                                        type="checkbox"
-                                        checked={highVisibility}
-                                        onChange={() => {
-                                            localStorage.setItem(
-                                                "high-visibility",
-                                                !highVisibility
-                                            );
-                                            setHighVisibility(!highVisibility);
-                                        }}
-                                    />
-                                    High Contrast
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
-                                        name="largefont"
-                                        type="checkbox"
-                                        checked={fontModifier === 5}
-                                        onChange={() => {
-                                            localStorage.setItem(
-                                                "font-modifier",
-                                                fontModifier === 0 ? 5 : 0
-                                            );
-                                            setFontModifier(
-                                                fontModifier === 0 ? 5 : 0
-                                            );
-                                        }}
-                                    />
-                                    Large Font
-                                </label>
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "left",
+                                        flexDirection: "column",
+                                        alignItems: "start",
+                                    }}
+                                >
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="noteligible"
+                                            type="checkbox"
+                                            checked={showNotEligible}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "show-not-eligible",
+                                                    !showNotEligible
+                                                );
+                                                setShowNotEligible(
+                                                    !showNotEligible
+                                                );
+                                            }}
+                                        />
+                                        Show groups I am not eligible for
+                                    </label>
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="setsortorder"
+                                            type="checkbox"
+                                            checked={sortAscending}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "sort-order",
+                                                    !sortAscending
+                                                );
+                                                setSortAscending(
+                                                    !sortAscending
+                                                );
+                                            }}
+                                        />
+                                        Sort groups ascending
+                                    </label>
+                                </div>
+                            </div>
+                            <div
+                                className="content-cluster"
+                                style={{ marginBottom: "10px" }}
+                            >
+                                <h2 style={{ fontSize: "1.5rem" }}>
+                                    Accessibility
+                                </h2>
+                                <hr
+                                    style={{
+                                        backgroundColor: "var(--text)",
+                                        opacity: 0.2,
+                                    }}
+                                />
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "left",
+                                        flexDirection: "column",
+                                        alignItems: "start",
+                                    }}
+                                >
+                                    <label className="filter-panel-group-option show-on-mobile">
+                                        <input
+                                            className="input-radio"
+                                            name="darktheme"
+                                            type="checkbox"
+                                            checked={theme === "dark-theme"}
+                                            onChange={() => {
+                                                toggleTheme();
+                                            }}
+                                        />
+                                        Dark theme
+                                    </label>
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="classislook"
+                                            type="checkbox"
+                                            checked={alternativeLook}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "alternative-lfm-look",
+                                                    !alternativeLook
+                                                );
+                                                setAlternativeLook(
+                                                    !alternativeLook
+                                                );
+                                            }}
+                                        />
+                                        Alternative View (easier to see on
+                                        mobile)
+                                    </label>
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="highvis"
+                                            type="checkbox"
+                                            checked={highVisibility}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "high-visibility",
+                                                    !highVisibility
+                                                );
+                                                setHighVisibility(
+                                                    !highVisibility
+                                                );
+                                            }}
+                                        />
+                                        High Contrast
+                                    </label>
+                                    <label className="filter-panel-group-option">
+                                        <input
+                                            className="input-radio"
+                                            name="largefont"
+                                            type="checkbox"
+                                            checked={fontModifier === 5}
+                                            onChange={() => {
+                                                localStorage.setItem(
+                                                    "font-modifier",
+                                                    fontModifier === 0 ? 5 : 0
+                                                );
+                                                setFontModifier(
+                                                    fontModifier === 0 ? 5 : 0
+                                                );
+                                            }}
+                                        />
+                                        Large Font
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </FilterBar>
-                {alternativeLook === false ? (
-                    <CanvasLfmPanel
-                        data={filteredServerData}
-                        showNotEligible={showNotEligible}
-                        adjustedGroupCount={adjustedGroupCount}
-                        fontModifier={fontModifier}
-                        highVisibility={highVisibility}
-                    />
-                ) : (
-                    <div className="social-container">
-                        {filteredServerData &&
-                        filteredServerData.Groups.length ? (
-                            filteredServerData.Groups.map(
-                                (group, i) =>
-                                    group.Eligible && (
-                                        <Group
-                                            key={i}
-                                            handleClick={() => {
-                                                if (IsExpanded(group)) {
-                                                    set_expandedGroups(
-                                                        expandedGroups.filter(
-                                                            (g) => {
-                                                                return (
-                                                                    g.Leader
-                                                                        .Name !==
-                                                                    group.Leader
-                                                                        .Name
-                                                                );
-                                                            }
-                                                        )
-                                                    );
-                                                } else {
-                                                    set_expandedGroups([
-                                                        ...expandedGroups,
-                                                        group,
-                                                    ]);
-                                                }
-                                            }}
-                                            group={group}
-                                            expanded={IsExpanded(group)}
-                                        />
-                                    )
-                            )
-                        ) : (
-                            <span
-                                style={{
-                                    fontSize: "1.6rem",
-                                    width: "100%",
-                                    textAlign: "center",
-                                    color: "var(--text)",
-                                    marginTop: "20px",
-                                }}
-                            >
-                                {filteredServerData &&
-                                filteredServerData.Groups.length === 0
-                                    ? "No groups meet your current filter settings"
-                                    : "Loading data..."}
-                            </span>
-                        )}
-                    </div>
-                )}
-                <div className="top-content-padding hide-on-mobile" />
+                    </FilterBar>
+                    {alternativeLook === false ? (
+                        <CanvasLfmPanel
+                            data={filteredServerData}
+                            showNotEligible={showNotEligible}
+                            adjustedGroupCount={adjustedGroupCount}
+                            fontModifier={fontModifier}
+                            highVisibility={highVisibility}
+                        />
+                    ) : (
+                        <div className="social-container">
+                            {filteredServerData &&
+                            filteredServerData.Groups.length ? (
+                                filteredServerData.Groups.map(
+                                    (group, i) =>
+                                        group.Eligible && (
+                                            <Group
+                                                key={i}
+                                                handleClick={() => {
+                                                    if (IsExpanded(group)) {
+                                                        set_expandedGroups(
+                                                            expandedGroups.filter(
+                                                                (g) => {
+                                                                    return (
+                                                                        g.Leader
+                                                                            .Name !==
+                                                                        group
+                                                                            .Leader
+                                                                            .Name
+                                                                    );
+                                                                }
+                                                            )
+                                                        );
+                                                    } else {
+                                                        set_expandedGroups([
+                                                            ...expandedGroups,
+                                                            group,
+                                                        ]);
+                                                    }
+                                                }}
+                                                group={group}
+                                                expanded={IsExpanded(group)}
+                                            />
+                                        )
+                                )
+                            ) : (
+                                <span
+                                    style={{
+                                        fontSize: "1.6rem",
+                                        width: "100%",
+                                        textAlign: "center",
+                                        color: "var(--text)",
+                                        marginTop: "20px",
+                                    }}
+                                >
+                                    {filteredServerData &&
+                                    filteredServerData.Groups.length === 0
+                                        ? "No groups meet your current filter settings"
+                                        : "Loading data..."}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    <div className="top-content-padding hide-on-mobile" />
+                </div>
             </div>
-        </div>
+        )
     );
 };
 

@@ -16,6 +16,7 @@ import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import BannerMessage from "../global/BannerMessage";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
@@ -74,6 +75,7 @@ const Live = (props) => {
                 />
             </Helmet>
             <div id="content-container">
+                <BannerMessage page="live" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ServerStatusDisplay data={serverStatusData} />
                 <QuickInfo data={quickInfoData} unique={uniqueCountsData} />

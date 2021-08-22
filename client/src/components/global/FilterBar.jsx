@@ -16,56 +16,37 @@ const LfmFilterBar = (props) => {
 
     return (
         <div
-            className="filter-bar"
             style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
                 position: fullscreen ? "fixed" : "relative",
                 top: "0px",
                 maxWidth: props.maxWidth + "px",
             }}
         >
-            <div style={{ display: "flex", flexDirection: "row" }}>
-                <Link
-                    className="filter-bar-item server-selection"
-                    to={props.returnTo}
-                    style={{
-                        textDecoration: "none",
-                        color: "var(--text)",
-                    }}
-                >
-                    <ServerSelectSVG
-                        className="nav-icon should-invert"
-                        style={{
-                            width: "30px",
-                            height: "30px",
-                            paddingRight: "5px",
-                        }}
-                    />
-                    {props.currentServer}
-                </Link>
-                <div
-                    className="filter-bar-item"
-                    style={{ marginLeft: "auto" }}
-                    onClick={props.handleFilterButton}
-                >
-                    <SettingsSVG
-                        className="nav-icon should-invert"
-                        style={{
-                            width: "30px",
-                            height: "30px",
-                            paddingRight: "5px",
-                        }}
-                    />
-                    <span className="filter-bar-text settings hide-on-mobile">
-                        Settings
-                    </span>
-                </div>
-                {props.showNotifications && (
+            <div
+                className="show-on-mobile"
+                style={{ width: "100%", height: "36px" }}
+            />
+            <div
+                className="filter-bar"
+                style={{
+                    position: fullscreen ? "fixed" : "relative",
+                    top: "0px",
+                    maxWidth: props.maxWidth + "px",
+                }}
+            >
+                <div style={{ display: "flex", flexDirection: "row" }}>
                     <Link
-                        to="/notifications"
-                        className="filter-bar-item"
-                        style={{ color: "var(--text)", textDecoration: "none" }}
+                        className="filter-bar-item server-selection"
+                        to={props.returnTo}
+                        style={{
+                            textDecoration: "none",
+                            color: "var(--text)",
+                        }}
                     >
-                        <NotificationSVG
+                        <ServerSelectSVG
                             className="nav-icon should-invert"
                             style={{
                                 width: "30px",
@@ -73,28 +54,14 @@ const LfmFilterBar = (props) => {
                                 paddingRight: "5px",
                             }}
                         />
-                        <span className="filter-bar-text notifications hide-on-mobile">
-                            Notifications
-                        </span>
+                        {props.currentServer}
                     </Link>
-                )}
-                <div
-                    className="filter-bar-item hide-on-mobile"
-                    onClick={() => {
-                        set_fullscreen(!fullscreen);
-                    }}
-                >
-                    {fullscreen ? (
-                        <FullscreenExitSVG
-                            className="nav-icon should-invert "
-                            style={{
-                                width: "30px",
-                                height: "30px",
-                                paddingRight: "5px",
-                            }}
-                        />
-                    ) : (
-                        <FullscreenSVG
+                    <div
+                        className="filter-bar-item"
+                        style={{ marginLeft: "auto" }}
+                        onClick={props.handleFilterButton}
+                    >
+                        <SettingsSVG
                             className="nav-icon should-invert"
                             style={{
                                 width: "30px",
@@ -102,13 +69,64 @@ const LfmFilterBar = (props) => {
                                 paddingRight: "5px",
                             }}
                         />
+                        <span className="filter-bar-text settings hide-on-mobile">
+                            Settings
+                        </span>
+                    </div>
+                    {props.showNotifications && (
+                        <Link
+                            to="/notifications"
+                            className="filter-bar-item"
+                            style={{
+                                color: "var(--text)",
+                                textDecoration: "none",
+                            }}
+                        >
+                            <NotificationSVG
+                                className="nav-icon should-invert"
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    paddingRight: "5px",
+                                }}
+                            />
+                            <span className="filter-bar-text notifications hide-on-mobile">
+                                Notifications
+                            </span>
+                        </Link>
                     )}
-                    <span className="filter-bar-text">
-                        {fullscreen ? "Go back" : "Fullscreen"}
-                    </span>
+                    <div
+                        className="filter-bar-item hide-on-mobile"
+                        onClick={() => {
+                            set_fullscreen(!fullscreen);
+                        }}
+                    >
+                        {fullscreen ? (
+                            <FullscreenExitSVG
+                                className="nav-icon should-invert "
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    paddingRight: "5px",
+                                }}
+                            />
+                        ) : (
+                            <FullscreenSVG
+                                className="nav-icon should-invert"
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    paddingRight: "5px",
+                                }}
+                            />
+                        )}
+                        <span className="filter-bar-text">
+                            {fullscreen ? "Go back" : "Fullscreen"}
+                        </span>
+                    </div>
                 </div>
+                {props.children}
             </div>
-            {props.children}
         </div>
     );
 };

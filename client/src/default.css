@@ -795,6 +795,7 @@ html {
     flex-direction: column;
     justify-content: left;
     width: 100%;
+    height: 36px;
     background-color: var(--filter-bar);
     max-width: 848px;
     color: var(--text);
@@ -987,6 +988,19 @@ input[type="radio"] {
     max-width: 600px;
 }
 
+.banner-message {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: filter 250ms;
+}
+
+.banner-message:hover {
+    filter: brightness(125%);
+}
+
 /* @media (max-width: 768px) {
     
 } */
@@ -1077,6 +1091,14 @@ input[type="radio"] {
     }
     .hide-on-mobile {
         display: none !important;
+    }
+    .filter-bar {
+        position: fixed !important;
+        top: 0px;
+    }
+
+    .banner-message.push-on-mobile {
+        transform: translateY(36px);
     }
 }
 

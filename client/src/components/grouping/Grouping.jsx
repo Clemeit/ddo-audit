@@ -6,6 +6,7 @@ import { Fetch, VerifyLfmData } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import BannerMessage from "../global/BannerMessage";
 
 const Grouping = () => {
     const TITLE = "Live LFM Panel";
@@ -129,6 +130,7 @@ const Grouping = () => {
                 />
             </Helmet>
             <div id="content-container">
+                <BannerMessage page="grouping" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Select a Server</h2>

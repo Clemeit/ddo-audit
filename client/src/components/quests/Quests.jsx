@@ -15,6 +15,7 @@ import ChartBar from "../global/ChartBar";
 import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import NoMobileOptimization from "../global/NoMobileOptimization";
+import BannerMessage from "../global/BannerMessage";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
@@ -482,6 +483,7 @@ const Quests = (props) => {
                 subtitle="Quest popularity, average completion times, and XP/min"
             />
             <div id="content-container">
+                <BannerMessage page="quests" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />
                 {!questList && (

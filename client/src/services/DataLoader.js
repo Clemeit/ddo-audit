@@ -1,5 +1,3 @@
-import { defaultMotionDamping } from "@nivo/core";
-
 async function fetchArbitraryData(url, type) {
     let response = await fetch(url);
     if (type === "json") response = await response.json();
