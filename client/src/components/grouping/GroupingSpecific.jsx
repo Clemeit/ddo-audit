@@ -9,6 +9,7 @@ import FilterBar from "../global/FilterBar";
 import Group from "./Group";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
+import { Submit } from "../global/ReportIssueService";
 
 const GroupingSpecific = (props) => {
     // TODO: When no groups and in Alternative View mode, the settings panel is too small to change settings
@@ -26,9 +27,19 @@ const GroupingSpecific = (props) => {
         "Hardcore",
     ];
 
+    const [reported, setReported] = React.useState(false);
+
     const [failedAttemptCount, setFailedAttemptCount] = React.useState(0);
     const failedAttemptRef = React.useRef(failedAttemptCount);
     failedAttemptRef.current = failedAttemptCount;
+
+    const [serverStatus, setServerStatus] = React.useState(null);
+    const serverStatusRef = React.useRef(serverStatus);
+    serverStatusRef.current = serverStatus;
+
+    const [ignoreServerStatus, setIgnoreServerStatus] = React.useState(false);
+    const ignoreServerStatusRef = React.useRef(ignoreServerStatus);
+    ignoreServerStatusRef.current = ignoreServerStatus;
 
     const [unfilteredServerData, setUnfilteredServerData] =
         React.useState(null);
@@ -131,89 +142,118 @@ const GroupingSpecific = (props) => {
     let recheck;
     function RefreshLfms() {
         if (currentServer === null) return;
-        Fetch("https://www.playeraudit.com/api/groups", 5000)
+        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
             .then((val) => {
-                if (VerifyLfmData(val)) {
-                    setPopupMessages([]);
-                    failedAttemptRef.current = 0;
-                    setFailedAttemptCount(failedAttemptRef.current);
-                    setUnfilteredServerData(
-                        val.filter((server) => server.Name === currentServer)[0]
-                    );
+                let serverstatus = false;
+                if (val.hasOwnProperty("Worlds")) {
+                    val.Worlds.forEach((world) => {
+                        if (
+                            world.Name.toLowerCase() ===
+                            currentServer.toLowerCase()
+                        ) {
+                            if (world.Status === 1) {
+                                serverstatus = true;
+                                setServerStatus(true);
+                            } else {
+                                serverstatus = false;
+                                setServerStatus(false);
+                            }
+                        }
+                    });
                 } else {
-                    failedAttemptRef.current++;
-                    setFailedAttemptCount(failedAttemptRef.current);
-                    // setFilteredServerData({
-                    //     LastUpdateTime: Date.now(),
-                    //     GroupCount: 1,
-                    //     Groups: [
-                    //         {
-                    //             Leader: {
-                    //                 Name: "DDO Audit",
-                    //                 Gender: "Male",
-                    //                 Race: "Human",
-                    //                 TotalLevel: 99,
-                    //                 Classes: [
-                    //                     {
-                    //                         Name: "Epic",
-                    //                         Level: 99,
-                    //                     },
-                    //                 ],
-                    //             },
-                    //             Comment: "Something went wrong",
-                    //             MinimumLevel: 0,
-                    //             MaximumLevel: 99,
-                    //             Difficulty: "Reaper",
-                    //             Quest: {
-                    //                 Name: "Feed the Hampsters",
-                    //             },
-                    //         },
-                    //     ],
-                    // });
-                    if (failedAttemptRef.current > 5) {
-                        setPopupMessages([
-                            ...popupMessages,
-                            {
-                                title: "Something went wrong",
-                                message:
-                                    "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                icon: "warning",
-                                fullscreen: false,
-                                reportMessage:
-                                    val === null
-                                        ? "Group data returned null"
-                                        : "[A] Verification failed",
-                            },
-                        ]);
-                    } else {
-                        recheck = setTimeout(() => {
-                            RefreshLfms();
-                        }, 200);
-                    }
+                    serverstatus = false;
+                    setServerStatus(false);
+                }
+                if (serverstatus === true || ignoreServerStatusRef.current) {
+                    Fetch("https://www.playeraudit.com/api/groups", 5000)
+                        .then((val) => {
+                            if (VerifyLfmData(val)) {
+                                setPopupMessages([]);
+                                failedAttemptRef.current = 0;
+                                setFailedAttemptCount(failedAttemptRef.current);
+                                setUnfilteredServerData(
+                                    val.filter(
+                                        (server) =>
+                                            server.Name === currentServer
+                                    )[0]
+                                );
+                            } else {
+                                failedAttemptRef.current++;
+                                setFailedAttemptCount(failedAttemptRef.current);
+                                // setFilteredServerData({
+                                //     LastUpdateTime: Date.now(),
+                                //     GroupCount: 1,
+                                //     Groups: [
+                                //         {
+                                //             Leader: {
+                                //                 Name: "DDO Audit",
+                                //                 Gender: "Male",
+                                //                 Race: "Human",
+                                //                 TotalLevel: 99,
+                                //                 Classes: [
+                                //                     {
+                                //                         Name: "Epic",
+                                //                         Level: 99,
+                                //                     },
+                                //                 ],
+                                //             },
+                                //             Comment: "Something went wrong",
+                                //             MinimumLevel: 0,
+                                //             MaximumLevel: 99,
+                                //             Difficulty: "Reaper",
+                                //             Quest: {
+                                //                 Name: "Feed the Hampsters",
+                                //             },
+                                //         },
+                                //     ],
+                                // });
+                                if (failedAttemptRef.current > 5) {
+                                    setPopupMessages([
+                                        ...popupMessages,
+                                        {
+                                            title: "Something went wrong",
+                                            message:
+                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                            icon: "warning",
+                                            fullscreen: false,
+                                            reportMessage:
+                                                val === null
+                                                    ? "Group data returned null"
+                                                    : "[A] Verification failed",
+                                        },
+                                    ]);
+                                } else {
+                                    recheck = setTimeout(() => {
+                                        RefreshLfms();
+                                    }, 200);
+                                }
+                            }
+                        })
+                        .catch((err) => {
+                            failedAttemptRef.current++;
+                            setFailedAttemptCount(failedAttemptRef.current);
+                            if (failedAttemptRef.current > 5) {
+                                setPopupMessages([
+                                    ...popupMessages,
+                                    {
+                                        title: "Couldn't fetch group data",
+                                        message:
+                                            "Try refreshing the page. If the issue continues, please report it.",
+                                        submessage: err.toString(),
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage: "[A] Timeout",
+                                    },
+                                ]);
+                            } else {
+                                recheck = setTimeout(() => {
+                                    RefreshLfms();
+                                }, 250);
+                            }
+                        });
                 }
             })
-            .catch((err) => {
-                failedAttemptRef.current++;
-                setFailedAttemptCount(failedAttemptRef.current);
-                if (failedAttemptRef.current > 5) {
-                    setPopupMessages([
-                        ...popupMessages,
-                        {
-                            title: "Couldn't fetch group data",
-                            message:
-                                "Try refreshing the page. If the issue continues, please report it.",
-                            submessage: err.toString(),
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage: "[A] Timeout",
-                        },
-                    ]);
-                } else {
-                    recheck = setTimeout(() => {
-                        RefreshLfms();
-                    }, 250);
-                }
-            });
+            .catch(() => {});
     }
 
     React.useEffect(() => {
@@ -289,7 +329,7 @@ const GroupingSpecific = (props) => {
                         }
                     }}
                 />
-                <div id="content-container" style={{ minHeight: "500px" }}>
+                <div id="content-container" style={{ minHeight: "700px" }}>
                     <BannerMessage className="push-on-mobile" page="grouping" />
                     <div className="top-content-padding hide-on-mobile" />
                     <FilterBar
@@ -486,66 +526,135 @@ const GroupingSpecific = (props) => {
                             </div>
                         </div>
                     </FilterBar>
-                    {alternativeLook === false ? (
-                        <CanvasLfmPanel
-                            data={filteredServerData}
-                            showNotEligible={showNotEligible}
-                            adjustedGroupCount={adjustedGroupCount}
-                            fontModifier={fontModifier}
-                            highVisibility={highVisibility}
-                        />
+                    {serverStatus !== false || ignoreServerStatus ? (
+                        alternativeLook === false ? (
+                            <CanvasLfmPanel
+                                data={filteredServerData}
+                                showNotEligible={showNotEligible}
+                                adjustedGroupCount={adjustedGroupCount}
+                                fontModifier={fontModifier}
+                                highVisibility={highVisibility}
+                            />
+                        ) : (
+                            <div className="social-container">
+                                {filteredServerData &&
+                                filteredServerData.Groups.length ? (
+                                    filteredServerData.Groups.map(
+                                        (group, i) =>
+                                            group.Eligible && (
+                                                <Group
+                                                    key={i}
+                                                    handleClick={() => {
+                                                        if (IsExpanded(group)) {
+                                                            set_expandedGroups(
+                                                                expandedGroups.filter(
+                                                                    (g) => {
+                                                                        return (
+                                                                            g
+                                                                                .Leader
+                                                                                .Name !==
+                                                                            group
+                                                                                .Leader
+                                                                                .Name
+                                                                        );
+                                                                    }
+                                                                )
+                                                            );
+                                                        } else {
+                                                            set_expandedGroups([
+                                                                ...expandedGroups,
+                                                                group,
+                                                            ]);
+                                                        }
+                                                    }}
+                                                    group={group}
+                                                    expanded={IsExpanded(group)}
+                                                />
+                                            )
+                                    )
+                                ) : (
+                                    <span
+                                        style={{
+                                            fontSize: "1.6rem",
+                                            width: "100%",
+                                            textAlign: "center",
+                                            color: "var(--text)",
+                                            marginTop: "20px",
+                                        }}
+                                    >
+                                        {filteredServerData &&
+                                        filteredServerData.Groups.length === 0
+                                            ? "No groups meet your current filter settings"
+                                            : "Loading data..."}
+                                    </span>
+                                )}
+                            </div>
+                        )
                     ) : (
-                        <div className="social-container">
-                            {filteredServerData &&
-                            filteredServerData.Groups.length ? (
-                                filteredServerData.Groups.map(
-                                    (group, i) =>
-                                        group.Eligible && (
-                                            <Group
-                                                key={i}
-                                                handleClick={() => {
-                                                    if (IsExpanded(group)) {
-                                                        set_expandedGroups(
-                                                            expandedGroups.filter(
-                                                                (g) => {
-                                                                    return (
-                                                                        g.Leader
-                                                                            .Name !==
-                                                                        group
-                                                                            .Leader
-                                                                            .Name
-                                                                    );
-                                                                }
-                                                            )
-                                                        );
-                                                    } else {
-                                                        set_expandedGroups([
-                                                            ...expandedGroups,
-                                                            group,
-                                                        ]);
-                                                    }
-                                                }}
-                                                group={group}
-                                                expanded={IsExpanded(group)}
-                                            />
-                                        )
-                                )
-                            ) : (
-                                <span
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                marginTop: "20px",
+                                width: "100%",
+                                maxWidth: "848px",
+                            }}
+                        >
+                            <span
+                                style={{
+                                    fontSize: "1.6rem",
+                                    width: "100%",
+                                    textAlign: "center",
+                                    color: "var(--text)",
+                                }}
+                            >
+                                <p
                                     style={{
-                                        fontSize: "1.6rem",
-                                        width: "100%",
-                                        textAlign: "center",
-                                        color: "var(--text)",
-                                        marginTop: "20px",
+                                        marginBottom: "0px",
                                     }}
                                 >
-                                    {filteredServerData &&
-                                    filteredServerData.Groups.length === 0
-                                        ? "No groups meet your current filter settings"
-                                        : "Loading data..."}
-                                </span>
-                            )}
+                                    This server might be offline.
+                                    <br />
+                                    If you believe this to be an error,
+                                </p>
+                            </span>
+                            <div
+                                id="action-button-container"
+                                style={{
+                                    width: "100%",
+                                    padding: "0px 20px",
+                                }}
+                            >
+                                <div
+                                    className="primary-button should-invert full-width-mobile"
+                                    onClick={() => {
+                                        setIgnoreServerStatus(true);
+                                        RefreshLfms();
+                                    }}
+                                >
+                                    Load data anyways
+                                </div>
+                                <div
+                                    className={
+                                        "secondary-button should-invert full-width-mobile" +
+                                        (reported ? " disabled" : "")
+                                    }
+                                    onClick={() => {
+                                        if (reported === false) {
+                                            Submit(
+                                                "grouping/" + currentServer,
+                                                null,
+                                                "Server down messages reported",
+                                                null
+                                            );
+                                            setReported(true);
+                                        }
+                                    }}
+                                >
+                                    {reported ? "Thanks!" : "Report Issue"}
+                                </div>
+                            </div>
                         </div>
                     )}
                     <div className="top-content-padding hide-on-mobile" />

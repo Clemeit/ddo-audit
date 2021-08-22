@@ -28,6 +28,9 @@
     --green3: green;
     --green4: rgb(0, 59, 0);
 
+    --highlight-blue-1: rgb(205, 205, 255);
+    --highlight-blue-2: rgb(182, 182, 255);
+
     --blue1: rgb(0, 162, 255);
     --blue2: blue;
     --blue3: rgb(0, 0, 182);
@@ -41,9 +44,9 @@
 .light-theme {
     --bg: var(--white);
     --base: var(--white);
-    --highlighted-0: #f2f2f2;
-    --highlighted-1: var(--gray2);
-    --highlighted-2: var(--gray3);
+    --highlighted-0: #eeeeee;
+    --highlighted-1: var(--highlight-blue-1);
+    --highlighted-2: var(--highlight-blue-2);
 
     --text: var(--black);
     --text-inverted: var(--white);
@@ -72,8 +75,8 @@
     --nav-bar-hover: var(--gray6);
     --nav-bar-active: var(--blue3);
 
-    --filter-bar: var(--gray2);
-    --filter-bar-hover: var(--gray3);
+    --filter-bar: var(--highlight-blue-1);
+    --filter-bar-hover: var(--highlight-blue-2);
     --filter-bar-active: var(--blue3);
 
     --push-height: 500px;
@@ -712,7 +715,8 @@ html {
 }
 
 .light-theme .nav-icon.should-invert,
-.light-theme .nav-icon-large.should-invert {
+.light-theme .nav-icon-large.should-invert,
+.light-theme .link-icon.should-invert {
     filter: invert();
 }
 

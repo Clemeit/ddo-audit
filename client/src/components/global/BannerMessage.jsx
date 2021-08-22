@@ -69,7 +69,9 @@ const BannerMessage = (props) => {
 
     function getBannerText() {
         if (message !== null && message !== undefined) {
-            return `${message.message} from ${message.start} through ${message.end}`;
+            return message.message
+                .replace("{0}", message.start)
+                .replace("{1}", message.end);
         }
         return "";
     }

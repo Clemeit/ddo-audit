@@ -53,7 +53,7 @@ const Player = (props) => {
                 >
                     {props.starred ? (
                         <PinSVG
-                            className="link-icon pinned"
+                            className="link-icon should-invert pinned"
                             onClick={(e) => {
                                 props.handleStarred();
                                 e.stopPropagation();
@@ -61,7 +61,7 @@ const Player = (props) => {
                         />
                     ) : (
                         <PinSVG
-                            className="link-icon pin"
+                            className="link-icon should-invert pin"
                             onClick={(e) => {
                                 props.handleStarred();
                                 e.stopPropagation();
@@ -95,7 +95,7 @@ const Player = (props) => {
                     >
                         {props.player.InParty === 1 && (
                             <GroupingSVG
-                                className="link-icon in-group-icon"
+                                className="link-icon should-invert in-group-icon"
                                 // onClick={(e) => {
                                 //     props.handleAddFilter("Group");
                                 //     e.stopPropagation();

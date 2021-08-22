@@ -11,6 +11,7 @@ import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
+import { Submit } from "../global/ReportIssueService";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
@@ -91,9 +92,19 @@ const WhoSpecific = (props) => {
     const [includeRegion, setIncludeRegion] = React.useState(false);
     const [exactMatch, setExactMatch] = React.useState(false);
 
+    const [reported, setReported] = React.useState(false);
+
     const [failedAttemptCount, setFailedAttemptCount] = React.useState(0);
     const failedAttemptRef = React.useRef(failedAttemptCount);
     failedAttemptRef.current = failedAttemptCount;
+
+    const [serverStatus, setServerStatus] = React.useState(null);
+    const serverStatusRef = React.useRef(serverStatus);
+    serverStatusRef.current = serverStatus;
+
+    const [ignoreServerStatus, setIgnoreServerStatus] = React.useState(false);
+    const ignoreServerStatusRef = React.useRef(ignoreServerStatus);
+    ignoreServerStatusRef.current = ignoreServerStatus;
 
     // Settings
     const [alternativeLook, setAlternativeLook] = React.useState(true);
@@ -493,72 +504,7 @@ const WhoSpecific = (props) => {
         clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
         set_filteredPlayerData(null);
         if (!currentServer) return;
-        function FetchPlayerData() {
-            Fetch(
-                "https://www.playeraudit.com/api/playersnew?s=" +
-                    (serverNamesLowercase.includes(location.toLowerCase())
-                        ? location
-                        : ""),
-                5000
-            )
-                .then((val) => {
-                    set_lastFetchTime(Date.now());
-                    set_attemptedPlayerFetch(true);
-                    if (VerifyPlayerData(val)) {
-                        setPopupMessages([]);
-                        failedAttemptRef.current = 0;
-                        setFailedAttemptCount(failedAttemptRef.current);
-                        set_playerData({ timestamp: Date.now(), data: val });
-                    } else {
-                        failedAttemptRef.current++;
-                        setFailedAttemptCount(failedAttemptRef.current);
-                        if (failedAttemptRef.current > 5) {
-                            setPopupMessages([
-                                ...popupMessages,
-                                {
-                                    title: "Something went wrong",
-                                    message:
-                                        "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                    icon: "warning",
-                                    fullscreen: false,
-                                    reportMessage:
-                                        val === null
-                                            ? "Player data returned null"
-                                            : "[A] Verification failed",
-                                },
-                            ]);
-                        } else {
-                            recheck = setTimeout(() => {
-                                FetchPlayerData();
-                            }, 200);
-                        }
-                    }
-                })
-                .catch((err) => {
-                    failedAttemptRef.current++;
-                    setFailedAttemptCount(failedAttemptRef.current);
-                    set_lastFetchTime(Date.now());
-                    set_attemptedPlayerFetch(true);
-                    if (failedAttemptRef.current > 5) {
-                        setPopupMessages([
-                            ...popupMessages,
-                            {
-                                title: "Couldn't fetch player data",
-                                message:
-                                    "Try refreshing the page. If the issue continues, please report it.",
-                                submessage: err.toString(),
-                                icon: "warning",
-                                fullscreen: false,
-                                reportMessage: "[A] Timeout",
-                            },
-                        ]);
-                    } else {
-                        recheck = setTimeout(() => {
-                            FetchPlayerData();
-                        }, 250);
-                    }
-                });
-        }
+
         FetchPlayerData();
 
         const refreshdata = setInterval(() => {
@@ -569,6 +515,104 @@ const WhoSpecific = (props) => {
             clearTimeout(recheck);
         };
     }, [currentServer]);
+
+    function FetchPlayerData() {
+        Fetch("https://www.playeraudit.com/api/serverstatus", 5000).then(
+            (val) => {
+                let serverstatus = false;
+                if (val.hasOwnProperty("Worlds")) {
+                    val.Worlds.forEach((world) => {
+                        if (
+                            world.Name.toLowerCase() ===
+                            currentServer.toLowerCase()
+                        ) {
+                            if (world.Status === 1) {
+                                serverstatus = true;
+                                setServerStatus(true);
+                            } else {
+                                serverstatus = false;
+                                setServerStatus(false);
+                            }
+                        }
+                    });
+                } else {
+                    serverstatus = false;
+                    setServerStatus(false);
+                }
+                if (serverstatus === true || ignoreServerStatusRef.current) {
+                    Fetch(
+                        "https://www.playeraudit.com/api/playersnew?s=" +
+                            (serverNamesLowercase.includes(
+                                location.toLowerCase()
+                            )
+                                ? location
+                                : ""),
+                        5000
+                    )
+                        .then((val) => {
+                            set_lastFetchTime(Date.now());
+                            set_attemptedPlayerFetch(true);
+                            if (VerifyPlayerData(val)) {
+                                setPopupMessages([]);
+                                failedAttemptRef.current = 0;
+                                setFailedAttemptCount(failedAttemptRef.current);
+                                set_playerData({
+                                    timestamp: Date.now(),
+                                    data: val,
+                                });
+                            } else {
+                                failedAttemptRef.current++;
+                                setFailedAttemptCount(failedAttemptRef.current);
+                                if (failedAttemptRef.current > 5) {
+                                    setPopupMessages([
+                                        ...popupMessages,
+                                        {
+                                            title: "Something went wrong",
+                                            message:
+                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                            icon: "warning",
+                                            fullscreen: false,
+                                            reportMessage:
+                                                val === null
+                                                    ? "Player data returned null"
+                                                    : "[A] Verification failed",
+                                        },
+                                    ]);
+                                } else {
+                                    recheck = setTimeout(() => {
+                                        FetchPlayerData();
+                                    }, 200);
+                                }
+                            }
+                        })
+                        .catch((err) => {
+                            failedAttemptRef.current++;
+                            setFailedAttemptCount(failedAttemptRef.current);
+                            set_lastFetchTime(Date.now());
+                            set_attemptedPlayerFetch(true);
+                            if (failedAttemptRef.current > 5) {
+                                setPopupMessages([
+                                    ...popupMessages,
+                                    {
+                                        title: "Couldn't fetch player data",
+                                        message:
+                                            "Try refreshing the page. If the issue continues, please report it.",
+                                        submessage: err.toString(),
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage: "[A] Timeout",
+                                    },
+                                ]);
+                            } else {
+                                recheck = setTimeout(() => {
+                                    FetchPlayerData();
+                                }, 250);
+                            }
+                        });
+                }
+            }
+        );
+    }
 
     React.useEffect(() => {
         if (playerData.data === undefined || playerData.data === null) return;
@@ -661,7 +705,7 @@ const WhoSpecific = (props) => {
                         }
                     }}
                 />
-                <div id="content-container" style={{ minHeight: "500px" }}>
+                <div id="content-container" style={{ minHeight: "700px" }}>
                     <BannerMessage className="push-on-mobile" page="who" />
                     <div className="top-content-padding hide-on-mobile" />
                     <FilterBar
@@ -952,371 +996,448 @@ const WhoSpecific = (props) => {
                             </div>
                         </div>
                     </FilterBar>
-                    {paginatedPlayerData && filteredPlayerData ? (
-                        <div
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            {alternativeLook === false ? (
-                                <div>
-                                    <CanvasWhoPanel
-                                        data={filteredPlayerData}
-                                        filters={activeFilters}
-                                        classFilterStates={classFilterStates}
-                                        includeRegion={includeRegion}
-                                        exactMatch={exactMatch}
-                                        handleClassFilter={(i) => {
-                                            handleClassFilter(i);
+                    {serverStatus !== false || ignoreServerStatus ? (
+                        paginatedPlayerData && filteredPlayerData ? (
+                            <div
+                                style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                {alternativeLook === false ? (
+                                    <div>
+                                        <CanvasWhoPanel
+                                            data={filteredPlayerData}
+                                            filters={activeFilters}
+                                            classFilterStates={
+                                                classFilterStates
+                                            }
+                                            includeRegion={includeRegion}
+                                            exactMatch={exactMatch}
+                                            handleClassFilter={(i) => {
+                                                handleClassFilter(i);
+                                            }}
+                                            handleAnyClass={() => {
+                                                handleAnyClass();
+                                            }}
+                                            handleIncludeRegion={() => {
+                                                handleIncludeRegion();
+                                            }}
+                                            handleExactMatch={() => {
+                                                handleExactMatch();
+                                            }}
+                                            handleOpenSettings={() =>
+                                                setFilterPanelVisible(
+                                                    !filterPanelVisible
+                                                )
+                                            }
+                                        />
+                                        <div className="top-content-padding hide-on-mobile" />
+                                    </div>
+                                ) : (
+                                    <div
+                                        style={{
+                                            width: "100%",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center",
                                         }}
-                                        handleAnyClass={() => {
-                                            handleAnyClass();
-                                        }}
-                                        handleIncludeRegion={() => {
-                                            handleIncludeRegion();
-                                        }}
-                                        handleExactMatch={() => {
-                                            handleExactMatch();
-                                        }}
-                                        handleOpenSettings={() =>
-                                            setFilterPanelVisible(
-                                                !filterPanelVisible
-                                            )
-                                        }
-                                    />
-                                    <div className="top-content-padding hide-on-mobile" />
-                                </div>
-                            ) : (
-                                <div
-                                    style={{
-                                        width: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    {activeFilters &&
-                                        activeFilters.length !== 0 && (
+                                    >
+                                        {activeFilters &&
+                                            activeFilters.length !== 0 && (
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "row",
+                                                        justifyContent: "left",
+                                                        gap: "5px",
+                                                        padding:
+                                                            "5px 10px 5px 10px",
+                                                        flexWrap: "wrap",
+                                                        alignItems: "center",
+                                                        width: "100%",
+                                                        maxWidth: "706px",
+                                                    }}
+                                                >
+                                                    <h4
+                                                        style={{
+                                                            paddingLeft: "5px",
+                                                            marginBottom: "0px",
+                                                            color: "var(--text)",
+                                                        }}
+                                                    >
+                                                        Active filters:
+                                                    </h4>
+                                                    {activeFilters.map(
+                                                        (filter, i) => (
+                                                            <div
+                                                                key={i}
+                                                                style={{
+                                                                    fontSize:
+                                                                        "1.3rem",
+                                                                    backgroundColor:
+                                                                        "var(--highlighted-1)",
+                                                                    padding:
+                                                                        "2px 10px 2px 15px",
+                                                                    width: "max-content",
+                                                                    borderRadius:
+                                                                        "10px",
+                                                                    display:
+                                                                        "flex",
+                                                                    alignItems:
+                                                                        "center",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                                onClick={() => {
+                                                                    if (
+                                                                        filter.type ===
+                                                                        "Name"
+                                                                    )
+                                                                        document.getElementById(
+                                                                            "charactername"
+                                                                        ).value =
+                                                                            "";
+                                                                    if (
+                                                                        filter.type ===
+                                                                        "Guild"
+                                                                    )
+                                                                        document.getElementById(
+                                                                            "guildname"
+                                                                        ).value =
+                                                                            "";
+                                                                    if (
+                                                                        filter.type ===
+                                                                        "Min Level"
+                                                                    )
+                                                                        document.getElementById(
+                                                                            "minimumlevel"
+                                                                        ).value =
+                                                                            "";
+                                                                    if (
+                                                                        filter.type ===
+                                                                        "Max Level"
+                                                                    )
+                                                                        document.getElementById(
+                                                                            "maximumlevel"
+                                                                        ).value =
+                                                                            "";
+                                                                    setActiveFilter(
+                                                                        activeFilters.filter(
+                                                                            (
+                                                                                _,
+                                                                                index
+                                                                            ) =>
+                                                                                index !==
+                                                                                i
+                                                                        )
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <span
+                                                                    style={{
+                                                                        color: "var(--text-faded)",
+                                                                        marginRight:
+                                                                            "5px",
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        filter.type
+                                                                    }
+                                                                    :
+                                                                </span>
+                                                                <span
+                                                                    style={{
+                                                                        color: "var(--text)",
+                                                                    }}
+                                                                >
+                                                                    {filter.type ===
+                                                                    "Group"
+                                                                        ? filter.meta
+                                                                        : filter.value}
+                                                                </span>
+                                                                <CloseSVG
+                                                                    className="link-icon"
+                                                                    style={{
+                                                                        margin: "0px 0px 0px 10px",
+                                                                        backgroundColor:
+                                                                            "var(--gray6)",
+                                                                        borderRadius:
+                                                                            "50%",
+                                                                        padding:
+                                                                            "3px",
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            )}
+                                        <div
+                                            className="social-container"
+                                            style={{ paddingTop: "10px" }}
+                                        >
+                                            {paginatedPlayerData &&
+                                                paginatedPlayerData.map(
+                                                    (player, i) =>
+                                                        player.Name !==
+                                                            "Anonymous" && (
+                                                            <Player
+                                                                key={i}
+                                                                handleStarred={() => {
+                                                                    if (
+                                                                        IsStarred(
+                                                                            player
+                                                                        )
+                                                                    ) {
+                                                                        setPinnedPlayers(
+                                                                            pinnedPlayers.filter(
+                                                                                (
+                                                                                    p
+                                                                                ) =>
+                                                                                    p.name !==
+                                                                                    player.Name
+                                                                            )
+                                                                        );
+                                                                    } else {
+                                                                        setPinnedPlayers(
+                                                                            [
+                                                                                ...pinnedPlayers,
+                                                                                {
+                                                                                    name: player.Name,
+                                                                                    server: currentServer,
+                                                                                },
+                                                                            ]
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                handleClick={(
+                                                                    e
+                                                                ) => {
+                                                                    if (
+                                                                        IsExpanded(
+                                                                            player
+                                                                        )
+                                                                    ) {
+                                                                        setExpandedPlayers(
+                                                                            expandedPlayers.filter(
+                                                                                (
+                                                                                    p
+                                                                                ) => {
+                                                                                    return (
+                                                                                        p.Name !==
+                                                                                        player.Name
+                                                                                    );
+                                                                                }
+                                                                            )
+                                                                        );
+                                                                    } else {
+                                                                        setExpandedPlayers(
+                                                                            [
+                                                                                ...expandedPlayers,
+                                                                                player,
+                                                                            ]
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                handleAddFilter={(
+                                                                    type
+                                                                ) => {
+                                                                    if (
+                                                                        type ===
+                                                                        "Group"
+                                                                    ) {
+                                                                        setActiveFilter(
+                                                                            [
+                                                                                ...activeFilters,
+                                                                                {
+                                                                                    type: "Group",
+                                                                                    value: player.GroupId,
+                                                                                    meta: player.Name,
+                                                                                },
+                                                                            ]
+                                                                        );
+                                                                    } else if (
+                                                                        type ===
+                                                                        "Guild"
+                                                                    ) {
+                                                                        setActiveFilter(
+                                                                            [
+                                                                                ...activeFilters,
+                                                                                {
+                                                                                    type: "Guild",
+                                                                                    value: player.Guild,
+                                                                                },
+                                                                            ]
+                                                                        );
+                                                                    } else if (
+                                                                        type ===
+                                                                        "Location"
+                                                                    ) {
+                                                                        setActiveFilter(
+                                                                            [
+                                                                                ...activeFilters,
+                                                                                {
+                                                                                    type: "Location",
+                                                                                    value: player
+                                                                                        .Location
+                                                                                        .Name,
+                                                                                },
+                                                                            ]
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                player={player}
+                                                                index={i}
+                                                                expanded={IsExpanded(
+                                                                    player
+                                                                )}
+                                                                starred={IsStarred(
+                                                                    player
+                                                                )}
+                                                            />
+                                                        )
+                                                )}
+                                            {paginatedPlayerData &&
+                                                paginatedPlayerData.count ===
+                                                    0 && (
+                                                    <span
+                                                        style={{
+                                                            fontSize: "1.6rem",
+                                                            width: "100%",
+                                                            textAlign: "center",
+                                                        }}
+                                                    >
+                                                        No groups meet your
+                                                        current filter settings
+                                                    </span>
+                                                )}
                                             <div
                                                 style={{
                                                     display: "flex",
                                                     flexDirection: "row",
-                                                    justifyContent: "left",
                                                     gap: "5px",
-                                                    padding:
-                                                        "5px 10px 5px 10px",
-                                                    flexWrap: "wrap",
+                                                    justifyContent: "center",
                                                     alignItems: "center",
-                                                    width: "100%",
-                                                    maxWidth: "706px",
+                                                    flexWrap: "wrap",
                                                 }}
                                             >
-                                                <h4
-                                                    style={{
-                                                        paddingLeft: "5px",
-                                                        marginBottom: "0px",
-                                                        color: "var(--text)",
-                                                    }}
-                                                >
-                                                    Active filters:
-                                                </h4>
-                                                {activeFilters.map(
-                                                    (filter, i) => (
+                                                {filteredPlayerData &&
+                                                    [
+                                                        ...Array(
+                                                            Math.ceil(
+                                                                filteredPlayerData.length /
+                                                                    PAGE_SIZE
+                                                            )
+                                                        ),
+                                                    ].map((o, i) => (
                                                         <div
                                                             key={i}
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.3rem",
-                                                                backgroundColor:
-                                                                    "var(--highlighted-1)",
-                                                                padding:
-                                                                    "2px 10px 2px 15px",
-                                                                width: "max-content",
-                                                                borderRadius:
-                                                                    "10px",
-                                                                display: "flex",
-                                                                alignItems:
-                                                                    "center",
-                                                                cursor: "pointer",
-                                                            }}
+                                                            className={
+                                                                pageNumber === i
+                                                                    ? "paginationPage active"
+                                                                    : "paginationPage"
+                                                            }
                                                             onClick={() => {
-                                                                if (
-                                                                    filter.type ===
-                                                                    "Name"
-                                                                )
-                                                                    document.getElementById(
-                                                                        "charactername"
-                                                                    ).value =
-                                                                        "";
-                                                                if (
-                                                                    filter.type ===
-                                                                    "Guild"
-                                                                )
-                                                                    document.getElementById(
-                                                                        "guildname"
-                                                                    ).value =
-                                                                        "";
-                                                                if (
-                                                                    filter.type ===
-                                                                    "Min Level"
-                                                                )
-                                                                    document.getElementById(
-                                                                        "minimumlevel"
-                                                                    ).value =
-                                                                        "";
-                                                                if (
-                                                                    filter.type ===
-                                                                    "Max Level"
-                                                                )
-                                                                    document.getElementById(
-                                                                        "maximumlevel"
-                                                                    ).value =
-                                                                        "";
-                                                                setActiveFilter(
-                                                                    activeFilters.filter(
-                                                                        (
-                                                                            _,
-                                                                            index
-                                                                        ) =>
-                                                                            index !==
-                                                                            i
-                                                                    )
+                                                                setPageNumber(
+                                                                    i
                                                                 );
                                                             }}
                                                         >
-                                                            <span
-                                                                style={{
-                                                                    color: "var(--text-faded)",
-                                                                    marginRight:
-                                                                        "5px",
-                                                                }}
-                                                            >
-                                                                {filter.type}:
-                                                            </span>
-                                                            <span
-                                                                style={{
-                                                                    color: "var(--text)",
-                                                                }}
-                                                            >
-                                                                {filter.type ===
-                                                                "Group"
-                                                                    ? filter.meta
-                                                                    : filter.value}
-                                                            </span>
-                                                            <CloseSVG
-                                                                className="link-icon"
-                                                                style={{
-                                                                    margin: "0px 0px 0px 10px",
-                                                                    backgroundColor:
-                                                                        "var(--gray6)",
-                                                                    borderRadius:
-                                                                        "50%",
-                                                                    padding:
-                                                                        "3px",
-                                                                }}
-                                                            />
+                                                            {i + 1}
                                                         </div>
-                                                    )
-                                                )}
+                                                    ))}
                                             </div>
-                                        )}
-                                    <div
-                                        className="social-container"
-                                        style={{ paddingTop: "10px" }}
-                                    >
-                                        {paginatedPlayerData &&
-                                            paginatedPlayerData.map(
-                                                (player, i) =>
-                                                    player.Name !==
-                                                        "Anonymous" && (
-                                                        <Player
-                                                            key={i}
-                                                            handleStarred={() => {
-                                                                if (
-                                                                    IsStarred(
-                                                                        player
-                                                                    )
-                                                                ) {
-                                                                    setPinnedPlayers(
-                                                                        pinnedPlayers.filter(
-                                                                            (
-                                                                                p
-                                                                            ) =>
-                                                                                p.name !==
-                                                                                player.Name
-                                                                        )
-                                                                    );
-                                                                } else {
-                                                                    setPinnedPlayers(
-                                                                        [
-                                                                            ...pinnedPlayers,
-                                                                            {
-                                                                                name: player.Name,
-                                                                                server: currentServer,
-                                                                            },
-                                                                        ]
-                                                                    );
-                                                                }
-                                                            }}
-                                                            handleClick={(
-                                                                e
-                                                            ) => {
-                                                                if (
-                                                                    IsExpanded(
-                                                                        player
-                                                                    )
-                                                                ) {
-                                                                    setExpandedPlayers(
-                                                                        expandedPlayers.filter(
-                                                                            (
-                                                                                p
-                                                                            ) => {
-                                                                                return (
-                                                                                    p.Name !==
-                                                                                    player.Name
-                                                                                );
-                                                                            }
-                                                                        )
-                                                                    );
-                                                                } else {
-                                                                    setExpandedPlayers(
-                                                                        [
-                                                                            ...expandedPlayers,
-                                                                            player,
-                                                                        ]
-                                                                    );
-                                                                }
-                                                            }}
-                                                            handleAddFilter={(
-                                                                type
-                                                            ) => {
-                                                                if (
-                                                                    type ===
-                                                                    "Group"
-                                                                ) {
-                                                                    setActiveFilter(
-                                                                        [
-                                                                            ...activeFilters,
-                                                                            {
-                                                                                type: "Group",
-                                                                                value: player.GroupId,
-                                                                                meta: player.Name,
-                                                                            },
-                                                                        ]
-                                                                    );
-                                                                } else if (
-                                                                    type ===
-                                                                    "Guild"
-                                                                ) {
-                                                                    setActiveFilter(
-                                                                        [
-                                                                            ...activeFilters,
-                                                                            {
-                                                                                type: "Guild",
-                                                                                value: player.Guild,
-                                                                            },
-                                                                        ]
-                                                                    );
-                                                                } else if (
-                                                                    type ===
-                                                                    "Location"
-                                                                ) {
-                                                                    setActiveFilter(
-                                                                        [
-                                                                            ...activeFilters,
-                                                                            {
-                                                                                type: "Location",
-                                                                                value: player
-                                                                                    .Location
-                                                                                    .Name,
-                                                                            },
-                                                                        ]
-                                                                    );
-                                                                }
-                                                            }}
-                                                            player={player}
-                                                            index={i}
-                                                            expanded={IsExpanded(
-                                                                player
-                                                            )}
-                                                            starred={IsStarred(
-                                                                player
-                                                            )}
-                                                        />
-                                                    )
-                                            )}
-                                        {paginatedPlayerData &&
-                                            paginatedPlayerData.count === 0 && (
-                                                <span
-                                                    style={{
-                                                        fontSize: "1.6rem",
-                                                        width: "100%",
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    No groups meet your current
-                                                    filter settings
-                                                </span>
-                                            )}
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "row",
-                                                gap: "5px",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                flexWrap: "wrap",
-                                            }}
-                                        >
-                                            {filteredPlayerData &&
-                                                [
-                                                    ...Array(
-                                                        Math.ceil(
-                                                            filteredPlayerData.length /
-                                                                PAGE_SIZE
-                                                        )
-                                                    ),
-                                                ].map((o, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className={
-                                                            pageNumber === i
-                                                                ? "paginationPage active"
-                                                                : "paginationPage"
-                                                        }
-                                                        onClick={() => {
-                                                            setPageNumber(i);
-                                                        }}
-                                                    >
-                                                        {i + 1}
-                                                    </div>
-                                                ))}
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        ) : (
+                            <span
+                                style={{
+                                    fontSize: "1.6rem",
+                                    width: "100%",
+                                    textAlign: "center",
+                                    color: "var(--text)",
+                                    marginTop: "20px",
+                                }}
+                            >
+                                {failedAttemptCount
+                                    ? `Loading player data. Attempt ${
+                                          failedAttemptCount + 1
+                                      }...`
+                                    : "Loading player data..."}
+                            </span>
+                        )
                     ) : (
-                        <span
+                        <div
                             style={{
-                                fontSize: "1.6rem",
-                                width: "100%",
-                                textAlign: "center",
-                                color: "var(--text)",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
                                 marginTop: "20px",
+                                width: "100%",
+                                maxWidth: "848px",
                             }}
                         >
-                            {failedAttemptCount
-                                ? `Loading player data. Attempt ${
-                                      failedAttemptCount + 1
-                                  }...`
-                                : "Loading player data..."}
-                        </span>
+                            <span
+                                style={{
+                                    fontSize: "1.6rem",
+                                    width: "100%",
+                                    textAlign: "center",
+                                    color: "var(--text)",
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        marginBottom: "0px",
+                                    }}
+                                >
+                                    This server might be offline.
+                                    <br />
+                                    If you believe this to be an error,
+                                </p>
+                            </span>
+                            <div
+                                id="action-button-container"
+                                style={{
+                                    width: "100%",
+                                    padding: "0px 20px",
+                                }}
+                            >
+                                <div
+                                    className="primary-button should-invert full-width-mobile"
+                                    onClick={() => {
+                                        setIgnoreServerStatus(true);
+                                        FetchPlayerData();
+                                    }}
+                                >
+                                    Load data anyways
+                                </div>
+                                <div
+                                    className={
+                                        "secondary-button should-invert full-width-mobile" +
+                                        (reported ? " disabled" : "")
+                                    }
+                                    onClick={() => {
+                                        if (reported === false) {
+                                            Submit(
+                                                "who/" + currentServer,
+                                                null,
+                                                "Server down messages reported",
+                                                null
+                                            );
+                                            setReported(true);
+                                        }
+                                    }}
+                                >
+                                    {reported ? "Thanks!" : "Report Issue"}
+                                </div>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
