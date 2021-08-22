@@ -206,7 +206,7 @@ const Grouping = () => {
                             color: "var(--text-faded)",
                         }}
                     >
-                        A huge shout-out to the amazing developers over at Vault
+                        A special thanks to the amazing developers over at Vault
                         of Kundarak. Their contributions to this project made
                         the Live LFM Viewer possible. Visit their website at{" "}
                         <a

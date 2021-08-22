@@ -115,11 +115,11 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        A special thank you goes to the incredibly talented and
-                        generous developers over at Vault of Kundarak. Their
-                        support played an integral role in the development of
-                        this project's Live LFM and Who panels. Visit their
-                        various projects:{" "}
+                        A special thanks to the incredibly talented and generous
+                        developers over at Vault of Kundarak. Their support
+                        played an integral role in the development of this
+                        project's Live LFM and Who panels. Visit their various
+                        projects:{" "}
                         <a
                             href="https://vaultofkundarak.com/"
                             rel="noreferrer"
