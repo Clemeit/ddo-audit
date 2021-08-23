@@ -34,6 +34,7 @@ import Who from "./components/who/Who";
 import WhoSpecific from "./components/who/WhoSpecific";
 import Live from "./components/live/Live";
 import About from "./components/about/About";
+import Suggestions from "./components/global/Suggestions";
 
 // Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
@@ -72,6 +73,7 @@ export default () => {
                 <Route exact path="/trends" component={Trends} />
                 <Route path="/who/:serverName" component={WhoSpecific} />
                 <Route path="/about" component={About} />
+                <Route path="/suggestions" component={Suggestions} />
             </Layout>
         </Suspense>
     );

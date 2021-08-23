@@ -3,7 +3,7 @@ import { ReactComponent as InfoSVG } from "../../assets/global/info.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
-import { Submit } from "./ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 
 /*
  ** Use with preset messages:

@@ -11,7 +11,7 @@ import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import { Submit } from "../global/ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players

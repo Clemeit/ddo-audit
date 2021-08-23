@@ -1,8 +1,9 @@
 import React from "react";
-import { Submit } from "../global/ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
+import { Link } from "react-router-dom";
 import $ from "jquery";
 
 const Banner = (props) => {
@@ -96,18 +97,21 @@ const Banner = (props) => {
                                 <div className="primary-button">
                                     Visit our GitHub
                                 </div>
-                                <div
-                                    className="secondary-button"
-                                    style={{
-                                        padding:
-                                            voteMessage ===
-                                            "We welcome your suggestions!"
-                                                ? "15px 25px"
-                                                : "",
-                                    }}
-                                >
-                                    Make a suggestion
-                                </div>
+                                {!props.hideSuggestions && (
+                                    <Link
+                                        to="/suggestions"
+                                        className="secondary-button"
+                                        style={{
+                                            padding:
+                                                voteMessage ===
+                                                "We welcome your suggestions!"
+                                                    ? "15px 25px"
+                                                    : "",
+                                        }}
+                                    >
+                                        Make a suggestion
+                                    </Link>
+                                )}
                             </div>
                             {!hasVoted && (
                                 <div

@@ -8,9 +8,10 @@ import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
 import { ReactComponent as CommunitySVG } from "../../assets/global/community.svg";
-import { Submit } from "../global/ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
+import { ReactComponent as FeedbackSVG } from "../../assets/global/feedback.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
@@ -103,6 +104,15 @@ const Directory = (props) => {
                     description:
                         "Look behind the curtain. Get the data for your own projects.",
                     to: "/api",
+                },
+                {
+                    icon: (
+                        <FeedbackSVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Give Feedback",
+                    description:
+                        "We welcome your feedback! Let us know what you think.",
+                    to: "/suggestions",
                 },
             ],
         },

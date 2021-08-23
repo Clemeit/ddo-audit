@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
-import { Submit } from "./ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 
 // Browser check
 // Opera 8.0+

@@ -1,5 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
 
 const About = (props) => {
@@ -168,12 +169,16 @@ const About = (props) => {
                         what I could have ever imagined. I'm always looking for
                         feedback and suggestions!
                     </p>
-                    <div
+                    <Link
+                        to="/suggestions"
                         className="secondary-button full-width-mobile"
-                        onClick={() => {}}
+                        style={{
+                            color: "var(--text)",
+                            textDecoration: "none",
+                        }}
                     >
                         Make a suggestion
-                    </div>
+                    </Link>
                 </div>
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>

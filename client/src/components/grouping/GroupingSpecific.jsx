@@ -9,10 +9,9 @@ import FilterBar from "../global/FilterBar";
 import Group from "./Group";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import { Submit } from "../global/ReportIssueService";
+import { Submit } from "../../services/ReportIssueService";
 
 const GroupingSpecific = (props) => {
-    // TODO: When no groups and in Alternative View mode, the settings panel is too small to change settings
     const TITLE = "Live LFM Viewer";
 
     const SERVER_NAMES = [
