@@ -118,7 +118,14 @@ const Live = (props) => {
                         These reports have moved to the following locations:
                     </p>
                     <div className="content-cluster-options">
-                        <Link to="/servers" className="nav-box">
+                        <Link
+                            to="/servers"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
                             <div className="nav-box-title">
                                 <ServersSVG className="nav-icon-large should-invert" />
                                 <h2 className="content-option-title">
@@ -129,7 +136,14 @@ const Live = (props) => {
                                 Server population, demographics, and trends.
                             </p>
                         </Link>
-                        <Link to="/trends" className="nav-box">
+                        <Link
+                            to="/trends"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
                             <div className="nav-box-title">
                                 <TrendsSVG className="nav-icon-large should-invert" />
                                 <h2 className="content-option-title">Trends</h2>

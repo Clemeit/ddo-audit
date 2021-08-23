@@ -59,7 +59,7 @@ const Suggestions = (props) => {
                             color: "var(--text-faded)",
                         }}
                     >
-                        This website has been largely based on suggestions. If
+                        Community feedback has made this project possible. If
                         there's a feature you'd like implemented, a change to
                         the website you'd prefer, or anything else you'd like to
                         discuss, let me know!
@@ -144,7 +144,7 @@ const Suggestions = (props) => {
                         >
                             <div
                                 className={
-                                    "primary-button full-width-mobile" +
+                                    "primary-button full-width-mobile should-invert" +
                                     (isSubmitted ? " disabled" : "")
                                 }
                                 style={{

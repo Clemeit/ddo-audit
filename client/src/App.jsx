@@ -34,12 +34,13 @@ import Who from "./components/who/Who";
 import WhoSpecific from "./components/who/WhoSpecific";
 import Live from "./components/live/Live";
 import About from "./components/about/About";
-import Suggestions from "./components/global/Suggestions";
 
 // Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
 const Quests = lazy(() => import("./components/quests/Quests"));
 const Trends = lazy(() => import("./components/trends/Trends"));
+const Suggestions = lazy(() => import("./components/global/Suggestions"));
+const Community = lazy(() => import("./components/community/Community"));
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -74,6 +75,7 @@ export default () => {
                 <Route path="/who/:serverName" component={WhoSpecific} />
                 <Route path="/about" component={About} />
                 <Route path="/suggestions" component={Suggestions} />
+                <Route path="/community" component={Community} />
             </Layout>
         </Suspense>
     );

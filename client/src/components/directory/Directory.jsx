@@ -218,6 +218,10 @@ const Directory = (props) => {
                                     to={option.to}
                                     key={i}
                                     className="nav-box"
+                                    style={{
+                                        height: "auto",
+                                        minHeight: "150px",
+                                    }}
                                 >
                                     <div className="nav-box-title">
                                         {option.icon}
