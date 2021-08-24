@@ -171,7 +171,7 @@ const About = (props) => {
                     </p>
                     <Link
                         to="/suggestions"
-                        className="secondary-button full-width-mobile"
+                        className="secondary-button should-invert full-width-mobile"
                         style={{
                             color: "var(--text)",
                             textDecoration: "none",

@@ -116,9 +116,16 @@ const QuickInfo = (props) => {
                     provide players with more transparent information. Please
                     leave any feedback or suggestions by using the button below!
                 </p>
-                <div className="secondary-button should-invert full-width-mobile">
+                <Link
+                    to="/suggestions"
+                    className="secondary-button should-invert full-width-mobile"
+                    style={{
+                        color: "var(--text)",
+                        textDecoration: "none",
+                    }}
+                >
                     Make a suggestion
-                </div>
+                </Link>
             </div>
         </div>
     );
