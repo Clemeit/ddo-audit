@@ -514,8 +514,7 @@ const Quests = (props) => {
                             }}
                         >
                             Run a new Quest Activity Audit by pressing the
-                            button below. This report may take up to 30 seconds
-                            to complete.
+                            button below.
                         </p>
                         <div
                             className={
