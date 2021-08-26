@@ -434,6 +434,46 @@ html {
     height: 30px;
 }
 
+.vote-icon {
+    opacity: 0.4;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.vote-icon:hover {
+    opacity: 1;
+}
+
+.vote-icon.inactive {
+    opacity: 0.2;
+}
+
+.vote-icon.active {
+    opacity: 1;
+}
+
+.poll {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.poll-option {
+    display: flex;
+    flex-direction: column;
+}
+
+.poll-options {
+    display: flex;
+    flex-direction: row;
+}
+
+.poll-title {
+    color: var(--text);
+    font-size: 1.5rem;
+}
+
 .nav-item.active {
     text-decoration: underline;
     filter: drop-shadow(0px 0px 7px rgba(255, 255, 255, 0.835));
@@ -1084,6 +1124,25 @@ input[type="radio"] {
 
     .banner-message.push-on-mobile {
         transform: translateY(36px);
+    }
+
+    .vote-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .poll {
+        align-items: center;
+    }
+    .poll-option {
+        align-items: center;
+    }
+    .poll-options {
+        gap: 10px;
+    }
+    .poll-title {
+        font-size: 1.8rem;
+        text-align: center;
     }
 }
 

@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "./Banner";
 import { Submit } from "../../services/ReportIssueService";
+import Poll from "./Poll";
 
 const Suggestions = (props) => {
     const TITLE = "DDO Audit | Make a Suggestion";
@@ -19,6 +20,14 @@ const Suggestions = (props) => {
         } else {
             alert("Did you forget to add a message?");
         }
+    }
+
+    function shouldDisplayPoll() {
+        let o = localStorage.getItem("has-completed-poll");
+        if (o === "true") {
+            return false;
+        }
+        return true;
     }
 
     return (
@@ -41,6 +50,7 @@ const Suggestions = (props) => {
             />
             <div id="content-container">
                 <div className="top-content-padding" />
+                {shouldDisplayPoll() && <Poll />}
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>
                         Suggestions and Feedback
@@ -59,10 +69,7 @@ const Suggestions = (props) => {
                             color: "var(--text-faded)",
                         }}
                     >
-                        Community feedback has made this project possible. If
-                        there's a feature you'd like implemented, a change to
-                        the website you'd prefer, or anything else you'd like to
-                        discuss, let me know!
+                        Community feedback has made this project possible.
                     </p>
                     <form>
                         <div
