@@ -583,7 +583,6 @@ html {
 }
 
 .content-table-container {
-    overflow-y: scroll;
     margin-bottom: 20px;
     border-bottom: 1px solid var(--gray5);
     width: 100%;

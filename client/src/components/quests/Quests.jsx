@@ -661,7 +661,7 @@ const Quests = (props) => {
                             <div className="audit-report-time">
                                 <p style={{ fontSize: "medium" }}>
                                     Audit performed {startTime.toString()} ran
-                                    for {ellapsedTime / 1000}s
+                                    for {ellapsedTime / 1000}s (cached)
                                 </p>
                             </div>
                         </div>
