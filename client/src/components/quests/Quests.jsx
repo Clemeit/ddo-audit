@@ -73,15 +73,24 @@ const Quests = (props) => {
         Fetch("https://www.playeraudit.com/api/activity?c=true", 5000)
             .then((val) => {
                 set_tableSize(val.Count);
+
+                // clearTimeout(updateTime);
+                // set_ellapsedTime(new Date() - starttime);
+                // set_isRunning(false);
+                // set_questList([
+                //     { Id: 1879267185, QuestName: "Danger at Dunwater" },
+                // ]);
+                // return;
+
                 Fetch(
                     "https://www.playeraudit.com/api/activity?type=heroic",
-                    15000
+                    30000
                 )
                     .then((val) => {
                         questlist = val;
                         Fetch(
                             "https://www.playeraudit.com/api/activity?type=epic",
-                            15000
+                            30000
                         )
                             .then((val) => {
                                 let epics = val;
@@ -261,7 +270,7 @@ const Quests = (props) => {
                 high,
             "json"
         ).then((val) => {
-            const HOUR_BIN_WIDTH = 1;
+            const HOUR_BIN_WIDTH = 2;
             const MAX_DURATION_LIMIT = 3 * 60 * 60;
             let max = 0;
             let bincount = 30;
@@ -509,7 +518,10 @@ const Quests = (props) => {
                             to complete.
                         </p>
                         <div
-                            className="primary-button full-width-mobile"
+                            className={
+                                "primary-button full-width-mobile" +
+                                (isRunning && " disabled")
+                            }
                             onClick={() => runAudit()}
                             disabled={isRunning}
                         >
@@ -697,7 +709,12 @@ const Quests = (props) => {
                                     </div>
                                 ))}
                         </div>
-                        <hr />
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
                         <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{
@@ -745,12 +762,68 @@ const Quests = (props) => {
                         </p>
                         <ChartBar
                             keys={["Frequency"]}
-                            indexBy={"Duration"}
-                            legendBottom={"Duration (miuntes)"}
-                            legendLeft={"Frequency"}
+                            indexBy="Duration"
+                            legendBottom="Duration (miuntes)"
+                            legendLeft="Frequency"
                             data={durationData}
+                            loadingMessage="Click on a quest to view data"
+                            noAnim={true}
                         />
-                        <hr />
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
+                        <h4>{questName || "No quest selected"}</h4>
+                        <p
+                            style={{
+                                fontSize: "large",
+                                marginBottom: "0px",
+                            }}
+                        >
+                            Popularity throughout the week.
+                        </p>
+                        <ChartBar
+                            keys={["Instances"]}
+                            indexBy="Time"
+                            legendBottom="Time of Week (Hours, offset from Sunday 00:00)"
+                            legendLeft="Instances"
+                            data={datetimeData}
+                            loadingMessage="Click on a quest to view data"
+                            noAnim={true}
+                            days={true}
+                        />
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
+                        <h4>{questName || "No quest selected"}</h4>
+                        <p
+                            style={{
+                                fontSize: "large",
+                                marginBottom: "0px",
+                            }}
+                        >
+                            Popularity throughout the day.
+                        </p>
+                        <ChartBar
+                            keys={["Instances"]}
+                            indexBy="Time"
+                            legendBottom="Time of Day (24-hour format)"
+                            legendLeft="Instances"
+                            data={todData}
+                            loadingMessage="Click on a quest to view data"
+                            noAnim={true}
+                        />
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
                         <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{
@@ -763,42 +836,7 @@ const Quests = (props) => {
                         <ChartPie
                             data={serverDistData}
                             loadingMessage="Click on a quest to view data"
-                        />
-                        <hr />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
-                        >
-                            Popularity throughout the week.
-                        </p>
-                        <ChartBar
-                            keys={["Instances"]}
-                            indexBy={"Time"}
-                            legendBottom={
-                                "Time of Week (Hours, offset from Sunday 00:00)"
-                            }
-                            legendLeft={"Instances"}
-                            data={datetimeData}
-                        />
-                        <hr />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
-                        >
-                            Popularity throughout the day.
-                        </p>
-                        <ChartBar
-                            keys={["Instances"]}
-                            indexBy={"Time"}
-                            legendBottom={"Time of Day (24-hour format)"}
-                            legendLeft={"Instances"}
-                            data={todData}
+                            noAnim={true}
                         />
                     </div>
                 )}

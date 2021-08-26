@@ -5,16 +5,16 @@ import { ResponsivePie } from "@nivo/pie";
 // Pages: Servers
 
 const theme = {
-    background: "var(--card)",
+    background: "var(--base)",
     textColor: "var(--text)",
     fontSize: 16,
     tooltip: {
         container: {
-            background: "var(--card)",
+            background: "var(--base)",
             color: "inherit",
             fontSize: "inherit",
             borderRadius: "2px",
-            boxShadow: "0 0 6px var(--card-border)",
+            boxShadow: "0 0 6px var(--black)",
             padding: "5px 9px",
         },
         basic: {
@@ -106,11 +106,7 @@ const ChartPie = (props) => {
                 />
             ) : (
                 <div className="loading-data-message">
-                    <h5>
-                        {props.loadingMessage
-                            ? props.loadingMessage
-                            : "Loading data..."}
-                    </h5>
+                    <h5>{props.loadingMessage || "Loading data..."}</h5>
                 </div>
             )}
         </div>

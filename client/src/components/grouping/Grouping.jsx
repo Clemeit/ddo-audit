@@ -22,6 +22,10 @@ const Grouping = () => {
         "Hardcore",
     ];
 
+    const [overviewData, setOverviewData] = React.useState(null);
+    const [serverStatusData, setServerStatusData] = React.useState(null);
+    const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
+
     function GetSVG(world) {
         if (world === undefined || world === null) return <PendingSVG />;
         if (!world.hasOwnProperty("Status")) return <PendingSVG />;
@@ -56,10 +60,6 @@ const Grouping = () => {
             </p>
         );
     }
-
-    const [overviewData, setOverviewData] = React.useState(null);
-    const [serverStatusData, setServerStatusData] = React.useState(null);
-    const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
 
     React.useEffect(() => {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)

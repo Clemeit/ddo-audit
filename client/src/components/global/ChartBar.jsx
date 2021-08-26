@@ -5,7 +5,7 @@ import { ResponsiveBar } from "@nivo/bar";
 // Pages: Servers
 
 const theme = {
-    background: "var(--card)",
+    background: "var(--base)",
     textColor: "var(--text)",
     fontSize: 14,
     axis: {
@@ -38,11 +38,11 @@ const theme = {
     },
     tooltip: {
         container: {
-            background: "var(--card)",
+            background: "var(--base)",
             color: "inherit",
             fontSize: "inherit",
             borderRadius: "2px",
-            boxShadow: "0 0 6px var(--card-border)",
+            boxShadow: "0 0 6px var(--black)",
             padding: "5px 9px",
         },
         basic: {
@@ -58,6 +58,22 @@ const theme = {
 };
 
 const ChartBar = (props) => {
+    function xLabel(value) {
+        if (props.days) {
+            if (value % 24 === 0) {
+                return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
+                    Math.floor(value / 24)
+                ];
+            } else if (value % 6 === 0) {
+                return value - Math.floor(value / 24) * 24;
+            } else {
+                return "";
+            }
+        }
+
+        return value;
+    }
+
     return (
         <div
             className={
@@ -70,19 +86,21 @@ const ChartBar = (props) => {
             {props.data ? (
                 <ResponsiveBar
                     data={props.data}
-                    keys={[
-                        "Argonnessen",
-                        "Cannith",
-                        "Ghallanda",
-                        "Khyber",
-                        "Orien",
-                        "Sarlona",
-                        "Thelanis",
-                        "Wayfinder",
-                        "Hardcore",
-                    ]}
-                    indexBy="className"
-                    margin={{ top: 20, right: 120, bottom: 80, left: 70 }}
+                    // keys={[
+                    //     "Argonnessen",
+                    //     "Cannith",
+                    //     "Ghallanda",
+                    //     "Khyber",
+                    //     "Orien",
+                    //     "Sarlona",
+                    //     "Thelanis",
+                    //     "Wayfinder",
+                    //     "Hardcore",
+                    // ]}
+                    // indexBy="className"
+                    keys={props.keys}
+                    indexBy={props.indexBy}
+                    margin={{ top: 20, right: 60, bottom: 80, left: 60 }}
                     padding={0.15}
                     minValue={0}
                     groupMode={props.display === "Grouped" ? "grouped" : ""}
@@ -99,58 +117,59 @@ const ChartBar = (props) => {
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: -45,
-                        legend: "",
+                        legend: props.legendBottom || "",
                         legendPosition: "middle",
                         legendOffset: 32,
+                        format: (value) => xLabel(value),
                     }}
                     axisLeft={{
                         tickSize: 5,
                         tickPadding: 5,
                         tickRotation: 0,
-                        legend: "Players",
+                        legend: props.legendLeft || "",
                         legendPosition: "middle",
                         legendOffset: -50,
-                        format: (value) =>
-                            `${props.display === "Grouped" ? value + "%" : ""}`,
+                        // format: (value) =>
+                        //     `${props.display === "Grouped" ? value + "%" : ""}`,
                     }}
-                    tooltipFormat={(value) => `${value}%`}
-                    label={(d) => `${Math.round(d.value)}%`}
+                    // tooltipFormat={(value) => `${value}%`}
+                    // label={(d) => `${Math.round(d.value)}%`}
                     labelSkipWidth={20}
                     labelSkipHeight={18}
                     labelTextColor={"white"}
-                    legends={[
-                        {
-                            dataFrom: "keys",
-                            anchor: "right",
-                            direction: "column",
-                            justify: false,
-                            translateX: 120,
-                            translateY: 0,
-                            itemsSpacing: 2,
-                            itemWidth: 110,
-                            itemHeight: 20,
-                            symbolShape: "circle",
-                            itemDirection: "left-to-right",
-                            itemOpacity: 1,
-                            symbolSize: 12,
-                            // effects: [
-                            //     {
-                            //         on: "hover",
-                            //         style: {
-                            //             itemOpacity: 1,
-                            //         },
-                            //     },
-                            // ],
-                        },
-                    ]}
-                    animate={true}
+                    // legends={[
+                    //     {
+                    //         dataFrom: "keys",
+                    //         anchor: "right",
+                    //         direction: "column",
+                    //         justify: false,
+                    //         translateX: 120,
+                    //         translateY: 0,
+                    //         itemsSpacing: 2,
+                    //         itemWidth: 110,
+                    //         itemHeight: 20,
+                    //         symbolShape: "circle",
+                    //         itemDirection: "left-to-right",
+                    //         itemOpacity: 1,
+                    //         symbolSize: 12,
+                    //         // effects: [
+                    //         //     {
+                    //         //         on: "hover",
+                    //         //         style: {
+                    //         //             itemOpacity: 1,
+                    //         //         },
+                    //         //     },
+                    //         // ],
+                    //     },
+                    // ]}
+                    animate={props.noAnim ? false : true}
                     theme={theme}
                     motionStiffness={300}
                     motionDamping={30}
                 />
             ) : (
                 <div className="loading-data-message">
-                    <h5>Loading data...</h5>
+                    <h5>{props.loadingMessage || "Loading data..."}</h5>
                 </div>
             )}
         </div>
