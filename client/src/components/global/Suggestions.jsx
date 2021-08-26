@@ -144,7 +144,7 @@ const Suggestions = (props) => {
                             style={{
                                 display: "flex",
                                 flexDirection: "row",
-                                justifyContent: "right",
+                                justifyContent: "flex-end",
                                 gap: "10px",
                                 marginTop: "20px",
                             }}

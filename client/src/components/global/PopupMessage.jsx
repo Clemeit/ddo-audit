@@ -161,7 +161,7 @@ const PopupMessage = (props) => {
                     <div
                         id="action-button-container"
                         style={{
-                            justifyContent: "right",
+                            justifyContent: "flex-end",
                         }}
                     >
                         <div
