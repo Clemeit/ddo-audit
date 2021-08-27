@@ -575,7 +575,7 @@ const WhoSpecific = (props) => {
                                             reportMessage:
                                                 val === null
                                                     ? "Player data returned null"
-                                                    : "[A] Verification failed",
+                                                    : "[Internal] Verification failed",
                                         },
                                     ]);
                                 } else {
@@ -600,7 +600,7 @@ const WhoSpecific = (props) => {
                                         submessage: err.toString(),
                                         icon: "warning",
                                         fullscreen: false,
-                                        reportMessage: "[A] Timeout",
+                                        reportMessage: "[Internal] Timeout",
                                     },
                                 ]);
                             } else {
@@ -1425,10 +1425,9 @@ const WhoSpecific = (props) => {
                                     onClick={() => {
                                         if (reported === false) {
                                             Submit(
-                                                "who/" + currentServer,
-                                                null,
-                                                "Server down messages reported",
-                                                null
+                                                "User reported issue from who/" +
+                                                    currentServer,
+                                                "[Internal] Reported 'server offline' message"
                                             );
                                             setReported(true);
                                         }

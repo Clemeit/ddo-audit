@@ -178,11 +178,11 @@ const PopupMessage = (props) => {
                             onClick={() => {
                                 if (reported === false) {
                                     Submit(
-                                        props.page,
-                                        null,
+                                        "User reported issue from " +
+                                            props.page +
+                                            " popup",
                                         currentSubmessage ||
-                                            currentReportMessage,
-                                        null
+                                            currentReportMessage
                                     );
                                     set_reported(true);
                                     set_userClosed(true);

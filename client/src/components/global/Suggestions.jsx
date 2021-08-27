@@ -15,7 +15,10 @@ const Suggestions = (props) => {
     function SubmitMessage() {
         if (isSubmitted) return;
         if (message) {
-            Submit("suggestions", "", message, contact);
+            Submit(
+                "Suggestion",
+                message + (contact && ` (Contact: '${contact}')`)
+            );
             setIsSubmitted(true);
         } else {
             alert("Did you forget to add a message?");

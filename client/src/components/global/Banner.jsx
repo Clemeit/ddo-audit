@@ -38,7 +38,7 @@ const Banner = (props) => {
     }, []);
 
     function vote(response) {
-        Submit("Home", "Voted", "[M] " + response, "");
+        Submit("Voted from Banner", response);
         localStorage.setItem("last-major-vote", new Date());
         set_mayVote(false);
         if (response === "Like") {

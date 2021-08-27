@@ -15,7 +15,7 @@ const isEdge = !isIE && !!window.StyleMedia;
 const isChrome =
     !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
 
-export function Submit(page, element, comment, options) {
+export function Submit(title, comment) {
     // event.preventDefault();
     let browser;
     if (isChrome) browser = "chrome";
@@ -25,12 +25,13 @@ export function Submit(page, element, comment, options) {
     else if (isOpera) browser = "opera";
     else browser = "unknown";
 
-    const url = "https://www.playeraudit.com/api/submit";
+    const url = "https://www.playeraudit.com/api/feedback";
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ browser, page, element, options, comment }),
+        body: JSON.stringify({ browser, title, comment }),
     };
+    console.log(JSON.stringify({ browser, title, comment }));
     fetch(url, requestOptions)
         .then((response) => console.log("Submitted successfully"))
         .catch((error) => console.log("Submission error", error));

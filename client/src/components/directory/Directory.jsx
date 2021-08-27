@@ -134,7 +134,7 @@ const Directory = (props) => {
     }, []);
 
     function vote(response) {
-        Submit("Home", "Voted", "[M] " + response, "");
+        Submit("Voted from Directory", response);
         localStorage.setItem("last-major-vote", new Date());
         set_mayVote(false);
         if (response === "Like") {

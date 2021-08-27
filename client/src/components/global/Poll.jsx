@@ -45,14 +45,12 @@ const Poll = (props) => {
         setIsPollClosed(true);
         localStorage.setItem("last-poll-time", new Date());
         Submit(
-            "poll",
-            "",
+            "Poll",
             `LFM Viewer: ${voteStates[0] + 1 || "-"}/5\nWho Panel: ${
                 voteStates[1] + 1 || "-"
             }/5\nServer Status: ${voteStates[2] + 1 || "-"}/5\nLoading times: ${
                 voteStates[3] + 1 || "-"
-            }/5\nVisual appearance: ${voteStates[4] + 1 || "-"}/5`,
-            ""
+            }/5\nVisual appearance: ${voteStates[4] + 1 || "-"}/5`
         );
     }
 

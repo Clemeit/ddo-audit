@@ -72,10 +72,12 @@ const ReportIssueForm = (props) => {
         };
 
         Submit(
-            props.page,
-            JSON.stringify(props.componentReference),
-            usercomment,
-            JSON.stringify(options)
+            "User reported issue from " + props.page,
+            JSON.stringify(props.componentReference) +
+                " || " +
+                usercomment +
+                " || " +
+                JSON.stringify(options)
         );
 
         setTimeout(props.hideReportForm, 2000);
