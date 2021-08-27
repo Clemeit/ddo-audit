@@ -323,13 +323,13 @@ const NotificationForm = (props) => {
                         }}
                     >
                         <div
-                            className="primary-button full-width-mobile"
+                            className="primary-button should-invert full-width-mobile"
                             onClick={() => AddRule()}
                         >
                             Add Rule
                         </div>
                         <div
-                            className="secondary-button"
+                            className="secondary-button should-invert"
                             onClick={() => ResetForm()}
                         >
                             Reset

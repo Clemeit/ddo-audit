@@ -384,7 +384,6 @@ const Quests = (props) => {
             }
 
             set_todData(tod_data);
-            console.log(datetimedata);
             set_datetimeData(datetimedata);
 
             // popularity over time
@@ -420,7 +419,7 @@ const Quests = (props) => {
                 thistotalduration += entry.Duration;
                 thiscount++;
             }
-            // console.log(dailypopularity);
+
             let linedata = [
                 {
                     id: "Popularity",

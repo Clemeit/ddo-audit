@@ -119,15 +119,24 @@ const Directory = (props) => {
     ];
 
     const [voteMessage, set_voteMessage] = React.useState(null);
-    const [hasVoted, set_hasVoted] = React.useState(true);
+    const [mayVote, set_mayVote] = React.useState(false);
     React.useEffect(() => {
-        set_hasVoted(localStorage.getItem("has-voted") === "true");
+        let ls = localStorage.getItem("last-major-vote");
+        if (ls !== undefined && ls !== null) {
+            let dt = new Date(ls);
+            let mayvote =
+                new Date(localStorage.getItem("last-major-vote")) <=
+                new Date().getTime() - 1000 * 60 * 60 * 24 * 31;
+            set_mayVote(mayvote);
+        } else {
+            set_mayVote(true);
+        }
     }, []);
 
     function vote(response) {
         Submit("Home", "Voted", "[M] " + response, "");
-        localStorage.setItem("has-voted", "true");
-        set_hasVoted(true);
+        localStorage.setItem("last-major-vote", new Date());
+        set_mayVote(false);
         if (response === "Like") {
             set_voteMessage("Thanks for your feedback!");
         } else {
@@ -155,7 +164,7 @@ const Directory = (props) => {
             <div id="content-container">
                 <BannerMessage page="home" />
                 <div className="top-content-padding" />
-                {!hasVoted && (
+                {mayVote && (
                     <div
                         className="show-on-mobile"
                         id="action-button-container"

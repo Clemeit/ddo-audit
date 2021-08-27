@@ -33,37 +33,42 @@ const Poll = (props) => {
     const [voteStates, setVoteStates] = React.useState([-1, -1, -1, -1, -1]);
     const [isPollClosed, setIsPollClosed] = React.useState(false);
 
+    const [mayVote, setMayVote] = React.useState(false);
+
     function handleVote(index, selection) {
         let copy = [...voteStates];
         copy[index] = selection;
         setVoteStates([...copy]);
-
-        let complete = true;
-        for (let i = 0; i < 5; i++) {
-            if (copy[i] === -1) complete = false;
-        }
-        if (complete) {
-            clearTimeout(closePoll);
-            closePoll = setTimeout(() => {
-                setIsPollClosed(true);
-                localStorage.setItem("has-completed-poll", true);
-                Submit(
-                    "poll",
-                    "",
-                    `LFM Viewer: ${copy[0] + 1}/5\nWho Panel: ${
-                        copy[1] + 1
-                    }/5\nServer Status: ${copy[2] + 1}/5\nLoading times: ${
-                        copy[3] + 1
-                    }/5\nVisual appearance: ${copy[4] + 1}/5`,
-                    ""
-                );
-            }, 2000);
-        }
     }
 
-    let closePoll;
+    function handleSubmit() {
+        setIsPollClosed(true);
+        localStorage.setItem("last-poll-time", new Date());
+        Submit(
+            "poll",
+            "",
+            `LFM Viewer: ${voteStates[0] + 1 || "-"}/5\nWho Panel: ${
+                voteStates[1] + 1 || "-"
+            }/5\nServer Status: ${voteStates[2] + 1 || "-"}/5\nLoading times: ${
+                voteStates[3] + 1 || "-"
+            }/5\nVisual appearance: ${voteStates[4] + 1 || "-"}/5`,
+            ""
+        );
+    }
 
-    return (
+    React.useEffect(() => {
+        let ls = localStorage.getItem("last-poll-time");
+        if (ls !== undefined && ls !== null) {
+            let mayvote =
+                new Date(localStorage.getItem("last-poll-time")) <=
+                new Date().getTime() - 1000 * 10; // 60 * 60 * 24 * 31
+            setMayVote(mayvote);
+        } else {
+            setMayVote(true);
+        }
+    }, []);
+
+    return mayVote || isPollClosed ? (
         <div className="content-cluster">
             <h2 style={{ color: "var(--text)" }}>Poll</h2>
             <hr
@@ -72,22 +77,34 @@ const Poll = (props) => {
                     opacity: 0.2,
                 }}
             />
-            <div className="poll">
-                {!isPollClosed && (
-                    <p
-                        style={{
-                            display: "block",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                            marginBottom: "0px",
-                        }}
-                    >
-                        Got 15 seconds for a poll? Your feedback helps a lot!
-                    </p>
-                )}
-                {!isPollClosed ? (
-                    POLL_OPTIONS.map((option, i) => (
+            {isPollClosed ? (
+                <p
+                    style={{
+                        display: "block",
+                        fontSize: "1.5rem",
+                        lineHeight: "normal",
+                        color: "var(--text-faded)",
+                        // marginBottom: "0px",
+                    }}
+                >
+                    Thanks!
+                </p>
+            ) : (
+                <p
+                    style={{
+                        display: "block",
+                        fontSize: "1.5rem",
+                        lineHeight: "normal",
+                        color: "var(--text-faded)",
+                        // marginBottom: "0px",
+                    }}
+                >
+                    Got 15 seconds for a poll? Your feedback helps a lot!
+                </p>
+            )}
+            {!isPollClosed && (
+                <div className="poll">
+                    {POLL_OPTIONS.map((option, i) => (
                         <div key={i} className="poll-option">
                             <span className="poll-title">{option.title}</span>
                             <div className="poll-options">
@@ -148,21 +165,19 @@ const Poll = (props) => {
                                 />
                             </div>
                         </div>
-                    ))
-                ) : (
-                    <p
-                        style={{
-                            display: "block",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
+                    ))}
+                    <div
+                        className="primary-button should-invert full-width-mobile"
+                        style={{ marginTop: "10px" }}
+                        onClick={() => handleSubmit()}
                     >
-                        Thanks!
-                    </p>
-                )}
-            </div>
+                        Submit
+                    </div>
+                </div>
+            )}
         </div>
+    ) : (
+        <></>
     );
 };
 

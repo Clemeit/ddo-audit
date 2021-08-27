@@ -22,14 +22,6 @@ const Suggestions = (props) => {
         }
     }
 
-    function shouldDisplayPoll() {
-        let o = localStorage.getItem("has-completed-poll");
-        if (o === "true") {
-            return false;
-        }
-        return true;
-    }
-
     return (
         <div>
             <Helmet>
@@ -50,7 +42,7 @@ const Suggestions = (props) => {
             />
             <div id="content-container">
                 <div className="top-content-padding" />
-                {shouldDisplayPoll() && <Poll />}
+                <Poll />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>
                         Suggestions and Feedback
