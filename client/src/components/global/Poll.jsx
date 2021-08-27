@@ -61,7 +61,7 @@ const Poll = (props) => {
         if (ls !== undefined && ls !== null) {
             let mayvote =
                 new Date(localStorage.getItem("last-poll-time")) <=
-                new Date().getTime() - 1000 * 10; // 60 * 60 * 24 * 31
+                new Date().getTime() - 1000 * 60 * 60 * 24 * 31;
             setMayVote(mayvote);
         } else {
             setMayVote(true);
