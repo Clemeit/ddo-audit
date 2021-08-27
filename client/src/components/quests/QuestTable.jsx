@@ -76,7 +76,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    Quest <SortSVG />
+                                    Quest{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                                 <th
                                     onClick={() => props.handleSort("level")}
@@ -87,7 +88,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    Level <SortSVG />
+                                    Level{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                                 <th
                                     onClick={() =>
@@ -100,7 +102,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    Adventure Pack <SortSVG />
+                                    Adventure Pack{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                                 <th
                                     onClick={() => props.handleSort("xp")}
@@ -111,7 +114,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    XP/Min <SortSVG />
+                                    XP/Min{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                                 <th
                                     onClick={() => props.handleSort("duration")}
@@ -122,7 +126,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    Average Duration <SortSVG />
+                                    Average Duration{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                                 <th
                                     onClick={() =>
@@ -135,7 +140,8 @@ const ContentTable = (props) => {
                                         // alignItems: "center",
                                     }}
                                 >
-                                    Instances <SortSVG />
+                                    Instances{" "}
+                                    <SortSVG className="nav-icon should-invert" />
                                 </th>
                             </tr>
                         </thead>
@@ -163,7 +169,7 @@ const ContentTable = (props) => {
                                         >
                                             {quest.QuestName}
                                             <TimelineSVG
-                                                className="link-icon"
+                                                className="link-icon should-invert"
                                                 style={{ marginLeft: "8px" }}
                                             />
                                         </div>

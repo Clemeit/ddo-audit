@@ -58,53 +58,53 @@ const theme = {
 };
 
 const ChartLine = (props) => {
-    const [filteredData, set_filteredData] = React.useState(null);
+    // const [filteredData, set_filteredData] = React.useState(null);
     const [isMobileLoaded, setIsMobileLoaded] = React.useState(false);
 
-    React.useEffect(() => {
-        if (props.data === null) return;
-        set_filteredData(
-            props.data.filter(
-                (series) =>
-                    (series.id === "Total") &
-                        (props.activeFilter === "Combined Activity") ||
-                    (series.id !== "Total") &
-                        (props.activeFilter === "Server Activity") ||
-                    series.id === props.activeFilter
-            )
-        );
-    }, [props.data, props.activeFilter]);
+    // React.useEffect(() => {
+    //     if (props.data === null) return;
+    //     set_filteredData(
+    //         props.data.filter(
+    //             (series) =>
+    //                 (series.id === "Total") &
+    //                     (props.activeFilter === "Combined Activity") ||
+    //                 (series.id !== "Total") &
+    //                     (props.activeFilter === "Server Activity") ||
+    //                 series.id === props.activeFilter
+    //         )
+    //     );
+    // }, [props.data, props.activeFilter]);
 
-    function XScale() {
-        return {
-            type: "time",
-            format: "%Y-%m-%dT%H:%M:%S.%LZ",
-            useUTC: false,
-        };
-    }
+    // function XScale() {
+    //     return {
+    //         type: "time",
+    //         format: "%Y-%m-%dT%H:%M:%S.%LZ",
+    //         useUTC: false,
+    //     };
+    // }
 
-    function BottomAxis() {
-        return {
-            orient: "bottom",
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: -45,
-            //legend: "Time",
-            legendPosition: "middle",
-            tickValues:
-                props.trendType === "day"
-                    ? "every 1 hour"
-                    : props.trendType === "week"
-                    ? "every 6 hour"
-                    : "every 1 week",
-            format:
-                props.trendType === "day"
-                    ? "%-I:%M %p"
-                    : props.trendType === "week"
-                    ? "%a %-I %p"
-                    : "%a %b %-d",
-        };
-    }
+    // function BottomAxis() {
+    //     return {
+    //         orient: "bottom",
+    //         tickSize: 5,
+    //         tickPadding: 5,
+    //         tickRotation: -45,
+    //         //legend: "Time",
+    //         legendPosition: "middle",
+    //         tickValues:
+    //             props.trendType === "day"
+    //                 ? "every 1 hour"
+    //                 : props.trendType === "week"
+    //                 ? "every 6 hour"
+    //                 : "every 1 week",
+    //         format:
+    //             props.trendType === "day"
+    //                 ? "%-I:%M %p"
+    //                 : props.trendType === "week"
+    //                 ? "%a %-I %p"
+    //                 : "%a %b %-d",
+    //     };
+    // }
 
     return (
         <div>
@@ -128,10 +128,12 @@ const ChartLine = (props) => {
             >
                 {props.data ? (
                     <ResponsiveLine
-                        data={filteredData}
+                        data={props.data}
+                        keys={props.keys}
+                        indexBy={props.indexBy}
                         margin={{ top: 20, right: 120, bottom: 60, left: 70 }}
-                        xScale={XScale()}
-                        xFormat="time:%Y-%m-%dT%H:%M:%S"
+                        //xScale={XScale()}
+                        //xFormat="time:%Y-%m-%dT%H:%M:%S"
                         yScale={{
                             type: "linear",
                             min: 0,
@@ -143,13 +145,22 @@ const ChartLine = (props) => {
                         curve="natural"
                         axisTop={null}
                         axisRight={null}
-                        axisBottom={BottomAxis()}
+                        //axisBottom={BottomAxis()}
+                        axisBottom={{
+                            tickSize: 5,
+                            tickPadding: 5,
+                            tickRotation: -45,
+                            legend: props.legendBottom || "",
+                            legendPosition: "middle",
+                            legendOffset: 32,
+                            // format: (value) => xLabel(value),
+                        }}
                         axisLeft={{
                             orient: "left",
                             tickSize: 5,
                             tickPadding: 5,
                             tickRotation: 0,
-                            legend: "Players",
+                            legend: props.legendLeft,
                             legendOffset: -50,
                             legendPosition: "middle",
                         }}

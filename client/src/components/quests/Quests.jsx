@@ -9,6 +9,7 @@ import Banner from "../global/Banner";
 // import ChartClassDistribution from "../ChartClassDistribution";
 // import ChartLevelDistribution from "../ChartLevelDistribution";
 // import ServerStatusDisplay from "./ServerStatusDisplay";
+import ChartLine from "../global/ChartLine";
 import QuestTable from "./QuestTable";
 import PopupMessage from "../global/PopupMessage";
 import ChartBar from "../global/ChartBar";
@@ -39,6 +40,8 @@ const Quests = (props) => {
     const [pageNumber, set_pageNumber] = React.useState(-1);
     // const [questData, set_questData] = React.useState(null);
     const [durationData, set_durationData] = React.useState(null);
+    const [popularityOverTimeData, set_popularityOverTimeData] =
+        React.useState(null);
     const [totalTime, set_totalTime] = React.useState(null);
     const [totalDataPoints, set_totalDataPoints] = React.useState(null);
     const [serverDistData, set_serverDistData] = React.useState(null);
@@ -381,7 +384,56 @@ const Quests = (props) => {
             }
 
             set_todData(tod_data);
+            console.log(datetimedata);
             set_datetimeData(datetimedata);
+
+            // popularity over time
+            let sorted = val.sort((a, b) => a.Start > b.Start);
+            let dailypopularity = [];
+            let dailyaverageduration = [];
+            let thiscount = 0;
+            let thistotalduration;
+            let thisday = "";
+
+            let scalefactor = 1;
+            let maxdaily;
+            let mindaily;
+
+            for (let ent = 0; ent < val.length; ent++) {
+                let entry = val[ent];
+                let entryday = entry.Start.split(" ")[0];
+                if (entryday !== thisday) {
+                    if (thisday !== "") {
+                        dailypopularity.push({
+                            x: thisday,
+                            y: thiscount,
+                        });
+                        dailyaverageduration.push({
+                            x: thisday,
+                            y: Math.round(thistotalduration / thiscount / 60),
+                        });
+                    }
+                    thistotalduration = 0;
+                    thiscount = 0;
+                    thisday = entryday;
+                }
+                thistotalduration += entry.Duration;
+                thiscount++;
+            }
+            // console.log(dailypopularity);
+            let linedata = [
+                {
+                    id: "Popularity",
+                    color: "hsl(180, 70%, 50%)",
+                    data: dailypopularity,
+                },
+                // {
+                //     id: "Average Duration",
+                //     color: "hsl(336, 100%, 50%)",
+                //     data: dailyaverageduration,
+                // },
+            ];
+            set_popularityOverTimeData(linedata);
         });
     }
 
@@ -518,7 +570,7 @@ const Quests = (props) => {
                         </p>
                         <div
                             className={
-                                "primary-button full-width-mobile" +
+                                "primary-button should-invert full-width-mobile" +
                                 (isRunning && " disabled")
                             }
                             onClick={() => runAudit()}
@@ -765,6 +817,30 @@ const Quests = (props) => {
                             legendBottom="Duration (miuntes)"
                             legendLeft="Frequency"
                             data={durationData}
+                            loadingMessage="Click on a quest to view data"
+                            noAnim={true}
+                        />
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                            }}
+                        />
+                        <h4>{questName || "No quest selected"}</h4>
+                        <p
+                            style={{
+                                fontSize: "large",
+                                marginBottom: "0px",
+                            }}
+                        >
+                            Popularity over time.
+                        </p>
+                        <ChartLine
+                            keys={["Instances"]}
+                            indexBy="Time"
+                            legendBottom="Date"
+                            legendLeft="Instances"
+                            data={popularityOverTimeData}
                             loadingMessage="Click on a quest to view data"
                             noAnim={true}
                         />
