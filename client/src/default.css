@@ -63,8 +63,8 @@
     --green-text: var(--green2);
     --blue-text: #0026d1;
 
-    --table-odd-rows: var(--gray2);
-    --table-highlight: var(--gray3);
+    --table-odd-rows: rgb(58, 58, 185, 0.1);
+    --table-highlight: rgb(58, 58, 185, 0.2);
 
     --server-nav-bar: var(--blue5);
     --server-nav-bar-hover: var(--blue2);
@@ -574,15 +574,17 @@ html {
     padding: 7px;
     width: 40px;
     cursor: pointer;
-    color: var(--text-xfaded);
-    border: 1px solid var(--text-xfaded);
+    color: var(--primary-button-background);
+    border: 1px solid var(--primary-button-background);
+    opacity: 0.4;
     border-radius: 6px;
 }
 
 .paginationPage:hover,
 .paginationPage.active {
-    color: var(--text);
-    border: 1px solid var(--text);
+    /* color: var(--text);
+    border: 1px solid var(--text); */
+    opacity: 1;
 }
 
 .audit-report-time {
