@@ -6,13 +6,13 @@ const app = express();
 app.use(cors());
 app.use(compression());
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Major endpoints
-var endptPopulation = require("./population")(app);
+require("./population")(app);
 
 // Report scheduler
-require("./cron");
+// require("./cron");
 
 app.listen(PORT, () => {
 	console.log(`Server listening on ${PORT}`);

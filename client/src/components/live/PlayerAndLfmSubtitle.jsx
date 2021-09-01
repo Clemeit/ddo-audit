@@ -7,29 +7,30 @@ const PlayerAndLfmSubtitle = (props) => {
 
     return (
         <div>
-            {props.data ? (
-                <p
-                    style={{
-                        textAlign: "justify",
-                        fontSize: "1.5rem",
-                        lineHeight: "normal",
-                        color: "var(--text)",
-                    }}
-                >
-                    There are currently{" "}
-                    <span className="population-number">
-                        {FormatWithCommas(props.data.Players.toString())}
-                    </span>{" "}
-                    players online and{" "}
-                    <span className="lfm-number">{props.data.LFMs}</span> LFMs
-                    posted.{" "}
-                    {props.data.Players
+            <p
+                style={{
+                    textAlign: "justify",
+                    fontSize: "1.5rem",
+                    lineHeight: "normal",
+                    color: "var(--text)",
+                }}
+            >
+                There are currently{" "}
+                <span className="population-number">
+                    {props.data
+                        ? FormatWithCommas(props.data.Players.toString())
+                        : "(Loading...)"}
+                </span>{" "}
+                players online and{" "}
+                <span className="lfm-number">
+                    {props.data ? props.data.LFMs : "(Loading...)"}
+                </span>{" "}
+                LFMs posted.{" "}
+                {props.data &&
+                    (props.data.Players
                         ? "Are you one of them?"
-                        : "Maybe everyone's anonymous."}
-                </p>
-            ) : (
-                "Loading data..."
-            )}
+                        : "Maybe everyone's anonymous.")}
+            </p>
         </div>
     );
 };

@@ -143,7 +143,7 @@ const LineChart = (props) => {
                     data={FilterData(props)}
                     margin={{ top: 20, right: 120, bottom: 60, left: 70 }}
                     xScale={GetXScale(props)}
-                    //xFormat="time:%Y-%m-%dT%H:%M:%sZ"
+                    xFormat="time:%Y-%m-%dT%H:%M:%sZ"
                     yScale={{
                         type: "linear",
                         min: 0,

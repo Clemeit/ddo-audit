@@ -75,13 +75,14 @@ const ChartLine = (props) => {
     //     );
     // }, [props.data, props.activeFilter]);
 
-    // function XScale() {
-    //     return {
-    //         type: "time",
-    //         format: "%Y-%m-%dT%H:%M:%S.%LZ",
-    //         useUTC: false,
-    //     };
-    // }
+    function XScale() {
+        return {
+            type: "time",
+            format: "%Y-%m-%dT%H:%M:%S.%LZ",
+            useUTC: false,
+            precision: "hour",
+        };
+    }
 
     // function BottomAxis() {
     //     return {
@@ -132,8 +133,13 @@ const ChartLine = (props) => {
                         keys={props.keys}
                         indexBy={props.indexBy}
                         margin={{ top: 20, right: 120, bottom: 60, left: 70 }}
-                        //xScale={XScale()}
-                        //xFormat="time:%Y-%m-%dT%H:%M:%S"
+                        xScale={{
+                            type: "time",
+                            format: "%Y-%m-%dT%H:%M:%SZ",
+                            useUTC: true,
+                            // precision: "hour",
+                        }}
+                        xFormat="time:%Y-%m-%dT%H:%M:%sZ"
                         yScale={{
                             type: "linear",
                             min: 0,
@@ -141,7 +147,7 @@ const ChartLine = (props) => {
                             stacked: false,
                             reverse: false,
                         }}
-                        //yFormat=" >-.2f"
+                        // yFormat=" >-.2f"
                         curve="natural"
                         axisTop={null}
                         axisRight={null}
@@ -154,6 +160,13 @@ const ChartLine = (props) => {
                             legendPosition: "middle",
                             legendOffset: 32,
                             // format: (value) => xLabel(value),
+                            format: "%H:%M",
+                            tickValues: props.tickValues || "every 1 hour",
+                            //             props.trendType === "day"
+                            //                 ? "every 1 hour"
+                            //                 : props.trendType === "week"
+                            //                 ? "every 6 hour"
+                            //                 : "every 1 week",
                         }}
                         axisLeft={{
                             orient: "left",

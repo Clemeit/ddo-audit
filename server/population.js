@@ -8,6 +8,7 @@ module.exports = function (app) {
 	population.forEach((entry) => {
 		app.get(`/population/${entry[0]}`, (req, res) => {
 			console.log(entry[0]);
+			console.log(req.subdomains);
 			res.sendFile(`./api_v1/data/composite/${entry[1]}.json`, {
 				root: __dirname,
 			});
@@ -16,7 +17,7 @@ module.exports = function (app) {
 
 	app.get("/population", (req, res) => {
 		res.send(
-			"Available endpoints: /population/day, /population/week, /population/quarter"
+			"<h1>DDO Audit API /population</h1><ul style='font-size: larger'><li>/population/day</li><li>/population/week</li><li>/population/quarter</li></ul>"
 		);
 	});
 };
