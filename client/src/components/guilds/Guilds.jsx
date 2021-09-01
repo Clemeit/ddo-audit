@@ -62,6 +62,12 @@ const Guilds = (props) => {
                         } else {
                             return b.TotalLevel - a.TotalLevel;
                         }
+                    } else if (playersSortMethod.method === "location") {
+                        if (playersSortMethod.direction === "asc") {
+                            return a.Location.localeCompare(b.Location);
+                        } else {
+                            return b.Location.localeCompare(a.Location);
+                        }
                     } else {
                         if (playersSortMethod.direction === "asc") {
                             return new Date(b.LastSeen) - new Date(a.LastSeen);
@@ -75,7 +81,7 @@ const Guilds = (props) => {
 
     React.useEffect(() => {
         if (!playersSorted) return;
-        console.log(playersPageNumber);
+
         setPlayersPaginated(
             playersSorted.slice(
                 playersPageNumber * PAGE_SIZE,
@@ -440,6 +446,15 @@ const Guilds = (props) => {
                                         <th
                                             className="guild-table-header"
                                             onClick={() =>
+                                                handlePlayerSort("location")
+                                            }
+                                        >
+                                            Location{" "}
+                                            <SortSVG className="nav-icon should-invert" />
+                                        </th>
+                                        <th
+                                            className="guild-table-header"
+                                            onClick={() =>
                                                 handlePlayerSort("laston")
                                             }
                                         >
@@ -485,6 +500,7 @@ const Guilds = (props) => {
                                           <tr
                                               key={i}
                                               className="guild-table-row"
+                                              style={{ cursor: "default" }}
                                           >
                                               <td className="guild-table-cell">
                                                   {player.Name}
@@ -502,6 +518,9 @@ const Guilds = (props) => {
                                                           player
                                                       )}
                                                   </span>
+                                              </td>
+                                              <td className="guild-table-cell">
+                                                  {player.Location}
                                               </td>
                                               <td className="guild-table-cell">
                                                   {playerLastOnString(player)}
