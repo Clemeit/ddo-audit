@@ -51,6 +51,14 @@ const Directory = (props) => {
                 },
                 {
                     icon: (
+                        <QuestsSVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Guild Activity",
+                    description: "Guild size, activity, and members lists.",
+                    to: "/guilds",
+                },
+                {
+                    icon: (
                         <TrendsSVG className="nav-icon-large should-invert" />
                     ),
                     title: "Population Trends",

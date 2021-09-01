@@ -1034,9 +1034,51 @@ input[type="radio"] {
     filter: brightness(125%);
 }
 
-/* @media (max-width: 768px) {
-    
-} */
+.guild-table {
+    font-size: 1.5rem;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.guild-table.disabled {
+    color: var(--text-faded);
+}
+
+.guild-table-head {
+    border-bottom: solid 1px var(--text-faded);
+}
+
+.guild-table-row {
+    cursor: pointer;
+    transition: background-color 250ms;
+}
+
+.guild-table-row:hover {
+    background-color: var(--table-highlight);
+}
+
+.guild-table.disabled .guild-table-row:hover {
+    background-color: var(--base);
+}
+
+.guild-table-header {
+    cursor: pointer;
+}
+
+.guild-table-cell {
+    padding: 3px 5px;
+}
+
+.guild-header {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--text-faded);
+}
+
+.guild-header:hover {
+    color: var(--text);
+}
 
 @media (max-width: 850px) {
     #banner-image {

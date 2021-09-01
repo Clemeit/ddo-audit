@@ -41,6 +41,7 @@ const Quests = lazy(() => import("./components/quests/Quests"));
 const Trends = lazy(() => import("./components/trends/Trends"));
 const Suggestions = lazy(() => import("./components/global/Suggestions"));
 const Community = lazy(() => import("./components/community/Community"));
+const Guilds = lazy(() => import("./components/guilds/Guilds"));
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -59,6 +60,7 @@ export default () => {
                 <Route exact path="/servers" component={Servers} />
                 {/* <Route path="/servers/:serverName" component={ServerSpecific} /> */}
                 <Route exact path="/quests" component={Quests} />
+                <Route exact path="/guilds" component={Guilds} />
                 <Route exact path="/grouping" component={Grouping} />
                 <Route
                     exact
