@@ -80,10 +80,10 @@ const Banner = (props) => {
         $(window).bind("resize", handleScroll);
 
         return function cleanup() {
-            $("#nav-bar").css({ backgroundColor: "" });
             $(window).unbind("scroll", handleScroll);
+            $("#nav-bar").css({ backgroundColor: "" });
         };
-    });
+    }, []);
 
     return (
         <div className={props.hideOnMobile ? "hide-on-mobile" : ""}>
