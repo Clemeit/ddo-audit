@@ -103,9 +103,14 @@ const Banner = (props) => {
                     {props.showButtons && (
                         <div className="hide-on-mobile">
                             <div id="action-button-container">
-                                <div className="primary-button">
+                                <a
+                                    href="https://github.com/Clemeit/ddo-audit"
+                                    rel="noreferrer"
+                                    target="_blank"
+                                    className="primary-button"
+                                >
                                     Visit our GitHub
-                                </div>
+                                </a>
                                 {!props.hideSuggestions && (
                                     <Link
                                         to="/suggestions"

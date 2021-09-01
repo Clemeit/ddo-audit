@@ -169,16 +169,29 @@ const About = (props) => {
                         what I could have ever imagined. I'm always looking for
                         feedback and suggestions!
                     </p>
-                    <Link
-                        to="/suggestions"
-                        className="secondary-button should-invert full-width-mobile"
-                        style={{
-                            color: "var(--text)",
-                            textDecoration: "none",
-                        }}
+                    <div
+                        id="action-button-container"
+                        style={{ justifyContent: "flex-start" }}
                     >
-                        Make a suggestion
-                    </Link>
+                        <a
+                            href="https://github.com/Clemeit/ddo-audit"
+                            rel="noreferrer"
+                            target="_blank"
+                            className="primary-button should-invert full-width-mobile"
+                        >
+                            Visit our GitHub
+                        </a>
+                        <Link
+                            to="/suggestions"
+                            className="secondary-button should-invert full-width-mobile"
+                            style={{
+                                color: "var(--text)",
+                                textDecoration: "none",
+                            }}
+                        >
+                            Make a suggestion
+                        </Link>
+                    </div>
                 </div>
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>

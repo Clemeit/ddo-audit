@@ -797,7 +797,7 @@ html {
 
 .primary-button.should-invert:hover,
 .secondary-button.should-invert:hover {
-    box-shadow: 0px 0px 10px 0px var(--text);
+    box-shadow: 0px 0px 10px 0px var(--primary-button-background);
 }
 
 .primary-button.disabled {
