@@ -73,57 +73,25 @@ const Quests = (props) => {
         set_isRunning(true);
 
         let questlist = [];
-        Fetch("https://www.playeraudit.com/api/activity?c=true", 5000)
+
+        Fetch("https://www.playeraudit.com/api/activity?type=heroic", 30000)
             .then((val) => {
-                set_tableSize(val.Count);
-
-                // clearTimeout(updateTime);
-                // set_ellapsedTime(new Date() - starttime);
-                // set_isRunning(false);
-                // set_questList([
-                //     { Id: 1879267185, QuestName: "Danger at Dunwater" },
-                // ]);
-                // return;
-
+                questlist = val;
                 Fetch(
-                    "https://www.playeraudit.com/api/activity?type=heroic",
+                    "https://www.playeraudit.com/api/activity?type=epic",
                     30000
                 )
                     .then((val) => {
-                        questlist = val;
-                        Fetch(
-                            "https://www.playeraudit.com/api/activity?type=epic",
-                            30000
-                        )
-                            .then((val) => {
-                                let epics = val;
-                                epics.forEach((quest) => {
-                                    quest.QuestName =
-                                        quest.QuestName + " (Epic)";
-                                    quest.IsEpic = true;
-                                });
-                                Array.prototype.push.apply(questlist, epics);
-                                clearTimeout(updateTime);
-                                set_ellapsedTime(new Date() - starttime);
-                                set_isRunning(false);
-                                set_questList(questlist);
-                            })
-                            .catch(() => {
-                                clearTimeout(updateTime);
-                                set_ellapsedTime(new Date() - starttime);
-                                set_isRunning(false);
-                                set_popupMessages([
-                                    {
-                                        title: "Failed to run audit",
-                                        message:
-                                            "The report timed out. You can refresh the page or report the issue.",
-                                        icon: "warning",
-                                        fullscreen: false,
-                                        reportMessage:
-                                            "Activity report timed out",
-                                    },
-                                ]);
-                            });
+                        let epics = val;
+                        epics.forEach((quest) => {
+                            quest.QuestName = quest.QuestName + " (Epic)";
+                            quest.IsEpic = true;
+                        });
+                        Array.prototype.push.apply(questlist, epics);
+                        clearTimeout(updateTime);
+                        set_ellapsedTime(new Date() - starttime);
+                        set_isRunning(false);
+                        set_questList(questlist);
                     })
                     .catch(() => {
                         clearTimeout(updateTime);
@@ -147,12 +115,12 @@ const Quests = (props) => {
                 set_isRunning(false);
                 set_popupMessages([
                     {
-                        title: "Failed to connect to database",
+                        title: "Failed to run audit",
                         message:
-                            "We couldn't reach the database. You can refresh the page or report the issue.",
+                            "The report timed out. You can refresh the page or report the issue.",
                         icon: "warning",
                         fullscreen: false,
-                        reportMessage: "Could not fetch Activity data. Timeout",
+                        reportMessage: "Activity report timed out",
                     },
                 ]);
             });
@@ -660,19 +628,21 @@ const Quests = (props) => {
                             }}
                         />
                         <div
-                            className="player-filter-input"
+                            className="player-filter-input column-on-mobile small-gap-on-mobile"
                             style={{
                                 width: "100%",
                                 display: "flex",
                                 flexDirection: "row",
                                 flexWrap: "wrap",
                                 gap: "10px",
+                                paddingBottom: "10px",
                             }}
                         >
                             <label
                                 htmlFor="questname"
                                 style={{
                                     fontSize: "1.2rem",
+                                    marginBottom: "0px",
                                 }}
                             >
                                 Filter by quest name
@@ -682,17 +652,18 @@ const Quests = (props) => {
                                     maxWidth: "250px",
                                     width: "100%",
                                     height: "max-content",
-                                    marginLeft: "7px",
                                 }}
                                 type="text"
                                 id="questname"
                                 name="questname"
+                                className="full-width-mobile"
                                 onChange={() => HandleQuestNameFilter()}
                             />
                             <label
                                 htmlFor="levelfilter"
                                 style={{
                                     fontSize: "1.2rem",
+                                    marginBottom: "0px",
                                 }}
                             >
                                 or level (e.g. "1,3,5-9")
@@ -702,11 +673,11 @@ const Quests = (props) => {
                                     maxWidth: "100px",
                                     width: "100%",
                                     height: "max-content",
-                                    marginLeft: "7px",
                                 }}
                                 type="text"
                                 id="levelfilter"
                                 name="levelfilter"
+                                className="full-width-mobile"
                                 onChange={() => HandleLevelFilter()}
                             />
                             <div className="audit-report-time">

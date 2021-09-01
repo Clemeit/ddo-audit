@@ -621,6 +621,10 @@ html {
     border: 1px solid var(--gray5);
     text-align: left;
     padding: 7px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .content-table th {
@@ -1039,6 +1043,7 @@ input[type="radio"] {
     width: 100%;
     margin-bottom: 10px;
     margin-top: 10px;
+    table-layout: fixed;
 }
 
 .guild-table.disabled {
@@ -1068,6 +1073,9 @@ input[type="radio"] {
 
 .guild-table-cell {
     padding: 3px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .guild-header {
@@ -1097,6 +1105,10 @@ input[type="radio"] {
         display: flex;
         justify-content: center;
         width: 100% !important;
+        max-width: 100% !important;
+    }
+    .small-gap-on-mobile {
+        gap: 0.5rem !important;
     }
     .show-on-mobile {
         display: flex !important;
@@ -1203,6 +1215,12 @@ input[type="radio"] {
     }
     .social-member-entry.name {
         font-weight: bold;
+    }
+}
+
+@media (max-width: 1200px) {
+    .content-table {
+        table-layout: fixed;
     }
 }
 
