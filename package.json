@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"concurrently": "^6.2.0",
+		"dotenv": "^10.0.0",
 		"mathjs": "^9.4.4"
 	}
 }

@@ -1,4 +1,5 @@
 const fs = require("fs");
+require("dotenv").config();
 
 function GetDateString(datetime) {
 	return `${datetime.getUTCFullYear()}-${
@@ -11,10 +12,10 @@ console.log("Running: 'PopulationReportWeek'");
 
 var mysql = require("mysql");
 var con = mysql.createConnection({
-	host: "167.99.100.231",
-	user: "testuser",
-	password: "4lUgBmtevUzRX6duTkdv",
-	database: "ddoaudit",
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASS,
+	database: process.env.DB_NAME,
 });
 
 con.connect(function (err) {
