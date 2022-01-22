@@ -26,6 +26,15 @@ const GroupingSpecific = (props) => {
         "Hardcore",
     ];
 
+    // Download canvas
+    var download = function () {
+        // Redraw panel without names
+        var link = document.createElement("a");
+        link.download = `ddo-lfm-panel.png`;
+        link.href = document.getElementById("lfm-canvas").toDataURL();
+        link.click();
+    };
+
     const [reported, setReported] = React.useState(false);
 
     const [failedAttemptCount, setFailedAttemptCount] = React.useState(0);
@@ -252,7 +261,28 @@ const GroupingSpecific = (props) => {
                         });
                 }
             })
-            .catch(() => {});
+            .catch((err) => {
+                failedAttemptRef.current++;
+                setFailedAttemptCount(failedAttemptRef.current);
+                if (failedAttemptRef.current > 5) {
+                    setPopupMessages([
+                        ...popupMessages,
+                        {
+                            title: "Couldn't fetch server data",
+                            message:
+                                "Try refreshing the page. If the issue continues, please report it.",
+                            submessage: err && err.toString(),
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage: "[Internal] Server Status Timeout",
+                        },
+                    ]);
+                } else {
+                    recheck = setTimeout(() => {
+                        RefreshLfms();
+                    }, 250);
+                }
+            });
     }
 
     React.useEffect(() => {
@@ -334,11 +364,13 @@ const GroupingSpecific = (props) => {
                     <FilterBar
                         currentServer={currentServer}
                         showNotifications={true}
+                        showSave={true}
                         maxWidth={848}
                         returnTo="/grouping"
                         handleFilterButton={() =>
                             setFilterPanelVisible(!filterPanelVisible)
                         }
+                        handleSaveButton={() => download()}
                     >
                         <div
                             className="filter-panel-overlay"

@@ -943,6 +943,7 @@ const WhoSpecific = (props) => {
                                 <h2
                                     style={{
                                         fontSize: "1.5rem",
+                                        marginTop: "1.5rem",
                                     }}
                                 >
                                     Accessibility

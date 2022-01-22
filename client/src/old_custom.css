@@ -146,8 +146,8 @@
     /* background-color: rgba(255, 255, 255, 0.03); */
     /* box-shadow: 45px 45px 2px -43px rgba(0, 204, 255, 0.08),
         -45px -45px 2px -43px rgba(0, 140, 255, 0.03); */
-    width: 450px;
-    height: 150px;
+    min-width: 450px;
+    min-height: 150px;
     padding: 10px 30px 10px 30px;
     cursor: pointer;
     border-radius: 7px;

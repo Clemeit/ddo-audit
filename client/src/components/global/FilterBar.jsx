@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as ServerSelectSVG } from "../../assets/global/server.svg";
 import { ReactComponent as FilterSVG } from "../../assets/global/filter.svg";
 import { ReactComponent as SettingsSVG } from "../../assets/global/settings.svg";
+import { ReactComponent as SaveSVG } from "../../assets/global/save.svg";
 import { ReactComponent as NotificationSVG } from "../../assets/global/notification.svg";
 import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
 import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
@@ -56,19 +57,24 @@ const LfmFilterBar = (props) => {
                         />
                         {props.currentServer}
                     </Link>
+                    {props.showSave && (
+                        <div
+                            className="filter-bar-item"
+                            style={{ marginLeft: "auto" }}
+                            onClick={props.handleSaveButton}
+                        >
+                            <SaveSVG className="nav-icon should-invert" />
+                            <span className="filter-bar-text settings hide-on-mobile">
+                                Save
+                            </span>
+                        </div>
+                    )}
                     <div
                         className="filter-bar-item"
-                        style={{ marginLeft: "auto" }}
+                        style={{ marginLeft: props.showSave ? "" : "auto" }}
                         onClick={props.handleFilterButton}
                     >
-                        <SettingsSVG
-                            className="nav-icon should-invert"
-                            style={{
-                                width: "30px",
-                                height: "30px",
-                                paddingRight: "5px",
-                            }}
-                        />
+                        <SettingsSVG className="nav-icon should-invert" />
                         <span className="filter-bar-text settings hide-on-mobile">
                             Settings
                         </span>
@@ -82,14 +88,7 @@ const LfmFilterBar = (props) => {
                                 textDecoration: "none",
                             }}
                         >
-                            <NotificationSVG
-                                className="nav-icon should-invert"
-                                style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    paddingRight: "5px",
-                                }}
-                            />
+                            <NotificationSVG className="nav-icon should-invert" />
                             <span className="filter-bar-text notifications hide-on-mobile">
                                 Notifications
                             </span>
@@ -102,23 +101,9 @@ const LfmFilterBar = (props) => {
                         }}
                     >
                         {fullscreen ? (
-                            <FullscreenExitSVG
-                                className="nav-icon should-invert "
-                                style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    paddingRight: "5px",
-                                }}
-                            />
+                            <FullscreenExitSVG className="nav-icon should-invert " />
                         ) : (
-                            <FullscreenSVG
-                                className="nav-icon should-invert"
-                                style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    paddingRight: "5px",
-                                }}
-                            />
+                            <FullscreenSVG className="nav-icon should-invert" />
                         )}
                         <span className="filter-bar-text">
                             {fullscreen ? "Go back" : "Fullscreen"}

@@ -116,10 +116,11 @@ const Banner = (props) => {
                                         to="/suggestions"
                                         className="secondary-button"
                                         style={{
+                                            transition: "padding 200ms",
                                             padding:
                                                 voteMessage ===
                                                 "We welcome your suggestions!"
-                                                    ? "15px 25px"
+                                                    ? "17px 25px"
                                                     : "",
                                         }}
                                     >
@@ -134,8 +135,8 @@ const Banner = (props) => {
                                 >
                                     <span
                                         style={{
-                                            color: "white",
                                             fontSize: "large",
+                                            color: "white",
                                         }}
                                     >
                                         New Website!
@@ -156,7 +157,6 @@ const Banner = (props) => {
                                 <div id="action-button-container">
                                     <span
                                         style={{
-                                            color: "white",
                                             fontSize: "large",
                                         }}
                                     >

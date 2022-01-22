@@ -4,7 +4,7 @@ import { GetMessage } from "../../services/MessageService";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 
 const BannerMessage = (props) => {
-    const [message, setMessage] = React.useState(null);
+    const [messages, setMessages] = React.useState([]);
     const [update, setUpdate] = React.useState(null);
 
     let recheck;
@@ -28,7 +28,7 @@ const BannerMessage = (props) => {
             }
             Fetch("https://www.playeraudit.com/api/messageservice", 5000).then(
                 (response) => {
-                    let wasMessage = false;
+                    let allmessages = [];
                     response.forEach((message) => {
                         let affectedpages = message.Pages.split(",");
                         if (
@@ -41,81 +41,59 @@ const BannerMessage = (props) => {
                                 now >= new Date(message.Start) &&
                                 now <= new Date(message.End)
                             ) {
-                                wasMessage = true;
-                                setMessage({
-                                    id: message.Id,
-                                    name: message.Name,
-                                    start: message.Start,
-                                    end: message.End,
-                                    message: message.Message,
-                                    color: message.Color,
-                                });
+                                allmessages.push(message);
                             }
                         }
                     });
-                    if (!wasMessage) {
-                        setMessage(null);
-                    }
+
+                    setMessages(allmessages);
                 }
             );
         }
         getM();
     }, [update]);
 
-    function isBannerVisible() {
-        if (message === null || message === undefined) return "none";
-        return "flex";
-    }
-
-    function getBannerText() {
-        if (message !== null && message !== undefined) {
-            return message.message
-                .replace("{0}", message.start)
-                .replace("{1}", message.end);
-        }
-        return "";
-    }
-
-    function getBannerColor() {
-        if (message !== null && message !== undefined) {
-            return message.color;
-        }
-        return "";
-    }
-
-    function ignoreThisMessage() {
+    function ignoreThisMessage(id) {
+        if (id == null) return;
         let before = localStorage.getItem("ignored-messages");
         localStorage.setItem(
             "ignored-messages",
-            before ? before + "," + message.id : message.id
+            before ? before + "," + id : id
         );
         setUpdate(new Date());
     }
 
     return (
         <div
-            className={"banner-message " + (props.className && props.className)}
-            style={{
-                display: isBannerVisible(),
-                backgroundColor: getBannerColor(),
-            }}
-            onClick={() => ignoreThisMessage()}
+            style={{ display: "flex", flexDirection: "column", width: "100%" }}
         >
-            <p
-                style={{
-                    width: "100%",
-                    textAlign: "center",
-                    whiteSpace: "break-spaces",
-                    margin: "3px 10px",
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    color: "white",
-                    padding: "0px 15px",
-                }}
-            >
-                {getBannerText()}
-            </p>
-            <CloseSVG style={{ position: "absolute", right: "10px" }} />
+            {messages.map((message, i) => (
+                <div
+                    key={i}
+                    className={"banner-message-container"}
+                    style={{
+                        backgroundColor: message.Color,
+                    }}
+                    onClick={() => {
+                        message.NoDismiss == 1
+                            ? ignoreThisMessage()
+                            : ignoreThisMessage(message.Id);
+                    }}
+                >
+                    <p
+                        className="banner-message"
+                        style={{
+                            cursor: message.NoDismiss == 1 && "default",
+                        }}
+                    >
+                        {message.Message.replace("{0}", message.Start).replace(
+                            "{1}",
+                            message.End
+                        )}
+                    </p>
+                    {message.NoDismiss == 0 && <CloseSVG />}
+                </div>
+            ))}
         </div>
     );
 };

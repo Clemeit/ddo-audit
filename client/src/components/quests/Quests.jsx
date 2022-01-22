@@ -507,6 +507,7 @@ const Quests = (props) => {
                 showTitle={true}
                 showSubtitle={true}
                 showButtons={false}
+                hideOnMobile={true}
                 title="Quests"
                 subtitle="Quest popularity, average completion times, and XP/min"
             />
@@ -796,7 +797,7 @@ const Quests = (props) => {
                                 opacity: 0.2,
                             }}
                         />
-                        <h4>{questName || "No quest selected"}</h4>
+                        {/* <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{
                                 fontSize: "large",
@@ -819,7 +820,7 @@ const Quests = (props) => {
                                 backgroundColor: "var(--text)",
                                 opacity: 0.2,
                             }}
-                        />
+                        /> */}
                         <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{

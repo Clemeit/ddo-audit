@@ -27,6 +27,7 @@ import "./default.css";
 // Imports (included in package)
 import Directory from "./components/directory/Directory";
 import Servers from "./components/servers/Servers";
+import ServersSpecific from "./components/servers/ServersSpecific";
 import Grouping from "./components/grouping/Grouping";
 import GroupingSpecific from "./components/grouping/GroupingSpecific";
 import NotificationForm from "./components/grouping/NotificationForm";
@@ -58,7 +59,10 @@ export default () => {
                 <Route exact path="/" component={Directory} />
                 <Route exact path="/live" component={Live} />
                 <Route exact path="/servers" component={Servers} />
-                {/* <Route path="/servers/:serverName" component={ServerSpecific} /> */}
+                <Route
+                    path="/servers/:serverName"
+                    component={ServersSpecific}
+                />
                 <Route exact path="/quests" component={Quests} />
                 <Route exact path="/guilds" component={Guilds} />
                 <Route exact path="/grouping" component={Grouping} />

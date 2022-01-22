@@ -80,9 +80,6 @@
     --filter-bar-hover: var(--highlight-blue-2);
     --filter-bar-active: var(--blue3);
 
-    --push-height: 500px;
-    --short-push-height: 300px;
-
     --slider-handle: var(--orange3);
     --slider-track: var(--orange4);
     --slider-rail: var(--gray4);
@@ -218,6 +215,7 @@ body {
     align-items: center;
     gap: 10px;
     margin-top: 20px;
+    color: var(--text);
 }
 
 #theme-icon {
@@ -355,8 +353,8 @@ html {
 
 @media (max-width: 1800px) {
     .nav-box.shrinkable {
-        width: 250px;
-        height: 125px;
+        /* max-width: 250px;
+        max-height: 125px; */
         padding: 7px 20px;
     }
 }
@@ -545,6 +543,7 @@ html {
     padding: 0px 20px;
     max-width: 1920px;
     width: 100%;
+    color: var(--text);
 }
 
 .content-cluster-options {
@@ -687,21 +686,6 @@ html {
     transition: background-color 250ms ease-in-out, color 350ms ease-in-out;
 } */
 
-.content-cluster {
-    margin: 0px 0px 50px 0px;
-    padding: 0px 20px;
-    color: var(--text);
-}
-
-.content-cluster-options {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
 .content-option-title {
     color: var(--text);
     margin: 0px;
@@ -804,6 +788,7 @@ html {
     color: var(--text-faded);
     box-shadow: none !important;
     cursor: default;
+    opacity: 0.6;
 }
 
 .secondary-button.disabled {
@@ -1025,16 +1010,29 @@ input[type="radio"] {
     max-width: 600px;
 }
 
-.banner-message {
+.banner-message-container {
+    display: flex;
     width: 100%;
     flex-direction: row;
     align-items: center;
-    cursor: pointer;
     user-select: none;
     transition: filter 250ms;
+    padding: 0px 10px;
 }
 
-.banner-message:hover {
+.banner-message {
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    white-space: break-spaces;
+    margin: 3px 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    padding: 0px 0px 0px 24px;
+}
+
+.banner-message-container:hover {
     filter: brightness(125%);
 }
 
@@ -1114,8 +1112,10 @@ input[type="radio"] {
         display: flex !important;
     }
     .nav-box.shrinkable {
+        min-width: 0px;
+        height: unset !important;
+        /* min-height: 125px !important; */
         width: 100%;
-        height: 75px;
         padding: 5px 15px;
     }
     .top-content-padding.shrink-on-mobile {

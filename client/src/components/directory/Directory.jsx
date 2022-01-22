@@ -184,19 +184,18 @@ const Directory = (props) => {
                     >
                         <span
                             style={{
-                                color: "white",
                                 fontSize: "large",
                             }}
                         >
                             New Website!
                         </span>
                         <ThumbsUpSVG
-                            className="nav-icon"
+                            className="nav-icon should-invert"
                             style={{ cursor: "pointer" }}
                             onClick={() => vote("Like")}
                         />
                         <ThumbsDownSVG
-                            className="nav-icon"
+                            className="nav-icon should-invert"
                             style={{ cursor: "pointer" }}
                             onClick={() => vote("Dislike")}
                         />
@@ -212,7 +211,6 @@ const Directory = (props) => {
                     >
                         <span
                             style={{
-                                color: "white",
                                 fontSize: "large",
                             }}
                         >
@@ -234,7 +232,7 @@ const Directory = (props) => {
                                 <Link
                                     to={option.to}
                                     key={i}
-                                    className="nav-box"
+                                    className="nav-box shrinkable"
                                     style={{
                                         height: "auto",
                                         minHeight: "150px",

@@ -951,6 +951,7 @@ const CanvasLfmPanel = (props) => {
             {props.children}
             <canvas
                 className="lfm-canvas"
+                id="lfm-canvas"
                 ref={canvasRef}
                 style={{
                     backgroundColor: "black",

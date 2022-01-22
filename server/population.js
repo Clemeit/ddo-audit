@@ -8,7 +8,6 @@ module.exports = function (app) {
 	population.forEach((entry) => {
 		app.get(`/population/${entry[0]}`, (req, res) => {
 			console.log(entry[0]);
-			console.log(req.subdomains);
 			res.sendFile(`./api_v1/data/composite/${entry[1]}.json`, {
 				root: __dirname,
 			});

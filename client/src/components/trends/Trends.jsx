@@ -20,6 +20,7 @@ const Trends = (props) => {
                 showTitle={true}
                 showSubtitle={true}
                 showButtons={false}
+                hideOnMobile={true}
                 title="Trends"
                 subtitle="Long-term trends and custom reports"
             />

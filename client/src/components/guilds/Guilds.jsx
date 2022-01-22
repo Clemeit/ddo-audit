@@ -324,13 +324,14 @@ const Guilds = (props) => {
                 showTitle={true}
                 showSubtitle={true}
                 showButtons={false}
+                hideOnMobile={true}
                 title="Guilds"
                 subtitle="Guild size, activity, and members lists"
             />
             <div id="content-container">
                 <BannerMessage page="guilds" />
                 <div className="top-content-padding shrink-on-mobile" />
-                <NoMobileOptimization />
+                {/* <NoMobileOptimization /> */}
                 {!guildsPaginated && (
                     <div className="content-cluster">
                         <h2 style={{ color: "var(--text)" }}>Guild Audit</h2>

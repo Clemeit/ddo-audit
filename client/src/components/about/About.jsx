@@ -20,11 +20,12 @@ const About = (props) => {
                 showTitle={true}
                 showSubtitle={true}
                 showButtons={true}
+                hideOnMobile={false}
                 title="About DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
             <div id="content-container">
-                <div className="top-content-padding" />
+                <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Our Mission</h2>
                     <hr
@@ -70,17 +71,17 @@ const About = (props) => {
                         seconds. This data contains no personally-identifying
                         information; the information that this data contains is
                         visible in the in-game "Who" panel (name, gender, race,
-                        classes, location, guild, etc.).{" "}
+                        etc.).{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
                             We do not collect, store, or publish personal
                             information.
                         </span>{" "}
-                        We do, however, collect information on anonymous players
-                        to be used in our population reports. Anonymous players
-                        are not counted in any demographic reports and will
-                        never show up in our Who panel (our API includes
-                        anonymous players, but their names are replaced with
-                        "Anonymous").
+                        We do, however, collect information on anonymous
+                        players. Anonymous players <u>are</u> counted in the
+                        population reports. Anonymous players <u>are not</u>{" "}
+                        counted in any demographic reports and will never show
+                        up in our Who panel (our API includes anonymous players,
+                        but their names are replaced with "Anonymous").
                     </p>
                     <p
                         style={{
@@ -89,16 +90,18 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        Player data is used to reconstruct groups of players,
-                        which in turn is then used to power the LFM panel. All
-                        of this data is then uploaded to a database for
-                        processing. Server-side tools look through the player
-                        data and generate the various population and demographic
-                        reports. Player data is also used to determine average
-                        quest durations. Group data is served from the database
-                        directly to this website and is used to draw the LFM
-                        panel on the Grouping page. That's not a screenshot -
-                        it's being drawn right in your browser!
+                        The player data that we collect includes name, gender,
+                        race, class, level, location, and guild name. This
+                        information is used to generate the various demographic
+                        reports on the website. When a player posts a public
+                        LFM, the collected data also includes public comment,
+                        quest selection, difficulty selection, level range,
+                        accepted classes, and the "adventure active" length.
+                        Each player in a group is also assigned a Group ID. This
+                        is of particular importance because it allows us to
+                        reconstruct groups of players. The group data is used to
+                        generate the LFM panel (that's not a screenshot - it's
+                        being drawn in your browser).
                     </p>
                 </div>
                 <div className="content-cluster">
@@ -161,13 +164,14 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        And thank <u>you</u> for your continued support. This
+                        And thank <i>you</i> for your continued support. This
                         project simply would not exist without DDO's incredible
                         community. Many of the features of this website were a
-                        direct result of player feedback, and your continued use
-                        inspires me to grow and develop this website far beyond
-                        what I could have ever imagined. I'm always looking for
-                        feedback and suggestions!
+                        result of player feedback - both directly and indirectly
+                        on the DDO Discord, Forums, and Reddit - and your
+                        continued use inspires me to grow and develop this
+                        website far beyond what I could have ever imagined. I'm
+                        always looking for feedback and suggestions!
                     </p>
                     <div
                         id="action-button-container"
