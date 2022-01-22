@@ -49,7 +49,7 @@ const QuickInfo = (props) => {
                                 id="default_server"
                                 className="blue-link"
                                 to={
-                                    "/servers?s=" +
+                                    "/servers/" +
                                     props.data.DefaultServer.toLowerCase()
                                 }
                                 style={{ textDecoration: "underline" }}
@@ -67,7 +67,7 @@ const QuickInfo = (props) => {
                                 id="populous_server"
                                 className="blue-link"
                                 to={
-                                    "/servers?s=" +
+                                    "/servers/" +
                                     props.data.DefaultServer.toLowerCase()
                                 }
                                 style={{ textDecoration: "underline" }}
