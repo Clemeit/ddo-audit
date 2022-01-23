@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as EditSVG } from "../../assets/global/edit.svg";
+import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 
 const NotificationForm = (props) => {
     const TITLE = "Grouping Notifications";
@@ -12,6 +13,8 @@ const NotificationForm = (props) => {
     const [levelRange, setLevelRange] = React.useState("");
     const [questName, setQuestName] = React.useState("");
     const [comment, setComment] = React.useState("");
+    const [canNotify, setCanNotify] = React.useState(false);
+    const [deniedNotifications, setDeniedNotifications] = React.useState(false);
 
     const [rules, setRules] = React.useState([]);
 
@@ -21,6 +24,11 @@ const NotificationForm = (props) => {
             setRules(loadrules);
         } else {
             setRules([]);
+        }
+        if (Notification.permission == "granted") {
+            setCanNotify(true);
+        } else if (Notification.permission == "denied") {
+            setDeniedNotifications(true);
         }
     }, []);
 
@@ -68,6 +76,59 @@ const NotificationForm = (props) => {
         setRules(rulescopy);
     }
 
+    function requestNotificationPermission() {
+        Notification.requestPermission().then((result) => {
+            if (result === "granted") {
+                navigator.serviceWorker.getRegistration().then(function (reg) {
+                    if (reg == undefined) return;
+                    reg.showNotification("Hello world!");
+                });
+                setCanNotify(true);
+                randomNotification();
+            } else if (result === "denied") {
+                console.log(result);
+                setDeniedNotifications(true);
+            }
+        });
+    }
+
+    function randomNotification() {
+        const notifTitle = "Notification Permission Granted";
+        const notifBody = `You have granted DDO Audit the ability to send you notifications.`;
+        const notifImg = `../../../logo.png`;
+        const options = {
+            body: notifBody,
+        };
+        new Notification(notifTitle, options);
+    }
+
+    function subscribeUser() {
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.ready.then(function (reg) {
+                reg.pushManager
+                    .subscribe({
+                        userVisibleOnly: true,
+                    })
+                    .then(function (sub) {
+                        console.log("Endpoint URL: ", sub.endpoint);
+                    })
+                    .catch(function (e) {
+                        if (Notification.permission === "denied") {
+                            console.warn(
+                                "Permission for notifications was denied"
+                            );
+                        } else {
+                            console.error("Unable to subscribe to push", e);
+                        }
+                    });
+            });
+        }
+    }
+
+    React.useEffect(() => {
+        subscribeUser();
+    }, []);
+
     return (
         <div>
             <Banner
@@ -88,7 +149,15 @@ const NotificationForm = (props) => {
             </Helmet>
             <div id="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
+                <div
+                    className="content-cluster"
+                    style={{
+                        display:
+                            !canNotify && !deniedNotifications
+                                ? "block"
+                                : "none",
+                    }}
+                >
                     <h2 style={{ color: "var(--text)" }}>
                         Notification Permission
                     </h2>
@@ -105,14 +174,88 @@ const NotificationForm = (props) => {
                             color: "var(--text-faded)",
                         }}
                     >
-                        We're going to need permission to send you
+                        We're going to need your permission to send you
                         notifications.
                     </p>
-                    <div className="primary-button full-width-mobile">
+                    <div
+                        className="primary-button full-width-mobile"
+                        onClick={() => requestNotificationPermission()}
+                    >
                         Allow Notifications
                     </div>
                 </div>
-                <div className="content-cluster">
+                <div
+                    className="content-cluster"
+                    style={{
+                        display: deniedNotifications ? "block" : "none",
+                    }}
+                >
+                    <h2
+                        style={{
+                            color: "var(--text)",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                        }}
+                    >
+                        <WarningSVG
+                            style={{
+                                width: "30px",
+                                height: "30px",
+                                marginRight: "10px",
+                            }}
+                        />
+                        Notification Permission
+                    </h2>
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        You have explicitly denied DDO Audit the ability to send
+                        you notifications.
+                    </p>
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        If this was an error, please see the following support
+                        pages to reenable notifications:
+                    </p>
+                    <ul
+                        style={{
+                            fontSize: "1.5rem",
+                        }}
+                    >
+                        <li>
+                            <a
+                                href="https://support.google.com/chrome/answer/3220216"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                Chrome
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="https://support.mozilla.org/en-US/kb/push-notifications-firefox"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                Firefox
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div
+                    className="content-cluster"
+                    style={{ display: canNotify ? "unset" : "none" }}
+                >
                     <h2 style={{ color: "var(--text)" }}>
                         Your Notification Settings
                     </h2>
@@ -132,7 +275,76 @@ const NotificationForm = (props) => {
                         You will be notified of groups that match <b>any</b> of
                         the following entries.
                     </p>
-                    <div style={{ overflowX: "scroll" }}>
+                    <div className="notification-table">
+                        {rules.map((rule, i) => (
+                            <div
+                                className="notification-rule column-on-mobile"
+                                key={i}
+                            >
+                                {rule.server && (
+                                    <div className="notification-rule-field">
+                                        <span className="notification-rule-title">
+                                            Server
+                                        </span>
+                                        <span>{rule.server}</span>
+                                    </div>
+                                )}
+                                {rule.leaderName && (
+                                    <div className="notification-rule-field">
+                                        <span className="notification-rule-title">
+                                            Leader Name
+                                        </span>
+                                        <span>{rule.leaderName}</span>
+                                    </div>
+                                )}
+                                {rule.levelRange && (
+                                    <div className="notification-rule-field">
+                                        <span className="notification-rule-title">
+                                            Level Range
+                                        </span>
+                                        <span>{rule.levelRange}</span>
+                                    </div>
+                                )}
+                                {rule.questName && (
+                                    <div className="notification-rule-field">
+                                        <span className="notification-rule-title">
+                                            Quest Name
+                                        </span>
+                                        <span>{rule.questName}</span>
+                                    </div>
+                                )}
+                                {rule.comment && (
+                                    <div className="notification-rule-field">
+                                        <span className="notification-rule-title">
+                                            Comment
+                                        </span>
+                                        <span>{rule.comment}</span>
+                                    </div>
+                                )}
+                                <div className="notification-rule-option-container">
+                                    <EditSVG
+                                        title="Edit this notification rule"
+                                        style={{
+                                            cursor: "pointer",
+                                            width: "30px",
+                                            height: "30px",
+                                        }}
+                                        onClick={() => Edit(i)}
+                                    />
+                                    <DeleteSVG
+                                        title="Delete this notification rule"
+                                        style={{
+                                            cursor: "pointer",
+                                            width: "30px",
+                                            height: "30px",
+                                        }}
+                                        onClick={() => Delete(i)}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {/* <div style={{ overflowX: "scroll" }}>
                         <table className="notification-table">
                             <tbody>
                                 <tr>
@@ -175,9 +387,12 @@ const NotificationForm = (props) => {
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
                 </div>
-                <div className="content-cluster">
+                <div
+                    className="content-cluster"
+                    style={{ display: canNotify ? "unset" : "none" }}
+                >
                     <h2 style={{ color: "var(--text)" }}>Create a New Rule</h2>
                     <hr
                         style={{
