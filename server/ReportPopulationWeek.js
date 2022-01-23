@@ -25,7 +25,7 @@ con.connect(function (err) {
 		GetDateString(new Date(Date.now() - 60000 * 60 * (24 * 7 + 1))) +
 		"' AND '" +
 		GetDateString(new Date(Date.now())) +
-		"';";
+		"' ORDER BY `population`.`datetime` ASC;";
 	con.query(q, function (err, result, fields) {
 		if (err) throw err;
 
@@ -427,7 +427,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"api_v1/data/composite/1_week_by_hour.json",
+			"api_v1/population/week.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

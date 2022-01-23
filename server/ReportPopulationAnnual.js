@@ -29,7 +29,7 @@ con.connect(function (err) {
 		) +
 		"' AND '" +
 		GetDateString(new Date(new Date().toDateString())) +
-		"';";
+		"' ORDER BY `population`.`datetime` ASC;";
 	con.query(q, function (err, result, fields) {
 		if (err) throw err;
 
@@ -435,7 +435,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"api_v1/data/composite/1_year_by_day.json",
+			"api_v1/population/year.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

@@ -1,25 +1,30 @@
 const compression = require("compression");
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
+
+const api = express();
 const app = express();
 
-app.use(express.static("../client")); // This is probably good for production
+const APP_PORT = process.env.APP_PORT;
+const API_PORT = process.env.API_PORT;
 
-app.use(cors());
+app.use(express.static("../client")); // This is NOT good for production
 app.use(compression());
 
-const PORT = process.env.PORT || 8000;
+api.use(cors());
+api.options("*", cors());
+app.use(cors());
+app.options("*", cors());
 
 // Major endpoints
-//require("./population")(app);
+require("./population")(api);
+// require("./cron");
 
-// Report scheduler
-//require("./cron");
+app.listen(APP_PORT, () => {
+	console.log(`Front-end listening on ${APP_PORT}`);
+});
 
-// app.get("/", (req, res) => {
-// 	res.send("The New DDO Audit Website - Coming Soon!");
-// });
-
-app.listen(PORT, () => {
-	console.log(`Server listening on ${PORT}`);
+api.listen(API_PORT, () => {
+	console.log(`API listening on ${API_PORT}`);
 });

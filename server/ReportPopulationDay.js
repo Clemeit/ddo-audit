@@ -14,6 +14,7 @@ function GetDateString(datetime) {
 
 var t0 = new Date();
 console.log("Running: 'PopulationReportDay'");
+console.log(process.env.DB_HOST);
 // sleep(10000);
 var mysql = require("mysql");
 var con = mysql.createConnection({
@@ -33,7 +34,7 @@ con.connect(function (err) {
 		GetDateString(new Date(Date.now() - 60000 * (60 * 24 + 5))) +
 		"' AND '" +
 		GetDateString(new Date(Date.now())) +
-		"';";
+		"' ORDER BY `population`.`datetime` ASC;";
 	con.query(q, function (err, result, fields) {
 		if (err) {
 			console.log("Couldn't connect");
@@ -173,7 +174,7 @@ con.connect(function (err) {
 		nivoData.reverse();
 
 		fs.writeFile(
-			"../var/www/npafrequency.xyz/server/api_v1/data/composite/24hr_by_minute.json",
+			"api_v1/population/day.json",
 			JSON.stringify(nivoData),
 			(err) => {
 				if (err) throw err;

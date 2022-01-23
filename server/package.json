@@ -14,7 +14,7 @@
 		"web-push": "^3.4.4"
 	},
 	"scripts": {
-		"start": "nodemon app.js --ignore data/"
+		"start": "nodemon app.js --ignore api_v1/"
 	},
-	"proxy": "http://localhost:3001"
+	"proxy": "http://localhost:8001"
 }
