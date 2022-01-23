@@ -11,16 +11,8 @@ const Community = (props) => {
         {
             title: "Dungeon Helper",
             credit: "Morrikan, and the Vault of Kundarak Team",
-            description: (
-                <span>
-                    &#8226; Upload and search all of your characters'
-                    inventories from one place.
-                    <br />
-                    &#8226; Add Auto Follow capability to DDO.
-                    <br />
-                    &#8226; Plan your next Greensteel item.
-                </span>
-            ),
+            description:
+                "Upload and search all of your characters' inventories from one place; add Auto Follow capability to DDO; and plan your next Greensteel item.",
             link: "https://dungeonhelper.com/",
         },
         {
@@ -124,8 +116,10 @@ const Community = (props) => {
                         }}
                     >
                         These are not my projects. DDO Audit is not necessarily
-                        affiliated with the developers of these various
-                        projects. All credit belongs to their respective owners.
+                        affiliated with any of the projects listed here. All
+                        credit belongs to their respective owners. Do NOT
+                        message me with feedback or requests regarding these
+                        projects.
                     </p>
                 </div>
             </div>
