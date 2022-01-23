@@ -42,15 +42,15 @@ export default function register() {
             }
 
             // Service worker
-            navigator.serviceWorker.getRegistration().then(function (reg) {
-                reg.pushManager
-                    .subscribe({
-                        userVisibleOnly: true,
-                    })
-                    .then(function (sub) {
-                        console.log(sub);
-                    });
-            });
+            // navigator.serviceWorker.getRegistration().then(function (reg) {
+            //     reg.pushManager
+            //         .subscribe({
+            //             userVisibleOnly: true,
+            //         })
+            //         .then(function (sub) {
+            //             console.log(sub);
+            //         });
+            // });
         });
     }
 }

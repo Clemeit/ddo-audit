@@ -1,11 +1,22 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
+import { Fetch } from "../../services/DataLoader";
 import BannerMessage from "../global/BannerMessage";
 import NoMobileOptimization from "../global/NoMobileOptimization";
+import ChartLine from "../global/ChartLine";
 
 const Trends = (props) => {
     const TITLE = "Data Trends";
+
+    const [population1Year, setPopulation1Year] = React.useState(null);
+
+    React.useEffect(() => {
+        Fetch("https://api.ddoaudit.com/population/year", 5000).then((val) => {
+            setPopulation1Year(val.filter((series) => series.id !== "Total"));
+        });
+    }, []);
+
     return (
         <div>
             <Helmet>
@@ -49,6 +60,14 @@ const Trends = (props) => {
                         individual servers, a composite overlay with all
                         servers, or a combined total population.
                     </p>
+                    <ChartLine
+                        data={population1Year}
+                        trendType="quarter"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                    />
                     <h2 style={{ color: "var(--text)" }}>
                         Live Server and Hardcore Server Trends
                     </h2>

@@ -50,10 +50,7 @@ const Live = (props) => {
                 setUniqueCountsData(val);
             }
         );
-        Fetch(
-            "https://www.playeraudit.com/api_new/population?type=day",
-            5000
-        ).then((val) => {
+        Fetch("https://api.ddoaudit.com/population/day", 5000).then((val) => {
             setPopulation24HoursData(
                 val.filter((series) => series.id !== "Total")
             );

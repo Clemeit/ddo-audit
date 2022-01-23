@@ -135,11 +135,11 @@ const ChartLine = (props) => {
                         margin={{ top: 20, right: 120, bottom: 60, left: 70 }}
                         xScale={{
                             type: "time",
-                            format: "%Y-%m-%dT%H:%M:%SZ",
+                            format: "%Y-%m-%dT%H:%M:%S.%LZ",
                             useUTC: true,
                             // precision: "hour",
                         }}
-                        xFormat="time:%Y-%m-%dT%H:%M:%sZ"
+                        xFormat="time:%Y-%m-%dT%H:%M:%S.%LZ"
                         yScale={{
                             type: "linear",
                             min: 0,
@@ -160,13 +160,18 @@ const ChartLine = (props) => {
                             legendPosition: "middle",
                             legendOffset: 32,
                             // format: (value) => xLabel(value),
-                            format: "%H:%M",
-                            tickValues: props.tickValues || "every 1 hour",
-                            //             props.trendType === "day"
-                            //                 ? "every 1 hour"
-                            //                 : props.trendType === "week"
-                            //                 ? "every 6 hour"
-                            //                 : "every 1 week",
+                            format:
+                                props.trendType === "day"
+                                    ? "%H:%M"
+                                    : props.trendType === "week"
+                                    ? "%d"
+                                    : "%b %d, %Y",
+                            tickValues:
+                                props.tickValues || props.trendType === "day"
+                                    ? "every 1 hour"
+                                    : props.trendType === "week"
+                                    ? "every 6 hour"
+                                    : "every 1 week",
                         }}
                         axisLeft={{
                             orient: "left",
