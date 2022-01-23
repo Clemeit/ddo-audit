@@ -50,7 +50,7 @@ const Community = (props) => {
                 title="Community Tools"
                 subtitle="Tools developed by the community"
             />
-            <div id="content-container">
+            <div id="content-container" style={{ position: "relative" }}>
                 <div className="top-content-padding" />
                 <div
                     className="content-cluster"
@@ -76,17 +76,6 @@ const Community = (props) => {
                         These projects were developed by members of the DDO
                         community. If you'd like to see a project added, please{" "}
                         <Link to="/suggestions">make a suggestion</Link>!
-                    </p>
-                    <p
-                        style={{
-                            fontSize: "1.2rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        These are not my tools! DDO Audit is in no way
-                        affiliated with the developers of these various
-                        projects. All credit belongs to their respective owners.
                     </p>
                 </div>
                 <div className="content-cluster">
@@ -125,6 +114,19 @@ const Community = (props) => {
                             </a>
                         ))}
                     </div>
+                </div>
+                <div className="content-cluster">
+                    <p
+                        style={{
+                            fontSize: "1.2rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        These are not my projects. DDO Audit is not necessarily
+                        affiliated with the developers of these various
+                        projects. All credit belongs to their respective owners.
+                    </p>
                 </div>
             </div>
         </div>
