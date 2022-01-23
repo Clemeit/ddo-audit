@@ -2,17 +2,26 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import { ReactComponent as LinkSVG } from "../../assets/global/link.svg";
+import { Link } from "react-router-dom";
 
 const Community = (props) => {
     const TITLE = "Community Tools";
 
     const TOOLS = [
         {
-            title: "Automatic Inventory Management",
-            credit: "Vault of Kundarak",
-            description:
-                "Upload your entire inventory with a single click, and search all of your characters' inventories from one place.",
-            link: "https://www.vaultofkundarak.com/",
+            title: "Dungeon Helper",
+            credit: "Morrikan, and the Vault of Kundarak Team",
+            description: (
+                <span>
+                    &#8226; Upload and search all of your characters'
+                    inventories from one place.
+                    <br />
+                    &#8226; Add Auto Follow capability to DDO.
+                    <br />
+                    &#8226; Plan your next Greensteel item.
+                </span>
+            ),
+            link: "https://dungeonhelper.com/",
         },
         {
             title: "DDO Character Planner",
@@ -43,7 +52,12 @@ const Community = (props) => {
             />
             <div id="content-container">
                 <div className="top-content-padding" />
-                <div className="content-cluster">
+                <div
+                    className="content-cluster"
+                    style={{
+                        marginBottom: "10px",
+                    }}
+                >
                     <h2 style={{ color: "var(--text)" }}>Community Tools</h2>
                     <hr
                         style={{
@@ -56,11 +70,12 @@ const Community = (props) => {
                             fontSize: "1.5rem",
                             lineHeight: "normal",
                             color: "var(--text-faded)",
+                            marginBottom: "0.3rem",
                         }}
                     >
                         These projects were developed by members of the DDO
-                        community. If you'd like to see a project added, please
-                        make a suggestion!
+                        community. If you'd like to see a project added, please{" "}
+                        <Link to="/suggestions">make a suggestion</Link>!
                     </p>
                     <p
                         style={{
@@ -77,53 +92,37 @@ const Community = (props) => {
                 <div className="content-cluster">
                     <div className="content-cluster-options">
                         {TOOLS.map((tool, i) => (
-                            <div
+                            <a
+                                href={tool.link}
+                                rel="noreferrer"
+                                target="_blank"
                                 key={i}
-                                className="nav-box"
-                                style={{ width: "100%" }}
+                                className="community-box"
                             >
-                                <div className="nav-box-title">
-                                    <h2 className="content-option-title">
-                                        {tool.title}{" "}
-                                        <span
-                                            style={{
-                                                color: "var(--text-faded)",
-                                            }}
-                                        >
-                                            | {tool.credit}
+                                <h2 className="community-box-title column-on-mobile">
+                                    <span>{tool.title} </span>
+                                    <span
+                                        style={{
+                                            color: "var(--text-faded)",
+                                        }}
+                                    >
+                                        <span className="hide-on-mobile">
+                                            |{" "}
                                         </span>
-                                    </h2>
-                                </div>
-                                <p
-                                    className="content-option-description"
-                                    style={{ fontSize: "1.5rem" }}
-                                >
+                                        {tool.credit}
+                                    </span>
+                                </h2>
+                                <p className="community-box-description">
                                     {tool.description}
                                 </p>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        fontSize: "1.5rem",
-                                        color: "var(--text-faded)",
-                                    }}
-                                >
+                                <div className="community-box-link">
                                     <LinkSVG
                                         className="nav-icon-large should-invert"
                                         style={{ marginRight: "10px" }}
                                     />
-                                    <span
-                                    // style={{
-                                    //     maxWidth: "350px",
-                                    //     overflow: "hidden",
-                                    //     textOverflow: "ellipsis",
-                                    // }}
-                                    >
-                                        Visit this project
-                                    </span>
+                                    <span>Visit this project</span>
                                 </div>
-                            </div>
+                            </a>
                         ))}
                     </div>
                 </div>
