@@ -96,18 +96,6 @@ const Directory = (props) => {
                     },
                 ]);
             });
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
-        fetchArbitraryData(
-            "https://www.playeraudit.com/api/serverstatus",
-            "json"
-        ).then((val) => {
-            set_serverStatusData(val);
-        });
     }
     React.useEffect(() => {
         async function fetchArbitraryData(url, type) {
@@ -124,7 +112,7 @@ const Directory = (props) => {
         });
 
         refreshServerStatus();
-        const interval = setInterval(() => refreshServerStatus, 60000);
+        const interval = setInterval(() => refreshServerStatus(), 60000);
         return () => clearInterval(interval);
     }, []);
 

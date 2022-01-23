@@ -30,12 +30,18 @@ const Live = (props) => {
     const [population24HoursData, setPopulation24HoursData] =
         React.useState(null);
 
-    React.useEffect(() => {
+    function refreshServerStatus() {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
             .then((val) => {
                 setServerStatusData(val);
             })
             .catch(() => {});
+    }
+
+    React.useEffect(() => {
+        refreshServerStatus();
+        const interval = setInterval(() => refreshServerStatus(), 30000); // Server status should refresh on this page
+
         Fetch("https://www.playeraudit.com/api/quickinfo", 5000).then((val) => {
             setQuickInfoData(val);
         });
@@ -57,6 +63,7 @@ const Live = (props) => {
                 setPlayerAndLFMCountData(val);
             }
         );
+        return () => clearInterval(interval); // Clear server status interval
     }, []);
 
     return (
