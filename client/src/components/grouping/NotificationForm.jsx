@@ -37,14 +37,23 @@ const NotificationForm = (props) => {
     }, [rules]);
 
     function AddRule() {
+        if (
+            !server.replace(/\s/g, "") &&
+            !leaderName.replace(/\s/g, "") &&
+            !levelRange.replace(/\s/g, "") &&
+            !questName.replace(/\s/g, "") &&
+            !comment.replace(/\s/g, "")
+        )
+            return;
+
         setRules([
             ...rules,
             {
-                server,
-                leaderName,
-                levelRange,
-                questName,
-                comment,
+                server: server.trim(),
+                leaderName: leaderName.trim(),
+                levelRange: levelRange.trim(),
+                questName: questName.trim(),
+                comment: comment.trim(),
             },
         ]);
         ResetForm();
@@ -265,16 +274,29 @@ const NotificationForm = (props) => {
                             opacity: 0.2,
                         }}
                     />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        You will be notified of groups that match <b>any</b> of
-                        the following entries.
-                    </p>
+                    {rules.length ? (
+                        <p
+                            style={{
+                                fontSize: "1.5rem",
+                                lineHeight: "normal",
+                                color: "var(--text-faded)",
+                            }}
+                        >
+                            You will be notified of groups that match <b>any</b>{" "}
+                            of the following entries.
+                        </p>
+                    ) : (
+                        <p
+                            style={{
+                                fontSize: "1.5rem",
+                                lineHeight: "normal",
+                                color: "var(--text-faded)",
+                            }}
+                        >
+                            You have no notification rules setup. Add a new rule
+                            below.
+                        </p>
+                    )}
                     <div className="notification-table">
                         {rules.map((rule, i) => (
                             <div
@@ -434,6 +456,7 @@ const NotificationForm = (props) => {
                             className="full-width-mobile"
                             placeholder="(e.g. Cannith,Thelanis)"
                             style={{
+                                maxWidth: "400px",
                                 fontSize: "1.2rem",
                             }}
                             value={server}
@@ -456,6 +479,7 @@ const NotificationForm = (props) => {
                             className="full-width-mobile"
                             placeholder="(e.g. Clemeit,Someotherguy)"
                             style={{
+                                maxWidth: "400px",
                                 fontSize: "1.2rem",
                             }}
                             value={leaderName}
@@ -478,6 +502,7 @@ const NotificationForm = (props) => {
                             className="full-width-mobile"
                             placeholder="(e.g. 1,2,28-30)"
                             style={{
+                                maxWidth: "400px",
                                 fontSize: "1.2rem",
                             }}
                             value={levelRange}
@@ -500,6 +525,7 @@ const NotificationForm = (props) => {
                             className="full-width-mobile"
                             placeholder="(e.g. The Cannith Crystal)"
                             style={{
+                                maxWidth: "400px",
                                 fontSize: "1.2rem",
                             }}
                             value={questName}
@@ -522,6 +548,7 @@ const NotificationForm = (props) => {
                             className="full-width-mobile"
                             placeholder="(e.g. thth,r1,kt)"
                             style={{
+                                maxWidth: "400px",
                                 fontSize: "1.2rem",
                             }}
                             value={comment}
