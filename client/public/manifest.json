@@ -3,21 +3,21 @@
     "name": "DDO Audit",
     "icons": [
         {
-            "src": "favicon.ico",
-            "sizes": "64x64 32x32 24x24 16x16",
-            "type": "image/x-icon"
+            "src": "/icons/logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
         },
         {
             "src": "/icons/logo-192px.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "maskable any"
+            "purpose": "maskable"
         },
         {
             "src": "/icons/logo-512px.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "maskable any"
+            "purpose": "maskable"
         }
     ],
     "shortcuts": [
@@ -28,8 +28,13 @@
             "url": "/servers",
             "icons": [
                 {
-                    "src": "/icons/servers-96px.png",
-                    "sizes": "96x96",
+                    "src": "/icons/servers-192px.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "/icons/servers-512px.png",
+                    "sizes": "512x512",
                     "type": "image/png"
                 }
             ]
@@ -37,12 +42,17 @@
         {
             "name": "Grouping",
             "short_name": "Grouping",
-            "description": "Live LFM Viewer",
+            "description": "Live LFM viewer",
             "url": "/grouping",
             "icons": [
                 {
-                    "src": "/icons/grouping-96px.png",
-                    "sizes": "96x96",
+                    "src": "/icons/grouping-192px.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "/icons/grouping-512px.png",
+                    "sizes": "512x512",
                     "type": "image/png"
                 }
             ]
@@ -50,12 +60,17 @@
         {
             "name": "Who",
             "short_name": "Who",
-            "description": "Lookup Players",
+            "description": "Lookup players",
             "url": "/who",
             "icons": [
                 {
-                    "src": "/icons/who-96px.png",
-                    "sizes": "96x96",
+                    "src": "/icons/who-192px.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "/icons/who-512px.png",
+                    "sizes": "512x512",
                     "type": "image/png"
                 }
             ]
