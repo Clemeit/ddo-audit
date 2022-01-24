@@ -802,6 +802,10 @@ html {
     width: max-content;
 }
 
+.secondary-button.expandable {
+    transition: padding 200ms, box-shadow 250ms;
+}
+
 .primary-button.should-invert {
     background-color: var(--primary-button-background);
     color: var(--base) !important;

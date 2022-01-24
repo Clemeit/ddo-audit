@@ -114,9 +114,8 @@ const Banner = (props) => {
                                 {!props.hideSuggestions && (
                                     <Link
                                         to="/suggestions"
-                                        className="secondary-button"
+                                        className="secondary-button expandable"
                                         style={{
-                                            transition: "padding 200ms",
                                             padding:
                                                 voteMessage ===
                                                 "We welcome your suggestions!"

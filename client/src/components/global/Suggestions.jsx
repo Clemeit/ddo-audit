@@ -40,11 +40,12 @@ const Suggestions = (props) => {
                 showSubtitle={true}
                 showButtons={true}
                 hideSuggestions={true}
+                hideOnMobile={true}
                 title="DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
             <div id="content-container">
-                <div className="top-content-padding" />
+                <div className="top-content-padding shrink-on-mobile" />
                 <Poll />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>

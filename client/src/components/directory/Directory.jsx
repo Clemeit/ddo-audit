@@ -148,7 +148,11 @@ const Directory = (props) => {
         if (response === "Like") {
             set_voteMessage("Thanks for your feedback!");
         } else {
-            set_voteMessage("We welcome your suggestions!");
+            set_voteMessage(
+                <span>
+                    We welcome your <Link to="/suggestions">suggestions</Link>!
+                </span>
+            );
         }
     }
 
@@ -211,7 +215,7 @@ const Directory = (props) => {
                     >
                         <span
                             style={{
-                                fontSize: "large",
+                                fontSize: "1.7rem",
                             }}
                         >
                             {voteMessage}

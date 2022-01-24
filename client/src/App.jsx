@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Route } from "react-router";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ScrollToTop from "./components/global/ScrollToTop";
 import Layout from "./components/Layout";
 import "./default.css";
@@ -54,35 +54,58 @@ export default () => {
 
     return (
         <Suspense fallback={<div></div>}>
-            <Layout>
-                <ScrollToTop />
-                <Route exact path="/" component={Directory} />
-                <Route exact path="/live" component={Live} />
-                <Route exact path="/servers" component={Servers} />
-                <Route
-                    path="/servers/:serverName"
-                    component={ServersSpecific}
-                />
-                <Route exact path="/quests" component={Quests} />
-                <Route exact path="/guilds" component={Guilds} />
-                <Route exact path="/grouping" component={Grouping} />
-                <Route
-                    exact
-                    path="/grouping/:serverName"
-                    component={GroupingSpecific}
-                />
-                <Route
-                    exact
-                    path="/notifications"
-                    component={NotificationForm}
-                />
-                <Route exact path="/who" component={Who} />
-                <Route exact path="/trends" component={Trends} />
-                <Route path="/who/:serverName" component={WhoSpecific} />
-                <Route path="/about" component={About} />
-                <Route path="/suggestions" component={Suggestions} />
-                <Route path="/community" component={Community} />
-            </Layout>
+            <Router>
+                <Layout>
+                    <ScrollToTop />
+                    <Switch>
+                        <Route exact path="/">
+                            <Directory />
+                        </Route>
+                        <Route exact path="/live">
+                            <Live />
+                        </Route>
+                        <Route exact path="/servers">
+                            <Servers />
+                        </Route>
+                        <Route exact path="/servers/:serverName">
+                            <ServersSpecific />
+                        </Route>
+                        <Route exact path="/quests">
+                            <Quests />
+                        </Route>
+                        <Route exact path="/guilds">
+                            <Guilds />
+                        </Route>
+                        <Route exact path="/grouping">
+                            <Grouping />
+                        </Route>
+                        <Route exact path="/grouping/:serverName">
+                            <GroupingSpecific />
+                        </Route>
+                        <Route exact path="/notifications">
+                            <NotificationForm />
+                        </Route>
+                        <Route exact path="/who">
+                            <Who />
+                        </Route>
+                        <Route exact path="/trends">
+                            <Trends />
+                        </Route>
+                        <Route exact path="/who/:serverName">
+                            <WhoSpecific />
+                        </Route>
+                        <Route exact path="/about">
+                            <About />
+                        </Route>
+                        <Route exact path="/suggestions">
+                            <Suggestions />
+                        </Route>
+                        <Route exact path="/community">
+                            <Community />
+                        </Route>
+                    </Switch>
+                </Layout>
+            </Router>
         </Suspense>
     );
 };

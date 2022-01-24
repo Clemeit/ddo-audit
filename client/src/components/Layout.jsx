@@ -1,8 +1,8 @@
-import * as React from "react";
+import React from "react";
 import NavMenu from "./global/NavMenu";
 import NavPush from "./global/NavPush";
 
-export default (props: { children?: React.ReactNode }) => (
+export default (props) => (
     <React.Fragment>
         <NavMenu />
         <div className="content">{props.children}</div>
