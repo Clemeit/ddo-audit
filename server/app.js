@@ -1,6 +1,8 @@
 const compression = require("compression");
 const express = require("express");
 const cors = require("cors");
+var admin = require("firebase-admin");
+const { initializeApp, applicationDefault } = require("firebase-admin/app");
 require("dotenv").config();
 
 const api = express();
@@ -24,6 +26,11 @@ require("./population")(api);
 // app.get(["/", "/*"], function (req, res, next) {
 // 	res.sendFile(path.join(__dirname, "../client", "index.html"));
 // });
+
+// Firebase
+initializeApp({
+	credential: applicationDefault(),
+});
 
 app.listen(APP_PORT, () => {
 	console.log(`Front-end listening on ${APP_PORT}`);

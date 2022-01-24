@@ -84,6 +84,7 @@ const Banner = (props) => {
         return function cleanup() {
             $(window).unbind("scroll", handleScroll);
             $("#nav-bar").css({ backgroundColor: "" });
+            $("#nav-bar").css({ boxShadow: "" });
         };
     }, []);
 

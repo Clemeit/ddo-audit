@@ -18,6 +18,7 @@
         "bootstrap": "^4.3.1",
         "connected-react-router": "6.5.2",
         "d3": "^7.0.0",
+        "firebase": "^9.6.4",
         "history": "4.10.1",
         "jquery": "^3.6.0",
         "mathjs": "^9.4.4",

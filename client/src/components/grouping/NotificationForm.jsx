@@ -4,6 +4,7 @@ import Banner from "../global/Banner";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as EditSVG } from "../../assets/global/edit.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
+import { getMessaging, getToken } from "firebase/messaging";
 
 const NotificationForm = (props) => {
     const TITLE = "Grouping Notifications";
@@ -17,6 +18,9 @@ const NotificationForm = (props) => {
     const [deniedNotifications, setDeniedNotifications] = React.useState(false);
 
     const [rules, setRules] = React.useState([]);
+
+    // Firebase messaging object
+    const messaging = getMessaging();
 
     React.useEffect(() => {
         let loadrules = JSON.parse(localStorage.getItem("notification-rules"));
@@ -106,6 +110,28 @@ const NotificationForm = (props) => {
             icon: notifImg,
         };
         new Notification(notifTitle, options);
+
+        // Get registration token. Initially this makes a network call, once retrieved
+        // subsequent calls to getToken will return from cache.
+        getToken(messaging, {
+            vapidKey:
+                "BGEIy0i8MQxyVnVJ8upeejTx2XpUIyDLI1cXnNuO-wZJPiGXdSenxmHXKxEkzIUSklEO2L_vUn4-28x7qDdS7wM",
+        })
+            .then((currentToken) => {
+                if (currentToken) {
+                    console.log(currentToken);
+                } else {
+                    // Show permission request UI
+                    console.log(
+                        "No registration token available. Request permission to generate one."
+                    );
+                    // ...
+                }
+            })
+            .catch((err) => {
+                console.log("An error occurred while retrieving token. ", err);
+                // ...
+            });
     }
 
     function subscribeUser() {
