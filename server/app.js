@@ -21,6 +21,10 @@ app.options("*", cors());
 require("./population")(api);
 // require("./cron");
 
+// app.get(["/", "/*"], function (req, res, next) {
+// 	res.sendFile(path.join(__dirname, "../client", "index.html"));
+// });
+
 app.listen(APP_PORT, () => {
 	console.log(`Front-end listening on ${APP_PORT}`);
 });

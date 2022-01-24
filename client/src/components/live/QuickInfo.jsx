@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Fetch } from "../../services/DataLoader";
 
 const QuickInfo = (props) => {
+    const [news, setNews] = React.useState(null);
+
     function FormatWithCommas(x) {
         return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -22,8 +25,23 @@ const QuickInfo = (props) => {
         return FormatWithCommas(total.toString());
     }
 
+    function GetNews() {
+        Fetch("https://www.playeraudit.com/api_new/news", 5000)
+            .then((val) => {
+                setNews(val || []);
+            })
+            .catch(() => {});
+    }
+
+    React.useEffect(() => {
+        GetNews();
+    }, []);
+
     return (
-        <div>
+        <div
+            className="content-cluster"
+            style={{ padding: "0px", margin: "0px" }}
+        >
             <div className={"content-cluster"}>
                 <h2 style={{ color: "var(--text)" }}>Quick Info</h2>
                 <hr
@@ -101,31 +119,57 @@ const QuickInfo = (props) => {
                         opacity: 0.2,
                     }}
                 />
-                <p
-                    style={{
-                        textAlign: "justify",
-                        fontSize: "1.5rem",
-                        lineHeight: "normal",
-                        color: "var(--text)",
-                    }}
-                >
-                    <b>September 1, 2021:</b> DDO Audit is sporting a new
-                    website! In an effort to make DDO Audit more accessible to
-                    players, I've completely redesigned the website to improve
-                    responsiveness, offer a better mobile experience, and
-                    provide players with more transparent information. Please
-                    leave any feedback or suggestions by using the button below!
-                </p>
-                <Link
-                    to="/suggestions"
-                    className="secondary-button should-invert full-width-mobile"
-                    style={{
-                        color: "var(--text)",
-                        textDecoration: "none",
-                    }}
-                >
-                    Make a suggestion
-                </Link>
+                {news == null ? (
+                    <span
+                        style={{
+                            textAlign: "justify",
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        Loading news...
+                    </span>
+                ) : news.length > 0 ? (
+                    news.map((message, i) => (
+                        <div key={i}>
+                            <p
+                                style={{
+                                    textAlign: "justify",
+                                    fontSize: "1.5rem",
+                                    lineHeight: "normal",
+                                    color: "var(--text)",
+                                }}
+                            >
+                                <b>{message.Date}:</b> {message.Description}
+                            </p>
+                        </div>
+                    ))
+                ) : (
+                    <p
+                        style={{
+                            textAlign: "justify",
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        There's nothing going on in our neck of the woods!
+                    </p>
+                )}
+                {news != null && (
+                    <Link
+                        to="/suggestions"
+                        className="secondary-button should-invert full-width-mobile"
+                        style={{
+                            color: "var(--text)",
+                            textDecoration: "none",
+                            marginTop: "10px",
+                        }}
+                    >
+                        Make a suggestion
+                    </Link>
+                )}
             </div>
         </div>
     );

@@ -66,11 +66,13 @@ const Banner = (props) => {
             if (isNavbarSolid === false) {
                 isNavbarSolid = true;
                 $("#nav-bar").css({ backgroundColor: "var(--nav-bar)" });
+                $("#nav-bar").css({ boxShadow: "0px 0px 5px black" });
             }
         } else {
             if (isNavbarSolid === true) {
                 isNavbarSolid = false;
                 $("#nav-bar").css({ backgroundColor: "" });
+                $("#nav-bar").css({ boxShadow: "" });
             }
         }
     }

@@ -120,8 +120,8 @@
     --server-nav-bar-active-text: var(--black);
     --server-nav-bar-text: var(--white);
 
-    --nav-bar: var(--gray7);
-    --nav-bar-hover: var(--gray6);
+    --nav-bar: var(--gray8);
+    --nav-bar-hover: var(--gray7);
     --nav-bar-active: var(--purple2);
 
     --filter-bar: var(--gray7);
@@ -646,7 +646,13 @@ html {
     padding: 10px 30px 10px 30px;
     cursor: pointer;
     border-radius: 7px;
-    transition: background-color 200ms;
+    transition: background-color 200ms, transform 200ms, filter 200ms;
+}
+
+.nav-box:hover {
+    /* transform: translate(-2px, -2px);
+    filter: drop-shadow(2px 2px 1px black); */
+    background-color: var(--highlighted-1);
 }
 
 .community-box {
@@ -700,10 +706,6 @@ html {
 
 .main-button:hover {
     box-shadow: 0px 0px 10px 0px var(--white);
-}
-
-.nav-box:hover {
-    background-color: var(--highlighted-1);
 }
 
 .community-box:hover {

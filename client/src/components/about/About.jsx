@@ -67,7 +67,7 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        Player data is collected from the game client every 30
+                        Player data is collected from the game client every 15
                         seconds. This data contains no personally-identifying
                         information; the information that this data contains is
                         visible in the in-game "Who" panel (name, gender, race,

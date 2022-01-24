@@ -88,12 +88,8 @@ const NotificationForm = (props) => {
     function requestNotificationPermission() {
         Notification.requestPermission().then((result) => {
             if (result === "granted") {
-                navigator.serviceWorker.getRegistration().then(function (reg) {
-                    if (reg == undefined) return;
-                    reg.showNotification("Hello world!");
-                });
                 setCanNotify(true);
-                randomNotification();
+                permissionGranted();
             } else if (result === "denied") {
                 console.log(result);
                 setDeniedNotifications(true);
@@ -101,12 +97,13 @@ const NotificationForm = (props) => {
         });
     }
 
-    function randomNotification() {
+    function permissionGranted() {
         const notifTitle = "Notification Permission Granted";
         const notifBody = `You have granted DDO Audit the ability to send you notifications.`;
-        const notifImg = `../../../logo.png`;
+        const notifImg = `/icons/logo-512px.png`;
         const options = {
             body: notifBody,
+            icon: notifImg,
         };
         new Notification(notifTitle, options);
     }
