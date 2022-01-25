@@ -41,14 +41,16 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        We want to give players the most accurate and up-to-date
-                        information on DDO's population as possible, and provide
-                        the community with useful tools that players have been
-                        asking for: a Live LFM panel and Live Who list. We're
-                        not here to push an agenda or to point fingers.{" "}
+                        We want to provide the community with the most accurate
+                        and up-to-date information on DDO's population as
+                        possible, foster player interactions by hosting a Live
+                        LFM panel and Live 'Who' list, and keep players informed
+                        with server status, time zone trends, character
+                        demographics, and more! We're not here to push an agenda
+                        or to point fingers.{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
-                            Our goal is, and has always been, to provide as
-                            transparent and unbiased information as possible.
+                            Our goal is, and has always been, to provide useful,
+                            transparent, and unbiased information.
                         </span>
                     </p>
                 </div>
@@ -164,14 +166,17 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        And thank <i>you</i> for your continued support. This
-                        project simply would not exist without DDO's incredible
-                        community. Many of the features of this website were a
-                        result of player feedback - both directly and indirectly
-                        on the DDO Discord, Forums, and Reddit - and your
-                        continued use inspires me to grow and develop this
-                        website far beyond what I could have ever imagined. I'm
-                        always looking for feedback and suggestions!
+                        And thank <i>you</i> for your continued support.{" "}
+                        <span style={{ color: "var(--text-lfm-number)" }}>
+                            This project simply would not exist without DDO's
+                            incredible community.
+                        </span>{" "}
+                        Many of the features of this website were a direct
+                        result of player feedback on the DDO Discord, Forums,
+                        and Reddit, and your continued use inspires me to grow
+                        and develop this website far beyond what I could have
+                        ever imagined. I'm always looking for feedback and
+                        suggestions!
                     </p>
                     <div
                         id="action-button-container"
@@ -260,6 +265,45 @@ const About = (props) => {
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div className="content-cluster">
+                    <h2 style={{ color: "var(--text)" }}>Disclaimer</h2>
+                    <hr
+                        style={{
+                            backgroundColor: "var(--text)",
+                            opacity: 0.2,
+                        }}
+                    />
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        All screenshots were taken from{" "}
+                        <a
+                            href="https://www.ddo.com"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            Dungeons and Dragons Online
+                        </a>
+                        . This website is in no way affiliated with, or endorsed
+                        by, Standing Stone Games or{" "}
+                        <a
+                            href="https://www.daybreakgames.com/home"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            Daybreak Game Company
+                        </a>
+                        . Dungeons and Dragons Online is a registered trademark
+                        of Wizards of the Coast LLC. This website generates no
+                        revenue and is not used for commercial purposes. I do
+                        not host ads nor accept donations. You can support this
+                        project by supporting Dungeons and Dragons Online.
+                    </p>
                 </div>
             </div>
         </div>
