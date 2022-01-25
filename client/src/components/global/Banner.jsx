@@ -58,7 +58,12 @@ const Banner = (props) => {
         if (props.small) {
             offset = 50;
         } else {
-            offset = $(window).outerWidth() > 850 ? 160 : 30;
+            offset =
+                $(window).outerWidth() > 850
+                    ? props.showButtons
+                        ? 140
+                        : 220
+                    : 30;
         }
 
         $("#banner-text-container").css("top", `${offset - scrollTop / 2}px`);
@@ -93,11 +98,19 @@ const Banner = (props) => {
             <div>
                 <div
                     id="banner-image"
-                    style={{ height: props.small ? "220px" : "" }}
+                    style={{
+                        height: props.small ? "220px" : "",
+                    }}
                 />
                 <div
                     id="banner-text-container"
-                    style={{ top: props.small ? "50px" : "" }}
+                    style={{
+                        top: props.small
+                            ? "50px"
+                            : props.showButtons
+                            ? ""
+                            : "220px",
+                    }}
                 >
                     {props.showTitle && <h1 id="main-title">{props.title}</h1>}
                     {props.showSubtitle && (
