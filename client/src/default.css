@@ -1218,6 +1218,7 @@ input[type="radio"] {
         justify-content: space-around;
         flex-wrap: nowrap;
         overflow-x: hidden;
+        box-shadow: 0px 0px 5px black !important;
     }
     .nav-dropdown {
         display: none !important;
