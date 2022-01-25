@@ -88,6 +88,8 @@
 
     --primary-button-background: var(--highlight-blue-3);
     --secondary-button-border: var(--highlight-blue-3);
+
+    --faded-blue: #b4bfff;
 }
 
 .dark-theme {
@@ -134,6 +136,8 @@
 
     --primary-button-background: var(--text);
     --secondary-button-border: var(--text);
+
+    --faded-blue: #004d5a;
 }
 
 body {
@@ -189,7 +193,7 @@ body {
     flex-direction: column;
     position: fixed;
     width: 100%;
-    top: 160px;
+    top: 140px;
     z-index: 3;
     padding: 0px 20px;
     user-select: none;
@@ -1170,6 +1174,54 @@ input[type="radio"] {
     top: 10px;
     flex-direction: row;
     gap: 5px;
+}
+
+.endpoint {
+    border-left: 3px solid var(--blue-text);
+    padding-left: 8px;
+}
+
+.endpoint-title {
+    font-size: 1.8rem;
+}
+
+.endpoint-description {
+    font-size: 1.5rem;
+    line-height: normal;
+    color: var(--text);
+}
+
+.endpoint-subdirectory {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--faded-blue);
+    cursor: pointer;
+    padding: 4px 7px;
+    border-radius: 5px;
+    transition: filter 300ms;
+}
+
+.endpoint-subdirectory:hover {
+    filter: brightness(110%);
+}
+
+.endpoint-link {
+    opacity: 0.6;
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.endpoint-link:hover {
+    opacity: 1;
+}
+
+.api-field {
+    color: var(--blue-text);
+    background-color: var(--bg);
+    padding: 2px 5px;
+    white-space: nowrap;
 }
 
 @media (max-width: 850px) {

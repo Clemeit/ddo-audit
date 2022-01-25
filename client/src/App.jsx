@@ -43,6 +43,7 @@ const Trends = lazy(() => import("./components/trends/Trends"));
 const Suggestions = lazy(() => import("./components/global/Suggestions"));
 const Community = lazy(() => import("./components/community/Community"));
 const Guilds = lazy(() => import("./components/guilds/Guilds"));
+const Api = lazy(() => import("./components/api/Api"));
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -102,6 +103,9 @@ export default () => {
                         </Route>
                         <Route exact path="/community">
                             <Community />
+                        </Route>
+                        <Route exact path="/api">
+                            <Api />
                         </Route>
                     </Switch>
                 </Layout>
