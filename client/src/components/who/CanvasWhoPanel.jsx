@@ -122,11 +122,11 @@ const CanvasWhoPanel = (props) => {
 
     React.useEffect(() => {
         if (!isImageLoaded) {
-            console.log("Waiting on resources");
+            //console.log("Waiting on resources");
             return;
         }
         if (props.data === null) {
-            console.log("Waiting on data");
+            //console.log("Waiting on data");
             return;
         }
         // Render canvas
@@ -248,7 +248,7 @@ const CanvasWhoPanel = (props) => {
 
         function DrawPlayers() {
             if (props.data === null) {
-                console.log("Waiting on data");
+                //console.log("Waiting on data");
                 return;
             }
 

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import CanvasLfmPanel from "./CanvasLfmPanel";
 import Banner from "../global/Banner";
-import { Fetch, VerifyLfmData } from "../../services/DataLoader";
+import { Fetch, VerifyServerLfmData } from "../../services/DataLoader";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
@@ -97,7 +97,7 @@ const GroupingSpecific = (props) => {
             // Bad server
             setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
         }
-    }, [props.location]);
+    }, [window.location.pathname]);
 
     React.useEffect(() => {
         // Load local storage
@@ -173,18 +173,16 @@ const GroupingSpecific = (props) => {
                     setServerStatus(false);
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
-                    Fetch("https://www.playeraudit.com/api/groups", 5000)
+                    Fetch(
+                        `https://www.playeraudit.com/api/groups?s=${currentServer.toLowerCase()}`,
+                        5000
+                    )
                         .then((val) => {
-                            if (VerifyLfmData(val)) {
+                            if (VerifyServerLfmData(val)) {
                                 setPopupMessages([]);
                                 failedAttemptRef.current = 0;
                                 setFailedAttemptCount(failedAttemptRef.current);
-                                setUnfilteredServerData(
-                                    val.filter(
-                                        (server) =>
-                                            server.Name === currentServer
-                                    )[0]
-                                );
+                                setUnfilteredServerData(val);
                             } else {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);

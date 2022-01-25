@@ -451,7 +451,7 @@ const WhoSpecific = (props) => {
             // Bad server
             set_currentServer(serverNames[0]); // Just default to the first server in the good list
         }
-    }, [props.location]);
+    }, [window.location.pathname]);
 
     React.useEffect(() => {
         // Load local storage
