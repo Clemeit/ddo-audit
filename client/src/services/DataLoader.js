@@ -39,6 +39,16 @@ export function VerifyLfmData(data) {
     return true;
 }
 
+export function VerifyServerLfmData(data) {
+    if (data === null) return false;
+    let missingfields = false;
+    if (data.Name === undefined) missingfields = true;
+    if (data.LastUpdateTime === undefined) missingfields = true;
+    if (data.GroupCount === undefined) missingfields = true;
+    if (missingfields) return false;
+    return true;
+}
+
 export function VerifyPlayerData(data) {
     if (data === null) return false;
     if (data.Population === undefined) return false;
