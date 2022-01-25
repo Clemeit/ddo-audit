@@ -1,6 +1,7 @@
 {
     "short_name": "DDO Audit",
     "name": "DDO Audit",
+    "description": "Real-time Player Concurrency Data and LFM Viewer",
     "icons": [
         {
             "src": "/icons/logo.svg",
@@ -10,14 +11,22 @@
         {
             "src": "/icons/logo-192px.png",
             "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "maskable"
+            "type": "image/png"
         },
         {
             "src": "/icons/logo-512px.png",
             "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
         }
     ],
     "shortcuts": [
