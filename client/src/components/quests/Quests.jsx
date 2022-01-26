@@ -511,7 +511,7 @@ const Quests = (props) => {
                 title="Quests"
                 subtitle="Quest popularity, average completion times, and XP/min"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="quests" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />

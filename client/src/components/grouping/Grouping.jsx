@@ -129,7 +129,7 @@ const Grouping = () => {
                     content="View a live LFM panel to find public groups. See which groups are currently looking for more players and what content is currently being run."
                 />
             </Helmet>
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="grouping" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">

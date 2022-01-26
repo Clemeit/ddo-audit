@@ -35,7 +35,7 @@ const Trends = (props) => {
                 title="Trends"
                 subtitle="Long-term trends and custom reports"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="trends" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />

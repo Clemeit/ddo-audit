@@ -24,7 +24,7 @@ const About = (props) => {
                 title="About DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Our Mission</h2>
@@ -45,7 +45,7 @@ const About = (props) => {
                         and up-to-date information on DDO's population as
                         possible, foster player interactions by hosting a Live
                         LFM panel and Live 'Who' list, and keep players informed
-                        with server status, time zone trends, character
+                        of server status, time zone trends, character
                         demographics, and more! We're not here to push an agenda
                         or to point fingers.{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
@@ -69,8 +69,8 @@ const About = (props) => {
                             color: "var(--text)",
                         }}
                     >
-                        Player data is collected from the game client every 15
-                        seconds. This data contains no personally-identifying
+                        Data is collected from the game client every 15 seconds.
+                        This data contains no personally-identifying
                         information; the information that this data contains is
                         visible in the in-game "Who" panel (name, gender, race,
                         etc.).{" "}
@@ -99,11 +99,23 @@ const About = (props) => {
                         LFM, the collected data also includes public comment,
                         quest selection, difficulty selection, level range,
                         accepted classes, and the "adventure active" length.
-                        Each player in a group is also assigned a Group ID. This
-                        is of particular importance because it allows us to
-                        reconstruct groups of players. The group data is used to
-                        generate the LFM panel (that's not a screenshot - it's
-                        being drawn in your browser).
+                        Each player in a group is also assigned a Group ID which
+                        allows us to reconstruct groups of players. The group
+                        data is then used to generate the LFM panel (that's not
+                        a screenshot - it's being drawn in your browser).
+                    </p>
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        Group data is refreshed every 15 seconds. Player data is
+                        refreshed every 30 seconds. Server status is refreshed
+                        every 1 minute. Population data is refreshed every 5
+                        minutes. Demographic reports are refresh on various
+                        intervals depending on the report type and span.
                     </p>
                 </div>
                 <div className="content-cluster">
@@ -155,7 +167,7 @@ const About = (props) => {
                             rel="noreferrer"
                             target="_blank"
                         >
-                            Discord channel
+                            Discord server
                         </a>{" "}
                         to stay up-to-date on their development.
                     </p>
@@ -171,12 +183,12 @@ const About = (props) => {
                             This project simply would not exist without DDO's
                             incredible community.
                         </span>{" "}
-                        Many of the features of this website were a direct
+                        Many of the features on this website were a direct
                         result of player feedback on the DDO Discord, Forums,
                         and Reddit, and your continued use inspires me to grow
-                        and develop this website far beyond what I could have
-                        ever imagined. I'm always looking for feedback and
-                        suggestions!
+                        and develop the DDO Audit project far beyond what I
+                        could have ever imagined. I'm always looking for
+                        feedback and suggestions!
                     </p>
                     <div
                         id="action-button-container"

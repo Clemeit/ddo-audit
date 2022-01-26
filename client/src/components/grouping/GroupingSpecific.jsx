@@ -356,7 +356,10 @@ const GroupingSpecific = (props) => {
                         }
                     }}
                 />
-                <div id="content-container" style={{ minHeight: "700px" }}>
+                <div
+                    className="content-container"
+                    style={{ minHeight: "700px" }}
+                >
                     <BannerMessage className="push-on-mobile" page="grouping" />
                     <div className="top-content-padding hide-on-mobile" />
                     <FilterBar

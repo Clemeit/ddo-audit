@@ -42,7 +42,7 @@ const Community = (props) => {
                 title="Community Tools"
                 subtitle="Tools developed by the community"
             />
-            <div id="content-container" style={{ position: "relative" }}>
+            <div className="content-container" style={{ position: "relative" }}>
                 <div className="top-content-padding" />
                 <div
                     className="content-cluster"

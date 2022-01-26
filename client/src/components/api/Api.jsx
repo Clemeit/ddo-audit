@@ -25,7 +25,7 @@ const Api = (props) => {
                 title="DDO Audit API"
                 subtitle="Use our data for your projects"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>

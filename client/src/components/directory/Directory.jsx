@@ -173,7 +173,7 @@ const Directory = (props) => {
                 title="DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="home" />
                 <div className="top-content-padding" />
                 {mayVote && (

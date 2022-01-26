@@ -531,7 +531,7 @@ html {
     }
 }
 
-#content-container {
+.content-container {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -645,7 +645,7 @@ html {
     text-decoration: none !important;
     justify-content: center;
     flex-direction: column;
-    width: 450px;
+    width: 440px;
     height: 150px;
     padding: 10px 30px 10px 30px;
     cursor: pointer;
@@ -716,18 +716,6 @@ html {
     background-color: var(--highlighted-1);
 }
 
-/* #content-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    height: auto;
-    background-color: var(--base);
-    z-index: 3;
-    position: relative;
-    padding-top: 50px;
-    transition: background-color 250ms ease-in-out, color 350ms ease-in-out;
-} */
-
 .content-option-title {
     color: var(--text);
     margin: 0px;
@@ -758,10 +746,15 @@ html {
     font-size: 1.4rem;
 }
 
-@media (max-width: 1000px) {
-    .content-cluster-options {
-        justify-content: center;
-        align-items: center;
+@media (max-width: 1800px) {
+    .content-cluster {
+        max-width: 1400px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .content-cluster {
+        max-width: 1100px;
     }
 }
 
@@ -1203,7 +1196,6 @@ input[type="radio"] {
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: var(--faded-blue);
     cursor: pointer;
     padding: 4px 7px;
     border-radius: 5px;
@@ -1211,7 +1203,7 @@ input[type="radio"] {
 }
 
 .endpoint-subdirectory:hover {
-    filter: brightness(110%);
+    background-color: var(--highlighted-1);
 }
 
 .endpoint-link {
@@ -1256,13 +1248,6 @@ input[type="radio"] {
     }
     .show-on-mobile {
         display: flex !important;
-    }
-    .nav-box.shrinkable {
-        min-width: 0px;
-        height: unset !important;
-        /* min-height: 125px !important; */
-        width: 100%;
-        padding: 5px 15px;
     }
     .top-content-padding.shrink-on-mobile {
         height: 20px;
@@ -1373,5 +1358,22 @@ input[type="radio"] {
 @media (max-width: 1200px) {
     .content-table {
         table-layout: fixed;
+    }
+}
+
+@media (max-width: 1000px) {
+    .content-cluster-options {
+        flex-direction: column;
+    }
+    .content-cluster-options {
+        justify-content: center;
+        align-items: center;
+    }
+    .nav-box {
+        min-width: 0px;
+        height: unset !important;
+        /* min-height: 125px !important; */
+        width: 100%;
+        padding: 5px 15px;
     }
 }

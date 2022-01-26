@@ -328,7 +328,7 @@ const Guilds = (props) => {
                 title="Guilds"
                 subtitle="Guild size, activity, and members lists"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="guilds" />
                 <div className="top-content-padding shrink-on-mobile" />
                 {/* <NoMobileOptimization /> */}

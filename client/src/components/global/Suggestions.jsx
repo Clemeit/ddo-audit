@@ -44,7 +44,7 @@ const Suggestions = (props) => {
                 title="DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
-            <div id="content-container">
+            <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <Poll />
                 <div className="content-cluster">

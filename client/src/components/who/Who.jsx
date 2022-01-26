@@ -112,7 +112,7 @@ const Who = (props) => {
                     content="Browse players from any server with a live Who panel. Are your friends online? Is your guild forming up for a late-night raid? Now you know!"
                 />
             </Helmet>
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="who" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">

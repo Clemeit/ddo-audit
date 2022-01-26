@@ -144,7 +144,7 @@ const Directory = (props) => {
                     }
                 }}
             />
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage className="push-on-mobile" page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <div className="content-cluster">

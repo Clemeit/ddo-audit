@@ -73,7 +73,7 @@ const ServersSpecific = () => {
                     }
                 }}
             />
-            <div id="content-container" style={{ height: "2000px" }}>
+            <div className="content-container" style={{ height: "2000px" }}>
                 <BannerMessage className="push-on-mobile" page="servers" />
                 <div className="top-content-padding hide-on-mobile" />
             </div>

@@ -81,7 +81,7 @@ const Live = (props) => {
                     content="DDO server status, most populated server, current default server, live and quarterly population."
                 />
             </Helmet>
-            <div id="content-container">
+            <div className="content-container">
                 <BannerMessage page="live" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ServerStatusDisplay data={serverStatusData} />

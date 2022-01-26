@@ -179,7 +179,7 @@ const NotificationForm = (props) => {
                     content="Setup custom group notifications."
                 />
             </Helmet>
-            <div id="content-container">
+            <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <div
                     className="content-cluster"
