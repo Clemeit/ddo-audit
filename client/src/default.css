@@ -89,7 +89,7 @@
     --primary-button-background: var(--highlight-blue-3);
     --secondary-button-border: var(--highlight-blue-3);
 
-    --faded-blue: #b4bfff;
+    --faded-blue: #d9dbe6;
 }
 
 .dark-theme {
@@ -137,7 +137,7 @@
     --primary-button-background: var(--text);
     --secondary-button-border: var(--text);
 
-    --faded-blue: #004d5a;
+    --faded-blue: rgb(42, 45, 46);
 }
 
 body {
@@ -1179,6 +1179,14 @@ input[type="radio"] {
 .endpoint {
     border-left: 3px solid var(--blue-text);
     padding-left: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 300ms;
+    padding: 5px 10px;
+}
+
+.endpoint:hover {
+    background-color: var(--highlighted-0);
 }
 
 .endpoint-title {
