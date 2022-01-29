@@ -32,6 +32,8 @@ initializeApp({
 // 	console.log(`Front-end listening on ${APP_PORT}`);
 // });
 
+require("./ReportPopulationHourlyDistribution");
+
 api.listen(API_PORT, () => {
 	console.log(`API listening on ${API_PORT}`);
 });

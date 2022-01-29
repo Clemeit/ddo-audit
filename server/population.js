@@ -4,6 +4,8 @@ module.exports = function (api) {
 		["week", "week"],
 		["quarter", "quarter"],
 		["year", "year"],
+		["serverdistribution", "serverdistributionquarter"],
+		["hourlydistribution", "hourlydistributionquarter"],
 	];
 
 	population.forEach((entry) => {
