@@ -1,6 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
+import { ReactComponent as TimelineSVG } from "../../assets/global/timeline.svg";
 import Banner from "../global/Banner";
 
 const About = (props) => {
@@ -11,8 +13,14 @@ const About = (props) => {
             <Helmet>
                 <title>{TITLE}</title>
                 <meta
-                    name="description"
-                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, and see what server is best for you!"
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             <Banner
@@ -103,19 +111,6 @@ const About = (props) => {
                         allows us to reconstruct groups of players. The group
                         data is then used to generate the LFM panel (that's not
                         a screenshot - it's being drawn in your browser).
-                    </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
-                        Group data is refreshed every 15 seconds. Player data is
-                        refreshed every 30 seconds. Server status is refreshed
-                        every 1 minute. Population data is refreshed every 5
-                        minutes. Demographic reports are refresh on various
-                        intervals depending on the report type and span.
                     </p>
                 </div>
                 <div className="content-cluster">
@@ -277,6 +272,52 @@ const About = (props) => {
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div className="content-cluster">
+                    <h2 style={{ color: "var(--text)" }}>More Information</h2>
+                    <hr
+                        style={{
+                            backgroundColor: "var(--text)",
+                            opacity: 0.2,
+                        }}
+                    />
+                    <div className="content-cluster-options">
+                        <Link
+                            to="/api"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <ApiSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">API</h2>
+                            </div>
+                            <p className="content-option-description">
+                                Look behind the curtain. Get the data for your
+                                own projects.
+                            </p>
+                        </Link>
+                        <Link
+                            to="/timeline"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <TimelineSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">
+                                    Timeline
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                This project's development log.
+                            </p>
+                        </Link>
+                    </div>
                 </div>
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Disclaimer</h2>
