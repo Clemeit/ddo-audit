@@ -6,6 +6,7 @@ import NoMobileOptimization from "../global/NoMobileOptimization";
 import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as SortSVG } from "../../assets/global/sort.svg";
 import { ReactComponent as ArrowRightSVG } from "../../assets/global/arrow_right.svg";
+import ContentCluster from "../global/ContentCluster";
 
 const Guilds = (props) => {
     const TITLE = "Guild Search";
@@ -341,25 +342,11 @@ const Guilds = (props) => {
             <div className="content-container">
                 <BannerMessage page="guilds" />
                 <div className="top-content-padding shrink-on-mobile" />
-                {/* <NoMobileOptimization /> */}
                 {!guildsPaginated && (
-                    <div className="content-cluster">
-                        <h2 style={{ color: "var(--text)" }}>Guild Audit</h2>
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <p
-                            style={{
-                                fontSize: "1.5rem",
-                                lineHeight: "normal",
-                                color: "var(--text-faded)",
-                            }}
-                        >
-                            Run a new Guild Audit by pressing the button below.
-                        </p>
+                    <ContentCluster
+                        title="Guild Audit"
+                        description="Run a new Guild Audit by pressing the button below."
+                    >
                         <div
                             className={
                                 "primary-button should-invert full-width-mobile" +
@@ -370,37 +357,37 @@ const Guilds = (props) => {
                         >
                             {isRunning ? "Please wait..." : "Run Audit"}
                         </div>
-                    </div>
+                    </ContentCluster>
                 )}
                 {(guildsPaginated || playersPaginated) && (
-                    <div className="content-cluster">
-                        {playersPaginated ? (
-                            <h2>
-                                <span
-                                    className="guild-header"
-                                    onClick={() => setPlayers(null)}
-                                >
-                                    Guilds
-                                </span>
-                                <ArrowRightSVG
-                                    className="nav-icon should-invert"
-                                    style={{
-                                        width: "30px",
-                                        height: "30px",
-                                        margin: "0px",
-                                    }}
-                                />
-                                {focusedGuildName}
-                            </h2>
-                        ) : (
-                            <h2 style={{ color: "var(--text)" }}>Guilds</h2>
-                        )}
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
+                    <ContentCluster
+                        title={
+                            <>
+                                {playersPaginated ? (
+                                    <>
+                                        <span
+                                            className="guild-header"
+                                            onClick={() => setPlayers(null)}
+                                        >
+                                            Guilds
+                                        </span>
+                                        <ArrowRightSVG
+                                            className="nav-icon should-invert"
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                margin: "0px",
+                                            }}
+                                        />
+                                        {focusedGuildName}
+                                    </>
+                                ) : (
+                                    <>Guilds</>
+                                )}
+                            </>
+                        }
+                        altTitle="Guild Selected"
+                    >
                         {playersPaginated ? (
                             <input
                                 id="player-filter"
@@ -681,7 +668,7 @@ const Guilds = (props) => {
                                       )
                                   )}
                         </div>
-                    </div>
+                    </ContentCluster>
                 )}
             </div>
         </div>

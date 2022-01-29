@@ -17,6 +17,7 @@ import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import Footer from "./Footer";
 import BannerMessage from "../global/BannerMessage";
+import ContentCluster from "../global/ContentCluster";
 
 const Directory = (props) => {
     const TITLE = "DDO Audit";
@@ -233,14 +234,7 @@ const Directory = (props) => {
                     </div>
                 )}
                 {NAV_OPTIONS.map((option, i) => (
-                    <div key={i} className="content-cluster">
-                        <h2 style={{ color: "var(--text)" }}>{option.title}</h2>
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
+                    <ContentCluster key={i} title={option.title}>
                         <div className="content-cluster-options">
                             {option.tiles.map((option, i) => (
                                 <Link
@@ -264,7 +258,7 @@ const Directory = (props) => {
                                 </Link>
                             ))}
                         </div>
-                    </div>
+                    </ContentCluster>
                 ))}
             </div>
             <Footer />

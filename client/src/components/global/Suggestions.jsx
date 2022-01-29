@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Banner from "./Banner";
 import { Submit } from "../../services/ReportIssueService";
 import Poll from "./Poll";
+import ContentCluster from "./ContentCluster";
 
 const Suggestions = (props) => {
     const TITLE = "DDO Audit | Make a Suggestion";
@@ -57,26 +58,10 @@ const Suggestions = (props) => {
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <Poll />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Suggestions and Feedback
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            display: isSubmitted ? "none" : "block",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Community feedback has made this project possible.
-                    </p>
+                <ContentCluster
+                    title="Suggestions and Feedback"
+                    description="Community feedback has made this project possible."
+                >
                     <form>
                         <div
                             style={{
@@ -171,7 +156,7 @@ const Suggestions = (props) => {
                             </div>
                         </div>
                     </form>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

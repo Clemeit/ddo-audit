@@ -18,6 +18,7 @@ import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import BannerMessage from "../global/BannerMessage";
 import LoadingOverlay from "./LoadingOverlay";
+import ContentCluster from "../global/ContentCluster";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
@@ -558,26 +559,11 @@ const Quests = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />
                 {!questList && (
-                    <div className="content-cluster">
-                        <h2 style={{ color: "var(--text)" }}>
-                            Quest Activity Audit
-                        </h2>
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <p
-                            style={{
-                                fontSize: "1.5rem",
-                                lineHeight: "normal",
-                                color: "var(--text-faded)",
-                            }}
-                        >
-                            Run a new Quest Activity Audit by pressing the
-                            button below.
-                        </p>
+                    <ContentCluster
+                        title="Quest Activity Audit"
+                        description="Run a new Quest Activity Audit by pressing the
+                    button below."
+                    >
                         <div
                             className={
                                 "primary-button should-invert full-width-mobile" +
@@ -659,17 +645,10 @@ const Quests = (props) => {
                                 )}
                             </div>
                         )}
-                    </div>
+                    </ContentCluster>
                 )}
                 {questList && (
-                    <div className="content-cluster">
-                        <h2 style={{ color: "var(--text)" }}>Audit Results</h2>
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
+                    <ContentCluster title="Audit Results">
                         <div
                             className="player-filter-input column-on-mobile small-gap-on-mobile"
                             style={{
@@ -930,7 +909,7 @@ const Quests = (props) => {
                             loadingMessage="Click on a quest to view data"
                             noAnim={true}
                         />
-                    </div>
+                    </ContentCluster>
                 )}
             </div>
         </div>

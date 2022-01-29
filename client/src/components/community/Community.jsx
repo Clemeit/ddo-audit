@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import { ReactComponent as LinkSVG } from "../../assets/global/link.svg";
 import { Link } from "react-router-dom";
+import ContentCluster from "../global/ContentCluster";
 
 const Community = (props) => {
     const TITLE = "Community Tools";
@@ -54,33 +55,17 @@ const Community = (props) => {
             />
             <div className="content-container" style={{ position: "relative" }}>
                 <div className="top-content-padding" />
-                <div
-                    className="content-cluster"
-                    style={{
-                        marginBottom: "10px",
-                    }}
+                <ContentCluster
+                    title="Community Tools"
+                    description={
+                        <>
+                            These projects were developed by members of the DDO
+                            community. If you'd like to see a project added,
+                            please{" "}
+                            <Link to="/suggestions">make a suggestion</Link>!
+                        </>
+                    }
                 >
-                    <h2 style={{ color: "var(--text)" }}>Community Tools</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                            marginBottom: "0.3rem",
-                        }}
-                    >
-                        These projects were developed by members of the DDO
-                        community. If you'd like to see a project added, please{" "}
-                        <Link to="/suggestions">make a suggestion</Link>!
-                    </p>
-                </div>
-                <div className="content-cluster">
                     <div className="content-cluster-options">
                         {TOOLS.map((tool, i) => (
                             <a
@@ -116,13 +101,12 @@ const Community = (props) => {
                             </a>
                         ))}
                     </div>
-                </div>
-                <div className="content-cluster">
                     <p
                         style={{
                             fontSize: "1.2rem",
                             lineHeight: "normal",
                             color: "var(--text-faded)",
+                            marginTop: "20px",
                         }}
                     >
                         These are not my projects. DDO Audit is not necessarily
@@ -131,7 +115,7 @@ const Community = (props) => {
                         message me with feedback or requests regarding these
                         projects.
                     </p>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

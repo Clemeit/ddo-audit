@@ -5,6 +5,7 @@ import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as EditSVG } from "../../assets/global/edit.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { getMessaging, getToken } from "firebase/messaging";
+import ContentCluster from "../global/ContentCluster";
 
 const NotificationForm = (props) => {
     const TITLE = "Grouping Notifications";
@@ -191,64 +192,35 @@ const NotificationForm = (props) => {
             </Helmet>
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
-                <div
-                    className="content-cluster"
-                    style={{
-                        display:
-                            !canNotify && !deniedNotifications
-                                ? "block"
-                                : "none",
-                    }}
+                <ContentCluster
+                    title="Notification Permission"
+                    description="We're going to need your permission to send you
+                    notifications."
+                    hidden={canNotify || deniedNotifications}
                 >
-                    <h2 style={{ color: "var(--text)" }}>
-                        Notification Permission
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        We're going to need your permission to send you
-                        notifications.
-                    </p>
                     <div
                         className="primary-button full-width-mobile"
                         onClick={() => requestNotificationPermission()}
                     >
                         Allow Notifications
                     </div>
-                </div>
-                <div
-                    className="content-cluster"
-                    style={{
-                        display: deniedNotifications ? "block" : "none",
-                    }}
+                </ContentCluster>
+                <ContentCluster
+                    title={
+                        <>
+                            <WarningSVG
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    marginRight: "10px",
+                                }}
+                            />
+                            Notification Permission Denied
+                        </>
+                    }
+                    altTitle="Notification Permission Denied"
+                    hidden={!deniedNotifications}
                 >
-                    <h2
-                        style={{
-                            color: "var(--text)",
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                        }}
-                    >
-                        <WarningSVG
-                            style={{
-                                width: "30px",
-                                height: "30px",
-                                marginRight: "10px",
-                            }}
-                        />
-                        Notification Permission
-                    </h2>
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -293,20 +265,11 @@ const NotificationForm = (props) => {
                             </a>
                         </li>
                     </ul>
-                </div>
-                <div
-                    className="content-cluster"
-                    style={{ display: canNotify ? "unset" : "none" }}
+                </ContentCluster>
+                <ContentCluster
+                    title="Your Notification Settings"
+                    hidden={!canNotify}
                 >
-                    <h2 style={{ color: "var(--text)" }}>
-                        Your Notification Settings
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
                     {rules.length ? (
                         <p
                             style={{
@@ -443,29 +406,18 @@ const NotificationForm = (props) => {
                             </tbody>
                         </table>
                     </div> */}
-                </div>
-                <div
-                    className="content-cluster"
-                    style={{ display: canNotify ? "unset" : "none" }}
+                </ContentCluster>
+                <ContentCluster
+                    title="Create a New Rule"
+                    description={
+                        <>
+                            Groups must meet <b>all</b> of the following
+                            criteria. Leave a field blank to ignore it. You may
+                            separate queries with commas (,).
+                        </>
+                    }
+                    hidden={!canNotify}
                 >
-                    <h2 style={{ color: "var(--text)" }}>Create a New Rule</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Groups must meet <b>all</b> of the following criteria.
-                        Leave a field blank to ignore it. You may separate
-                        queries with commas (,).
-                    </p>
                     <div
                         style={{
                             display: "flex",
@@ -610,7 +562,7 @@ const NotificationForm = (props) => {
                             Add Rule
                         </div>
                     </div>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

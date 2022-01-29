@@ -10,6 +10,7 @@ import Group from "./Group";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import { Submit } from "../../services/ReportIssueService";
+import ContentCluster from "../global/ContentCluster";
 
 const GroupingSpecific = (props) => {
     const TITLE = "Live LFM Viewer";
@@ -415,19 +416,7 @@ const GroupingSpecific = (props) => {
                                 padding: "10px",
                             }}
                         >
-                            <div
-                                className="content-cluster"
-                                style={{ marginBottom: "10px" }}
-                            >
-                                <h2 style={{ fontSize: "1.5rem" }}>
-                                    Filter Groups
-                                </h2>
-                                <hr
-                                    style={{
-                                        backgroundColor: "var(--text)",
-                                        opacity: 0.2,
-                                    }}
-                                />
+                            <ContentCluster title="Filter Groups">
                                 <div style={{ padding: "15px" }}>
                                     <LevelRangeSlider
                                         handleChange={(e) => {
@@ -493,20 +482,8 @@ const GroupingSpecific = (props) => {
                                         Sort groups ascending
                                     </label>
                                 </div>
-                            </div>
-                            <div
-                                className="content-cluster"
-                                style={{ marginBottom: "10px" }}
-                            >
-                                <h2 style={{ fontSize: "1.5rem" }}>
-                                    Accessibility
-                                </h2>
-                                <hr
-                                    style={{
-                                        backgroundColor: "var(--text)",
-                                        opacity: 0.2,
-                                    }}
-                                />
+                            </ContentCluster>
+                            <ContentCluster title="Accessibility">
                                 <div
                                     style={{
                                         display: "flex",
@@ -583,7 +560,7 @@ const GroupingSpecific = (props) => {
                                         Large Font
                                     </label>
                                 </div>
-                            </div>
+                            </ContentCluster>
                         </div>
                     </FilterBar>
                     <div className="sr-only">

@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import DevEvent from "./DevEvent";
+import ContentCluster from "../global/ContentCluster";
 
 const Timeline = (props) => {
     const TITLE = "Project Timeline";
@@ -35,14 +36,7 @@ const Timeline = (props) => {
             />
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Timeline / Dev Log</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Timeline">
                     <DevEvent
                         title="February 10, 2022 - Release of DDO Audit 2.0"
                         events={["The new website was released to the public"]}
@@ -171,7 +165,7 @@ const Timeline = (props) => {
                             "Manual samples were taken randomly throughout the day",
                         ]}
                     />
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

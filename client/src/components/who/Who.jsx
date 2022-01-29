@@ -8,6 +8,7 @@ import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
+import ContentCluster from "../global/ContentCluster";
 
 const Who = (props) => {
     const TITLE = "DDO Live Who Panel";
@@ -173,14 +174,7 @@ const Who = (props) => {
             <div className="content-container">
                 <BannerMessage page="who" />
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Select a Server</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
                         {SERVER_NAMES.map((name, i) => (
                             <Link
@@ -205,54 +199,7 @@ const Who = (props) => {
                             </Link>
                         ))}
                     </div>
-                </div>
-                {/* <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Contributions</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        A huge shout-out to the amazing developers over at Vault
-                        of Kundarak. Their contributions to this project made
-                        the Live LFM Viewer possible. Visit their website at{" "}
-                        <a
-                            href="https://vaultofkundarak.com/"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            vaultofkundarak.com
-                        </a>{" "}
-                        or drop by their{" "}
-                        <a
-                            href="https://discord.com/invite/bfMZnbz"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            Discord server
-                        </a>{" "}
-                        for news and updates on their projects!
-                    </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        And thank <u>you</u> for your continued support. This
-                        project is made possible by your feedback and
-                        suggestions!
-                    </p>
-                </div> */}
+                </ContentCluster>
             </div>
         </div>
     );

@@ -140,6 +140,11 @@
     --faded-blue: rgb(42, 45, 46);
 }
 
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+}
+
 body {
     font-family: "Times New Roman", Times, serif;
     background-color: var(--bg);
@@ -558,6 +563,13 @@ html {
     padding: 0px 20px;
     max-width: 1920px;
     width: 100%;
+    color: var(--text);
+}
+
+.content-cluster-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     color: var(--text);
 }
 
@@ -1294,6 +1306,23 @@ input[type="radio"] {
 
 .chart-legend-item.excluded {
     opacity: 0.2 !important;
+}
+
+.anchor-link {
+    display: none;
+    cursor: pointer;
+    opacity: 0.6;
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+}
+
+.anchor-link:hover {
+    opacity: 1;
+}
+
+h2:hover .anchor-link {
+    display: inline-block;
 }
 
 @media (max-width: 900px) {

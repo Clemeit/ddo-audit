@@ -5,6 +5,7 @@ import { ReactComponent as NeutralSVG } from "../../assets/global/neutral.svg";
 import { ReactComponent as HappySVG } from "../../assets/global/happy.svg";
 import { ReactComponent as VeryHappySVG } from "../../assets/global/very_happy.svg";
 import { Submit } from "../../services/ReportIssueService";
+import ContentCluster from "./ContentCluster";
 
 const Poll = (props) => {
     const POLL_OPTIONS = [
@@ -67,14 +68,7 @@ const Poll = (props) => {
     }, []);
 
     return mayVote || isPollClosed ? (
-        <div className="content-cluster">
-            <h2 style={{ color: "var(--text)" }}>Poll</h2>
-            <hr
-                style={{
-                    backgroundColor: "var(--text)",
-                    opacity: 0.2,
-                }}
-            />
+        <ContentCluster title="Poll">
             {isPollClosed ? (
                 <p
                     style={{
@@ -173,7 +167,7 @@ const Poll = (props) => {
                     </div>
                 </div>
             )}
-        </div>
+        </ContentCluster>
     ) : (
         <></>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import ContentCluster from "./ContentCluster";
 
 const ServerNames = [
     "Argonnessen",
@@ -33,21 +34,17 @@ const ServerStatusDisplay = (props) => {
     }
 
     return (
-        <div className="content-cluster">
-            <center>
-                <h2
-                    style={{
-                        color: "var(--text)",
-                    }}
-                >
-                    {"Server status " +
-                        (props.data !== null &&
-                        props.data.hasOwnProperty("LastUpdateTime")
-                            ? "last updated " +
-                              PrettyTime(props.data.LastUpdateTime)
-                            : "loading...")}
-                </h2>
-            </center>
+        <ContentCluster
+            title="Server Status"
+            description={
+                props.data !== null &&
+                props.data.hasOwnProperty("LastUpdateTime")
+                    ? "Server status was last checked at " +
+                      PrettyTime(props.data.LastUpdateTime)
+                    : "Loading..."
+            }
+        >
+            <center></center>
             <div className="server-status-container">
                 {props.data && props.data.Worlds
                     ? props.data.Worlds.map((world, i) => (
@@ -67,7 +64,7 @@ const ServerStatusDisplay = (props) => {
                           </div>
                       ))}
             </div>
-        </div>
+        </ContentCluster>
     );
 };
 

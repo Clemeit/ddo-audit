@@ -13,6 +13,7 @@ import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import ChartPie from "../global/ChartPie";
 import ChartLine from "../global/ChartLine";
+import ContentCluster from "../global/ContentCluster";
 
 const Directory = (props) => {
     const TITLE = "DDO Server Status and Demographics";
@@ -168,14 +169,7 @@ const Directory = (props) => {
             <div className="content-container">
                 <BannerMessage className="push-on-mobile" page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Select a Server</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
                         {SERVER_NAMES.map((name, i) => (
                             <Link
@@ -200,55 +194,23 @@ const Directory = (props) => {
                             </Link>
                         ))}
                     </div>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Server Population Distribution
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            textAlign: "justify",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Population distribution across the servers over the last
-                        90 days.
-                    </p>
+                </ContentCluster>
+                <ContentCluster
+                    title="Server Population Distribution"
+                    description="Population distribution across the servers over the last
+                        90 days."
+                >
                     <ChartPie
                         data={serverDistributionData}
                         noAnim={true}
                         useDataColors={true}
                     />
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Hourly Population Distribution
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            textAlign: "justify",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Average population over the course of a 24 hour day
-                        cycle.
-                    </p>
+                </ContentCluster>
+                <ContentCluster
+                    title="Hourly Population Distribution"
+                    description="Average population over the course of a 24 hour day
+                    cycle."
+                >
                     <ChartLine
                         keys={null}
                         indexBy={null}
@@ -263,15 +225,8 @@ const Directory = (props) => {
                         // tickValues="every 1 day"
                         // trendType="week"
                     />
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>See Also...</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="See Also...">
                     <div className="content-cluster-options">
                         <Link
                             to="/live"
@@ -310,7 +265,7 @@ const Directory = (props) => {
                             </p>
                         </Link>
                     </div>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

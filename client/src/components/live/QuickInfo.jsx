@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
+import ContentCluster from "../global/ContentCluster";
 
 const QuickInfo = (props) => {
     const [news, setNews] = React.useState(null);
@@ -79,18 +80,8 @@ const QuickInfo = (props) => {
     }, []);
 
     return (
-        <div
-            className="content-cluster"
-            style={{ padding: "0px", margin: "0px" }}
-        >
-            <div className={"content-cluster"}>
-                <h2 style={{ color: "var(--text)" }}>Quick Info</h2>
-                <hr
-                    style={{
-                        backgroundColor: "var(--text)",
-                        opacity: 0.2,
-                    }}
-                />
+        <>
+            <ContentCluster title="Quick Info">
                 <ul
                     style={{
                         fontSize: "1.5rem",
@@ -139,15 +130,8 @@ const QuickInfo = (props) => {
                         unique guilds
                     </li>
                 </ul>
-            </div>
-            <div className={"content-cluster"}>
-                <h2 style={{ color: "var(--text)" }}>Of Special Note</h2>
-                <hr
-                    style={{
-                        backgroundColor: "var(--text)",
-                        opacity: 0.2,
-                    }}
-                />
+            </ContentCluster>
+            <ContentCluster title="Of Special Note">
                 {news == null ? (
                     <span
                         style={{
@@ -199,8 +183,8 @@ const QuickInfo = (props) => {
                         Make a suggestion
                     </Link>
                 )}
-            </div>
-        </div>
+            </ContentCluster>
+        </>
     );
 };
 

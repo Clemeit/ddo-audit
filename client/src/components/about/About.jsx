@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
 import { ReactComponent as TimelineSVG } from "../../assets/global/timeline.svg";
 import Banner from "../global/Banner";
+import ContentCluster from "../global/ContentCluster";
 
 const About = (props) => {
     const TITLE = "About DDO Audit";
@@ -34,14 +35,7 @@ const About = (props) => {
             />
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Our Mission</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Our Mission">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -61,15 +55,8 @@ const About = (props) => {
                             transparent, and unbiased information.
                         </span>
                     </p>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Our Methodology</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="Our Methodology">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -112,15 +99,8 @@ const About = (props) => {
                         data is then used to generate the LFM panel (that's not
                         a screenshot - it's being drawn in your browser).
                     </p>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Contributions</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="Contributions">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -208,26 +188,11 @@ const About = (props) => {
                             Make a suggestion
                         </Link>
                     </div>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Contact Information
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Listed in order of preference.
-                    </p>
+                </ContentCluster>
+                <ContentCluster
+                    title="Contact Information"
+                    description="Listed in order of preference."
+                >
                     <ul
                         style={{
                             fontSize: "1.5rem",
@@ -272,15 +237,8 @@ const About = (props) => {
                             </a>
                         </li>
                     </ul>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>More Information</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="More Information">
                     <div className="content-cluster-options">
                         <Link
                             to="/api"
@@ -318,15 +276,8 @@ const About = (props) => {
                             </p>
                         </Link>
                     </div>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Disclaimer</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="Disclaimer">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -357,7 +308,7 @@ const About = (props) => {
                         not host ads nor accept donations. You can support this
                         project by supporting Dungeons and Dragons Online.
                     </p>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

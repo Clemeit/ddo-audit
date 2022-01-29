@@ -8,6 +8,7 @@ import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
+import ContentCluster from "../global/ContentCluster";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
@@ -172,14 +173,7 @@ const Grouping = () => {
             <div className="content-container">
                 <BannerMessage page="grouping" />
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Select a Server</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
                         {SERVER_NAMES.map((name, i) => (
                             <Link
@@ -204,79 +198,66 @@ const Grouping = () => {
                             </Link>
                         ))}
                     </div>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Notifications</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            // color: "var(--text-faded)",
-                        }}
-                    >
-                        You currently have{" "}
-                        <span style={{ color: "var(--text-lfm-number)" }}>
-                            {notificationRuleCount}
-                        </span>{" "}
-                        notification rule
-                        {notificationRuleCount !== 1 ? "s" : ""} setup.
-                        Configure notifications in the{" "}
-                        <Link to="/notifications">notification settings</Link>.
-                    </p>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Contributions</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            // color: "var(--text-faded)",
-                        }}
-                    >
-                        A special thanks to the amazing developers over at Vault
-                        of Kundarak. Their contributions to this project made
-                        the Live LFM Viewer possible. Visit their website at{" "}
-                        <a
-                            href="https://vaultofkundarak.com/"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            vaultofkundarak.com
-                        </a>{" "}
-                        or drop by their{" "}
-                        <a
-                            href="https://discord.com/invite/bfMZnbz"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            Discord server
-                        </a>{" "}
-                        for news and updates on their projects!
-                    </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            // color: "var(--text-faded)",
-                        }}
-                    >
-                        And thank <i>you</i> for your continued support. This
-                        project is made possible by your feedback and
-                        suggestions!
-                    </p>
-                </div>
+                </ContentCluster>
+                <ContentCluster
+                    title="Notifications"
+                    description={
+                        <>
+                            You currently have{" "}
+                            <span style={{ color: "var(--text-lfm-number)" }}>
+                                {notificationRuleCount}
+                            </span>{" "}
+                            notification rule
+                            {notificationRuleCount !== 1 ? "s" : ""} setup.
+                            Configure notifications in the{" "}
+                            <Link to="/notifications">
+                                notification settings
+                            </Link>
+                            .
+                        </>
+                    }
+                    noFade={true}
+                />
+                <ContentCluster
+                    title="Contributions"
+                    description={
+                        <>
+                            <p>
+                                A special thanks to the amazing developers over
+                                at Vault of Kundarak. Their contributions to
+                                this project made the Live LFM Viewer possible.
+                                Visit their website at{" "}
+                                <a
+                                    href="https://vaultofkundarak.com/"
+                                    rel="noreferrer"
+                                    target="_blank"
+                                >
+                                    vaultofkundarak.com
+                                </a>{" "}
+                                or drop by their{" "}
+                                <a
+                                    href="https://discord.com/invite/bfMZnbz"
+                                    rel="noreferrer"
+                                    target="_blank"
+                                >
+                                    Discord server
+                                </a>{" "}
+                                for news and updates on their projects!
+                            </p>
+                            <p
+                                style={{
+                                    fontSize: "1.5rem",
+                                    lineHeight: "normal",
+                                }}
+                            >
+                                And thank <i>you</i> for your continued support.
+                                This project is made possible by your feedback
+                                and suggestions!
+                            </p>
+                        </>
+                    }
+                    noFade={true}
+                />
             </div>
         </div>
     );

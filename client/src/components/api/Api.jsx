@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
 import Endpoints from "./Endpoints";
+import ContentCluster from "../global/ContentCluster";
 
 const Api = (props) => {
     const TITLE = "DDO Audit API";
@@ -37,16 +38,7 @@ const Api = (props) => {
             />
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        About the DDO Audit API
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="About the DDO Audit API">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -111,15 +103,8 @@ const Api = (props) => {
                         contract. I am not a lawyer. Please use this data to
                         engage with the community in a positive, helpful manner.
                     </p>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>How to Use the API</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="How to Use the API">
                     <p
                         style={{
                             fontSize: "1.5rem",
@@ -160,17 +145,10 @@ const Api = (props) => {
                         When possible, please limit the number of API requests
                         you make to one (1) every 15 seconds.
                     </p>
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Endpoints</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                </ContentCluster>
+                <ContentCluster title="Endpoints">
                     <Endpoints />
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

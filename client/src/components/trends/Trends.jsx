@@ -5,6 +5,7 @@ import { Fetch } from "../../services/DataLoader";
 import BannerMessage from "../global/BannerMessage";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import ChartLine from "../global/ChartLine";
+import ContentCluster from "../global/ContentCluster";
 
 const Trends = (props) => {
     const TITLE = "Data Trends";
@@ -49,27 +50,12 @@ const Trends = (props) => {
                 <BannerMessage page="trends" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <NoMobileOptimization />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Server Population Trends
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        The last year of trend data for each server. Display as
+                <ContentCluster
+                    title="Server Population Trends"
+                    description="The last year of trend data for each server. Display as
                         individual servers, a composite overlay with all
-                        servers, or a combined total population.
-                    </p>
+                        servers, or a combined total population."
+                >
                     <ChartLine
                         data={population1Year}
                         trendType="quarter"
@@ -80,43 +66,17 @@ const Trends = (props) => {
                         marginBottom={120}
                         height="460px"
                     />
-                    <h2 style={{ color: "var(--text)" }}>
-                        Live Server and Hardcore Server Trends
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        The last year of trend data comparing the combined
+                </ContentCluster>
+                <ContentCluster
+                    title="Live Server and Hardcore Server Trends"
+                    description="The last year of trend data comparing the combined
                         population of the live servers compared to the
-                        population of the Hardcore League server.
-                    </p>
-                    <h2 style={{ color: "var(--text)" }}>Custom Report</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        Select a date range and any combination of servers.
-                    </p>
-                </div>
+                        population of the Hardcore League server."
+                ></ContentCluster>
+                <ContentCluster
+                    title="Custom Report"
+                    description="Select a date range and any combination of servers."
+                ></ContentCluster>
             </div>
         </div>
     );

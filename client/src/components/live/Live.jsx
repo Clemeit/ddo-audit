@@ -17,6 +17,7 @@ import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
+import ContentCluster from "../global/ContentCluster";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
@@ -100,14 +101,7 @@ const Live = (props) => {
                     unique={uniqueCountsData}
                     serverstatus={serverStatusData}
                 />
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Live Population</h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
+                <ContentCluster title="Live Population">
                     <PlayerAndLfmSubtitle data={playerAndLFMCountData} />
                     <ChartLine
                         data={population24HoursData}
@@ -117,27 +111,11 @@ const Live = (props) => {
                         showLastUpdated={true}
                         reportReference={null}
                     />
-                </div>
-                <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>
-                        Historical Population
-                    </h2>
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                        }}
-                    />
-                    <p
-                        style={{
-                            textAlign: "justify",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text-faded)",
-                        }}
-                    >
-                        These reports have moved to the following locations:
-                    </p>
+                </ContentCluster>
+                <ContentCluster
+                    title="Historical Population"
+                    description="These reports have moved to the following locations:"
+                >
                     <div className="content-cluster-options">
                         <Link
                             to="/servers"
@@ -175,7 +153,7 @@ const Live = (props) => {
                             </p>
                         </Link>
                     </div>
-                </div>
+                </ContentCluster>
             </div>
         </div>
     );

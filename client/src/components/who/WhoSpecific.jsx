@@ -12,6 +12,7 @@ import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import { Submit } from "../../services/ReportIssueService";
+import ContentCluster from "../global/ContentCluster";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
@@ -775,23 +776,7 @@ const WhoSpecific = (props) => {
                                 padding: "10px",
                             }}
                         >
-                            <div
-                                className="content-cluster"
-                                style={{ marginBottom: "10px" }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: "1.5rem",
-                                    }}
-                                >
-                                    Filter Players
-                                </h2>
-                                <hr
-                                    style={{
-                                        backgroundColor: "var(--text)",
-                                        opacity: 0.2,
-                                    }}
-                                />
+                            <ContentCluster title="Filter Players">
                                 <div
                                     style={{
                                         display: "flex",
@@ -979,25 +964,8 @@ const WhoSpecific = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div
-                                className="content-cluster"
-                                style={{ marginBottom: "10px" }}
-                            >
-                                <h2
-                                    style={{
-                                        fontSize: "1.5rem",
-                                        marginTop: "1.5rem",
-                                    }}
-                                >
-                                    Accessibility
-                                </h2>
-                                <hr
-                                    style={{
-                                        backgroundColor: "var(--text)",
-                                        opacity: 0.2,
-                                    }}
-                                />
+                            </ContentCluster>
+                            <ContentCluster title="Accessibility">
                                 <div
                                     style={{
                                         display: "flex",
@@ -1038,7 +1006,7 @@ const WhoSpecific = (props) => {
                                         mobile)
                                     </label>
                                 </div>
-                            </div>
+                            </ContentCluster>
                         </div>
                     </FilterBar>
                     {serverStatus !== false || ignoreServerStatus ? (
