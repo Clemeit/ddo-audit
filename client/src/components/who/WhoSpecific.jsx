@@ -541,7 +541,7 @@ const WhoSpecific = (props) => {
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
-                        "https://www.playeraudit.com/api/playersnewXXX?s=" +
+                        "https://www.playeraudit.com/api/playersnew?s=" +
                             (serverNamesLowercase.includes(
                                 location.toLowerCase()
                             )
