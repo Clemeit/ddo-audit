@@ -17,6 +17,7 @@ import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import BannerMessage from "../global/BannerMessage";
+import LoadingOverlay from "./LoadingOverlay";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
@@ -34,6 +35,7 @@ const serverNames = [
 ];
 
 const Quests = (props) => {
+    const [isLoading, setIsLoading] = React.useState(false);
     const [questList, set_questList] = React.useState(null);
     const [filteredQuestList, set_filteredQuestList] = React.useState(null);
     const [paginatedQuestList, set_paginatedQuestList] = React.useState(null);
@@ -221,7 +223,27 @@ const Quests = (props) => {
         );
     }, [pageNumber, filteredQuestList]);
 
+    function dateToDateString(dt) {
+        return `${dt.getFullYear().toString()}-${(dt.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${dt.getDate().toString().padStart(2, "0")}`;
+    }
+
+    function dateToTimeString(dt) {
+        return `${dt.getFullYear().toString()}-${(dt.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${dt.getDate().toString().padStart(2, "0")} ${dt
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${dt
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}:${dt.getSeconds().toString().padStart(2, "0")}`;
+    }
+
     function loadQuest(quest) {
+        setIsLoading(true);
+
         let low = quest.IsEpic ? 20 : 1;
         let high = quest.IsEpic ? 30 : 20;
 
@@ -241,6 +263,8 @@ const Quests = (props) => {
                 high,
             "json"
         ).then((val) => {
+            console.log(val);
+
             const HOUR_BIN_WIDTH = 2;
             const MAX_DURATION_LIMIT = 3 * 60 * 60;
             let max = 0;
@@ -250,6 +274,9 @@ const Quests = (props) => {
             let outlierCount = 0;
             let servercounts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             val.forEach((entry) => {
+                entry.Start = new Date(
+                    new Date(entry.Start).getTime() - 5 * 60 * 60 * 1000
+                );
                 if (entry.Duration > MAX_DURATION_LIMIT) {
                     outlierCount++;
                 } else {
@@ -328,8 +355,8 @@ const Quests = (props) => {
                 }
             }
             val.forEach((entry) => {
-                let dow = new Date(entry.Start).getDay();
-                let hour = new Date(entry.Start).getHours();
+                let dow = entry.Start.getDay();
+                let hour = entry.Start.getHours();
                 instances[dow][Math.floor(hour / HOUR_BIN_WIDTH)]++;
                 tod_instances[Math.floor(hour / HOUR_BIN_WIDTH)]++;
             });
@@ -368,17 +395,22 @@ const Quests = (props) => {
 
             for (let ent = 0; ent < val.length; ent++) {
                 let entry = val[ent];
-                let entryday = entry.Start.split(" ")[0];
+                let entryday = entry.Start.getDate();
                 if (entryday !== thisday) {
                     if (thisday !== "") {
-                        dailypopularity.push({
-                            x: thisday,
-                            y: thiscount,
-                        });
-                        dailyaverageduration.push({
-                            x: thisday,
-                            y: Math.round(thistotalduration / thiscount / 60),
-                        });
+                        let datestring = dateToDateString(entry.Start);
+                        if (datestring !== "2022-01-07") {
+                            dailypopularity.push({
+                                x: dateToDateString(entry.Start),
+                                y: thiscount,
+                            });
+                            dailyaverageduration.push({
+                                x: dateToDateString(entry.Start),
+                                y: Math.round(
+                                    thistotalduration / thiscount / 60
+                                ),
+                            });
+                        }
                     }
                     thistotalduration = 0;
                     thiscount = 0;
@@ -388,19 +420,18 @@ const Quests = (props) => {
                 thiscount++;
             }
 
+            console.log(dailypopularity);
+
             let linedata = [
                 {
                     id: "Popularity",
                     color: "hsl(180, 70%, 50%)",
                     data: dailypopularity,
                 },
-                // {
-                //     id: "Average Duration",
-                //     color: "hsl(336, 100%, 50%)",
-                //     data: dailyaverageduration,
-                // },
             ];
             set_popularityOverTimeData(linedata);
+
+            setIsLoading(false);
         });
     }
 
@@ -482,9 +513,20 @@ const Quests = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Check quest activity, duration, and popularity."
+                    content="Check quest activity, duration, and popularity. See how long each quest takes to run, quest popularity over time, and XP per minute estimations!"
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
+            {isLoading && <LoadingOverlay />}
             {/* <ReportIssueForm
                 page="quests"
                 showLink={false}
@@ -797,7 +839,7 @@ const Quests = (props) => {
                                 opacity: 0.2,
                             }}
                         />
-                        {/* <h4>{questName || "No quest selected"}</h4>
+                        <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{
                                 fontSize: "large",
@@ -814,13 +856,17 @@ const Quests = (props) => {
                             data={popularityOverTimeData}
                             loadingMessage="Click on a quest to view data"
                             noAnim={true}
+                            title="Popularity over time"
+                            marginBottom={100}
+                            // tickValues="every 1 day"
+                            // trendType="week"
                         />
                         <hr
                             style={{
                                 backgroundColor: "var(--text)",
                                 opacity: 0.2,
                             }}
-                        /> */}
+                        />
                         <h4>{questName || "No quest selected"}</h4>
                         <p
                             style={{

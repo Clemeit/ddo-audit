@@ -33,6 +33,47 @@ const QuickInfo = (props) => {
             .catch(() => {});
     }
 
+    function getDefaultServerLink() {
+        let defaultserver = "";
+        if (
+            props.serverstatus == null ||
+            props.serverstatus.Worlds == null ||
+            props.serverstatus.Worlds.length == 0
+        ) {
+            return (
+                <span className="lfm-number">
+                    unknown (failed to fetch data)
+                </span>
+            );
+        }
+        props.serverstatus.Worlds.forEach((server) => {
+            if (server.Order == 0) {
+                if (defaultserver == "") {
+                    defaultserver = server.Name;
+                } else {
+                    defaultserver = "unknown (servers are offline)";
+                }
+            }
+        });
+        if (defaultserver == "unknown (servers are offline)") {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (servers are offline)
+                </span>
+            );
+        }
+        return (
+            <Link
+                id="default_server"
+                className="blue-link"
+                to={"/servers/" + defaultserver}
+                style={{ textDecoration: "underline" }}
+            >
+                {defaultserver}
+            </Link>
+        );
+    }
+
     React.useEffect(() => {
         GetNews();
     }, []);
@@ -60,21 +101,9 @@ const QuickInfo = (props) => {
                 >
                     <li>
                         The default server is{" "}
-                        {props.data === null ? (
-                            "(Loading...)"
-                        ) : (
-                            <Link
-                                id="default_server"
-                                className="blue-link"
-                                to={
-                                    "/servers/" +
-                                    props.data.DefaultServer.toLowerCase()
-                                }
-                                style={{ textDecoration: "underline" }}
-                            >
-                                {props.data.DefaultServer}
-                            </Link>
-                        )}
+                        {props.data === null
+                            ? "(Loading...)"
+                            : getDefaultServerLink()}
                     </li>
                     <li>
                         The most populated server is{" "}
@@ -107,7 +136,7 @@ const QuickInfo = (props) => {
                                 ? "(Loading...)"
                                 : GetTotalUniqueGuildCount()}
                         </span>{" "}
-                        unique guilds.
+                        unique guilds
                     </li>
                 </ul>
             </div>

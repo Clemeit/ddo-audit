@@ -30,7 +30,17 @@ const Community = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Have a suggestion for DDO Audit? Submit it here!"
+                    content="A list of other useful community projects. If you have a project that you'd like added to the list, feel free to send me your suggestions!"
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             <Banner

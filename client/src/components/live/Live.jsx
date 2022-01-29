@@ -78,14 +78,28 @@ const Live = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="DDO server status, most populated server, current default server, live and quarterly population."
+                    content="DDO server status, most populated server, current default server, and recent population trends."
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             <div className="content-container">
                 <BannerMessage page="live" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ServerStatusDisplay data={serverStatusData} />
-                <QuickInfo data={quickInfoData} unique={uniqueCountsData} />
+                <QuickInfo
+                    data={quickInfoData}
+                    unique={uniqueCountsData}
+                    serverstatus={serverStatusData}
+                />
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Live Population</h2>
                     <hr

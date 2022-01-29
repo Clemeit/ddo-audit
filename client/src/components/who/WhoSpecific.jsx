@@ -15,7 +15,7 @@ import { Submit } from "../../services/ReportIssueService";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
-    const TITLE = "DDO Live LFM Viewer";
+    const TITLE = "Live Who Panel";
 
     const serverNames = [
         "Argonnessen",
@@ -668,14 +668,24 @@ const WhoSpecific = (props) => {
     // Popup message
     var [popupMessages, setPopupMessages] = React.useState([]);
 
+    function getServerNamePossessive() {
+        return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
+    }
+
     return (
         currentServer && (
             <div>
                 <Helmet>
-                    <title>{TITLE}</title>
+                    <title>{`${TITLE} for ${currentServer}`} </title>
                     <meta
                         name="description"
-                        content="Browse players from any server with a live Who panel! Are your friends online? Is your guild forming up for a late-night raid? Now you know!"
+                        content={`Browse ${getServerNamePossessive()} Who panel! Are your friends online? Is your guild forming up for a late-night raid? Now you know!`}
+                    />
+                    <meta property="og:image" content="/icons/who-512px.png" />
+                    <meta property="og:site_name" content="DDO Audit" />
+                    <meta
+                        property="twitter:image"
+                        content="/icons/who-512px.png"
                     />
                 </Helmet>
                 <Banner
@@ -684,16 +694,9 @@ const WhoSpecific = (props) => {
                     showSubtitle={true}
                     showButtons={false}
                     hideOnMobile={true}
-                    title="Live LFM Viewer"
+                    title="Live Player Lookup"
                     subtitle={currentServer && currentServer}
                 />
-                {/* <ReportIssueForm
-                    page={"who/" + currentServer.toLowerCase()}
-                    showLink={false}
-                    visibility={reportFormVisibility}
-                    componentReference={reportFormReference}
-                    hideReportForm={hideReportForm}
-                /> */}
                 <PopupMessage
                     page={"who/" + currentServer.toLowerCase()}
                     messages={popupMessages}
@@ -1013,6 +1016,9 @@ const WhoSpecific = (props) => {
                             >
                                 {alternativeLook === false ? (
                                     <div>
+                                        <div className="sr-only">
+                                            {`The image below is a live preview of ${getServerNamePossessive()} Who panel where all online players are visible.`}
+                                        </div>
                                         <CanvasWhoPanel
                                             data={filteredPlayerData}
                                             filters={activeFilters}

@@ -11,9 +11,11 @@ import ServerStatusDisplay from "../global/ServerStatusDisplay";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
+import ChartPie from "../global/ChartPie";
+import ChartLine from "../global/ChartLine";
 
 const Directory = (props) => {
-    const TITLE = "Server Status and Demographics";
+    const TITLE = "DDO Server Status and Demographics";
     const SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
@@ -52,8 +54,9 @@ const Directory = (props) => {
         }
         return uniqueData
             .filter((server) => server.ServerName === name)
-            .map((server) => (
+            .map((server, i) => (
                 <p
+                    key={i}
                     className="content-option-description"
                     style={{
                         fontSize: "1.4rem",
@@ -78,6 +81,10 @@ const Directory = (props) => {
 
     const [uniqueData, setUniqueData] = React.useState(null);
     const [serverStatusData, set_serverStatusData] = React.useState(null);
+    const [serverDistributionData, setServerDistributionData] =
+        React.useState(null);
+    const [hourlyDistributionData, setHourlyDistributionData] =
+        React.useState(null);
     function refreshServerStatus() {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
             .then((val) => {
@@ -98,17 +105,22 @@ const Directory = (props) => {
             });
     }
     React.useEffect(() => {
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
-        fetchArbitraryData(
-            "https://www.playeraudit.com/api/uniquedata",
-            "json"
+        Fetch("https://www.playeraudit.com/api/uniquedata", 3000).then(
+            (val) => {
+                setUniqueData(val);
+            }
+        );
+        Fetch(
+            "https://api.ddoaudit.com/population/serverdistribution",
+            3000
         ).then((val) => {
-            setUniqueData(val);
+            setServerDistributionData(val);
+        });
+        Fetch(
+            "https://api.ddoaudit.com/population/hourlydistribution",
+            3000
+        ).then((val) => {
+            setHourlyDistributionData(val);
         });
 
         refreshServerStatus();
@@ -122,7 +134,16 @@ const Directory = (props) => {
         <div>
             <Helmet>
                 <title>{TITLE}</title>
-                <meta name="description" content="Description" />
+                <meta
+                    name="description"
+                    content="DDO's server populations, character demographics, content popularity, and long-term trends. Check time zone activity and choose which server is best for you!"
+                />
+                <meta property="og:image" content="/icons/servers-512px.png" />
+                <meta property="og:site_name" content="DDO Audit" />
+                <meta
+                    property="twitter:image"
+                    content="/icons/servers-512px.png"
+                />
             </Helmet>
             <Banner
                 small={true}
@@ -181,18 +202,70 @@ const Directory = (props) => {
                     </div>
                 </div>
                 <div className="content-cluster">
-                    <h2 style={{ color: "var(--text)" }}>Overview</h2>
+                    <h2 style={{ color: "var(--text)" }}>
+                        Server Population Distribution
+                    </h2>
                     <hr
                         style={{
                             backgroundColor: "var(--text)",
                             opacity: 0.2,
                         }}
                     />
+                    <p
+                        style={{
+                            textAlign: "justify",
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        Population distribution across the servers over the last
+                        90 days.
+                    </p>
+                    <ChartPie
+                        data={serverDistributionData}
+                        noAnim={true}
+                        useDataColors={true}
+                    />
                 </div>
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>
-                        You might also be looking for...
+                        Hourly Population Distribution
                     </h2>
+                    <hr
+                        style={{
+                            backgroundColor: "var(--text)",
+                            opacity: 0.2,
+                        }}
+                    />
+                    <p
+                        style={{
+                            textAlign: "justify",
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                        }}
+                    >
+                        Average population over the course of a 24 hour day
+                        cycle.
+                    </p>
+                    <ChartLine
+                        keys={null}
+                        indexBy={null}
+                        legendBottom="Time of day (EST)"
+                        legendLeft="Population"
+                        data={hourlyDistributionData}
+                        noAnim={true}
+                        title="Hourly distribution"
+                        marginBottom={60}
+                        trendType=""
+                        noArea={true}
+                        // tickValues="every 1 day"
+                        // trendType="week"
+                    />
+                </div>
+                <div className="content-cluster">
+                    <h2 style={{ color: "var(--text)" }}>See Also...</h2>
                     <hr
                         style={{
                             backgroundColor: "var(--text)",

@@ -161,8 +161,18 @@ const Directory = (props) => {
             <Helmet>
                 <title>{TITLE}</title>
                 <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
                     name="description"
-                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, and see what server is best for you!"
+                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, check to see if your friends are online, and see what server is best for you!"
                 />
             </Helmet>
             <Banner

@@ -33,6 +33,16 @@ const Suggestions = (props) => {
                     name="description"
                     content="Have a suggestion for DDO Audit? Submit it here!"
                 />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
             </Helmet>
             <Banner
                 small={false}

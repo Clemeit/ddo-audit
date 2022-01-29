@@ -9,7 +9,7 @@ import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
 
 const Who = (props) => {
-    const TITLE = "Live Who Panel";
+    const TITLE = "DDO Live Who Panel";
     const SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
@@ -111,6 +111,9 @@ const Who = (props) => {
                     name="description"
                     content="Browse players from any server with a live Who panel. Are your friends online? Is your guild forming up for a late-night raid? Now you know!"
                 />
+                <meta property="og:image" content="/icons/who-512px.png" />
+                <meta property="og:site_name" content="DDO Audit" />
+                <meta property="twitter:image" content="/icons/who-512px.png" />
             </Helmet>
             <div className="content-container">
                 <BannerMessage page="who" />

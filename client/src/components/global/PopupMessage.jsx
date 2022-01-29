@@ -165,12 +165,6 @@ const PopupMessage = (props) => {
                         }}
                     >
                         <div
-                            className="primary-button should-invert full-width-mobile"
-                            onClick={() => window.location.reload()}
-                        >
-                            Refresh Page
-                        </div>
-                        <div
                             className={
                                 "secondary-button should-invert full-width-mobile" +
                                 (reported ? " disabled" : "")
@@ -190,6 +184,12 @@ const PopupMessage = (props) => {
                             }}
                         >
                             {reported ? "Thanks!" : "Report Issue"}
+                        </div>
+                        <div
+                            className="primary-button should-invert full-width-mobile"
+                            onClick={() => window.location.reload()}
+                        >
+                            Refresh Page
                         </div>
                     </div>
                 )}

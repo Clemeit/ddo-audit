@@ -59,7 +59,7 @@ const Banner = (props) => {
             offset = 50;
         } else {
             offset =
-                $(window).outerWidth() > 850
+                $(window).outerWidth() > 900
                     ? props.showButtons
                         ? 140
                         : 220
@@ -184,7 +184,12 @@ const Banner = (props) => {
                 </div>
                 <div id="theme-container" onClick={() => toggleTheme()}>
                     <DarkThemeSVG id="theme-icon" />
-                    <span style={{ paddingLeft: "5px" }}>Theme</span>
+                    <span
+                        className="hide-on-mobile"
+                        style={{ paddingLeft: "5px" }}
+                    >
+                        Theme
+                    </span>
                 </div>
             </div>
             <div

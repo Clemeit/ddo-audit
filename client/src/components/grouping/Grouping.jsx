@@ -9,7 +9,7 @@ import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
 
 const Grouping = () => {
-    const TITLE = "Live LFM Panel";
+    const TITLE = "DDO Live LFM Viewer";
     const SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
@@ -113,6 +113,19 @@ const Grouping = () => {
 
     return (
         <div>
+            <Helmet>
+                <title>{TITLE}</title>
+                <meta
+                    name="description"
+                    content="View a live LFM panel to find public groups - before you even log in! See which groups are currently looking for more players and what content is currently being run."
+                />
+                <meta property="og:image" content="/icons/grouping-512px.png" />
+                <meta property="og:site_name" content="DDO Audit" />
+                <meta
+                    property="twitter:image"
+                    content="/icons/grouping-512px.png"
+                />
+            </Helmet>
             <Banner
                 small={true}
                 showTitle={true}
@@ -122,13 +135,6 @@ const Grouping = () => {
                 title="Grouping"
                 subtitle="Live LFM Viewer"
             />
-            <Helmet>
-                <title>{TITLE}</title>
-                <meta
-                    name="description"
-                    content="View a live LFM panel to find public groups. See which groups are currently looking for more players and what content is currently being run."
-                />
-            </Helmet>
             <div className="content-container">
                 <BannerMessage page="grouping" />
                 <div className="top-content-padding shrink-on-mobile" />
@@ -177,7 +183,7 @@ const Grouping = () => {
                         style={{
                             fontSize: "1.5rem",
                             lineHeight: "normal",
-                            color: "var(--text-faded)",
+                            // color: "var(--text-faded)",
                         }}
                     >
                         You currently have{" "}
@@ -189,7 +195,6 @@ const Grouping = () => {
                         Configure notifications in the{" "}
                         <Link to="/notifications">notification settings</Link>.
                     </p>
-                    <div className="content-cluster-options"></div>
                 </div>
                 <div className="content-cluster">
                     <h2 style={{ color: "var(--text)" }}>Contributions</h2>
@@ -203,7 +208,7 @@ const Grouping = () => {
                         style={{
                             fontSize: "1.5rem",
                             lineHeight: "normal",
-                            color: "var(--text-faded)",
+                            // color: "var(--text-faded)",
                         }}
                     >
                         A special thanks to the amazing developers over at Vault
@@ -230,10 +235,10 @@ const Grouping = () => {
                         style={{
                             fontSize: "1.5rem",
                             lineHeight: "normal",
-                            color: "var(--text-faded)",
+                            // color: "var(--text-faded)",
                         }}
                     >
-                        And thank <u>you</u> for your continued support. This
+                        And thank <i>you</i> for your continued support. This
                         project is made possible by your feedback and
                         suggestions!
                     </p>

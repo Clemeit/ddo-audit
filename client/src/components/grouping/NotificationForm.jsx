@@ -178,6 +178,16 @@ const NotificationForm = (props) => {
                     name="description"
                     content="Setup custom group notifications."
                 />
+                <meta
+                    property="og:image"
+                    content="/icons/grouping-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/grouping-512px.png"
+                    data-react-helmet="true"
+                />
             </Helmet>
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
@@ -588,16 +598,16 @@ const NotificationForm = (props) => {
                         }}
                     >
                         <div
-                            className="primary-button should-invert full-width-mobile"
-                            onClick={() => AddRule()}
-                        >
-                            Add Rule
-                        </div>
-                        <div
                             className="secondary-button should-invert"
                             onClick={() => ResetForm()}
                         >
                             Reset
+                        </div>
+                        <div
+                            className="primary-button should-invert full-width-mobile"
+                            onClick={() => AddRule()}
+                        >
+                            Add Rule
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import WhatIsCard from "./WhatIsCard";
 import ExpandableCard from "./ExpandableCard";
-import DevEvent from "./DevEvent";
+import DevEvent from "../about/DevEvent";
 
 const About = (props) => {
     return (

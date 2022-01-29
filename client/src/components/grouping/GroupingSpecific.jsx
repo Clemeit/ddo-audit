@@ -83,6 +83,20 @@ const GroupingSpecific = (props) => {
 
     const [theme, setTheme] = React.useState(true);
 
+    async function getGroupTableCount() {
+        return Fetch("https://www.playeraudit.com/api/grouptablecount", 5000)
+            .then((val) => {
+                if (val.Count != null) {
+                    return val.Count;
+                } else {
+                    return -1;
+                }
+            })
+            .catch((err) => {
+                return -1;
+            });
+    }
+
     const location = useLocation().pathname.substring(
         useLocation().pathname.lastIndexOf("/") + 1
     );
@@ -239,18 +253,40 @@ const GroupingSpecific = (props) => {
                             failedAttemptRef.current++;
                             setFailedAttemptCount(failedAttemptRef.current);
                             if (failedAttemptRef.current > 5) {
-                                setPopupMessages([
-                                    ...popupMessages,
-                                    {
-                                        title: "Couldn't fetch group data",
-                                        message:
-                                            "Try refreshing the page. If the issue continues, please report it.",
-                                        submessage: err && err.toString(),
-                                        icon: "warning",
-                                        fullscreen: false,
-                                        reportMessage: "[Internal] Timeout",
-                                    },
-                                ]);
+                                getGroupTableCount().then((result) => {
+                                    let title = "";
+                                    let message = "";
+                                    switch (result) {
+                                        case -1:
+                                            // Couldn't connect or errored
+                                            title = "Couldn't fetch group data";
+                                            message =
+                                                "Try refreshing the page. If the issue continues, please report it.";
+                                            break;
+                                        case 0:
+                                            // No groups in table. Server offline?
+                                            title = "No group data found";
+                                            message =
+                                                "The server appears to be online, but we've lost connection. Please try again later.";
+                                            break;
+                                        default:
+                                            title = "Something went wrong";
+                                            message =
+                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.";
+                                            break;
+                                    }
+                                    setPopupMessages([
+                                        ...popupMessages,
+                                        {
+                                            title: title,
+                                            message: message,
+                                            submessage: err && err.toString(),
+                                            icon: "warning",
+                                            fullscreen: false,
+                                            reportMessage: "[Internal] Timeout",
+                                        },
+                                    ]);
+                                });
                             } else {
                                 recheck = setTimeout(() => {
                                     RefreshLfms();
@@ -326,25 +362,38 @@ const GroupingSpecific = (props) => {
     // Popup message
     var [popupMessages, setPopupMessages] = React.useState([]);
 
+    function getServerNamePossessive() {
+        return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
+    }
+
     return (
         currentServer && (
             <div>
+                <Helmet>
+                    <title>{`${TITLE} for ${currentServer}`} </title>
+                    <meta
+                        name="description"
+                        content={`Browse ${getServerNamePossessive()} LFMs! Check the LFM panel before you login, or setup notifications and never miss raid night again!`}
+                    />
+                    <meta
+                        property="og:image"
+                        content="/icons/grouping-512px.png"
+                    />
+                    <meta property="og:site_name" content="DDO Audit" />
+                    <meta
+                        property="twitter:image"
+                        content="/icons/grouping-512px.png"
+                    />
+                </Helmet>
                 <Banner
                     small={true}
                     showTitle={true}
                     showSubtitle={true}
                     showButtons={false}
                     hideOnMobile={true}
-                    title="Live LFM Viewer"
+                    title={"Live LFM Viewer"}
                     subtitle={currentServer && currentServer}
                 />
-                <Helmet>
-                    <title>{TITLE}</title>
-                    <meta
-                        name="description"
-                        content="Browse LFMs from any server with a live LFM panel! Check the LFM panel before you login, or setup notifications and never miss raid night again!"
-                    />
-                </Helmet>
                 <PopupMessage
                     page={"grouping/" + currentServer.toLowerCase()}
                     messages={popupMessages}
@@ -558,6 +607,9 @@ const GroupingSpecific = (props) => {
                             </div>
                         </div>
                     </FilterBar>
+                    <div className="sr-only">
+                        {`The image below is a live preview of ${getServerNamePossessive()} LFM panel where all groups are visible.`}
+                    </div>
                     {serverStatus !== false || ignoreServerStatus ? (
                         alternativeLook === false ? (
                             <CanvasLfmPanel

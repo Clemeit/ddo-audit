@@ -13,7 +13,17 @@ const Api = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, and see what server is best for you!"
+                    content="Utilize our data for your own projects! Build a Discord bot, track player activity, or publish your own mobile app. All for free!"
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             <Banner

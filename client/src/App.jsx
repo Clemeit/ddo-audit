@@ -44,6 +44,7 @@ const Suggestions = lazy(() => import("./components/global/Suggestions"));
 const Community = lazy(() => import("./components/community/Community"));
 const Guilds = lazy(() => import("./components/guilds/Guilds"));
 const Api = lazy(() => import("./components/api/Api"));
+const Timeline = lazy(() => import("./components/about/Timeline"));
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -106,6 +107,9 @@ export default () => {
                         </Route>
                         <Route exact path="/api">
                             <Api />
+                        </Route>
+                        <Route exact path="/timeline">
+                            <Timeline />
                         </Route>
                     </Switch>
                 </Layout>

@@ -23,7 +23,17 @@ const Trends = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Check quest activity, duration, and popularity."
+                    content="DDO's population trends over the last year. View permanent servers' and Hardcore League's population over time. See how each update has effected the population."
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             <Banner
@@ -67,6 +77,8 @@ const Trends = (props) => {
                         showActions={false}
                         showLastUpdated={true}
                         reportReference={null}
+                        marginBottom={120}
+                        height="460px"
                     />
                     <h2 style={{ color: "var(--text)" }}>
                         Live Server and Hardcore Server Trends

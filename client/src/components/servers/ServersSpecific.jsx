@@ -1,5 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet";
+import { useLocation } from "react-router-dom";
 import Banner from "../global/Banner";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
@@ -7,6 +8,34 @@ import BannerMessage from "../global/BannerMessage";
 
 const ServersSpecific = () => {
     const TITLE = "Server Status and Demographics";
+
+    const SERVER_NAMES = [
+        "Argonnessen",
+        "Cannith",
+        "Ghallanda",
+        "Khyber",
+        "Orien",
+        "Sarlona",
+        "Thelanis",
+        "Wayfinder",
+        "Hardcore",
+    ];
+
+    const location = useLocation().pathname.substring(
+        useLocation().pathname.lastIndexOf("/") + 1
+    );
+    var [currentServer, setCurrentServer] = React.useState(null);
+    React.useEffect(() => {
+        let serverName =
+            location.substring(0, 1).toUpperCase() + location.substring(1);
+        if (SERVER_NAMES.includes(serverName)) {
+            // Good server
+            setCurrentServer(serverName);
+        } else {
+            // Bad server
+            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+        }
+    }, [window.location.pathname]);
 
     const [serverStatusData, set_serverStatusData] = React.useState(null);
     function refreshServerStatus() {
@@ -47,11 +76,25 @@ const ServersSpecific = () => {
     }, []);
     // Popup message
     var [popupMessages, set_popupMessages] = React.useState([]);
+
+    function getServerNamePossessive() {
+        return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
+    }
+
     return (
         <div>
             <Helmet>
-                <title>{TITLE}</title>
-                <meta name="description" content="Description" />
+                <title>{`${TITLE} for ${currentServer}`} </title>
+                <meta
+                    name="description"
+                    content={`${getServerNamePossessive()} server population, character demographics, content popularity, and long-term trends.`}
+                />
+                <meta property="og:image" content="/icons/servers-512px.png" />
+                <meta property="og:site_name" content="DDO Audit" />
+                <meta
+                    property="twitter:image"
+                    content="/icons/servers-512px.png"
+                />
             </Helmet>
             <Banner
                 small={true}
@@ -59,8 +102,8 @@ const ServersSpecific = () => {
                 showSubtitle={true}
                 showButtons={false}
                 hideOnMobile={true}
-                title="Servers"
-                subtitle="Server population, demographics, and trends"
+                title="Population, Demographics, and Trends"
+                subtitle={currentServer}
             />
             <PopupMessage
                 page="grouping"

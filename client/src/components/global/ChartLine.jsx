@@ -1,5 +1,6 @@
 import React from "react";
 import { ResponsiveLine } from "@nivo/line";
+import CustomLegend from "./CustomLegend";
 
 // This chart is used to show the population history (combined or composite) over time.
 // Pages: Home, Servers
@@ -107,6 +108,41 @@ const ChartLine = (props) => {
     //     };
     // }
 
+    const [isMobile, setIsMobile] = React.useState(null);
+    React.useEffect(() => {
+        setIsMobile(window.innerWidth <= 950);
+    }, []);
+
+    function getAxisLeft() {
+        if (isMobile)
+            return {
+                orient: "left",
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+            };
+        return {
+            orient: "left",
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: props.legendLeft,
+            legendOffset: -50,
+            legendPosition: "middle",
+        };
+    }
+
+    const [excludedSeries, setExcludedSeries] = React.useState([""]);
+    function switchExcludedSeries(series) {
+        if (excludedSeries.includes(series.id)) {
+            let temp = [...excludedSeries.filter((s) => s != series.id)];
+            setExcludedSeries([...temp]);
+        } else {
+            let temp = [...excludedSeries, series.id];
+            setExcludedSeries([...temp]);
+        }
+    }
+
     return (
         <div>
             <div
@@ -115,6 +151,7 @@ const ChartLine = (props) => {
                         ? "hide-on-mobile"
                         : "secondary-button should-invert show-on-mobile full-width-mobile"
                 }
+                style={{ display: isMobileLoaded ? "none" : "" }}
                 onClick={() => setIsMobileLoaded(true)}
             >
                 Show this graph
@@ -125,21 +162,44 @@ const ChartLine = (props) => {
                         ? "chart-filterable"
                         : "") + (isMobileLoaded ? "" : " hide-on-mobile")
                 }
-                style={{ height: "400px" }}
+                style={{ height: props.height || "400px" }}
             >
                 {props.data ? (
                     <ResponsiveLine
-                        data={props.data}
+                        data={props.data.filter(
+                            (series) => !excludedSeries.includes(series.id)
+                        )}
                         keys={props.keys}
                         indexBy={props.indexBy}
-                        margin={{ top: 20, right: 120, bottom: 60, left: 70 }}
+                        margin={{
+                            top: 20,
+                            right: 10,
+                            bottom: props.marginBottom || 60,
+                            left: isMobile ? 40 : 60,
+                        }}
                         xScale={{
-                            type: "time",
-                            format: "%Y-%m-%dT%H:%M:%S.%LZ",
+                            type:
+                                props.title === "Popularity over time"
+                                    ? "time"
+                                    : props.title === "Hourly distribution"
+                                    ? "point"
+                                    : "time",
+                            format:
+                                props.title === "Popularity over time"
+                                    ? "%Y-%m-%d"
+                                    : props.title === "Hourly distribution"
+                                    ? ""
+                                    : "%Y-%m-%dT%H:%M:%S.%LZ",
                             useUTC: true,
                             // precision: "hour",
                         }}
-                        xFormat="time:%Y-%m-%dT%H:%M:%S.%LZ"
+                        xFormat={
+                            props.title === "Popularity over time"
+                                ? "time:%Y-%m-%d"
+                                : props.title === "Hourly distribution"
+                                ? ""
+                                : "time:%Y-%m-%dT%H:%M:%S.%LZ"
+                        }
                         yScale={{
                             type: "linear",
                             min: 0,
@@ -148,7 +208,7 @@ const ChartLine = (props) => {
                             reverse: false,
                         }}
                         // yFormat=" >-.2f"
-                        curve="natural"
+                        curve="cardinal"
                         axisTop={null}
                         axisRight={null}
                         //axisBottom={BottomAxis()}
@@ -158,63 +218,37 @@ const ChartLine = (props) => {
                             tickRotation: -45,
                             legend: props.legendBottom || "",
                             legendPosition: "middle",
-                            legendOffset: 32,
+                            legendOffset: 40,
                             // format: (value) => xLabel(value),
                             format:
                                 props.trendType === "day"
                                     ? "%H:%M"
                                     : props.trendType === "week"
                                     ? "%d"
+                                    : props.trendType === ""
+                                    ? ""
                                     : "%b %d, %Y",
                             tickValues:
                                 props.tickValues || props.trendType === "day"
                                     ? "every 1 hour"
                                     : props.trendType === "week"
                                     ? "every 6 hour"
+                                    : props.trendType === ""
+                                    ? ""
                                     : "every 1 week",
                         }}
-                        axisLeft={{
-                            orient: "left",
-                            tickSize: 5,
-                            tickPadding: 5,
-                            tickRotation: 0,
-                            legend: props.legendLeft,
-                            legendOffset: -50,
-                            legendPosition: "middle",
-                        }}
+                        axisLeft={getAxisLeft()}
                         lineWidth={4}
                         enablePoints={false}
                         colors={(d) => d.color}
-                        enableArea={props.activeFilter !== "Server Activity"}
+                        enableArea={
+                            props.noArea
+                                ? false
+                                : props.activeFilter !== "Server Activity"
+                        }
                         areaOpacity={0.3}
                         enableSlices="x"
                         useMesh={true}
-                        legends={[
-                            {
-                                anchor: "right",
-                                direction: "column",
-                                justify: false,
-                                translateX: 120,
-                                translateY: 0,
-                                itemsSpacing: 0,
-                                itemDirection: "left-to-right",
-                                itemWidth: 110,
-                                itemHeight: 20,
-                                itemOpacity: 1,
-                                symbolSize: 12,
-                                symbolShape: "circle",
-                                symbolBorderColor: "rgba(0, 0, 0, .5)",
-                                effects: [
-                                    {
-                                        on: "hover",
-                                        style: {
-                                            //itemBackground: "rgba(255, 255, 255, .03)",
-                                            itemOpacity: 1,
-                                        },
-                                    },
-                                ],
-                            },
-                        ]}
                         motionConfig="stiff"
                         theme={theme}
                     ></ResponsiveLine>
@@ -224,6 +258,12 @@ const ChartLine = (props) => {
                     </div>
                 )}
             </div>
+            <CustomLegend
+                data={props.data}
+                isMobileLoaded={isMobileLoaded}
+                excludedSeries={excludedSeries}
+                switchExcludedSeries={(id) => switchExcludedSeries(id)}
+            />
         </div>
     );
 };

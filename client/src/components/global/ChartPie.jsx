@@ -1,5 +1,6 @@
 import React from "react";
 import { ResponsivePie } from "@nivo/pie";
+import CustomLegend from "./CustomLegend";
 
 // This pie chart is used to show the server distribution.
 // Pages: Servers
@@ -31,84 +32,124 @@ const theme = {
 
 const ChartPie = (props) => {
     function GetTotalPopulation() {
+        let filtered = props.data.filter(
+            (series) => !excludedSeries.includes(series.id)
+        );
+        if (filtered.length === 1) return filtered[0].value;
+        if (filtered.length === 0) return 1;
         let total = 0;
-        for (let i = 0; i < props.data.length; i++) {
-            total += props.data[i].value;
+        for (let i = 0; i < filtered.length; i++) {
+            total += filtered[i].value;
         }
 
         return total;
     }
 
+    const [excludedSeries, setExcludedSeries] = React.useState([""]);
+    function switchExcludedSeries(series) {
+        if (excludedSeries.includes(series.id)) {
+            let temp = [...excludedSeries.filter((s) => s != series.id)];
+            setExcludedSeries([...temp]);
+        } else {
+            let temp = [...excludedSeries, series.id];
+            setExcludedSeries([...temp]);
+        }
+    }
+
+    const [isMobile, setIsMobile] = React.useState(null);
+    React.useEffect(() => {
+        setIsMobile(window.innerWidth <= 950);
+    }, []);
+
     return (
-        <div
-            className={
-                props.filters || props.showServerFilters
-                    ? "chart-filterable"
-                    : ""
-            }
-            style={{ height: "400px" }}
-        >
-            {props.data ? (
-                <ResponsivePie
-                    data={props.data}
-                    margin={{ top: 30, right: 110, bottom: 30, left: 110 }}
-                    valueFormat=" >-.1f"
-                    sortByValue={true}
-                    // colors={(d) => d.color}
-                    padAngle={0.7}
-                    cornerRadius={3}
-                    activeOuterRadiusOffset={8}
-                    colors={{ scheme: "category10" }}
-                    borderWidth={1}
-                    borderColor={{
-                        from: "color",
-                        modifiers: [["darker", 0.2]],
-                    }}
-                    enableArcLinkLabels={true}
-                    arcLinkLabelsSkipAngle={10}
-                    arcLinkLabelsThickness={2}
-                    arcLinkLabelsColor={{ from: "color" }}
-                    arcLabel={function (e) {
-                        return `${(
-                            (e.value / GetTotalPopulation()) *
-                            100
-                        ).toFixed(1)}%`;
-                    }}
-                    arcLabelsSkipAngle={10}
-                    arcLabelsRadiusOffset={0.7}
-                    arcLabelsTextColor={"white"}
-                    // legends={[
-                    //     {
-                    //         anchor: "right",
-                    //         direction: "column",
-                    //         justify: false,
-                    //         translateX: 0,
-                    //         translateY: 0,
-                    //         itemsSpacing: 0,
-                    //         itemWidth: 120,
-                    //         itemHeight: 25,
-                    //         itemTextColor: "#fff",
-                    //         itemDirection: "left-to-right",
-                    //         itemOpacity: 1,
-                    //         symbolSize: 18,
-                    //         symbolShape: "circle",
-                    //         effects: [
-                    //             {
-                    //                 on: "hover",
-                    //                 style: {
-                    //                     itemTextColor: "#000",
-                    //                 },
-                    //             },
-                    //         ],
-                    //     },
-                    // ]}
-                    theme={theme}
-                />
-            ) : (
-                <div className="loading-data-message">
-                    <h5>{props.loadingMessage || "Loading data..."}</h5>
-                </div>
-            )}
+        <div>
+            <div
+                className={
+                    props.filters || props.showServerFilters
+                        ? "chart-filterable"
+                        : ""
+                }
+                style={{ height: "400px" }}
+            >
+                {props.data ? (
+                    <ResponsivePie
+                        data={props.data.filter(
+                            (series) => !excludedSeries.includes(series.id)
+                        )}
+                        margin={{
+                            top: isMobile ? 5 : 20,
+                            right: isMobile ? 5 : 140,
+                            bottom: isMobile ? 5 : 30,
+                            left: isMobile ? 5 : 140,
+                        }}
+                        valueFormat=" >-.1f"
+                        sortByValue={true}
+                        // colors={(d) => d.color}
+                        padAngle={0.7}
+                        cornerRadius={3}
+                        activeOuterRadiusOffset={8}
+                        colors={
+                            props.useDataColors
+                                ? { datum: "data.color" }
+                                : { scheme: "category10" }
+                        }
+                        borderWidth={1}
+                        borderColor={{
+                            from: "color",
+                            modifiers: [["darker", 0.2]],
+                        }}
+                        enableArcLinkLabels={!isMobile}
+                        arcLinkLabelsSkipAngle={10}
+                        arcLinkLabelsThickness={2}
+                        arcLinkLabelsColor={{ from: "color" }}
+                        arcLabel={function (e) {
+                            return `${(
+                                (e.value / GetTotalPopulation()) *
+                                100
+                            ).toFixed(1)}%`;
+                        }}
+                        arcLabelsSkipAngle={10}
+                        arcLabelsRadiusOffset={0.7}
+                        arcLabelsTextColor={"white"}
+                        // legends={[
+                        //     {
+                        //         anchor: "right",
+                        //         direction: "column",
+                        //         justify: false,
+                        //         translateX: 0,
+                        //         translateY: 0,
+                        //         itemsSpacing: 0,
+                        //         itemWidth: 120,
+                        //         itemHeight: 25,
+                        //         itemTextColor: "#fff",
+                        //         itemDirection: "left-to-right",
+                        //         itemOpacity: 1,
+                        //         symbolSize: 18,
+                        //         symbolShape: "circle",
+                        //         effects: [
+                        //             {
+                        //                 on: "hover",
+                        //                 style: {
+                        //                     itemTextColor: "#000",
+                        //                 },
+                        //             },
+                        //         ],
+                        //     },
+                        // ]}
+                        theme={theme}
+                    />
+                ) : (
+                    <div className="loading-data-message">
+                        <h5>{props.loadingMessage || "Loading data..."}</h5>
+                    </div>
+                )}
+            </div>
+            <CustomLegend
+                data={props.data}
+                isMobileLoaded={true}
+                excludedSeries={excludedSeries}
+                switchExcludedSeries={(id) => switchExcludedSeries(id)}
+            />
         </div>
     );
 };

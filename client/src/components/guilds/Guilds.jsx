@@ -299,7 +299,17 @@ const Guilds = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Check guild size, activity, and members lists."
+                    content="Check guild size, activity, and members lists. Browse through all members from any guild on any server!"
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
                 />
             </Helmet>
             {/* <ReportIssueForm
