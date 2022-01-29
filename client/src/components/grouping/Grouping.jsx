@@ -2,11 +2,12 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyLfmData } from "../../services/DataLoader";
+import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
+import PopupMessage from "../global/PopupMessage";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
@@ -25,6 +26,9 @@ const Grouping = () => {
     const [overviewData, setOverviewData] = React.useState(null);
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
+
+    // Popup message
+    var [popupMessages, setPopupMessages] = React.useState([]);
 
     function GetSVG(world) {
         if (world === undefined || world === null) return <PendingSVG />;
@@ -66,42 +70,61 @@ const Grouping = () => {
             .then((val) => {
                 setServerStatusData(val);
             })
-            .catch(() => {});
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get server status",
+                        message:
+                            "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Server status error",
+                        submessage:
+                            (err && err.toString()) || "Server status error",
+                    },
+                ]);
+                setServerStatusData(null);
+            });
+
         Fetch("https://www.playeraudit.com/api/playerandlfmoverview", 5000)
             .then((val) => {
-                // if (VerifyLfmData(val)) {
-                // set_popupMessages([]);
-                setOverviewData(val);
-                // } else {
-                // set_popupMessages([
-                //     ...popupMessages,
-                //     {
-                //         title: "Something went wrong",
-                //         message:
-                //             "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                //         icon: "warning",
-                //         fullscreen: false,
-                //         reportMessage:
-                //             JSON.stringify(val) ||
-                //             "Group data returned null",
-                //     },
-                // ]);
-                // setOverviewData(null);
-                // }
+                if (VerifyPlayerAndLfmOverview(val)) {
+                    setOverviewData(val);
+                } else {
+                    setPopupMessages([
+                        ...popupMessages,
+                        {
+                            title: "Something went wrong",
+                            message:
+                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage:
+                                JSON.stringify(val) || "Group data corrupted",
+                        },
+                    ]);
+                    setOverviewData(null);
+                }
             })
-            .catch(() => {
-                // set_popupMessages([
-                //     ...popupMessages,
-                //     {
-                //         title: "We're stuck on a loading screen",
-                //         message:
-                //             "This is taking longer than usual. You can refresh the page or report the issue.",
-                //         icon: "warning",
-                //         fullscreen: false,
-                //         reportMessage:
-                //             "Could not fetch Group data. Timeout",
-                //     },
-                // ]);
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get group data",
+                        message:
+                            "We were unable to get group data. You can refresh the page or report the issue.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) ||
+                            "Could not fetch Group data",
+                        submessage:
+                            (err && err.toString()) ||
+                            "Could not fetch Group data",
+                    },
+                ]);
             });
 
         setNotificationRuleCount(
@@ -134,6 +157,17 @@ const Grouping = () => {
                 hideOnMobile={true}
                 title="Grouping"
                 subtitle="Live LFM Viewer"
+            />
+            <PopupMessage
+                page={"grouping/"}
+                messages={popupMessages}
+                popMessage={() => {
+                    if (popupMessages.length) {
+                        let newMessages = [...popupMessages];
+                        newMessages = newMessages.slice(1);
+                        setPopupMessages(newMessages);
+                    }
+                }}
             />
             <div className="content-container">
                 <BannerMessage page="grouping" />

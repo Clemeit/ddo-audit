@@ -200,33 +200,6 @@ const GroupingSpecific = (props) => {
                             } else {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);
-                                // setFilteredServerData({
-                                //     LastUpdateTime: Date.now(),
-                                //     GroupCount: 1,
-                                //     Groups: [
-                                //         {
-                                //             Leader: {
-                                //                 Name: "DDO Audit",
-                                //                 Gender: "Male",
-                                //                 Race: "Human",
-                                //                 TotalLevel: 99,
-                                //                 Classes: [
-                                //                     {
-                                //                         Name: "Epic",
-                                //                         Level: 99,
-                                //                     },
-                                //                 ],
-                                //             },
-                                //             Comment: "Something went wrong",
-                                //             MinimumLevel: 0,
-                                //             MaximumLevel: 99,
-                                //             Difficulty: "Reaper",
-                                //             Quest: {
-                                //                 Name: "Feed the Hampsters",
-                                //             },
-                                //         },
-                                //     ],
-                                // });
                                 if (failedAttemptRef.current > 5) {
                                     setPopupMessages([
                                         ...popupMessages,
@@ -239,7 +212,7 @@ const GroupingSpecific = (props) => {
                                             reportMessage:
                                                 val === null
                                                     ? "Group data returned null"
-                                                    : "[Internal] Verification failed",
+                                                    : JSON.stringify(val),
                                         },
                                     ]);
                                 } else {
@@ -283,7 +256,9 @@ const GroupingSpecific = (props) => {
                                             submessage: err && err.toString(),
                                             icon: "warning",
                                             fullscreen: false,
-                                            reportMessage: "[Internal] Timeout",
+                                            reportMessage:
+                                                (err && err.toString()) ||
+                                                "Group data generic error (timeout?)",
                                         },
                                     ]);
                                 });
@@ -305,10 +280,14 @@ const GroupingSpecific = (props) => {
                             title: "Couldn't fetch server data",
                             message:
                                 "Try refreshing the page. If the issue continues, please report it.",
-                            submessage: err && err.toString(),
+                            submessage:
+                                (err && err.toString()) ||
+                                "Server status timeout",
                             icon: "warning",
                             fullscreen: false,
-                            reportMessage: "[Internal] Server Status Timeout",
+                            reportMessage:
+                                (err && err.toString()) ||
+                                "Server status timeout",
                         },
                     ]);
                 } else {

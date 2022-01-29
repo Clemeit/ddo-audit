@@ -43,17 +43,17 @@ const WhoSpecific = (props) => {
     const PAGE_SIZE = 10;
 
     // Data
-    const [currentServer, set_currentServer] = React.useState(null);
-    const [playerData, set_playerData] = React.useState({
+    const [currentServer, setCurrentServer] = React.useState(null);
+    const [playerData, setPlayerData] = React.useState({
         timestamp: 0,
         data: null,
     });
-    const [filteredPlayerData, set_filteredPlayerData] = React.useState(null);
-    const [paginatedPlayerData, set_paginatedPlayerData] = React.useState(null);
-    const [playerCount, set_playerCount] = React.useState(null);
-    const [adjustedPlayerCount, set_adjustedPlayerCount] = React.useState(null);
-    const [lastFetchTime, set_lastFetchTime] = React.useState(null);
-    const [attemptedPlayerFetch, set_attemptedPlayerFetch] =
+    const [filteredPlayerData, setFilteredPlayerData] = React.useState(null);
+    const [paginatedPlayerData, setPaginatedPlayerData] = React.useState(null);
+    const [playerCount, setPlayerCount] = React.useState(null);
+    const [adjustedPlayerCount, setAdjustedPlayerCount] = React.useState(null);
+    const [lastFetchTime, setLastFetchTime] = React.useState(null);
+    const [attemptedPlayerFetch, setAttemptedPlayerFetch] =
         React.useState(null);
     const [classFilterStates, setClassFilterStates] = React.useState([
         true,
@@ -446,10 +446,10 @@ const WhoSpecific = (props) => {
             location.substring(0, 1).toUpperCase() + location.substring(1);
         if (serverNames.includes(serverName)) {
             // Good server
-            set_currentServer(serverName);
+            setCurrentServer(serverName);
         } else {
             // Bad server
-            set_currentServer(serverNames[0]); // Just default to the first server in the good list
+            setCurrentServer(serverNames[0]); // Just default to the first server in the good list
         }
     }, [window.location.pathname]);
 
@@ -475,7 +475,7 @@ const WhoSpecific = (props) => {
     // Apply filter after filter change
     React.useEffect(() => {
         if (playerData === null || playerData.data === null) return;
-        set_filteredPlayerData(ApplyFilters(playerData.data.Players));
+        setFilteredPlayerData(ApplyFilters(playerData.data.Players));
     }, [
         activeFilters,
         playerData,
@@ -487,7 +487,7 @@ const WhoSpecific = (props) => {
 
     React.useEffect(() => {
         if (filteredPlayerData === null) return;
-        set_paginatedPlayerData(
+        setPaginatedPlayerData(
             filteredPlayerData.slice(
                 Math.max(0, pageNumber * PAGE_SIZE),
                 Math.min(
@@ -502,7 +502,7 @@ const WhoSpecific = (props) => {
     let recheck; // TODO: Clearing this timeout doesn't work
     React.useEffect(() => {
         clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
-        set_filteredPlayerData(null);
+        setFilteredPlayerData(null);
         if (!currentServer) return;
 
         FetchPlayerData();
@@ -517,8 +517,8 @@ const WhoSpecific = (props) => {
     }, [currentServer]);
 
     function FetchPlayerData() {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000).then(
-            (val) => {
+        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+            .then((val) => {
                 let serverstatus = false;
                 if (val.hasOwnProperty("Worlds")) {
                     val.Worlds.forEach((world) => {
@@ -541,7 +541,7 @@ const WhoSpecific = (props) => {
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
-                        "https://www.playeraudit.com/api/playersnew?s=" +
+                        "https://www.playeraudit.com/api/playersnewXXX?s=" +
                             (serverNamesLowercase.includes(
                                 location.toLowerCase()
                             )
@@ -550,13 +550,13 @@ const WhoSpecific = (props) => {
                         5000
                     )
                         .then((val) => {
-                            set_lastFetchTime(Date.now());
-                            set_attemptedPlayerFetch(true);
+                            setLastFetchTime(Date.now());
+                            setAttemptedPlayerFetch(true);
                             if (VerifyPlayerData(val)) {
                                 setPopupMessages([]);
                                 failedAttemptRef.current = 0;
                                 setFailedAttemptCount(failedAttemptRef.current);
-                                set_playerData({
+                                setPlayerData({
                                     timestamp: Date.now(),
                                     data: val,
                                 });
@@ -575,7 +575,7 @@ const WhoSpecific = (props) => {
                                             reportMessage:
                                                 val === null
                                                     ? "Player data returned null"
-                                                    : "[Internal] Verification failed",
+                                                    : "Player data verification failed",
                                         },
                                     ]);
                                 } else {
@@ -588,8 +588,8 @@ const WhoSpecific = (props) => {
                         .catch((err) => {
                             failedAttemptRef.current++;
                             setFailedAttemptCount(failedAttemptRef.current);
-                            set_lastFetchTime(Date.now());
-                            set_attemptedPlayerFetch(true);
+                            setLastFetchTime(Date.now());
+                            setAttemptedPlayerFetch(true);
                             if (failedAttemptRef.current > 5) {
                                 setPopupMessages([
                                     ...popupMessages,
@@ -597,10 +597,12 @@ const WhoSpecific = (props) => {
                                         title: "Couldn't fetch player data",
                                         message:
                                             "Try refreshing the page. If the issue continues, please report it.",
-                                        submessage: err.toString(),
+                                        submessage: err && err.toString(),
                                         icon: "warning",
                                         fullscreen: false,
-                                        reportMessage: "[Internal] Timeout",
+                                        reportMessage:
+                                            (err && err.toString()) ||
+                                            "Player data generic error (timeout?)",
                                     },
                                 ]);
                             } else {
@@ -610,13 +612,38 @@ const WhoSpecific = (props) => {
                             }
                         });
                 }
-            }
-        );
+            })
+            .catch((err) => {
+                failedAttemptRef.current++;
+                setFailedAttemptCount(failedAttemptRef.current);
+                if (failedAttemptRef.current > 5) {
+                    setPopupMessages([
+                        ...popupMessages,
+                        {
+                            title: "Couldn't fetch server data",
+                            message:
+                                "Try refreshing the page. If the issue continues, please report it.",
+                            submessage:
+                                (err && err.toString()) ||
+                                "Server status timeout",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage:
+                                (err && err.toString()) ||
+                                "Server status timeout",
+                        },
+                    ]);
+                } else {
+                    recheck = setTimeout(() => {
+                        FetchPlayerData();
+                    }, 250);
+                }
+            });
     }
 
     React.useEffect(() => {
         if (playerData.data === undefined || playerData.data === null) return;
-        set_playerCount(playerData.data.Players.length);
+        setPlayerCount(playerData.data.Players.length);
     }, [playerData]);
 
     React.useEffect(() => {

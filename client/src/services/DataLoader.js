@@ -9,7 +9,7 @@ export async function Fetch(url, timeout) {
     let ret = new Promise(async (resolve, reject) => {
         setTimeout(() => {
             if (!ret.isResolved) {
-                reject();
+                reject("timeout");
             }
         }, timeout);
 
@@ -34,6 +34,19 @@ export function VerifyLfmData(data) {
         if (server.LastUpdateTime === undefined) missingfields = true;
         if (server.Groups === undefined) missingfields = true;
         if (server.GroupCount === undefined) missingfields = true;
+    });
+    if (missingfields) return false;
+    return true;
+}
+
+export function VerifyPlayerAndLfmOverview(data) {
+    if (data === null) return false;
+    if (data.length !== 9) return false;
+    let missingfields = false;
+    data.forEach((server) => {
+        if (server.ServerName === undefined) missingfields = true;
+        if (server.PlayerCount === undefined) missingfields = true;
+        if (server.LfmCount === undefined) missingfields = true;
     });
     if (missingfields) return false;
     return true;
