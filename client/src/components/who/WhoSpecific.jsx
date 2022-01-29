@@ -42,6 +42,15 @@ const WhoSpecific = (props) => {
     ];
     const PAGE_SIZE = 10;
 
+    // Download canvas
+    var download = function () {
+        // Redraw panel without names
+        var link = document.createElement("a");
+        link.download = `ddo-who-panel.png`;
+        link.href = document.getElementById("who-canvas").toDataURL();
+        link.click();
+    };
+
     // Data
     const [currentServer, setCurrentServer] = React.useState(null);
     const [playerData, setPlayerData] = React.useState({
@@ -744,11 +753,13 @@ const WhoSpecific = (props) => {
                     <FilterBar
                         currentServer={currentServer}
                         showNotifications={false}
+                        showSave={true}
                         maxWidth={706}
                         returnTo="/who"
                         handleFilterButton={() =>
                             setFilterPanelVisible(!filterPanelVisible)
                         }
+                        handleSaveButton={() => download()}
                     >
                         <div
                             className="filter-panel-overlay"

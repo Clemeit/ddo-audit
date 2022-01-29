@@ -769,6 +769,7 @@ const CanvasWhoPanel = (props) => {
             {props.children}
             <canvas
                 className="who-canvas"
+                id="who-canvas"
                 ref={canvasRef}
                 style={{
                     backgroundColor: "black",
