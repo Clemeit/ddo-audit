@@ -14,6 +14,7 @@ import BannerMessage from "../global/BannerMessage";
 import ChartPie from "../global/ChartPie";
 import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
+import ChartBar from "../global/ChartBar";
 
 const Directory = (props) => {
     const TITLE = "DDO Server Status and Demographics";
@@ -86,6 +87,8 @@ const Directory = (props) => {
         React.useState(null);
     const [hourlyDistributionData, setHourlyDistributionData] =
         React.useState(null);
+    const [dailyDistributionData, setDailyDistributionData] =
+        React.useState(null);
     function refreshServerStatus() {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
             .then((val) => {
@@ -122,6 +125,12 @@ const Directory = (props) => {
             3000
         ).then((val) => {
             setHourlyDistributionData(val);
+        });
+        Fetch(
+            "https://api.ddoaudit.com/population/dailydistribution",
+            3000
+        ).then((val) => {
+            setDailyDistributionData(val);
         });
 
         refreshServerStatus();
@@ -208,8 +217,7 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Hourly Population Distribution"
-                    description="Average population over the course of a 24 hour day
-                    cycle."
+                    description="Average population for each hour of the day."
                 >
                     <ChartLine
                         keys={null}
@@ -224,6 +232,24 @@ const Directory = (props) => {
                         noArea={true}
                         // tickValues="every 1 day"
                         // trendType="week"
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Daily Population Distribution"
+                    description="Average population for each day of the week."
+                >
+                    <ChartBar
+                        keys={[...SERVER_NAMES]}
+                        indexBy="Day"
+                        legendBottom="Day of Week"
+                        legendLeft="Population"
+                        data={dailyDistributionData}
+                        noAnim={true}
+                        display="Grouped"
+                        straightLegend={true}
+                        legendOffset={40}
+                        dataIncludesColors={true}
+                        paddingBottom={60}
                     />
                 </ContentCluster>
                 <ContentCluster title="See Also...">
