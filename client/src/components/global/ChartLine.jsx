@@ -258,12 +258,14 @@ const ChartLine = (props) => {
                     </div>
                 )}
             </div>
-            <CustomLegend
-                data={props.data}
-                isMobileLoaded={isMobileLoaded}
-                excludedSeries={excludedSeries}
-                switchExcludedSeries={(id) => switchExcludedSeries(id)}
-            />
+            {!props.hideLegend && (
+                <CustomLegend
+                    data={props.data}
+                    isMobileLoaded={isMobileLoaded}
+                    excludedSeries={excludedSeries}
+                    switchExcludedSeries={(id) => switchExcludedSeries(id)}
+                />
+            )}
         </div>
     );
 };

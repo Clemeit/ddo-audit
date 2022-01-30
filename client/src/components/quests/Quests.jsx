@@ -332,13 +332,26 @@ const Quests = (props) => {
             set_totalDataPoints(val.length);
 
             let serverdistrdata = [];
+            const COLORS = [
+                "hsl(205, 70%, 41%)",
+                "hsl(28, 100%, 53%)",
+                "hsl(120, 57%, 40%)",
+                "hsl(360, 69%, 50%)",
+                "hsl(271, 39%, 57%)",
+                "hsl(10, 30%, 42%)",
+                "hsl(318, 66%, 68%)",
+                "hsl(0, 0%, 50%)",
+                "hsl(60, 70%, 44%)",
+            ];
             for (let i = 0; i < serverNames.length; i++) {
                 serverdistrdata.push({
                     id: serverNames[i],
                     label: serverNames[i],
+                    color: COLORS[i],
                     value: servercounts[i],
                 });
             }
+            serverdistrdata.reverse();
             set_serverDistData(serverdistrdata);
 
             let days = [[], [], [], [], [], [], []];
@@ -648,268 +661,297 @@ const Quests = (props) => {
                     </ContentCluster>
                 )}
                 {questList && (
-                    <ContentCluster title="Audit Results">
-                        <div
-                            className="player-filter-input column-on-mobile small-gap-on-mobile"
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                flexDirection: "row",
-                                flexWrap: "wrap",
-                                gap: "10px",
-                                paddingBottom: "10px",
-                            }}
-                        >
-                            <label
-                                htmlFor="questname"
+                    <div
+                        className="content-cluster"
+                        style={{ margin: "0px", padding: "0px" }}
+                    >
+                        <ContentCluster title="Audit Results">
+                            <div
+                                className="player-filter-input column-on-mobile small-gap-on-mobile"
                                 style={{
-                                    fontSize: "1.2rem",
-                                    marginBottom: "0px",
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                    paddingBottom: "10px",
                                 }}
                             >
-                                Filter by quest name
-                            </label>
-                            <input
-                                style={{
-                                    maxWidth: "250px",
-                                    width: "100%",
-                                    height: "max-content",
-                                }}
-                                type="text"
-                                id="questname"
-                                name="questname"
-                                className="full-width-mobile"
-                                onChange={() => HandleQuestNameFilter()}
-                            />
-                            <label
-                                htmlFor="levelfilter"
-                                style={{
-                                    fontSize: "1.2rem",
-                                    marginBottom: "0px",
-                                }}
-                            >
-                                or level (e.g. "1,3,5-9")
-                            </label>
-                            <input
-                                style={{
-                                    maxWidth: "100px",
-                                    width: "100%",
-                                    height: "max-content",
-                                }}
-                                type="text"
-                                id="levelfilter"
-                                name="levelfilter"
-                                className="full-width-mobile"
-                                onChange={() => HandleLevelFilter()}
-                            />
-                            <div className="audit-report-time">
-                                <p style={{ fontSize: "medium" }}>
-                                    Audit performed {startTime.toString()} ran
-                                    for {ellapsedTime / 1000}s (cached)
-                                </p>
+                                <label
+                                    htmlFor="questname"
+                                    style={{
+                                        fontSize: "1.2rem",
+                                        marginBottom: "0px",
+                                    }}
+                                >
+                                    Filter by quest name
+                                </label>
+                                <input
+                                    style={{
+                                        maxWidth: "250px",
+                                        width: "100%",
+                                        height: "max-content",
+                                    }}
+                                    type="text"
+                                    id="questname"
+                                    name="questname"
+                                    className="full-width-mobile"
+                                    onChange={() => HandleQuestNameFilter()}
+                                />
+                                <label
+                                    htmlFor="levelfilter"
+                                    style={{
+                                        fontSize: "1.2rem",
+                                        marginBottom: "0px",
+                                    }}
+                                >
+                                    or level (e.g. "1,3,5-9")
+                                </label>
+                                <input
+                                    style={{
+                                        maxWidth: "100px",
+                                        width: "100%",
+                                        height: "max-content",
+                                    }}
+                                    type="text"
+                                    id="levelfilter"
+                                    name="levelfilter"
+                                    className="full-width-mobile"
+                                    onChange={() => HandleLevelFilter()}
+                                />
+                                <div className="audit-report-time">
+                                    <p style={{ fontSize: "medium" }}>
+                                        Audit performed {startTime.toString()}{" "}
+                                        ran for {ellapsedTime / 1000}s (cached)
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <QuestTable
-                            data={paginatedQuestList}
-                            showLastUpdated={false}
-                            reportReference={showReportForm}
-                            handleSelection={(quest) => loadQuest(quest)}
-                            collapsed={false}
-                            pageNumber={pageNumber}
-                            pageSize={PAGE_SIZE}
-                            handleSort={(style) => set_sortStyle(style)}
-                        />
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                gap: "5px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                            }}
+                            <QuestTable
+                                data={paginatedQuestList}
+                                showLastUpdated={false}
+                                reportReference={showReportForm}
+                                handleSelection={(quest) => loadQuest(quest)}
+                                collapsed={false}
+                                pageNumber={pageNumber}
+                                pageSize={PAGE_SIZE}
+                                handleSort={(style) => set_sortStyle(style)}
+                            />
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    gap: "5px",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                }}
+                            >
+                                {filteredQuestList &&
+                                    [
+                                        ...Array(
+                                            Math.ceil(
+                                                filteredQuestList.length /
+                                                    PAGE_SIZE
+                                            )
+                                        ),
+                                    ].map((o, i) => (
+                                        <div
+                                            key={i}
+                                            className={
+                                                pageNumber === i
+                                                    ? "paginationPage active"
+                                                    : "paginationPage"
+                                            }
+                                            onClick={() => {
+                                                set_pageNumber(i);
+                                            }}
+                                        >
+                                            {i + 1}
+                                        </div>
+                                    ))}
+                            </div>
+                        </ContentCluster>
+                        <ContentCluster
+                            title={
+                                <span>
+                                    Duration Distribution for{" "}
+                                    {questName ? (
+                                        <span className="lfm-number">
+                                            {questName}
+                                        </span>
+                                    ) : (
+                                        "(no quest selected)"
+                                    )}
+                                </span>
+                            }
+                            altTitle="Duration Distribution"
+                            description=""
                         >
-                            {filteredQuestList &&
-                                [
-                                    ...Array(
-                                        Math.ceil(
-                                            filteredQuestList.length / PAGE_SIZE
-                                        )
-                                    ),
-                                ].map((o, i) => (
-                                    <div
-                                        key={i}
-                                        className={
-                                            pageNumber === i
-                                                ? "paginationPage active"
-                                                : "paginationPage"
-                                        }
-                                        onClick={() => {
-                                            set_pageNumber(i);
-                                        }}
-                                    >
-                                        {i + 1}
-                                    </div>
-                                ))}
-                        </div>
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
+                            <p
+                                style={{
+                                    fontSize: "large",
+                                    marginBottom: "0px",
+                                }}
+                            >
+                                Average duration:{" "}
+                                <span className="lfm-number">
+                                    {average !== null
+                                        ? `${average} minutes`
+                                        : "N/A"}
+                                </span>{" "}
+                                | Standard deviation:{" "}
+                                <span className="lfm-number">
+                                    {standardDeviation !== null
+                                        ? `${standardDeviation} minutes`
+                                        : "N/A"}
+                                </span>{" "}
+                                | Outliers excluded:{" "}
+                                <span className="lfm-number">
+                                    {outlierCount !== null
+                                        ? `${outlierCount}`
+                                        : "N/A"}
+                                </span>
+                            </p>
+                            <p
+                                style={{
+                                    fontSize: "large",
+                                    marginBottom: "0px",
+                                }}
+                            >
+                                Total time recorded:{" "}
+                                <span className="lfm-number">
+                                    {totalTime !== null
+                                        ? `${totalTime} minutes`
+                                        : "N/A"}
+                                </span>{" "}
+                                | Total data points:{" "}
+                                <span className="lfm-number">
+                                    {totalDataPoints !== null
+                                        ? `${totalDataPoints}`
+                                        : "N/A"}
+                                </span>
+                            </p>
+                            <ChartBar
+                                keys={["Frequency"]}
+                                indexBy="Duration"
+                                legendBottom="Duration (miuntes)"
+                                legendLeft="Frequency"
+                                data={durationData}
+                                loadingMessage="Click on a quest to view data"
+                                noAnim={true}
+                                hideLegend={true}
+                            />
+                        </ContentCluster>
+                        <ContentCluster
+                            title={
+                                <span>
+                                    Popularity Over Time for{" "}
+                                    {questName ? (
+                                        <span className="lfm-number">
+                                            {questName}
+                                        </span>
+                                    ) : (
+                                        "(no quest selected)"
+                                    )}
+                                </span>
+                            }
+                            altTitle="Popularity Over Time"
+                            description="Recent popularity of this quest shown as daily averages."
                         >
-                            Average duration:{" "}
-                            <span className="lfm-number">
-                                {average !== null
-                                    ? `${average} minutes`
-                                    : "N/A"}
-                            </span>{" "}
-                            | Standard deviation:{" "}
-                            <span className="lfm-number">
-                                {standardDeviation !== null
-                                    ? `${standardDeviation} minutes`
-                                    : "N/A"}
-                            </span>{" "}
-                            | Outliers excluded:{" "}
-                            <span className="lfm-number">
-                                {outlierCount !== null
-                                    ? `${outlierCount}`
-                                    : "N/A"}
-                            </span>
-                        </p>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
+                            <ChartLine
+                                keys={["Instances"]}
+                                indexBy="Time"
+                                legendBottom="Date"
+                                legendLeft="Instances"
+                                data={popularityOverTimeData}
+                                loadingMessage="Click on a quest to view data"
+                                noAnim={true}
+                                title="Popularity over time"
+                                marginBottom={100}
+                                hideLegend={true}
+                                // tickValues="every 1 day"
+                                // trendType="week"
+                            />
+                        </ContentCluster>
+                        <ContentCluster
+                            title={
+                                <span>
+                                    Popularity Throughout the Week for{" "}
+                                    {questName ? (
+                                        <span className="lfm-number">
+                                            {questName}
+                                        </span>
+                                    ) : (
+                                        "(no quest selected)"
+                                    )}
+                                </span>
+                            }
+                            altTitle="Popularity Throughout the Week"
+                            description="Popularity of this quest shown as hourly averages throughout the week."
                         >
-                            Total time recorded:{" "}
-                            <span className="lfm-number">
-                                {totalTime !== null
-                                    ? `${totalTime} minutes`
-                                    : "N/A"}
-                            </span>{" "}
-                            | Total data points:{" "}
-                            <span className="lfm-number">
-                                {totalDataPoints !== null
-                                    ? `${totalDataPoints}`
-                                    : "N/A"}
-                            </span>
-                        </p>
-                        <ChartBar
-                            keys={["Frequency"]}
-                            indexBy="Duration"
-                            legendBottom="Duration (miuntes)"
-                            legendLeft="Frequency"
-                            data={durationData}
-                            loadingMessage="Click on a quest to view data"
-                            noAnim={true}
-                        />
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
+                            <ChartBar
+                                keys={["Instances"]}
+                                indexBy="Time"
+                                legendBottom="Time of Week (Hours, offset from Sunday 00:00)"
+                                legendLeft="Instances"
+                                data={datetimeData}
+                                loadingMessage="Click on a quest to view data"
+                                noAnim={true}
+                                days={true}
+                                hideLegend={true}
+                            />
+                        </ContentCluster>
+                        <ContentCluster
+                            title={
+                                <span>
+                                    Popularity Throughout the Day for{" "}
+                                    {questName ? (
+                                        <span className="lfm-number">
+                                            {questName}
+                                        </span>
+                                    ) : (
+                                        "(no quest selected)"
+                                    )}
+                                </span>
+                            }
+                            altTitle="Popularity Over Time"
+                            description="Popularity of this quest shown as hourly averages throught the day."
                         >
-                            Popularity over time.
-                        </p>
-                        <ChartLine
-                            keys={["Instances"]}
-                            indexBy="Time"
-                            legendBottom="Date"
-                            legendLeft="Instances"
-                            data={popularityOverTimeData}
-                            loadingMessage="Click on a quest to view data"
-                            noAnim={true}
-                            title="Popularity over time"
-                            marginBottom={100}
-                            // tickValues="every 1 day"
-                            // trendType="week"
-                        />
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
+                            <ChartBar
+                                keys={["Instances"]}
+                                indexBy="Time"
+                                legendBottom="Time of Day (24-hour format)"
+                                legendLeft="Instances"
+                                data={todData}
+                                loadingMessage="Click on a quest to view data"
+                                noAnim={true}
+                                hideLegend={true}
+                            />
+                        </ContentCluster>
+                        <ContentCluster
+                            title={
+                                <span>
+                                    Popularity by Server for{" "}
+                                    {questName ? (
+                                        <span className="lfm-number">
+                                            {questName}
+                                        </span>
+                                    ) : (
+                                        "(no quest selected)"
+                                    )}
+                                </span>
+                            }
+                            altTitle="Popularity by Server"
+                            description="Popularity of this quest shown as server averages."
                         >
-                            Popularity throughout the week.
-                        </p>
-                        <ChartBar
-                            keys={["Instances"]}
-                            indexBy="Time"
-                            legendBottom="Time of Week (Hours, offset from Sunday 00:00)"
-                            legendLeft="Instances"
-                            data={datetimeData}
-                            loadingMessage="Click on a quest to view data"
-                            noAnim={true}
-                            days={true}
-                        />
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
-                        >
-                            Popularity throughout the day.
-                        </p>
-                        <ChartBar
-                            keys={["Instances"]}
-                            indexBy="Time"
-                            legendBottom="Time of Day (24-hour format)"
-                            legendLeft="Instances"
-                            data={todData}
-                            loadingMessage="Click on a quest to view data"
-                            noAnim={true}
-                        />
-                        <hr
-                            style={{
-                                backgroundColor: "var(--text)",
-                                opacity: 0.2,
-                            }}
-                        />
-                        <h4>{questName || "No quest selected"}</h4>
-                        <p
-                            style={{
-                                fontSize: "large",
-                                marginBottom: "0px",
-                            }}
-                        >
-                            Popularity per server.
-                        </p>
-                        <ChartPie
-                            data={serverDistData}
-                            loadingMessage="Click on a quest to view data"
-                            noAnim={true}
-                        />
-                    </ContentCluster>
+                            <ChartPie
+                                data={serverDistData}
+                                loadingMessage="Click on a quest to view data"
+                                noAnim={true}
+                                useDataColors={true}
+                            />
+                        </ContentCluster>
+                    </div>
                 )}
             </div>
         </div>

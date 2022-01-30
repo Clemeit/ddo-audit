@@ -22,6 +22,9 @@ import ContentCluster from "../global/ContentCluster";
 const Live = (props) => {
     const TITLE = "DDO Server Status";
 
+    // Popup message
+    var [popupMessages, setPopupMessages] = React.useState([]);
+
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [quickInfoData, setQuickInfoData] = React.useState(null);
     const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
@@ -36,45 +39,128 @@ const Live = (props) => {
             .then((val) => {
                 setServerStatusData(val);
             })
-            .catch(() => {});
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get server status",
+                        message:
+                            "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Server status error",
+                        submessage:
+                            (err && err.toString()) || "Server status error",
+                    },
+                ]);
+                setServerStatusData(null);
+            });
     }
 
     React.useEffect(() => {
         refreshServerStatus();
         const interval = setInterval(() => refreshServerStatus(), 30000); // Server status should refresh on this page
 
-        Fetch("https://www.playeraudit.com/api/quickinfo", 5000).then((val) => {
-            setQuickInfoData(val);
-        });
-        Fetch("https://www.playeraudit.com/api/uniquedata", 5000).then(
-            (val) => {
+        Fetch("https://www.playeraudit.com/api/quickinfo", 5000)
+            .then((val) => {
+                setQuickInfoData(val);
+            })
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get population data",
+                        message:
+                            "We failed to look up the most populated server. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Quick info error",
+                        submessage:
+                            (err && err.toString()) || "Quick info error",
+                    },
+                ]);
+                setQuickInfoData(null);
+            });
+
+        Fetch("https://www.playeraudit.com/api/uniquedata", 5000)
+            .then((val) => {
                 setUniqueCountsData(val);
-            }
-        );
-        Fetch("https://api.ddoaudit.com/population/day", 5000).then((val) => {
-            setPopulation24HoursData(
-                val.filter((series) => series.id !== "Total")
-            );
-        });
-        Fetch("https://www.playeraudit.com/api/playerandlfmcount", 5000).then(
-            (val) => {
+            })
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get unique data",
+                        message:
+                            "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Unique data error",
+                        submessage:
+                            (err && err.toString()) || "Unique data error",
+                    },
+                ]);
+                setUniqueCountsData(null);
+            });
+
+        Fetch("https://api.ddoaudit.com/population/day", 5000)
+            .then((val) => {
+                setPopulation24HoursData(
+                    val.filter((series) => series.id !== "Total")
+                );
+            })
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get population data",
+                        message:
+                            "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) ||
+                            "24 hour population error",
+                        submessage:
+                            (err && err.toString()) ||
+                            "24 hour population error",
+                    },
+                ]);
+                setPopulation24HoursData(null);
+            });
+
+        Fetch("https://www.playeraudit.com/api/playerandlfmcount", 5000)
+            .then((val) => {
                 setPlayerAndLFMCountData(val);
-            }
-        );
+            })
+            .catch((err) => {
+                setPopupMessages([
+                    ...popupMessages,
+                    {
+                        title: "Couldn't get population data",
+                        message:
+                            "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) ||
+                            "Current population error",
+                        submessage:
+                            (err && err.toString()) ||
+                            "Current population error",
+                    },
+                ]);
+                setPlayerAndLFMCountData(null);
+            });
+
         return () => clearInterval(interval); // Clear server status interval
     }, []);
 
     return (
         <div>
-            <Banner
-                small={true}
-                showTitle={true}
-                showSubtitle={true}
-                showButtons={false}
-                hideOnMobile={true}
-                title="Live"
-                subtitle="Live population and quick info"
-            />
             <Helmet>
                 <title>{TITLE}</title>
                 <meta
@@ -92,6 +178,26 @@ const Live = (props) => {
                     data-react-helmet="true"
                 />
             </Helmet>
+            <Banner
+                small={true}
+                showTitle={true}
+                showSubtitle={true}
+                showButtons={false}
+                hideOnMobile={true}
+                title="Live"
+                subtitle="Live population and quick info"
+            />
+            <PopupMessage
+                page={"live/"}
+                messages={popupMessages}
+                popMessage={() => {
+                    if (popupMessages.length) {
+                        let newMessages = [...popupMessages];
+                        newMessages = newMessages.slice(1);
+                        setPopupMessages(newMessages);
+                    }
+                }}
+            />
             <div className="content-container">
                 <BannerMessage page="live" />
                 <div className="top-content-padding shrink-on-mobile" />

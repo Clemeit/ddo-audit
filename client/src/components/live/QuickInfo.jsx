@@ -42,7 +42,7 @@ const QuickInfo = (props) => {
             props.serverstatus.Worlds.length == 0
         ) {
             return (
-                <span className="lfm-number">
+                <span style={{ color: "var(--red-text)" }}>
                     unknown (failed to fetch data)
                 </span>
             );
