@@ -7,6 +7,8 @@ module.exports = function (api) {
 		["serverdistribution", "serverdistributionquarter"],
 		["hourlydistribution", "hourlydistributionquarter"],
 		["dailydistribution", "dailydistributionquarter"],
+		["leveldistribution", "leveldistributionquarter"],
+		["classdistribution", "classdistributionquarter"],
 	];
 
 	population.forEach((entry) => {
