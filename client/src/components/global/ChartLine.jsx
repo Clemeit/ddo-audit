@@ -181,13 +181,13 @@ const ChartLine = (props) => {
                             type:
                                 props.title === "Popularity over time"
                                     ? "time"
-                                    : props.title === "Hourly distribution"
+                                    : props.title === "Distribution"
                                     ? "point"
                                     : "time",
                             format:
                                 props.title === "Popularity over time"
                                     ? "%Y-%m-%d"
-                                    : props.title === "Hourly distribution"
+                                    : props.title === "Distribution"
                                     ? ""
                                     : "%Y-%m-%dT%H:%M:%S.%LZ",
                             useUTC: true,
@@ -196,7 +196,7 @@ const ChartLine = (props) => {
                         xFormat={
                             props.title === "Popularity over time"
                                 ? "time:%Y-%m-%d"
-                                : props.title === "Hourly distribution"
+                                : props.title === "Distribution"
                                 ? ""
                                 : "time:%Y-%m-%dT%H:%M:%S.%LZ"
                         }
@@ -208,15 +208,16 @@ const ChartLine = (props) => {
                             reverse: false,
                         }}
                         // yFormat=" >-.2f"
-                        curve="cardinal"
+                        curve={props.curve || "cardinal"}
                         axisTop={null}
                         axisRight={null}
                         //axisBottom={BottomAxis()}
                         axisBottom={{
                             tickSize: 5,
                             tickPadding: 5,
-                            tickRotation: -45,
-                            legend: props.legendBottom || "",
+                            tickRotation:
+                                isMobile || !props.straightLegend ? -45 : 0,
+                            legend: isMobile ? "" : props.legendBottom || "",
                             legendPosition: "middle",
                             legendOffset: 40,
                             // format: (value) => xLabel(value),

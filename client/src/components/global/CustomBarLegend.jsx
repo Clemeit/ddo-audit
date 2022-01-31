@@ -45,8 +45,8 @@ const CustomBarLegend = (props) => {
                     >
                         <div
                             style={{
-                                width: "10px",
-                                height: "10px",
+                                width: "12px",
+                                height: "12px",
                                 backgroundColor: COLORS[i],
                             }}
                         />

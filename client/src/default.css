@@ -879,6 +879,17 @@ html {
     height: 100%;
 }
 
+.overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    cursor: pointer;
+}
+
 .filter-bar {
     display: flex;
     flex-direction: column;
@@ -1057,10 +1068,6 @@ input[type="radio"] {
 }
 
 .popup-message {
-    display: none;
-}
-
-.popup-message.visible {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -1075,6 +1082,24 @@ input[type="radio"] {
     color: var(--text);
     width: 100%;
     max-width: 600px;
+}
+
+.popup-message.fullscreen {
+    bottom: unset !important;
+    left: unset !important;
+    transform: unset !important;
+}
+
+.absolute-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
 }
 
 .banner-message-container {
@@ -1323,6 +1348,15 @@ input[type="radio"] {
 
 h2:hover .anchor-link {
     display: inline-block;
+}
+
+.faux-link {
+    color: var(--blue-text);
+    cursor: pointer;
+}
+
+.faux-link:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 900px) {
