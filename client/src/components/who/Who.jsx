@@ -28,7 +28,7 @@ const Who = (props) => {
     var [serverStatusData, setServerStatusData] = React.useState(null);
 
     // Popup message
-    var [popupMessages, setPopupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     function GetSVG(world) {
         if (world === undefined || world === null) return <PendingSVG />;
@@ -72,22 +72,17 @@ const Who = (props) => {
                     setServerStatusData(val);
                 })
                 .catch((err) => {
-                    setPopupMessages([
-                        ...popupMessages,
-                        {
-                            title: "Couldn't get server status",
-                            message:
-                                "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage:
-                                (err && err.toString()) ||
-                                "Server status error",
-                            submessage:
-                                (err && err.toString()) ||
-                                "Server status error",
-                        },
-                    ]);
+                    setPopupMessage({
+                        title: "Couldn't get server status",
+                        message:
+                            "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Server status error",
+                        submessage:
+                            (err && err.toString()) || "Server status error",
+                    });
                     setServerStatusData(null);
                 });
 
@@ -96,39 +91,32 @@ const Who = (props) => {
                     if (VerifyPlayerAndLfmOverview(val)) {
                         setOverviewData(val);
                     } else {
-                        setPopupMessages([
-                            ...popupMessages,
-                            {
-                                title: "Something went wrong",
-                                message:
-                                    "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                icon: "warning",
-                                fullscreen: false,
-                                reportMessage:
-                                    JSON.stringify(val) ||
-                                    "Group data corrupted",
-                            },
-                        ]);
+                        setPopupMessage({
+                            title: "Something went wrong",
+                            message:
+                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage:
+                                JSON.stringify(val) || "Group data corrupted",
+                        });
                         setOverviewData(null);
                     }
                 })
                 .catch((err) => {
-                    setPopupMessages([
-                        ...popupMessages,
-                        {
-                            title: "Couldn't get population data",
-                            message:
-                                "We were unable to get population data. You can refresh the page or report the issue.",
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage:
-                                (err && err.toString()) ||
-                                "Could not fetch Group data",
-                            submessage:
-                                (err && err.toString()) ||
-                                "Could not fetch Group data",
-                        },
-                    ]);
+                    setPopupMessage({
+                        title: "Couldn't get population data",
+                        message:
+                            "We were unable to get population data. You can refresh the page or report the issue.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) ||
+                            "Could not fetch Group data",
+                        submessage:
+                            (err && err.toString()) ||
+                            "Could not fetch Group data",
+                    });
                 });
         }
         FetchPlayerData();
@@ -161,14 +149,10 @@ const Who = (props) => {
                 subtitle="Live Player Lookup"
             />
             <PopupMessage
-                page={"grouping/"}
-                messages={popupMessages}
+                page="who"
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        setPopupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
             />
             <div className="content-container">

@@ -43,6 +43,52 @@ const Directory = (props) => {
         }
     }
 
+    function readAbout(r) {
+        switch (r) {
+            case "filter banks characters":
+                setPopupMessage({
+                    title: "Filtering out bank characters",
+                    message: (
+                        <span>
+                            We attempt to filter bank characters out of this
+                            report by not counting:
+                            <ul>
+                                <li>
+                                    Characters that haven't been actively
+                                    running quests
+                                </li>
+                                <li>
+                                    Characters that aren't making observable
+                                    level progression
+                                </li>
+                                <li>
+                                    Characters that sit in a single area
+                                    indefinitely
+                                </li>
+                            </ul>
+                        </span>
+                    ),
+                    icon: "info",
+                    fullscreen: true,
+                });
+                break;
+            case "primary class only":
+                setPopupMessage({
+                    title: "Counting a character's primary class",
+                    message: (
+                        <span>
+                            This report only counts a character's primary class.
+                            For example, a character with 18 levels of Wizard
+                            and 2 levels of Rogue will count towards Wizard.
+                        </span>
+                    ),
+                    icon: "info",
+                    fullscreen: true,
+                });
+                break;
+        }
+    }
+
     function GetServerDescription(name) {
         if (uniqueData === null || uniqueData === undefined) {
             return (
@@ -89,57 +135,88 @@ const Directory = (props) => {
         React.useState(null);
     const [dailyDistributionData, setDailyDistributionData] =
         React.useState(null);
+    const [levelDistributionData, setLevelDistributionData] =
+        React.useState(null);
+    const [classDistributionData, setClassDistributionData] =
+        React.useState(null);
     function refreshServerStatus() {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
             .then((val) => {
                 set_serverStatusData(val);
             })
             .catch(() => {
-                set_popupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Can't Determine Server Status",
-                        message:
-                            "We weren't able to check on the servers. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "Could not fetch ServerStatus. Timeout",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Can't Determine Server Status",
+                    message:
+                        "We weren't able to check on the servers. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Could not fetch ServerStatus. Timeout",
+                });
             });
     }
     React.useEffect(() => {
-        Fetch("https://www.playeraudit.com/api/uniquedata", 3000).then(
-            (val) => {
+        Fetch("https://www.playeraudit.com/api/uniquedata", 3000)
+            .then((val) => {
                 setUniqueData(val);
-            }
-        );
-        Fetch(
-            "https://api.ddoaudit.com/population/serverdistribution",
-            3000
-        ).then((val) => {
-            setServerDistributionData(val);
-        });
-        Fetch(
-            "https://api.ddoaudit.com/population/hourlydistribution",
-            3000
-        ).then((val) => {
-            setHourlyDistributionData(val);
-        });
-        Fetch(
-            "https://api.ddoaudit.com/population/dailydistribution",
-            3000
-        ).then((val) => {
-            setDailyDistributionData(val);
-        });
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/population/serverdistribution", 3000)
+            .then((val) => {
+                setServerDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/population/hourlydistribution", 3000)
+            .then((val) => {
+                setHourlyDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/population/dailydistribution", 3000)
+            .then((val) => {
+                setDailyDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/population/leveldistribution", 3000)
+            .then((val) => {
+                setLevelDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/population/classdistribution", 3000)
+            .then((val) => {
+                setClassDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
 
         refreshServerStatus();
         const interval = setInterval(() => refreshServerStatus(), 60000);
         return () => clearInterval(interval);
     }, []);
 
+    function dataFailedToLoad() {
+        setPopupMessage({
+            title: "Some data failed to load",
+            message:
+                "Some of the reports on this page may have failed to load. Please refresh the page. If the issue continues, report it.",
+            icon: "warning",
+            fullscreen: false,
+            reportMessage: "Failed to fetch data.",
+        });
+    }
+
     // Popup message
-    var [popupMessages, set_popupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
     return (
         <div>
             <Helmet>
@@ -165,14 +242,10 @@ const Directory = (props) => {
                 subtitle="Server population, demographics, and trends"
             />
             <PopupMessage
-                page="grouping"
-                messages={popupMessages}
+                page="servers"
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        set_popupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
             />
             <div className="content-container">
@@ -226,12 +299,11 @@ const Directory = (props) => {
                         legendLeft="Population"
                         data={hourlyDistributionData}
                         noAnim={true}
-                        title="Hourly distribution"
+                        title="Distribution"
                         marginBottom={60}
                         trendType=""
                         noArea={true}
-                        // tickValues="every 1 day"
-                        // trendType="week"
+                        straightLegend={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -244,6 +316,88 @@ const Directory = (props) => {
                         legendBottom="Day of Week"
                         legendLeft="Population"
                         data={dailyDistributionData}
+                        noAnim={true}
+                        display="Grouped"
+                        straightLegend={true}
+                        legendOffset={40}
+                        dataIncludesColors={true}
+                        paddingBottom={60}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Population Distribution by Level"
+                    description={
+                        <>
+                            Average percentage of the population at each level.{" "}
+                            <span className="lfm-number">
+                                Bank characters were filtered out of this report{" "}
+                                <span
+                                    className="faux-link"
+                                    onClick={() =>
+                                        readAbout("filter banks characters")
+                                    }
+                                >
+                                    (read more)
+                                </span>
+                            </span>
+                            . Normalized for server population.
+                        </>
+                    }
+                >
+                    <ChartLine
+                        keys={null}
+                        indexBy={null}
+                        legendBottom="Character level"
+                        legendLeft="Population Percentage"
+                        data={levelDistributionData}
+                        noAnim={true}
+                        title="Distribution"
+                        marginBottom={60}
+                        trendType=""
+                        noArea={true}
+                        curve="linear"
+                        straightLegend={true}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Population Distribution by Class"
+                    description={
+                        <>
+                            Average percentage of the population population for
+                            each class.{" "}
+                            <span className="lfm-number">
+                                Primary class only{" "}
+                                <span
+                                    className="faux-link"
+                                    onClick={() =>
+                                        readAbout("primary class only")
+                                    }
+                                >
+                                    (read more)
+                                </span>
+                            </span>
+                            .{" "}
+                            <span className="lfm-number">
+                                Bank characters were filtered out of this report{" "}
+                                <span
+                                    className="faux-link"
+                                    onClick={() =>
+                                        readAbout("filter banks characters")
+                                    }
+                                >
+                                    (read more)
+                                </span>
+                            </span>
+                            . Normalized for server population.
+                        </>
+                    }
+                >
+                    <ChartBar
+                        keys={[...SERVER_NAMES]}
+                        indexBy="Class"
+                        legendBottom="Class"
+                        legendLeft="Population Percentage"
+                        data={classDistributionData}
                         noAnim={true}
                         display="Grouped"
                         straightLegend={true}

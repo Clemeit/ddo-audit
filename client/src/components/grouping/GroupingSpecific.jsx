@@ -194,7 +194,7 @@ const GroupingSpecific = (props) => {
                     )
                         .then((val) => {
                             if (VerifyServerLfmData(val)) {
-                                setPopupMessages([]);
+                                setPopupMessage(null);
                                 failedAttemptRef.current = 0;
                                 setFailedAttemptCount(failedAttemptRef.current);
                                 setUnfilteredServerData(val);
@@ -202,20 +202,17 @@ const GroupingSpecific = (props) => {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);
                                 if (failedAttemptRef.current > 5) {
-                                    setPopupMessages([
-                                        ...popupMessages,
-                                        {
-                                            title: "Something went wrong",
-                                            message:
-                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                            icon: "warning",
-                                            fullscreen: false,
-                                            reportMessage:
-                                                val === null
-                                                    ? "Group data returned null"
-                                                    : JSON.stringify(val),
-                                        },
-                                    ]);
+                                    setPopupMessage({
+                                        title: "Something went wrong",
+                                        message:
+                                            "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage:
+                                            val === null
+                                                ? "Group data returned null"
+                                                : JSON.stringify(val),
+                                    });
                                 } else {
                                     recheck = setTimeout(() => {
                                         RefreshLfms();
@@ -249,19 +246,16 @@ const GroupingSpecific = (props) => {
                                                 "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.";
                                             break;
                                     }
-                                    setPopupMessages([
-                                        ...popupMessages,
-                                        {
-                                            title: title,
-                                            message: message,
-                                            submessage: err && err.toString(),
-                                            icon: "warning",
-                                            fullscreen: false,
-                                            reportMessage:
-                                                (err && err.toString()) ||
-                                                "Group data generic error (timeout?)",
-                                        },
-                                    ]);
+                                    setPopupMessage({
+                                        title: title,
+                                        message: message,
+                                        submessage: err && err.toString(),
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage:
+                                            (err && err.toString()) ||
+                                            "Group data generic error (timeout?)",
+                                    });
                                 });
                             } else {
                                 recheck = setTimeout(() => {
@@ -275,22 +269,17 @@ const GroupingSpecific = (props) => {
                 failedAttemptRef.current++;
                 setFailedAttemptCount(failedAttemptRef.current);
                 if (failedAttemptRef.current > 5) {
-                    setPopupMessages([
-                        ...popupMessages,
-                        {
-                            title: "Couldn't fetch server data",
-                            message:
-                                "Try refreshing the page. If the issue continues, please report it.",
-                            submessage:
-                                (err && err.toString()) ||
-                                "Server status timeout",
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage:
-                                (err && err.toString()) ||
-                                "Server status timeout",
-                        },
-                    ]);
+                    setPopupMessage({
+                        title: "Couldn't fetch server data",
+                        message:
+                            "Try refreshing the page. If the issue continues, please report it.",
+                        submessage:
+                            (err && err.toString()) || "Server status timeout",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Server status timeout",
+                    });
                 } else {
                     recheck = setTimeout(() => {
                         RefreshLfms();
@@ -340,7 +329,7 @@ const GroupingSpecific = (props) => {
     var [expandedGroups, set_expandedGroups] = React.useState([]);
 
     // Popup message
-    var [popupMessages, setPopupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     function getServerNamePossessive() {
         return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
@@ -376,13 +365,9 @@ const GroupingSpecific = (props) => {
                 />
                 <PopupMessage
                     page={"grouping/" + currentServer.toLowerCase()}
-                    messages={popupMessages}
+                    message={popupMessage}
                     popMessage={() => {
-                        if (popupMessages.length) {
-                            let newMessages = [...popupMessages];
-                            newMessages = newMessages.slice(1);
-                            setPopupMessages(newMessages);
-                        }
+                        setPopupMessage(null);
                     }}
                 />
                 <div

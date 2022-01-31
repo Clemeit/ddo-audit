@@ -23,7 +23,7 @@ const Live = (props) => {
     const TITLE = "DDO Server Status";
 
     // Popup message
-    var [popupMessages, setPopupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [quickInfoData, setQuickInfoData] = React.useState(null);
@@ -40,20 +40,17 @@ const Live = (props) => {
                 setServerStatusData(val);
             })
             .catch((err) => {
-                setPopupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Couldn't get server status",
-                        message:
-                            "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) || "Server status error",
-                        submessage:
-                            (err && err.toString()) || "Server status error",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Couldn't get server status",
+                    message:
+                        "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Server status error",
+                    submessage:
+                        (err && err.toString()) || "Server status error",
+                });
                 setServerStatusData(null);
             });
     }
@@ -67,20 +64,16 @@ const Live = (props) => {
                 setQuickInfoData(val);
             })
             .catch((err) => {
-                setPopupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Couldn't get population data",
-                        message:
-                            "We failed to look up the most populated server. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) || "Quick info error",
-                        submessage:
-                            (err && err.toString()) || "Quick info error",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Couldn't get population data",
+                    message:
+                        "We failed to look up the most populated server. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Quick info error",
+                    submessage: (err && err.toString()) || "Quick info error",
+                });
                 setQuickInfoData(null);
             });
 
@@ -89,20 +82,16 @@ const Live = (props) => {
                 setUniqueCountsData(val);
             })
             .catch((err) => {
-                setPopupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Couldn't get unique data",
-                        message:
-                            "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) || "Unique data error",
-                        submessage:
-                            (err && err.toString()) || "Unique data error",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Couldn't get unique data",
+                    message:
+                        "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Unique data error",
+                    submessage: (err && err.toString()) || "Unique data error",
+                });
                 setUniqueCountsData(null);
             });
 
@@ -113,22 +102,17 @@ const Live = (props) => {
                 );
             })
             .catch((err) => {
-                setPopupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Couldn't get population data",
-                        message:
-                            "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) ||
-                            "24 hour population error",
-                        submessage:
-                            (err && err.toString()) ||
-                            "24 hour population error",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Couldn't get population data",
+                    message:
+                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "24 hour population error",
+                    submessage:
+                        (err && err.toString()) || "24 hour population error",
+                });
                 setPopulation24HoursData(null);
             });
 
@@ -137,22 +121,17 @@ const Live = (props) => {
                 setPlayerAndLFMCountData(val);
             })
             .catch((err) => {
-                setPopupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Couldn't get population data",
-                        message:
-                            "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) ||
-                            "Current population error",
-                        submessage:
-                            (err && err.toString()) ||
-                            "Current population error",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Couldn't get population data",
+                    message:
+                        "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Current population error",
+                    submessage:
+                        (err && err.toString()) || "Current population error",
+                });
                 setPlayerAndLFMCountData(null);
             });
 
@@ -188,14 +167,10 @@ const Live = (props) => {
                 subtitle="Live population and quick info"
             />
             <PopupMessage
-                page={"live/"}
-                messages={popupMessages}
+                page="live"
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        setPopupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
             />
             <div className="content-container">

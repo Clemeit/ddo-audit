@@ -16,40 +16,26 @@ import { Submit } from "../../services/ReportIssueService";
 
 const PopupMessage = (props) => {
     var [userClosed, set_userClosed] = React.useState(false);
-    var [currentMessageType, set_currentMessageType] = React.useState("");
-    var [currentTitle, set_currentTitle] = React.useState("");
-    var [currentMessage, set_currentMessage] = React.useState("");
-    var [currentSubmessage, set_currentSubmessage] = React.useState("");
-    var [currentFullscreen, set_currentFullscreen] = React.useState(false);
-    var [currentReportMessage, set_currentReportMessage] =
-        React.useState(false);
-    var [currentIcon, set_currentIcon] = React.useState("info");
-    var [visibilityclass, set_visibilityClass] = React.useState("");
+    var [visible, setVisible] = React.useState("");
     var [reported, set_reported] = React.useState(false);
+
     React.useEffect(() => {
-        if (props.messages.length) {
-            if (!userClosed) {
-                set_currentMessageType(props.messages[0].messageType);
-                set_currentTitle(props.messages[0].title);
-                set_currentMessage(props.messages[0].message);
-                set_currentSubmessage(props.messages[0].submessage);
-                set_currentFullscreen(props.messages[0].fullscreen);
-                set_currentReportMessage(props.messages[0].reportMessage);
-                set_currentIcon(props.messages[0].icon);
-                set_visibilityClass("visible");
-            }
+        if (props.message) {
+            setVisible(true);
         } else {
-            set_visibilityClass("hidden");
+            setVisible(false);
         }
-    }, [props.messages]);
+    }, [props.message]);
+
     function displayIcon() {
-        switch (currentMessageType) {
+        if (!props.message) return;
+        switch (props.message.messageType) {
             case "all servers offline" |
                 "some servers offline" |
                 "all servers online":
                 return <InfoSVG style={{ marginRight: "10px" }} />;
             default:
-                switch (currentIcon) {
+                switch (props.message.icon) {
                     case "info":
                         return <InfoSVG style={{ marginRight: "10px" }} />;
                     case "warning":
@@ -62,7 +48,8 @@ const PopupMessage = (props) => {
         }
     }
     function getTitle() {
-        switch (currentMessageType) {
+        if (!props.message) return;
+        switch (props.message.messageType) {
             case "all servers offline":
                 return "Servers Offline";
             case "some servers offline":
@@ -70,11 +57,12 @@ const PopupMessage = (props) => {
             case "all servers online":
                 return "Servers Online";
             default:
-                return currentTitle;
+                return props.message.title;
         }
     }
     function getMessage() {
-        switch (currentMessageType) {
+        if (!props.message) return;
+        switch (props.message.messageType) {
             case "all servers offline":
                 return "The game servers are temporarily offline.";
             case "some servers offline":
@@ -82,118 +70,133 @@ const PopupMessage = (props) => {
             case "all servers online":
                 return "The game servers are online.";
             default:
-                return currentMessage;
+                return props.message.message;
         }
     }
     return (
-        <div>
-            {props.messages.length & currentFullscreen ? (
-                <div
-                    className="overlay"
-                    onClick={function () {
-                        props.popMessage();
-                        set_userClosed(true);
-                    }}
-                />
+        <div
+            className={
+                props.message != null
+                    ? props.message.fullscreen
+                        ? "absolute-center"
+                        : ""
+                    : ""
+            }
+        >
+            {props.message ? (
+                props.message.fullscreen && (
+                    <div
+                        className="overlay"
+                        onClick={function () {
+                            props.popMessage();
+                            set_userClosed(true);
+                        }}
+                    />
+                )
             ) : (
                 <></>
             )}
-            <div
-                className={"popup-message " + visibilityclass}
-                onClick={() => {
-                    if (currentReportMessage === undefined) {
-                        props.popMessage();
-                        set_userClosed(true);
-                    }
-                }}
-            >
-                <CloseSVG
-                    className="link-icon"
-                    style={{
-                        position: "absolute",
-                        top: "5px",
-                        right: "5px",
-                        cursor: "pointer",
-                    }}
-                    onClick={function () {
-                        props.popMessage();
-                        set_userClosed(true);
-                    }}
-                />
+            {props.message && (
                 <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        paddingBottom: "5px",
+                    style={{ visibility: visible ? "visible" : "hidden" }}
+                    className={
+                        "popup-message " +
+                        (props.message.fullscreen ? " fullscreen" : "")
+                    }
+                    onClick={() => {
+                        if (props.message.reportMessage === undefined) {
+                            props.popMessage();
+                            set_userClosed(true);
+                        }
                     }}
                 >
-                    {displayIcon()}
-                    <h2
+                    <CloseSVG
+                        className="link-icon"
                         style={{
-                            padding: "0px",
-                            margin: "0px",
-                            fontSize: "1.6rem",
+                            position: "absolute",
+                            top: "5px",
+                            right: "5px",
+                            cursor: "pointer",
                         }}
-                    >
-                        {getTitle()}
-                    </h2>
-                </div>
-                {/* <p style={{ marginBottom: "0px" }}>{getMessage()}</p> */}
-                <p style={{ marginBottom: "0px", fontSize: "1.3rem" }}>
-                    {getMessage()}
-                </p>
-                {currentSubmessage && (
-                    <p
-                        style={{
-                            marginBottom: "0px",
-                            fontSize: "1.3rem",
-                            color: "var(--text-xfaded)",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
+                        onClick={function () {
+                            props.popMessage();
+                            set_userClosed(true);
                         }}
-                    >
-                        Reason: {currentSubmessage}
-                    </p>
-                )}
-                {currentReportMessage && (
+                    />
                     <div
-                        id="action-button-container"
                         style={{
-                            justifyContent: "flex-end",
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            paddingBottom: "5px",
                         }}
                     >
-                        <div
-                            className={
-                                "secondary-button should-invert full-width-mobile" +
-                                (reported ? " disabled" : "")
-                            }
-                            onClick={() => {
-                                if (reported === false) {
-                                    Submit(
-                                        "User reported issue from " +
-                                            props.page +
-                                            " popup",
-                                        currentSubmessage ||
-                                            currentReportMessage
-                                    );
-                                    set_reported(true);
-                                    set_userClosed(true);
-                                }
+                        {displayIcon()}
+                        <h2
+                            style={{
+                                padding: "0px",
+                                margin: "0px",
+                                fontSize: "1.6rem",
                             }}
                         >
-                            {reported ? "Thanks!" : "Report Issue"}
-                        </div>
-                        <div
-                            className="primary-button should-invert full-width-mobile"
-                            onClick={() => window.location.reload()}
-                        >
-                            Refresh Page
-                        </div>
+                            {getTitle()}
+                        </h2>
                     </div>
-                )}
-            </div>
+                    <span style={{ marginBottom: "0px", fontSize: "1.3rem" }}>
+                        {getMessage()}
+                    </span>
+                    {props.message.submessage && (
+                        <p
+                            style={{
+                                marginBottom: "0px",
+                                fontSize: "1.3rem",
+                                color: "var(--text-xfaded)",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            Reason: {props.message.submessage}
+                        </p>
+                    )}
+                    {props.message.reportMessage && (
+                        <div
+                            id="action-button-container"
+                            style={{
+                                justifyContent: "flex-end",
+                            }}
+                        >
+                            <div
+                                className={
+                                    "secondary-button should-invert full-width-mobile" +
+                                    (reported ? " disabled" : "")
+                                }
+                                onClick={() => {
+                                    if (reported === false) {
+                                        Submit(
+                                            "User reported issue from " +
+                                                props.page +
+                                                " popup",
+                                            props.message.submessage ||
+                                                props.message.reportMessage
+                                        );
+                                        set_reported(true);
+                                        set_userClosed(true);
+                                    }
+                                }}
+                            >
+                                {reported ? "Thanks!" : "Report Issue"}
+                            </div>
+                            <div
+                                className="primary-button should-invert full-width-mobile"
+                                onClick={() => window.location.reload()}
+                            >
+                                Refresh Page
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

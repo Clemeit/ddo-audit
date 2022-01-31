@@ -7,6 +7,7 @@ import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as SortSVG } from "../../assets/global/sort.svg";
 import { ReactComponent as ArrowRightSVG } from "../../assets/global/arrow_right.svg";
 import ContentCluster from "../global/ContentCluster";
+import PopupMessage from "../global/PopupMessage";
 
 const Guilds = (props) => {
     const TITLE = "Guild Search";
@@ -248,16 +249,14 @@ const Guilds = (props) => {
             })
             .catch(() => {
                 setIsRunning(false);
-                setPopupMessages([
-                    {
-                        title: "Failed to run audit",
-                        message:
-                            "The report timed out. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "Activity report timed out",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Failed to run audit",
+                    message:
+                        "The report timed out. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Activity report timed out",
+                });
             });
     }
 
@@ -278,21 +277,19 @@ const Guilds = (props) => {
             })
             .catch(() => {
                 setIsRunning(false);
-                setPopupMessages([
-                    {
-                        title: "Failed to fetch guild",
-                        message:
-                            "We were unable to find this guild. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "Guild report timed out",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Failed to fetch guild",
+                    message:
+                        "We were unable to find this guild. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Guild report timed out",
+                });
             });
     }
 
     // Popup message
-    var [popupMessages, setPopupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     return (
         <div>
@@ -320,16 +317,13 @@ const Guilds = (props) => {
                 componentReference={reportFormReference}
                 hideReportForm={hideReportForm}
             /> */}
-            {/* <PopupMessage
-                messages={popupMessages}
+            <PopupMessage
+                page="guilds"
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        set_popupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
-            /> */}
+            />
             <Banner
                 small={true}
                 showTitle={true}

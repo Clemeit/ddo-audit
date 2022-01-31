@@ -563,7 +563,7 @@ const WhoSpecific = (props) => {
                             setLastFetchTime(Date.now());
                             setAttemptedPlayerFetch(true);
                             if (VerifyPlayerData(val)) {
-                                setPopupMessages([]);
+                                setPopupMessage(null);
                                 failedAttemptRef.current = 0;
                                 setFailedAttemptCount(failedAttemptRef.current);
                                 setPlayerData({
@@ -574,20 +574,17 @@ const WhoSpecific = (props) => {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);
                                 if (failedAttemptRef.current > 5) {
-                                    setPopupMessages([
-                                        ...popupMessages,
-                                        {
-                                            title: "Something went wrong",
-                                            message:
-                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                            icon: "warning",
-                                            fullscreen: false,
-                                            reportMessage:
-                                                val === null
-                                                    ? "Player data returned null"
-                                                    : "Player data verification failed",
-                                        },
-                                    ]);
+                                    setPopupMessage({
+                                        title: "Something went wrong",
+                                        message:
+                                            "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                        icon: "warning",
+                                        fullscreen: false,
+                                        reportMessage:
+                                            val === null
+                                                ? "Player data returned null"
+                                                : "Player data verification failed",
+                                    });
                                 } else {
                                     recheck = setTimeout(() => {
                                         FetchPlayerData();
@@ -601,20 +598,17 @@ const WhoSpecific = (props) => {
                             setLastFetchTime(Date.now());
                             setAttemptedPlayerFetch(true);
                             if (failedAttemptRef.current > 5) {
-                                setPopupMessages([
-                                    ...popupMessages,
-                                    {
-                                        title: "Couldn't fetch player data",
-                                        message:
-                                            "Try refreshing the page. If the issue continues, please report it.",
-                                        submessage: err && err.toString(),
-                                        icon: "warning",
-                                        fullscreen: false,
-                                        reportMessage:
-                                            (err && err.toString()) ||
-                                            "Player data generic error (timeout?)",
-                                    },
-                                ]);
+                                setPopupMessage({
+                                    title: "Couldn't fetch player data",
+                                    message:
+                                        "Try refreshing the page. If the issue continues, please report it.",
+                                    submessage: err && err.toString(),
+                                    icon: "warning",
+                                    fullscreen: false,
+                                    reportMessage:
+                                        (err && err.toString()) ||
+                                        "Player data generic error (timeout?)",
+                                });
                             } else {
                                 recheck = setTimeout(() => {
                                     FetchPlayerData();
@@ -627,22 +621,17 @@ const WhoSpecific = (props) => {
                 failedAttemptRef.current++;
                 setFailedAttemptCount(failedAttemptRef.current);
                 if (failedAttemptRef.current > 5) {
-                    setPopupMessages([
-                        ...popupMessages,
-                        {
-                            title: "Couldn't fetch server data",
-                            message:
-                                "Try refreshing the page. If the issue continues, please report it.",
-                            submessage:
-                                (err && err.toString()) ||
-                                "Server status timeout",
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage:
-                                (err && err.toString()) ||
-                                "Server status timeout",
-                        },
-                    ]);
+                    setPopupMessage({
+                        title: "Couldn't fetch server data",
+                        message:
+                            "Try refreshing the page. If the issue continues, please report it.",
+                        submessage:
+                            (err && err.toString()) || "Server status timeout",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage:
+                            (err && err.toString()) || "Server status timeout",
+                    });
                 } else {
                     recheck = setTimeout(() => {
                         FetchPlayerData();
@@ -703,7 +692,7 @@ const WhoSpecific = (props) => {
     }
 
     // Popup message
-    var [popupMessages, setPopupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     function getServerNamePossessive() {
         return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
@@ -736,13 +725,9 @@ const WhoSpecific = (props) => {
                 />
                 <PopupMessage
                     page={"who/" + currentServer.toLowerCase()}
-                    messages={popupMessages}
+                    message={popupMessage}
                     popMessage={() => {
-                        if (popupMessages.length) {
-                            let newMessages = [...popupMessages];
-                            newMessages = newMessages.slice(1);
-                            setPopupMessages(newMessages);
-                        }
+                        setPopupMessage(null);
                     }}
                 />
                 <div

@@ -44,17 +44,14 @@ const ServersSpecific = () => {
                 set_serverStatusData(val);
             })
             .catch(() => {
-                set_popupMessages([
-                    ...popupMessages,
-                    {
-                        title: "Can't Determine Server Status",
-                        message:
-                            "We weren't able to check on the servers. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "Could not fetch ServerStatus. Timeout",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Can't Determine Server Status",
+                    message:
+                        "We weren't able to check on the servers. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Could not fetch ServerStatus. Timeout",
+                });
             });
         async function fetchArbitraryData(url, type) {
             let response = await fetch(url);
@@ -75,7 +72,7 @@ const ServersSpecific = () => {
         return () => clearInterval(interval);
     }, []);
     // Popup message
-    var [popupMessages, set_popupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     function getServerNamePossessive() {
         return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
@@ -106,14 +103,10 @@ const ServersSpecific = () => {
                 subtitle={currentServer}
             />
             <PopupMessage
-                page="grouping"
-                messages={popupMessages}
+                page={"servers/" + currentServer}
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        set_popupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
             />
             <div className="content-container" style={{ height: "2000px" }}>

@@ -100,32 +100,28 @@ const Quests = (props) => {
                         clearTimeout(updateTime);
                         set_ellapsedTime(new Date() - starttime);
                         set_isRunning(false);
-                        set_popupMessages([
-                            {
-                                title: "Failed to run audit",
-                                message:
-                                    "The report timed out. You can refresh the page or report the issue.",
-                                icon: "warning",
-                                fullscreen: false,
-                                reportMessage: "Activity report timed out",
-                            },
-                        ]);
+                        setPopupMessage({
+                            title: "Failed to run audit",
+                            message:
+                                "The report timed out. You can refresh the page or report the issue.",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage: "Activity report timed out",
+                        });
                     });
             })
             .catch(() => {
                 clearTimeout(updateTime);
                 set_ellapsedTime(new Date() - starttime);
                 set_isRunning(false);
-                set_popupMessages([
-                    {
-                        title: "Failed to run audit",
-                        message:
-                            "The report timed out. You can refresh the page or report the issue.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage: "Activity report timed out",
-                    },
-                ]);
+                setPopupMessage({
+                    title: "Failed to run audit",
+                    message:
+                        "The report timed out. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Activity report timed out",
+                });
             });
     }
 
@@ -519,7 +515,7 @@ const Quests = (props) => {
     }
 
     // Popup message
-    var [popupMessages, set_popupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
     return (
         <div>
@@ -548,16 +544,13 @@ const Quests = (props) => {
                 componentReference={reportFormReference}
                 hideReportForm={hideReportForm}
             /> */}
-            {/* <PopupMessage
-                messages={popupMessages}
+            <PopupMessage
+                page="quests"
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        set_popupMessages(newMessages);
-                    }
+                    setPopupMessage(null);
                 }}
-            /> */}
+            />
             <Banner
                 small={true}
                 showTitle={true}

@@ -37,38 +37,31 @@ const Grouping = (props) => {
             Fetch("https://www.playeraudit.com/api/groups", 5000)
                 .then((val) => {
                     if (VerifyLfmData(val)) {
-                        set_popupMessages([]);
+                        setPopupMessage(null);
                         set_groupData(val);
                     } else {
-                        set_popupMessages([
-                            ...popupMessages,
-                            {
-                                title: "Something went wrong",
-                                message:
-                                    "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                                icon: "warning",
-                                fullscreen: false,
-                                reportMessage:
-                                    JSON.stringify(val) ||
-                                    "Group data returned null",
-                            },
-                        ]);
+                        setPopupMessage({
+                            title: "Something went wrong",
+                            message:
+                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                            icon: "warning",
+                            fullscreen: false,
+                            reportMessage:
+                                JSON.stringify(val) ||
+                                "Group data returned null",
+                        });
                         set_groupData(null);
                     }
                 })
                 .catch(() => {
-                    set_popupMessages([
-                        ...popupMessages,
-                        {
-                            title: "We're stuck on a loading screen",
-                            message:
-                                "This is taking longer than usual. You can refresh the page or report the issue.",
-                            icon: "warning",
-                            fullscreen: false,
-                            reportMessage:
-                                "Could not fetch Group data. Timeout",
-                        },
-                    ]);
+                    setPopupMessage({
+                        title: "We're stuck on a loading screen",
+                        message:
+                            "This is taking longer than usual. You can refresh the page or report the issue.",
+                        icon: "warning",
+                        fullscreen: false,
+                        reportMessage: "Could not fetch Group data. Timeout",
+                    });
                 });
         }
         FetchLfmData();
@@ -129,7 +122,7 @@ const Grouping = (props) => {
     }
 
     // Popup message
-    var [popupMessages, set_popupMessages] = React.useState([]);
+    var [popupMessage, setPopupMessage] = React.useState([]);
 
     return (
         <div>
@@ -149,13 +142,9 @@ const Grouping = (props) => {
             />
             <PopupMessage
                 page="grouping"
-                messages={popupMessages}
+                message={popupMessage}
                 popMessage={() => {
-                    if (popupMessages.length) {
-                        let newMessages = [...popupMessages];
-                        newMessages = newMessages.slice(1);
-                        set_popupMessages(newMessages);
-                    }
+                    setPopupMessage(newMessage);
                 }}
             />
             <Card
