@@ -42,7 +42,7 @@ const ContentCluster = (props) => {
                 }}
             />
             {props.description && (
-                <span
+                <div
                     style={{
                         textAlign: "justify",
                         fontSize: "1.5rem",
@@ -50,10 +50,11 @@ const ContentCluster = (props) => {
                         color: props.noFade
                             ? "var(--text)"
                             : "var(--text-faded)",
+                        marginBottom: "1rem",
                     }}
                 >
                     {props.description}
-                </span>
+                </div>
             )}
             {props.children}
         </section>
