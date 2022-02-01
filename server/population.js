@@ -9,6 +9,7 @@ module.exports = function (api) {
 		["dailydistribution", "dailydistributionquarter"],
 		["leveldistribution", "leveldistributionquarter"],
 		["classdistribution", "classdistributionquarter"],
+		["racedistribution", "racedistributionquarter"],
 	];
 
 	population.forEach((entry) => {
