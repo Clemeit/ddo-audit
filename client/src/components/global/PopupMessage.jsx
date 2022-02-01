@@ -161,7 +161,7 @@ const PopupMessage = (props) => {
                     )}
                     {props.message.reportMessage && (
                         <div
-                            id="action-button-container"
+                            className="action-button-container"
                             style={{
                                 justifyContent: "flex-end",
                             }}

@@ -645,7 +645,7 @@ const GroupingSpecific = (props) => {
                                 </p>
                             </span>
                             <div
-                                id="action-button-container"
+                                className="action-button-container"
                                 style={{
                                     width: "100%",
                                     padding: "0px 20px",

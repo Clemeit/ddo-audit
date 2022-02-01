@@ -189,8 +189,7 @@ const Directory = (props) => {
                 <div className="top-content-padding" />
                 {mayVote && (
                     <div
-                        className="show-on-mobile"
-                        id="action-button-container"
+                        className="action-button-container show-on-mobile"
                         style={{
                             flexDirection: "row",
                             marginTop: "-25px",
@@ -218,7 +217,7 @@ const Directory = (props) => {
                 )}
                 {voteMessage && (
                     <div
-                        id="action-button-container"
+                        className="action-button-container"
                         style={{
                             marginTop: "-25px",
                             marginBottom: "15px",

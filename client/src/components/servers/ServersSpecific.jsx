@@ -5,6 +5,8 @@ import Banner from "../global/Banner";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
+import UniqueCountsSubtitle from "../old/UniqueCountsSubtitle";
+import ContentCluster from "../global/ContentCluster";
 
 const ServersSpecific = () => {
     const TITLE = "Server Status and Demographics";
@@ -110,8 +112,15 @@ const ServersSpecific = () => {
                 }}
             />
             <div className="content-container" style={{ height: "2000px" }}>
-                <BannerMessage className="push-on-mobile" page="servers" />
-                <div className="top-content-padding hide-on-mobile" />
+                <BannerMessage
+                    /*className="push-on-mobile"*/ page={"servers"}
+                />
+                <div className="top-content-padding shrink-on-mobile" />
+                <ContentCluster
+                    title={`Demographics of ${currentServer}`}
+                    altTitle="Demographics"
+                    description={<UniqueCountsSubtitle />}
+                ></ContentCluster>
             </div>
         </div>
     );

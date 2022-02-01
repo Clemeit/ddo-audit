@@ -115,14 +115,12 @@ const Directory = (props) => {
                             color: "var(--text-player-number)",
                         }}
                     >{`${server.UniquePlayers} unique players`}</span>
-                    <span style={{ opacity: "0.7" }}> (quarterly)</span>
                     <br />
                     <span
                         style={{
                             color: "var(--text-lfm-number)",
                         }}
                     >{`${server.UniqueGuilds} unique guilds`}</span>
-                    <span style={{ opacity: "0.7" }}> (quarterly)</span>
                 </p>
             ));
     }
@@ -138,6 +136,8 @@ const Directory = (props) => {
     const [levelDistributionData, setLevelDistributionData] =
         React.useState(null);
     const [classDistributionData, setClassDistributionData] =
+        React.useState(null);
+    const [raceDistributionData, setRaceDistributionData] =
         React.useState(null);
     function refreshServerStatus() {
         Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
@@ -198,6 +198,13 @@ const Directory = (props) => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+        Fetch("https://api.ddoaudit.com/population/racedistribution", 3000)
+            .then((val) => {
+                setRaceDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
 
         refreshServerStatus();
         const interval = setInterval(() => refreshServerStatus(), 60000);
@@ -249,7 +256,7 @@ const Directory = (props) => {
                 }}
             />
             <div className="content-container">
-                <BannerMessage className="push-on-mobile" page="servers" />
+                <BannerMessage /*className="push-on-mobile">*/ page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
@@ -276,6 +283,17 @@ const Directory = (props) => {
                             </Link>
                         ))}
                     </div>
+                    <p
+                        style={{
+                            fontSize: "1.2rem",
+                            lineHeight: "normal",
+                            color: "var(--text-faded)",
+                            marginTop: "20px",
+                            marginBottom: "0px",
+                        }}
+                    >
+                        Unique player counts are based on the last quarter.
+                    </p>
                 </ContentCluster>
                 <ContentCluster
                     title="Server Population Distribution"
@@ -363,8 +381,7 @@ const Directory = (props) => {
                     title="Population Distribution by Class"
                     description={
                         <>
-                            Average percentage of the population population for
-                            each class.{" "}
+                            Average percentage of the population for each class.{" "}
                             <span className="lfm-number">
                                 Primary class only{" "}
                                 <span
@@ -404,6 +421,33 @@ const Directory = (props) => {
                         legendOffset={40}
                         dataIncludesColors={true}
                         paddingBottom={60}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Population Distribution by Race"
+                    description={
+                        <>
+                            Average percentage of the population for each race.{" "}
+                            <span className="lfm-number">
+                                Bank characters were filtered out of this report{" "}
+                                <span
+                                    className="faux-link"
+                                    onClick={() =>
+                                        readAbout("filter banks characters")
+                                    }
+                                >
+                                    (read more)
+                                </span>
+                            </span>
+                            .
+                        </>
+                    }
+                >
+                    <ChartPie
+                        data={raceDistributionData}
+                        hideCustomLegend={true}
+                        innerRadius={0.5}
+                        arcLabelsRadiusOffset={0.5}
                     />
                 </ContentCluster>
                 <ContentCluster title="See Also...">

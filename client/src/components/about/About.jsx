@@ -166,7 +166,7 @@ const About = (props) => {
                         feedback and suggestions!
                     </p>
                     <div
-                        id="action-button-container"
+                        className="action-button-container"
                         style={{ justifyContent: "flex-start" }}
                     >
                         <a

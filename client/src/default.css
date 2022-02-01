@@ -181,6 +181,7 @@ body {
 
 #banner-image {
     position: fixed;
+    /* transform: translateY(50%); */
     z-index: 2;
     background-image: linear-gradient(
             to bottom,
@@ -207,12 +208,14 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    position: fixed;
-    width: 100%;
-    top: 140px;
+    position: relative;
+    /* width: 100%; */
+    /* top: 140px; */
+    /* height: 500px; */
     z-index: 3;
     padding: 0px 20px;
     user-select: none;
+    /* transition: height 200ms ease; */
 }
 
 #main-title {
@@ -228,7 +231,7 @@ body {
     color: white;
 }
 
-#action-button-container {
+.action-button-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -236,6 +239,14 @@ body {
     gap: 10px;
     margin-top: 20px;
     color: var(--text);
+}
+
+.action-button-container.vote-buttons {
+    line-height: 24px;
+    flex-direction: row;
+    position: absolute;
+    width: 100%;
+    transition: opacity 500ms ease;
 }
 
 #theme-icon {
@@ -295,7 +306,7 @@ body {
 }
 
 @media (max-width: 600px) {
-    #action-button-container {
+    .action-button-container {
         flex-direction: column;
         --push-height: 300px;
     }
@@ -1128,6 +1139,14 @@ input[type="radio"] {
     filter: brightness(125%);
 }
 
+.banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: props.small ? "220px" : "500px */
+    width: 100%;
+}
+
 .guild-table {
     font-size: 1.5rem;
     width: 100%;
@@ -1360,16 +1379,16 @@ h2:hover .anchor-link {
 }
 
 @media (max-width: 900px) {
-    #banner-image {
+    /* #banner-image {
         height: var(--short-push-height);
-    }
+    } */
 
     #content-push-top {
         height: var(--short-push-height);
     }
 
-    #banner-text-container {
-        top: 30px;
+    .banner {
+        max-height: 200px;
     }
 
     .full-width-mobile {

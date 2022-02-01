@@ -1,17 +1,11 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Banner from "../global/Banner";
-// import QuickInfo from "../QuickInfo";
 import { Fetch } from "../../services/DataLoader";
-// import "./default.css";
-// import ReportIssueForm from "../ReportIssueForm";
 import PopupMessage from "../global/PopupMessage";
-import Card from "../global/Card";
 import QuickInfo from "./QuickInfo";
 import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
 import ChartLine from "../global/ChartLine";
 import ServerStatusDisplay from "../global/ServerStatusDisplay";
-// import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
-// import ChartPopulationHistory from "../ChartPopulationHistory";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { Link, useLocation } from "react-router-dom";

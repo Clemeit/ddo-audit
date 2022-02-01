@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
 import Endpoints from "./Endpoints";
 import ContentCluster from "../global/ContentCluster";
+import BannerMessage from "../global/BannerMessage";
 
 const Api = (props) => {
     const TITLE = "DDO Audit API";
@@ -37,6 +38,7 @@ const Api = (props) => {
                 subtitle="Use our data for your projects"
             />
             <div className="content-container">
+                <BannerMessage page="api" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="About the DDO Audit API">
                     <p

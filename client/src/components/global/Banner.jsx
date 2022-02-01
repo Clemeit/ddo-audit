@@ -25,16 +25,26 @@ const Banner = (props) => {
     const [voteMessage, set_voteMessage] = React.useState(null);
     const [mayVote, set_mayVote] = React.useState(false);
     React.useEffect(() => {
+        let showVoteButton;
         let ls = localStorage.getItem("last-major-vote");
         if (ls !== undefined && ls !== null) {
             let dt = new Date(ls);
             let mayvote =
                 new Date(localStorage.getItem("last-major-vote")) <=
                 new Date().getTime() - 1000 * 60 * 60 * 24 * 31;
-            set_mayVote(mayvote);
+            showVoteButton = setTimeout(() => {
+                set_mayVote(mayvote);
+            }, 1000);
+            // set_mayVote(mayvote);
         } else {
-            set_mayVote(true);
+            showVoteButton = setTimeout(() => {
+                set_mayVote(true);
+            }, 1000);
         }
+
+        return () => {
+            clearTimeout(showVoteButton);
+        };
     }, []);
 
     function vote(response) {
@@ -66,7 +76,11 @@ const Banner = (props) => {
                     : 30;
         }
 
-        $("#banner-text-container").css("top", `${offset - scrollTop / 2}px`);
+        $("#banner-text-container").css(
+            "transform",
+            `translateY(${scrollTop / 2}px)`
+        );
+        // $("#banner-image").css("top", `${-scrollTop / 6}px`);
         if (scrollTop > (props.small ? 40 : 180)) {
             if (isNavbarSolid === false) {
                 isNavbarSolid = true;
@@ -95,7 +109,10 @@ const Banner = (props) => {
 
     return (
         <div className={props.hideOnMobile ? "hide-on-mobile" : ""}>
-            <div>
+            <div
+                className="banner"
+                style={{ height: props.small ? "220px" : "500px" }}
+            >
                 <div
                     id="banner-image"
                     style={{
@@ -104,21 +121,24 @@ const Banner = (props) => {
                 />
                 <div
                     id="banner-text-container"
-                    style={{
-                        top: props.small
-                            ? "50px"
-                            : props.showButtons
-                            ? ""
-                            : "220px",
-                    }}
+                    // style={{
+                    //     top: props.small
+                    //         ? "50px"
+                    //         : props.showButtons
+                    //         ? ""
+                    //         : "220px",
+                    // }}
                 >
                     {props.showTitle && <h1 id="main-title">{props.title}</h1>}
                     {props.showSubtitle && (
                         <h2 id="main-subtitle">{props.subtitle}</h2>
                     )}
                     {props.showButtons && (
-                        <div className="hide-on-mobile">
-                            <div id="action-button-container">
+                        <div
+                            className="hide-on-mobile"
+                            style={{ position: "relative" }}
+                        >
+                            <div className="action-button-container">
                                 <a
                                     href="https://github.com/Clemeit/ddo-audit"
                                     rel="noreferrer"
@@ -143,33 +163,33 @@ const Banner = (props) => {
                                     </Link>
                                 )}
                             </div>
-                            {mayVote && (
-                                <div
-                                    id="action-button-container"
-                                    style={{ flexDirection: "row" }}
+                            <div
+                                className="action-button-container vote-buttons"
+                                style={{
+                                    opacity: mayVote ? 1 : 0,
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        fontSize: "large",
+                                        color: "white",
+                                    }}
                                 >
-                                    <span
-                                        style={{
-                                            fontSize: "large",
-                                            color: "white",
-                                        }}
-                                    >
-                                        New Website!
-                                    </span>
-                                    <ThumbsUpSVG
-                                        className="nav-icon"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => vote("Like")}
-                                    />
-                                    <ThumbsDownSVG
-                                        className="nav-icon"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => vote("Dislike")}
-                                    />
-                                </div>
-                            )}
+                                    New Website!
+                                </span>
+                                <ThumbsUpSVG
+                                    className="nav-icon"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => vote("Like")}
+                                />
+                                <ThumbsDownSVG
+                                    className="nav-icon"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => vote("Dislike")}
+                                />
+                            </div>
                             {voteMessage && (
-                                <div id="action-button-container">
+                                <div className="action-button-container vote-buttons">
                                     <span
                                         style={{
                                             fontSize: "large",
@@ -192,10 +212,10 @@ const Banner = (props) => {
                     </span>
                 </div>
             </div>
-            <div
+            {/* <div
                 id="content-push-top"
                 style={{ height: props.small ? "220px" : "" }}
-            />
+            /> */}
         </div>
     );
 };

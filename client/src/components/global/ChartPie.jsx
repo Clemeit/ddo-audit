@@ -76,6 +76,7 @@ const ChartPie = (props) => {
                         data={props.data.filter(
                             (series) => !excludedSeries.includes(series.id)
                         )}
+                        innerRadius={props.innerRadius || 0}
                         margin={{
                             top: isMobile ? 5 : 20,
                             right: isMobile ? 5 : 140,
@@ -109,7 +110,9 @@ const ChartPie = (props) => {
                             ).toFixed(1)}%`;
                         }}
                         arcLabelsSkipAngle={10}
-                        arcLabelsRadiusOffset={0.7}
+                        arcLabelsRadiusOffset={
+                            props.arcLabelsRadiusOffset || 0.7
+                        }
                         arcLabelsTextColor={"white"}
                         // legends={[
                         //     {
@@ -144,12 +147,14 @@ const ChartPie = (props) => {
                     </div>
                 )}
             </div>
-            <CustomLegend
-                data={props.data}
-                isMobileLoaded={true}
-                excludedSeries={excludedSeries}
-                switchExcludedSeries={(id) => switchExcludedSeries(id)}
-            />
+            {!props.hideCustomLegend && (
+                <CustomLegend
+                    data={props.data}
+                    isMobileLoaded={true}
+                    excludedSeries={excludedSeries}
+                    switchExcludedSeries={(id) => switchExcludedSeries(id)}
+                />
+            )}
         </div>
     );
 };
