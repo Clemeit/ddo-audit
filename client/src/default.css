@@ -90,6 +90,9 @@
     --secondary-button-border: var(--highlight-blue-3);
 
     --faded-blue: #d9dbe6;
+
+    --beta: #f18ddc;
+    --soon: #e48e59;
 }
 
 .dark-theme {
@@ -138,6 +141,9 @@
     --secondary-button-border: var(--text);
 
     --faded-blue: rgb(42, 45, 46);
+
+    --beta: #b64fa0;
+    --soon: #d3753e;
 }
 
 html {
@@ -596,6 +602,9 @@ html {
 .content-option-title {
     color: var(--text);
     margin: 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .content-option-description {
@@ -1376,6 +1385,24 @@ h2:hover .anchor-link {
 
 .faux-link:hover {
     text-decoration: underline;
+}
+
+.beta-tag {
+    background-color: var(--beta);
+    padding: 4px 7px;
+    font-size: 1rem;
+    width: min-content;
+    border-radius: 5px;
+    font-weight: bolder;
+}
+
+.soon-tag {
+    background-color: var(--soon);
+    padding: 4px 7px;
+    font-size: 1rem;
+    width: min-content;
+    border-radius: 5px;
+    font-weight: bolder;
 }
 
 @media (max-width: 900px) {

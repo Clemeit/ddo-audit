@@ -52,9 +52,7 @@ const Trends = (props) => {
                 <NoMobileOptimization />
                 <ContentCluster
                     title="Server Population Trends"
-                    description="The last year of trend data for each server. Display as
-                        individual servers, a composite overlay with all
-                        servers, or a combined total population."
+                    description="The last year of trend data for each server displayed as weekly averages. All server downtimes are ignored."
                 >
                     <ChartLine
                         data={population1Year}

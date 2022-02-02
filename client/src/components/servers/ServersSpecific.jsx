@@ -111,16 +111,21 @@ const ServersSpecific = () => {
                     setPopupMessage(null);
                 }}
             />
-            <div className="content-container" style={{ height: "2000px" }}>
-                <BannerMessage
-                    /*className="push-on-mobile"*/ page={"servers"}
-                />
+            <div className="content-container">
+                <BannerMessage page={"servers"} />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster
-                    title={`Demographics of ${currentServer}`}
+                    title={`Race of ${currentServer}`}
                     altTitle="Demographics"
                     description={<UniqueCountsSubtitle />}
-                ></ContentCluster>
+                >
+                    <ChartPie
+                        data={null}
+                        hideCustomLegend={true}
+                        innerRadius={0.5}
+                        arcLabelsRadiusOffset={0.5}
+                    />
+                </ContentCluster>
             </div>
         </div>
     );

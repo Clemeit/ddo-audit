@@ -49,6 +49,7 @@ const Directory = (props) => {
                     description:
                         "Content popularity, average completion times, and XP/minute.",
                     to: "/quests",
+                    beta: true,
                 },
                 {
                     icon: (
@@ -57,6 +58,7 @@ const Directory = (props) => {
                     title: "Guild Activity",
                     description: "Guild size, activity, and members lists.",
                     to: "/guilds",
+                    unavailable: true,
                 },
                 {
                     icon: (
@@ -249,6 +251,16 @@ const Directory = (props) => {
                                         {option.icon}
                                         <h2 className="content-option-title">
                                             {option.title}
+                                            {option.beta != null && (
+                                                <div className="beta-tag">
+                                                    BETA
+                                                </div>
+                                            )}
+                                            {option.unavailable != null && (
+                                                <div className="soon-tag">
+                                                    SOON
+                                                </div>
+                                            )}
                                         </h2>
                                     </div>
                                     <p className="content-option-description">
