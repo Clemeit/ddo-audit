@@ -21,7 +21,8 @@ api.options("*", cors());
 // app.options("*", cors());
 
 // Major endpoints
-require("./population")(api);
+require("./Endpoints/Population")(api);
+require("./Endpoints/Demographics")(api);
 
 // Firebase
 initializeApp({
@@ -32,7 +33,7 @@ initializeApp({
 // 	console.log(`Front-end listening on ${APP_PORT}`);
 // });
 
-// require("./ReportPopulationRaceDistribution");
+require("./ReportWorker");
 
 api.listen(API_PORT, () => {
 	console.log(`API listening on ${API_PORT}`);

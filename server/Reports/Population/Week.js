@@ -1,101 +1,82 @@
 const fs = require("fs");
 require("dotenv").config();
 
-function GetDateString(datetime) {
-	return `${datetime.getUTCFullYear()}-${
-		datetime.getUTCMonth() + 1
-	}-${datetime.getUTCDate()} ${datetime.getUTCHours()}-00-00`;
-}
+exports.runWeekReport = (population) => {
+	var t0 = new Date();
+	console.log("Running Weekly Population report");
 
-var t0 = new Date();
-console.log("Running: 'PopulationReportWeek'");
+	let Argonnessen = {
+		id: "Argonnessen",
+		color: "hsl(205, 70%, 41%)",
+		data: [],
+	};
+	let Cannith = {
+		id: "Cannith",
+		color: "hsl(28, 100%, 53%)",
+		data: [],
+	};
+	let Ghallanda = {
+		id: "Ghallanda",
+		color: "hsl(120, 57%, 40%)",
+		data: [],
+	};
+	let Khyber = {
+		id: "Khyber",
+		color: "hsl(360, 69%, 50%)",
+		data: [],
+	};
+	let Orien = {
+		id: "Orien",
+		color: "hsl(271, 39%, 57%)",
+		data: [],
+	};
+	let Sarlona = {
+		id: "Sarlona",
+		color: "hsl(10, 30%, 42%)",
+		data: [],
+	};
+	let Thelanis = {
+		id: "Thelanis",
+		color: "hsl(318, 66%, 68%)",
+		data: [],
+	};
+	let Wayfinder = {
+		id: "Wayfinder",
+		color: "hsl(0, 0%, 50%)",
+		data: [],
+	};
+	let Hardcore = {
+		id: "Hardcore",
+		color: "hsl(60, 70%, 44%)",
+		data: [],
+	};
+	let Total = {
+		id: "Total",
+		color: "hsl(208, 100%, 50%)",
+		data: [],
+	};
 
-var mysql = require("mysql");
-var con = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
-});
+	let lastHour = -1;
+	let entriesThisHour = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-con.connect(function (err) {
-	if (err) throw err;
-	let q =
-		"SELECT * FROM `population` WHERE `datetime` BETWEEN '" +
-		GetDateString(new Date(Date.now() - 60000 * 60 * (24 * 7 + 1))) +
-		"' AND '" +
-		GetDateString(new Date(Date.now())) +
-		"' ORDER BY `population`.`datetime` ASC;";
-	con.query(q, function (err, result, fields) {
-		if (err) throw err;
-
-		let Argonnessen = {
-			id: "Argonnessen",
-			color: "hsl(205, 70%, 41%)",
-			data: [],
-		};
-		let Cannith = {
-			id: "Cannith",
-			color: "hsl(28, 100%, 53%)",
-			data: [],
-		};
-		let Ghallanda = {
-			id: "Ghallanda",
-			color: "hsl(120, 57%, 40%)",
-			data: [],
-		};
-		let Khyber = {
-			id: "Khyber",
-			color: "hsl(360, 69%, 50%)",
-			data: [],
-		};
-		let Orien = {
-			id: "Orien",
-			color: "hsl(271, 39%, 57%)",
-			data: [],
-		};
-		let Sarlona = {
-			id: "Sarlona",
-			color: "hsl(10, 30%, 42%)",
-			data: [],
-		};
-		let Thelanis = {
-			id: "Thelanis",
-			color: "hsl(318, 66%, 68%)",
-			data: [],
-		};
-		let Wayfinder = {
-			id: "Wayfinder",
-			color: "hsl(0, 0%, 50%)",
-			data: [],
-		};
-		let Hardcore = {
-			id: "Hardcore",
-			color: "hsl(60, 70%, 44%)",
-			data: [],
-		};
-		let Total = {
-			id: "Total",
-			color: "hsl(208, 100%, 50%)",
-			data: [],
-		};
-
-		let lastHour = -1;
-		let entriesThisHour = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-		result.forEach(
-			({
-				datetime,
-				argonnessen_playercount,
-				cannith_playercount,
-				ghallanda_playercount,
-				khyber_playercount,
-				orien_playercount,
-				sarlona_playercount,
-				thelanis_playercount,
-				wayfinder_playercount,
-				hardcore_playercount,
-			}) => {
+	population.forEach(
+		({
+			datetime,
+			argonnessen_playercount,
+			cannith_playercount,
+			ghallanda_playercount,
+			khyber_playercount,
+			orien_playercount,
+			sarlona_playercount,
+			thelanis_playercount,
+			wayfinder_playercount,
+			hardcore_playercount,
+		}) => {
+			if (
+				new Date().getTime() - datetime.getTime() <=
+				1000 * 60 * 60 * 24 * 7
+			) {
+				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				datetime = new Date(Date.parse(datetime) - 60000 * 60 * 12);
 				let thisHour = new Date(Date.parse(datetime)).getUTCHours();
 				if (lastHour === -1) {
@@ -346,95 +327,93 @@ con.connect(function (err) {
 					}
 				}
 			}
-		);
-
-		// Report
-		for (let i = 0; i < 10; i++) {
-			if (entriesThisHour[i] === 0) {
-				entriesThisHour[i] = 1;
-			}
 		}
+	);
 
-		Argonnessen.data[Argonnessen.data.length - 1].y =
-			Math.round(
-				(Argonnessen.data[Argonnessen.data.length - 1].y /
-					entriesThisHour[0]) *
-					100
-			) / 100;
+	// Report
+	for (let i = 0; i < 10; i++) {
+		if (entriesThisHour[i] === 0) {
+			entriesThisHour[i] = 1;
+		}
+	}
 
-		Cannith.data[Cannith.data.length - 1].y =
-			Math.round(
-				(Cannith.data[Cannith.data.length - 1].y / entriesThisHour[1]) * 100
-			) / 100;
+	Argonnessen.data[Argonnessen.data.length - 1].y =
+		Math.round(
+			(Argonnessen.data[Argonnessen.data.length - 1].y /
+				entriesThisHour[0]) *
+				100
+		) / 100;
 
-		Ghallanda.data[Ghallanda.data.length - 1].y =
-			Math.round(
-				(Ghallanda.data[Ghallanda.data.length - 1].y / entriesThisHour[2]) *
-					100
-			) / 100;
+	Cannith.data[Cannith.data.length - 1].y =
+		Math.round(
+			(Cannith.data[Cannith.data.length - 1].y / entriesThisHour[1]) * 100
+		) / 100;
 
-		Khyber.data[Khyber.data.length - 1].y =
-			Math.round(
-				(Khyber.data[Khyber.data.length - 1].y / entriesThisHour[3]) * 100
-			) / 100;
+	Ghallanda.data[Ghallanda.data.length - 1].y =
+		Math.round(
+			(Ghallanda.data[Ghallanda.data.length - 1].y / entriesThisHour[2]) *
+				100
+		) / 100;
 
-		Orien.data[Orien.data.length - 1].y =
-			Math.round(
-				(Orien.data[Orien.data.length - 1].y / entriesThisHour[4]) * 100
-			) / 100;
+	Khyber.data[Khyber.data.length - 1].y =
+		Math.round(
+			(Khyber.data[Khyber.data.length - 1].y / entriesThisHour[3]) * 100
+		) / 100;
 
-		Sarlona.data[Sarlona.data.length - 1].y =
-			Math.round(
-				(Sarlona.data[Sarlona.data.length - 1].y / entriesThisHour[5]) * 100
-			) / 100;
+	Orien.data[Orien.data.length - 1].y =
+		Math.round(
+			(Orien.data[Orien.data.length - 1].y / entriesThisHour[4]) * 100
+		) / 100;
 
-		Thelanis.data[Thelanis.data.length - 1].y =
-			Math.round(
-				(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) *
-					100
-			) / 100;
+	Sarlona.data[Sarlona.data.length - 1].y =
+		Math.round(
+			(Sarlona.data[Sarlona.data.length - 1].y / entriesThisHour[5]) * 100
+		) / 100;
 
-		Wayfinder.data[Wayfinder.data.length - 1].y =
-			Math.round(
-				(Wayfinder.data[Wayfinder.data.length - 1].y / entriesThisHour[7]) *
-					100
-			) / 100;
+	Thelanis.data[Thelanis.data.length - 1].y =
+		Math.round(
+			(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) * 100
+		) / 100;
 
-		Hardcore.data[Hardcore.data.length - 1].y =
-			Math.round(
-				(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) *
-					100
-			) / 100;
+	Wayfinder.data[Wayfinder.data.length - 1].y =
+		Math.round(
+			(Wayfinder.data[Wayfinder.data.length - 1].y / entriesThisHour[7]) *
+				100
+		) / 100;
 
-		Total.data[Total.data.length - 1].y =
-			Math.round(
-				(Total.data[Total.data.length - 1].y / entriesThisHour[9]) * 100
-			) / 100;
+	Hardcore.data[Hardcore.data.length - 1].y =
+		Math.round(
+			(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) * 100
+		) / 100;
 
-		let nivoData = [
-			Argonnessen,
-			Cannith,
-			Ghallanda,
-			Khyber,
-			Orien,
-			Sarlona,
-			Thelanis,
-			Wayfinder,
-			Hardcore,
-			Total,
-		];
+	Total.data[Total.data.length - 1].y =
+		Math.round(
+			(Total.data[Total.data.length - 1].y / entriesThisHour[9]) * 100
+		) / 100;
 
-		nivoData.reverse();
+	let nivoData = [
+		Argonnessen,
+		Cannith,
+		Ghallanda,
+		Khyber,
+		Orien,
+		Sarlona,
+		Thelanis,
+		Wayfinder,
+		Hardcore,
+		Total,
+	];
 
-		fs.writeFile(
-			"api_v1/population/week.json",
-			JSON.stringify(nivoData),
-			(err) => {
-				if (err) throw err;
-			}
-		);
+	nivoData.reverse();
 
-		var t1 = new Date();
-		console.log(`Finished in ${t1 - t0}ms`);
-	});
-});
+	fs.writeFile(
+		"api_v1/population/week.json",
+		JSON.stringify(nivoData),
+		(err) => {
+			if (err) throw err;
+		}
+	);
+
+	var t1 = new Date();
+	console.log(`Finished in ${t1 - t0}ms`);
+};
