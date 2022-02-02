@@ -184,21 +184,21 @@ const Directory = (props) => {
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/leveldistribution", 3000)
+        Fetch("https://api.ddoaudit.com/demographics/leveldistribution", 3000)
             .then((val) => {
                 setLevelDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/classdistribution", 3000)
+        Fetch("https://api.ddoaudit.com/demographics/classdistribution", 3000)
             .then((val) => {
                 setClassDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/racedistribution", 3000)
+        Fetch("https://api.ddoaudit.com/demographics/racedistribution", 3000)
             .then((val) => {
                 setRaceDistributionData(val);
             })
