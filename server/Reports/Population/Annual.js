@@ -258,7 +258,7 @@ exports.runAnnualReport = (population) => {
 	output.reverse();
 
 	fs.writeFile(
-		"api_v1/population/year.json",
+		"../api_v1/population/year.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

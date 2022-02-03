@@ -192,7 +192,7 @@ exports.runHourlyDistribution = (population) => {
 	output.reverse();
 
 	fs.writeFile(
-		"api_v1/population/hourlydistributionquarter.json",
+		"../api_v1/population/hourlydistributionquarter.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

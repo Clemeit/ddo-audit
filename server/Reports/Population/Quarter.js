@@ -406,7 +406,7 @@ exports.runQuarterReport = (population) => {
 	nivoData.reverse();
 
 	fs.writeFile(
-		"api_v1/population/quarter.json",
+		"../api_v1/population/quarter.json",
 		JSON.stringify(nivoData),
 		(err) => {
 			if (err) throw err;

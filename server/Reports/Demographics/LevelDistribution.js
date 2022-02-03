@@ -1,6 +1,6 @@
 const fs = require("fs");
 require("dotenv").config();
-const { isPlayerActive } = require("../../IsPlayerActive");
+const { isPlayerActive } = require("../ActivePredicate");
 
 exports.runLevelDistribution = (players) => {
 	const IGNORE_DOWNTIME = true;
@@ -175,7 +175,7 @@ exports.runLevelDistribution = (players) => {
 	output.reverse();
 
 	fs.writeFile(
-		"api_v1/demographics/leveldistributionquarter.json",
+		"../api_v1/demographics/leveldistributionquarter.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

@@ -1,31 +1,20 @@
+const cron = require("node-cron");
+
 // Get data once, then run all of the reports using that data...
-const { ResultSetDependencies } = require("mathjs");
-const {
-	runClassDistribution,
-} = require("./Reports/Demographics/ClassDistribution");
-const {
-	runRaceDistribution,
-} = require("./Reports/Demographics/RaceDistribution");
-const {
-	runLevelDistribution,
-} = require("./Reports/Demographics/LevelDistribution");
+const { runClassDistribution } = require("./Demographics/ClassDistribution");
+const { runRaceDistribution } = require("./Demographics/RaceDistribution");
+const { runLevelDistribution } = require("./Demographics/LevelDistribution");
 
-const { runAnnualReport } = require("./Reports/Population/Annual");
-const { runQuarterReport } = require("./Reports/Population/Quarter");
-const { runWeekReport } = require("./Reports/Population/Week");
-const { runDayReport } = require("./Reports/Population/Day");
+const { runAnnualReport } = require("./Population/Annual");
+const { runQuarterReport } = require("./Population/Quarter");
+const { runWeekReport } = require("./Population/Week");
+const { runDayReport } = require("./Population/Day");
 
-const {
-	runDailyDistribution,
-} = require("./Reports/Population/DailyDistribution");
-const {
-	runHourlyDistribution,
-} = require("./Reports/Population/HourlyDistribution");
-const {
-	runServerDistribution,
-} = require("./Reports/Population/ServerDistribution");
+const { runDailyDistribution } = require("./Population/DailyDistribution");
+const { runHourlyDistribution } = require("./Population/HourlyDistribution");
+const { runServerDistribution } = require("./Population/ServerDistribution");
 
-var mysql = require("mysql");
+var mysql = require("mysql2");
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -174,21 +163,95 @@ con.connect((err) => {
 		});
 	}
 
-	// getClassData();
-	// getRaceData();
-	// getPlayerData((days = 90)).then(() => {
-	// 	runClassDistribution(players, classes);
-	// 	runRaceDistribution(players, races);
-	// 	runLevelDistribution(players);
-	// });
+	// Select which reports to run based on the time and day
+	let dayofweek = new Date().getUTCDay();
+	let hourofday = new Date().getUTCHours();
+	let minuteofhour = new Date().getUTCMinutes();
 
-	getPopulationData(365).then(() => {
-		runAnnualReport(population);
-		runQuarterReport(population);
-		runWeekReport(population);
-		runDayReport(population);
-		runDailyDistribution(population);
-		runHourlyDistribution(population);
-		runServerDistribution(population);
+	// Every week
+	cron.schedule("0 * * * 0", () => {
+		getPopulationData(365).then(() => {
+			runAnnualReport(population);
+			runQuarterReport(population);
+			runWeekReport(population);
+			runDailyDistribution(population);
+			runHourlyDistribution(population);
+			runServerDistribution(population);
+		});
 	});
+
+	// Every day
+	cron.schedule("0 0 * * 1-6", () => {
+		getPopulationData(365).then(() => {
+			runQuarterReport(population);
+			runWeekReport(population);
+			runDailyDistribution(population);
+			runHourlyDistribution(population);
+			runServerDistribution(population);
+		});
+
+		getClassData();
+		getRaceData();
+		getPlayerData((days = 91)).then(() => {
+			runClassDistribution(players, classes);
+			runRaceDistribution(players, races);
+			runLevelDistribution(players);
+		});
+	});
+
+	// Every hour
+	cron.schedule("0 0-22 * * *", () => {});
+
+	// Every 5 minutes
+	cron.schedule("0-55/5 * * * *", () => {
+		getPopulationData(1).then(() => {
+			runDayReport(population);
+		});
+	});
+
+	// Every minute
+	cron.schedule("* * * * *", () => {
+		// runServerStatusReport();
+	});
+
+	// if (dayofweek * hourofday * minuteofhour === 0) {
+	// 	// Run once per week
+	// 	console.log("Running weekly report...");
+	// 	getPopulationData(365).then(() => {
+	// 		runAnnualReport(population);
+	// 		runQuarterReport(population);
+	// 		runWeekReport(population);
+	// 		runDailyDistribution(population);
+	// 		runHourlyDistribution(population);
+	// 		runServerDistribution(population);
+	// 	});
+	// } else if (hourofday * minuteofhour === 0) {
+	// 	// Run once per day
+	// 	console.log("Running daily report...");
+	// 	getPopulationData(365).then(() => {
+	// 		runQuarterReport(population);
+	// 		runWeekReport(population);
+	// 		runDailyDistribution(population);
+	// 		runHourlyDistribution(population);
+	// 		runServerDistribution(population);
+	// 	});
+
+	// 	getClassData();
+	// 	getRaceData();
+	// 	getPlayerData((days = 91)).then(() => {
+	// 		runClassDistribution(players, classes);
+	// 		runRaceDistribution(players, races);
+	// 		runLevelDistribution(players);
+	// 	});
+	// } else if (minuteofhour === 0) {
+	// 	// Run once per hour
+	// } else if (minuteofhour % 5 === 0) {
+	// 	// Run every 5 minutes
+	// 	getPopulationData(1).then(() => {
+	// 		runDayReport(population);
+	// 	});
+	// } else {
+	// 	// Run every time (1 minute)
+	// 	// runServerStatusReport();
+	// }
 });

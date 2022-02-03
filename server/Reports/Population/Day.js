@@ -140,7 +140,7 @@ exports.runDayReport = (population) => {
 	nivoData.reverse();
 
 	fs.writeFile(
-		"api_v1/population/day.json",
+		"../api_v1/population/day.json",
 		JSON.stringify(nivoData),
 		(err) => {
 			if (err) throw err;

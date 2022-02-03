@@ -407,7 +407,7 @@ exports.runWeekReport = (population) => {
 	nivoData.reverse();
 
 	fs.writeFile(
-		"api_v1/population/week.json",
+		"../api_v1/population/week.json",
 		JSON.stringify(nivoData),
 		(err) => {
 			if (err) throw err;

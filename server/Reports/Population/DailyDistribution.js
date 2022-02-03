@@ -558,7 +558,7 @@ exports.runDailyDistribution = (population) => {
 	];
 
 	fs.writeFile(
-		"api_v1/population/dailydistributionquarter.json",
+		"../api_v1/population/dailydistributionquarter.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

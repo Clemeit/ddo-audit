@@ -10,6 +10,7 @@
 		"express": "^4.17.1",
 		"firebase-admin": "^10.0.2",
 		"mysql": "^2.18.1",
+		"mysql2": "^2.3.3",
 		"node-cron": "^3.0.0",
 		"performance": "^1.4.0",
 		"web-push": "^3.4.4"

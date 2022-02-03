@@ -1,6 +1,6 @@
 const fs = require("fs");
 require("dotenv").config();
-const { isPlayerActive } = require("../../IsPlayerActive");
+const { isPlayerActive } = require("../ActivePredicate");
 
 exports.runClassDistribution = (players, classes) => {
 	const IGNORE_DOWNTIME = true;
@@ -123,7 +123,7 @@ exports.runClassDistribution = (players, classes) => {
 	});
 
 	fs.writeFile(
-		"api_v1/demographics/classdistributionquarter.json",
+		"../api_v1/demographics/classdistributionquarter.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

@@ -161,7 +161,7 @@ exports.runServerDistribution = (population) => {
 	output.reverse();
 
 	fs.writeFile(
-		"api_v1/population/serverdistributionquarter.json",
+		"../api_v1/population/serverdistributionquarter.json",
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;
