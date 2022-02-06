@@ -561,6 +561,47 @@ const Endpoints = (props) => {
             ],
         },
         {
+            name: "Player Demographics",
+            path: "demographics/",
+            description:
+                "Information about player demographics, including level, class, and race distribution.",
+            sub: [
+                {
+                    endpoint: "leveldistribution",
+                    description: (
+                        <div>
+                            <p>
+                                Level distribution over the past quarter (92
+                                days).
+                            </p>
+                        </div>
+                    ),
+                },
+                {
+                    endpoint: "classdistribution",
+                    description: (
+                        <div>
+                            <p>
+                                Class distribution over the past quarter (92
+                                days).
+                            </p>
+                        </div>
+                    ),
+                },
+                {
+                    endpoint: "racedistribution",
+                    description: (
+                        <div>
+                            <p>
+                                Race distribution over the past quarter (92
+                                days).
+                            </p>
+                        </div>
+                    ),
+                },
+            ],
+        },
+        {
             name: "Group Data",
             path: "groups/",
             description:
@@ -645,6 +686,125 @@ const Endpoints = (props) => {
                 {
                     endpoint: "wayfinder",
                     description: PlayerDataDescription,
+                },
+            ],
+        },
+        {
+            name: "Game Status",
+            path: "gamestatus/",
+            description:
+                "Information about the current status of the game can be obtained from the /gamestatus subdirectory, including server status and current population/LFM count.",
+            sub: [
+                {
+                    endpoint: "populationoverview",
+                    description: (
+                        <div>
+                            <p style={{ marginBottom: "5px" }}>
+                                Returns the current population and LFM count of
+                                each server. The data is returned as an array of{" "}
+                                <span style={{ color: "var(--green-text)" }}>
+                                    Server
+                                </span>{" "}
+                                objects. Each{" "}
+                                <span style={{ color: "var(--green-text)" }}>
+                                    Server
+                                </span>{" "}
+                                object has a name,{" "}
+                                <span className="api-field">
+                                    ServerName [string]
+                                </span>{" "}
+                                , a player count{" "}
+                                <span className="api-field">
+                                    PlayerCount [int]
+                                </span>{" "}
+                                , and an LFM count{" "}
+                                <span className="api-field">
+                                    LfmCount [int]
+                                </span>{" "}
+                                .
+                            </p>
+                        </div>
+                    ),
+                },
+                {
+                    endpoint: "serverstatus",
+                    description: (
+                        <div>
+                            <p style={{ marginBottom: "5px" }}>
+                                Returns information about each server, including
+                                server status, launcher list order, and login
+                                queue data. The data is returned as an object
+                                with the last update time,{" "}
+                                <span className="api-field">
+                                    LastUpdateTime [date string]
+                                </span>
+                                , and an array of{" "}
+                                <span style={{ color: "var(--green-text)" }}>
+                                    World
+                                </span>{" "}
+                                objects. Each{" "}
+                                <span style={{ color: "var(--green-text)" }}>
+                                    World
+                                </span>{" "}
+                                object contains the following data:{" "}
+                                <ul>
+                                    <li>
+                                        A name,{" "}
+                                        <span className="api-field">
+                                            Name [string]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        A list of billing roles specifying which
+                                        type of user account is permitted to log
+                                        in,{" "}
+                                        <span className="api-field">
+                                            BillingRole [string array]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        An order which specifies the order that
+                                        worlds appear in the launcher (the World
+                                        with Order=0 is the current default
+                                        server),{" "}
+                                        <span className="api-field">
+                                            Order [int]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        The world status (0=offline, 1=online),{" "}
+                                        <span className="api-field">
+                                            Status [int]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        An Id,{" "}
+                                        <span className="api-field">
+                                            Id [int]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        The last assigned queue number (the
+                                        number assigned to the last player to
+                                        attempt to log in),{" "}
+                                        <span className="api-field">
+                                            LastAssignedQueueNumber [int]
+                                        </span>
+                                    </li>
+                                    <li>
+                                        The now serving number (the number that
+                                        the queue is currently accepting; when
+                                        this number is significantly less than
+                                        the LastAssignedQueueNumber, there is a
+                                        wait to log-in),{" "}
+                                        <span className="api-field">
+                                            NowServingQueueNumber [int]
+                                        </span>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    ),
                 },
             ],
         },

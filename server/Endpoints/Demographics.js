@@ -5,6 +5,9 @@ module.exports = function (api) {
 		["leveldistribution", "leveldistributionquarter"],
 		["classdistribution", "classdistributionquarter"],
 		["racedistribution", "racedistributionquarter"],
+		["leveldistribution_banks", "leveldistributionquarter_banks"],
+		["classdistribution_banks", "classdistributionquarter_banks"],
+		["racedistribution_banks", "racedistributionquarter_banks"],
 	];
 
 	population.forEach((entry) => {
