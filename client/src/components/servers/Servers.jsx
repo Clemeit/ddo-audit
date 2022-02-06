@@ -43,15 +43,15 @@ const Directory = (props) => {
         }
     }
 
-    function readAbout(r) {
+    function readAbout(r, callback) {
         switch (r) {
             case "filter banks characters":
                 setPopupMessage({
-                    title: "Filtering out bank characters",
+                    title: "Bank Characters",
                     message: (
                         <span>
-                            We attempt to filter bank characters out of this
-                            report by not counting:
+                            We attempt to filter out bank characters by not
+                            including:
                             <ul>
                                 <li>
                                     Characters that haven't been actively
@@ -66,6 +66,17 @@ const Directory = (props) => {
                                     indefinitely
                                 </li>
                             </ul>
+                            <p>
+                                To see the distribution of what we consider
+                                "bank characters,"{" "}
+                                <span
+                                    className="faux-link"
+                                    onClick={() => callback()}
+                                >
+                                    click here
+                                </span>
+                                .
+                            </p>
                         </span>
                     ),
                     icon: "info",
@@ -74,7 +85,7 @@ const Directory = (props) => {
                 break;
             case "primary class only":
                 setPopupMessage({
-                    title: "Counting a character's primary class",
+                    title: "Primary Class Only",
                     message: (
                         <span>
                             This report only counts a character's primary class.
@@ -140,7 +151,7 @@ const Directory = (props) => {
     const [raceDistributionData, setRaceDistributionData] =
         React.useState(null);
     function refreshServerStatus() {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 set_serverStatusData(val);
             })
@@ -210,6 +221,45 @@ const Directory = (props) => {
         const interval = setInterval(() => refreshServerStatus(), 60000);
         return () => clearInterval(interval);
     }, []);
+
+    function loadLevelDistributionBanks() {
+        Fetch(
+            "https://api.ddoaudit.com/demographics/leveldistribution_banks",
+            3000
+        )
+            .then((val) => {
+                setLevelDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }
+
+    function loadClassDistributionBanks() {
+        Fetch(
+            "https://api.ddoaudit.com/demographics/classdistribution_banks",
+            3000
+        )
+            .then((val) => {
+                setClassDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }
+
+    function loadRaceDistributionBanks() {
+        Fetch(
+            "https://api.ddoaudit.com/demographics/racedistribution_banks",
+            3000
+        )
+            .then((val) => {
+                setRaceDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }
 
     function dataFailedToLoad() {
         setPopupMessage({
@@ -352,7 +402,10 @@ const Directory = (props) => {
                                 <span
                                     className="faux-link"
                                     onClick={() =>
-                                        readAbout("filter banks characters")
+                                        readAbout(
+                                            "filter banks characters",
+                                            loadLevelDistributionBanks
+                                        )
                                     }
                                 >
                                     (read more)
@@ -399,7 +452,10 @@ const Directory = (props) => {
                                 <span
                                     className="faux-link"
                                     onClick={() =>
-                                        readAbout("filter banks characters")
+                                        readAbout(
+                                            "filter banks characters",
+                                            loadClassDistributionBanks
+                                        )
                                     }
                                 >
                                     (read more)
@@ -433,7 +489,10 @@ const Directory = (props) => {
                                 <span
                                     className="faux-link"
                                     onClick={() =>
-                                        readAbout("filter banks characters")
+                                        readAbout(
+                                            "filter banks characters",
+                                            loadRaceDistributionBanks
+                                        )
                                     }
                                 >
                                     (read more)
