@@ -6,10 +6,10 @@ const CanvasLfmPanel = (props) => {
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
 
-    var [isImageLoaded, set_isImageLoaded] = React.useState(false);
-    // var [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
-    // var [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
-    var [groupSelection, set_groupSelection] = React.useState({
+    let [isImageLoaded, set_isImageLoaded] = React.useState(false);
+    // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
+    // let [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
+    let [groupSelection, set_groupSelection] = React.useState({
         groupIndex: -1,
         cursorPosition: [0, 0],
     });
@@ -19,9 +19,9 @@ const CanvasLfmPanel = (props) => {
     const classCount = 15;
 
     function HandleMouseOnCanvas(e) {
-        var rect = e.target.getBoundingClientRect();
-        var x = (e.clientX - rect.left) * (848 / rect.width); //x position within the element.
-        var y = (e.clientY - rect.top) * (848 / rect.width); //y position within the element.
+        let rect = e.target.getBoundingClientRect();
+        let x = (e.clientX - rect.left) * (848 / rect.width); //x position within the element.
+        let y = (e.clientY - rect.top) * (848 / rect.width); //y position within the element.
 
         if (x > 605) {
             // 375 border between group and quest
@@ -41,18 +41,20 @@ const CanvasLfmPanel = (props) => {
         //     else if (x > 375 && lastSide === "right") return;
         // }
 
-        // if (x < 375) lastSide = "left";
-        // else if (x > 375) lastSide = "right";
+        let side = "";
+        if (x < 375) side = "left";
+        else if (x > 375) side = "right";
 
         set_groupSelection({
             groupIndex: index,
             cursorPosition: [x, y],
+            side,
         });
     }
 
     React.useEffect(() => {
         // TODO: Remove listeners
-        var overlayTimeout;
+        let overlayTimeout;
         canvasRef.current.addEventListener("mousemove", (e) => {
             clearTimeout(overlayTimeout);
             overlayTimeout = setTimeout(() => {
@@ -226,7 +228,7 @@ const CanvasLfmPanel = (props) => {
                     49,
                     73 + lfmHeight * index + 18 + props.fontModifier / 2
                 );
-                var leaderWidth = ctx.measureText(group.Leader.Name).width;
+                let leaderWidth = ctx.measureText(group.Leader.Name).width;
                 if (group.Leader.Name.startsWith("Clemei")) {
                     leaderWidth += 22;
                     ctx.drawImage(
@@ -459,23 +461,31 @@ const CanvasLfmPanel = (props) => {
             if (
                 groupSelection.groupIndex !== -1 &&
                 groupSelection.groupIndex < props.data.Groups.length
-            )
-                DrawPlayerOverlay(
-                    props.data.Groups[groupSelection.groupIndex],
-                    groupSelection.cursorPosition
-                );
+            ) {
+                if (groupSelection.cursorPosition[0] < 375) {
+                    DrawPlayerOverlay(
+                        props.data.Groups[groupSelection.groupIndex],
+                        groupSelection.cursorPosition
+                    );
+                } else {
+                    DrawQuestOverlay(
+                        props.data.Groups[groupSelection.groupIndex],
+                        groupSelection.cursorPosition
+                    );
+                }
+            }
         }
 
         function DrawPlayerOverlay(group, cursorPosition) {
             if (group === null) return;
 
-            var estimatedBottom =
+            let estimatedBottom =
                 cursorPosition[1] + 3 + (group.Members.length + 1) * 41 + 26;
             if (estimatedBottom > canvas.height) {
                 cursorPosition[1] -= estimatedBottom - canvas.height;
             }
 
-            var fontModifier = props.fontModifier === 0 ? 0 : 4;
+            let fontModifier = props.fontModifier === 0 ? 0 : 4;
 
             ctx.drawImage(
                 sprite,
@@ -504,7 +514,7 @@ const CanvasLfmPanel = (props) => {
                         287,
                         41
                     );
-                    var grad = ctx.createLinearGradient(
+                    let grad = ctx.createLinearGradient(
                         0,
                         cursorPosition[1] + 2 + 41 * i,
                         0,
@@ -550,7 +560,7 @@ const CanvasLfmPanel = (props) => {
                         cursorPosition[0] + 26,
                         cursorPosition[1] + 3 + 41 * i + 10
                     );
-                    var memberWidth = ctx.measureText(member.Name).width;
+                    let memberWidth = ctx.measureText(member.Name).width;
                     if (member.Name.startsWith("Clemei")) {
                         memberWidth += 22;
                         ctx.drawImage(
@@ -591,10 +601,10 @@ const CanvasLfmPanel = (props) => {
                     ctx.textBaseline = "alphabetic";
                     ctx.textAlign = "right";
                     if (member.Classes !== null && member.Classes !== undefined)
-                        for (var c = 0; c < member.Classes.length; c++) {
+                        for (let c = 0; c < member.Classes.length; c++) {
                             // First pass for icons
-                            var xp = cursorPosition[0] + 166 + 21 * c;
-                            var yp = cursorPosition[1] + 4 + 41 * i;
+                            let xp = cursorPosition[0] + 166 + 21 * c;
+                            let yp = cursorPosition[1] + 4 + 41 * i;
 
                             ctx.fillStyle = "#3e4641";
                             ctx.fillRect(xp - 1, yp - 1, 20, 20);
@@ -616,10 +626,10 @@ const CanvasLfmPanel = (props) => {
                             );
                         }
                     if (member.Classes !== null && member.Classes !== undefined)
-                        for (var c = 0; c < member.Classes.length; c++) {
+                        for (let c = 0; c < member.Classes.length; c++) {
                             // Second pass for levels
-                            var xp = cursorPosition[0] + 166 + 21 * c;
-                            var yp = cursorPosition[1] + 4 + 41 * i;
+                            let xp = cursorPosition[0] + 166 + 21 * c;
+                            let yp = cursorPosition[1] + 4 + 41 * i;
 
                             ctx.fillStyle = "black";
                             ctx.fillText(
@@ -654,9 +664,9 @@ const CanvasLfmPanel = (props) => {
             ctx.fillStyle = fontModifier > 0 ? "white" : "#bfbfbf";
             ctx.font = 15 + fontModifier + "px Arial"; // 15px
             ctx.textAlign = "left";
-            var textLines = wrapText(group.Comment, 269);
+            let textLines = wrapText(group.Comment, 269);
 
-            for (var i = 0; i < textLines.length; i++) {
+            for (let i = 0; i < textLines.length; i++) {
                 ctx.drawImage(
                     sprite,
                     0,
@@ -696,6 +706,181 @@ const CanvasLfmPanel = (props) => {
                 287,
                 3
             );
+        }
+
+        function DrawQuestOverlay(group, cursorPosition) {
+            if (group === null) return;
+            if (group.Quest == null) return;
+
+            let estimatedBottom = cursorPosition[1] + 3 + 170 + 26;
+            if (estimatedBottom > canvas.height) {
+                cursorPosition[1] -= estimatedBottom - canvas.height;
+            }
+
+            let fontModifier = props.fontModifier === 0 ? 0 : 4;
+
+            ctx.globalAlpha = 0.8;
+            ctx.drawImage(
+                sprite,
+                0,
+                189,
+                287,
+                2,
+                cursorPosition[0],
+                cursorPosition[1],
+                350,
+                2
+            );
+            ctx.drawImage(
+                sprite,
+                0,
+                191,
+                287,
+                10,
+                cursorPosition[0],
+                cursorPosition[1] + 2,
+                350,
+                10
+            );
+            ctx.globalAlpha = 1;
+
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "white";
+
+            let quest = group.Quest;
+            let row = 1;
+
+            if (quest.Name != null) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Quest", row); // 1-based index
+                let wrapped = wrapText(quest.Name, 220);
+                for (let i = 0; i < wrapped.length; i++) {
+                    if (i > 0) drawOverlayBackground(row);
+                    drawOverlayInfo(wrapped[i], row);
+                    row++;
+                }
+            }
+
+            if (quest.AdventureArea != null) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Takes place in", row);
+                let wrapped = wrapText(quest.AdventureArea, 220);
+                for (let i = 0; i < wrapped.length; i++) {
+                    if (i > 0) drawOverlayBackground(row);
+                    drawOverlayInfo(wrapped[i], row);
+                    row++;
+                }
+            }
+
+            if (quest.QuestJournalGroup != null) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Nearest hub", row);
+                let wrapped = wrapText(quest.QuestJournalGroup, 220);
+                for (let i = 0; i < wrapped.length; i++) {
+                    if (i > 0) drawOverlayBackground(row);
+                    drawOverlayInfo(wrapped[i], row);
+                    row++;
+                }
+            }
+
+            drawOverlayBackground(row);
+            drawOverlayTitle("Level", row);
+            drawOverlayInfo(
+                (quest.HeroicNormalCR != null
+                    ? quest.HeroicNormalCR + " Heroic"
+                    : "") +
+                    (quest.HeroicNormalCR != null && quest.EpicNormalCR != null
+                        ? ", "
+                        : "") +
+                    (quest.EpicNormalCR != null
+                        ? quest.EpicNormalCR + " Epic"
+                        : ""),
+                row
+            );
+            row++;
+
+            drawOverlayBackground(row);
+            drawOverlayTitle("Adventure pack", row);
+            let wrapped = wrapText(
+                quest.RequiredAdventurePack ?? "Free to play",
+                220
+            );
+            for (let i = 0; i < wrapped.length; i++) {
+                if (i > 0) drawOverlayBackground(row);
+                drawOverlayInfo(wrapped[i], row);
+                row++;
+            }
+
+            if (quest.Patron != null) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Patron", row);
+                drawOverlayInfo(quest.Patron ?? "", row);
+                row++;
+            }
+
+            drawOverlayBackground(row);
+            // row++;
+            // drawOverlayBackground(row);
+            // ctx.textAlign = "center";
+            // ctx.font = "italic 15px Arial";
+            // ctx.fillText(
+            //     "Click to open the Wiki page",
+            //     cursorPosition[0] + 175,
+            //     cursorPosition[1] + 3 + 20 * row - 10
+            // );
+
+            ctx.drawImage(
+                sprite,
+                0,
+                255,
+                287,
+                3,
+                cursorPosition[0],
+                cursorPosition[1] + 2 + 10 + row * 20,
+                350,
+                3
+            ); // Close
+
+            // Helper function for drawing part of the quest overlay
+            function drawOverlayBackground(line) {
+                ctx.globalAlpha = 0.8;
+                ctx.drawImage(
+                    sprite,
+                    0,
+                    191,
+                    287,
+                    20,
+                    cursorPosition[0],
+                    cursorPosition[1] + 2 + 20 * line - 10,
+                    350,
+                    20
+                ); // Background
+                ctx.globalAlpha = 1;
+            }
+
+            // Helper function for drawing the title of a quest info field
+            function drawOverlayTitle(text, line) {
+                if (text == null) return;
+                ctx.font = "bold 16px Arial";
+                ctx.textAlign = "right";
+                ctx.fillText(
+                    text + ":",
+                    cursorPosition[0] + 140,
+                    cursorPosition[1] + 3 + 20 * line
+                );
+            }
+
+            // Helper function for drawing the content of a quest info field
+            function drawOverlayInfo(text, line) {
+                if (text == null) return;
+                ctx.textAlign = "left";
+                ctx.font = "15px Arial";
+                ctx.fillText(
+                    text,
+                    cursorPosition[0] + 150,
+                    cursorPosition[1] + 3 + 20 * line
+                );
+            }
         }
 
         // Helper function for wrapping text
@@ -932,6 +1117,7 @@ const CanvasLfmPanel = (props) => {
         props.highVisibility,
         isImageLoaded,
         groupSelection.groupIndex,
+        groupSelection.side,
     ]);
 
     return (
