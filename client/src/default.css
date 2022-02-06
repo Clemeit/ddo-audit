@@ -693,10 +693,9 @@ html {
     padding: 10px 30px 10px 30px;
     cursor: pointer;
     border-radius: 7px;
-    transition: background-color 200ms;
+    transition: background-color 150ms ease-in-out, transform 150ms ease-in-out,
+        filter 150ms ease-in-out;
     user-select: none;
-    /* , transform 150ms ease-in-out,
-        filter 150ms ease-in-out; */
 }
 
 .nav-box.no-interact {
@@ -705,8 +704,8 @@ html {
 }
 
 .nav-box:hover:not(.no-interact) {
-    /* transform: translate(-4px, -4px);
-    filter: drop-shadow(4px 4px 1px black); */
+    /* transform: translate(-4px, -4px); */
+    filter: drop-shadow(4px 4px 5px rgba(0, 0, 0, 0.198));
     background-color: var(--highlighted-1);
 }
 
