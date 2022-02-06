@@ -1,3 +1,3 @@
 # DDO Audit
 
-A Progressive Web Application built in React.
+A deployable Progressive Web Application built in React.
