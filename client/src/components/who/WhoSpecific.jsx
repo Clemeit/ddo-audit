@@ -322,9 +322,9 @@ const WhoSpecific = (props) => {
         // Apply sorting
         if (sortingMethod === "level") {
             if (sortingDirection === "ascending") {
-                data.sort((a, b) => a.TotalLevel > b.TotalLevel);
+                data.sort((a, b) => a.TotalLevel - b.TotalLevel);
             } else {
-                data.sort((a, b) => a.TotalLevel < b.TotalLevel);
+                data.sort((a, b) => b.TotalLevel - a.TotalLevel);
             }
         } else if (sortingMethod === "guild") {
             if (sortingDirection === "ascending") {
@@ -527,7 +527,7 @@ const WhoSpecific = (props) => {
     }, [currentServer]);
 
     function FetchPlayerData() {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 let serverstatus = false;
                 if (val.hasOwnProperty("Worlds")) {
@@ -551,7 +551,7 @@ const WhoSpecific = (props) => {
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
-                        "https://www.playeraudit.com/api/playersnew?s=" +
+                        "https://api.ddoaudit.com/players/" +
                             (serverNamesLowercase.includes(
                                 location.toLowerCase()
                             )
