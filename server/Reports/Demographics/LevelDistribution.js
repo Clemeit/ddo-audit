@@ -2,7 +2,7 @@ const fs = require("fs");
 require("dotenv").config();
 const { isPlayerActive } = require("../ActivePredicate");
 
-exports.runLevelDistribution = (players) => {
+exports.runLevelDistribution = (players, reporttype) => {
 	const IGNORE_DOWNTIME = true;
 	const MAX_LEVEL = 30;
 
@@ -90,13 +90,21 @@ exports.runLevelDistribution = (players) => {
 				console.log("TotalLevel has exceeded MAX_LEVEL!");
 			} else {
 				if (
-					isPlayerActive(
-						lastseen,
-						lastactive,
-						lastmovement,
-						lastlevelup,
-						totallevel
-					)
+					reporttype === "normal"
+						? isPlayerActive(
+								lastseen,
+								lastactive,
+								lastmovement,
+								lastlevelup,
+								totallevel
+						  )
+						: !isPlayerActive(
+								lastseen,
+								lastactive,
+								lastmovement,
+								lastlevelup,
+								totallevel
+						  )
 				) {
 					switch (server) {
 						case "Argonnessen":
@@ -175,7 +183,9 @@ exports.runLevelDistribution = (players) => {
 	output.reverse();
 
 	fs.writeFile(
-		"../api_v1/demographics/leveldistributionquarter.json",
+		`../api_v1/demographics/leveldistributionquarter${
+			reporttype === "normal" ? "" : "_banks"
+		}.json`,
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;
@@ -183,5 +193,5 @@ exports.runLevelDistribution = (players) => {
 	);
 
 	var t1 = new Date();
-	console.log(`->Finished in ${t1 - t0}ms`);
+	console.log(`-> Finished in ${t1 - t0}ms`);
 };

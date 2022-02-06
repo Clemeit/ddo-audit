@@ -2,7 +2,7 @@ const fs = require("fs");
 require("dotenv").config();
 const { isPlayerActive } = require("../ActivePredicate");
 
-exports.runRaceDistribution = (players, races) => {
+exports.runRaceDistribution = (players, races, reporttype) => {
 	const IGNORE_DOWNTIME = true;
 
 	var t0 = new Date();
@@ -28,13 +28,21 @@ exports.runRaceDistribution = (players, races) => {
 			totallevel,
 		}) => {
 			if (
-				isPlayerActive(
-					lastseen,
-					lastactive,
-					lastmovement,
-					lastlevelup,
-					totallevel
-				)
+				reporttype === "normal"
+					? isPlayerActive(
+							lastseen,
+							lastactive,
+							lastmovement,
+							lastlevelup,
+							totallevel
+					  )
+					: !isPlayerActive(
+							lastseen,
+							lastactive,
+							lastmovement,
+							lastlevelup,
+							totallevel
+					  )
 			) {
 				for (let i = 0; i < races.length; i++) {
 					if (output[i].id == race) {
@@ -51,7 +59,9 @@ exports.runRaceDistribution = (players, races) => {
 	}
 
 	fs.writeFile(
-		"../api_v1/demographics/racedistributionquarter.json",
+		`../api_v1/demographics/racedistributionquarter${
+			reporttype === "normal" ? "" : "_banks"
+		}.json`,
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

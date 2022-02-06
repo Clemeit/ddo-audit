@@ -2,7 +2,7 @@ const fs = require("fs");
 require("dotenv").config();
 const { isPlayerActive } = require("../ActivePredicate");
 
-exports.runClassDistribution = (players, classes) => {
+exports.runClassDistribution = (players, classes, reporttype) => {
 	const IGNORE_DOWNTIME = true;
 	const SERVER_NAMES = [
 		"Argonnessen",
@@ -82,13 +82,21 @@ exports.runClassDistribution = (players, classes) => {
 			server,
 		}) => {
 			if (
-				isPlayerActive(
-					lastseen,
-					lastactive,
-					lastmovement,
-					lastlevelup,
-					totallevel
-				)
+				reporttype === "normal"
+					? isPlayerActive(
+							lastseen,
+							lastactive,
+							lastmovement,
+							lastlevelup,
+							totallevel
+					  )
+					: !isPlayerActive(
+							lastseen,
+							lastactive,
+							lastmovement,
+							lastlevelup,
+							totallevel
+					  )
 			) {
 				let class1_n = classIdToName(class1, classes);
 				let class2_n = classIdToName(class2, classes);
@@ -123,7 +131,9 @@ exports.runClassDistribution = (players, classes) => {
 	});
 
 	fs.writeFile(
-		"../api_v1/demographics/classdistributionquarter.json",
+		`../api_v1/demographics/classdistributionquarter${
+			reporttype === "normal" ? "" : "_banks"
+		}.json`,
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;
@@ -131,5 +141,5 @@ exports.runClassDistribution = (players, classes) => {
 	);
 
 	var t1 = new Date();
-	console.log(`->Finished in ${t1 - t0}ms`);
+	console.log(`-> Finished in ${t1 - t0}ms`);
 };
