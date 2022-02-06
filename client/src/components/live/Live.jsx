@@ -29,7 +29,7 @@ const Live = (props) => {
         React.useState(null);
 
     function refreshServerStatus() {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 setServerStatusData(val);
             })

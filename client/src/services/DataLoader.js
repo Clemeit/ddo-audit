@@ -65,7 +65,7 @@ export function VerifyServerLfmData(data) {
 export function VerifyPlayerData(data) {
     if (data === null) return false;
     if (data.Population === undefined) return false;
-    if (data.Server === undefined) return false;
+    if (data.Name === undefined) return false;
     if (data.Players === undefined) return false;
     return true; // TODO
 }

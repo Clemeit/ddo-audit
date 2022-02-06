@@ -41,7 +41,7 @@ const ServersSpecific = () => {
 
     const [serverStatusData, set_serverStatusData] = React.useState(null);
     function refreshServerStatus() {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 set_serverStatusData(val);
             })
@@ -62,7 +62,7 @@ const ServersSpecific = () => {
             return response;
         }
         fetchArbitraryData(
-            "https://www.playeraudit.com/api/serverstatus",
+            "https://api.ddoaudit.com/gamestatus/serverstatus",
             "json"
         ).then((val) => {
             set_serverStatusData(val);

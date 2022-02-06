@@ -67,7 +67,7 @@ const Grouping = () => {
     }
 
     React.useEffect(() => {
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 setServerStatusData(val);
             })
@@ -86,7 +86,7 @@ const Grouping = () => {
                 setServerStatusData(null);
             });
 
-        Fetch("https://www.playeraudit.com/api/playerandlfmoverview", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/populationoverview", 5000)
             .then((val) => {
                 if (VerifyPlayerAndLfmOverview(val)) {
                     setOverviewData(val);

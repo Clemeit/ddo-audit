@@ -85,7 +85,7 @@ const GroupingSpecific = (props) => {
     const [theme, setTheme] = React.useState(true);
 
     async function getGroupTableCount() {
-        return Fetch("https://www.playeraudit.com/api/grouptablecount", 5000)
+        return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
             .then((val) => {
                 if (val.Count != null) {
                     return val.Count;
@@ -165,7 +165,7 @@ const GroupingSpecific = (props) => {
     let recheck;
     function RefreshLfms() {
         if (currentServer === null) return;
-        Fetch("https://www.playeraudit.com/api/serverstatus", 5000)
+        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 let serverstatus = false;
                 if (val.hasOwnProperty("Worlds")) {
@@ -189,7 +189,7 @@ const GroupingSpecific = (props) => {
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
-                        `https://www.playeraudit.com/api/groups?s=${currentServer.toLowerCase()}`,
+                        `https://api.ddoaudit.com/groups/${currentServer.toLowerCase()}`,
                         5000
                     )
                         .then((val) => {
@@ -307,8 +307,8 @@ const GroupingSpecific = (props) => {
             ...unfilteredServerData,
             Groups: filteredgroups.sort((a, b) =>
                 sortAscending
-                    ? a.MinimumLevel > b.MinimumLevel
-                    : a.MinimumLevel < b.MinimumLevel
+                    ? a.MinimumLevel - b.MinimumLevel
+                    : b.MinimumLevel - a.MinimumLevel
             ),
         });
     }, [
