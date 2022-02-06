@@ -55,10 +55,27 @@ exports.runAnnualReport = (population) => {
 		color: "hsl(208, 100%, 50%)",
 		data: [],
 	};
+	let Permanent = {
+		id: "Permanent",
+		color: "hsl(105, 100%, 50%)",
+		data: [],
+	};
+	let Maximum = {
+		id: "Maximum",
+		color: "hsl(123, 100%, 50%)",
+		data: [],
+	};
+	let Minimum = {
+		id: "Minimum",
+		color: "hsl(0, 100%, 50%)",
+		data: [],
+	};
 
 	let lastSunday = -1;
-	let entriesThisWeek = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-	let totalsThisWeek = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let entriesThisWeek = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let totalsThisWeek = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let maximumThisWeek = -1;
+	let minimumThisWeek = -1;
 
 	population.forEach(
 		({
@@ -75,7 +92,7 @@ exports.runAnnualReport = (population) => {
 		}) => {
 			if (
 				new Date().getTime() - datetime.getTime() <=
-				1000 * 60 * 60 * 24 * 364
+				1000 * 60 * 60 * 24 * 364 * 2
 			) {
 				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				let dt = new Date(datetime + "Z");
@@ -160,9 +177,26 @@ exports.runAnnualReport = (population) => {
 									(totalsThisWeek[9] / entriesThisWeek[9]) * 100
 								) / 100 || 0,
 						});
+						Permanent.data.push({
+							x: lastSunday,
+							y:
+								Math.round(
+									(totalsThisWeek[10] / entriesThisWeek[10]) * 100
+								) / 100 || 0,
+						});
+						Maximum.data.push({
+							x: lastSunday,
+							y: maximumThisWeek,
+						});
+						Minimum.data.push({
+							x: lastSunday,
+							y: minimumThisWeek,
+						});
 					}
 
-					for (let i = 0; i < 10; i++) {
+					maximumThisWeek = -1;
+					minimumThisWeek = -1;
+					for (let i = 0; i < 11; i++) {
 						totalsThisWeek[i] = 0;
 						entriesThisWeek[i] = 0;
 					}
@@ -215,6 +249,22 @@ exports.runAnnualReport = (population) => {
 					entriesThisWeek[8]++;
 				}
 
+				let totalnow =
+					argonnessen_playercount +
+					cannith_playercount +
+					ghallanda_playercount +
+					khyber_playercount +
+					orien_playercount +
+					sarlona_playercount +
+					thelanis_playercount +
+					wayfinder_playercount +
+					hardcore_playercount;
+
+				if (totalnow) {
+					totalsThisWeek[9] += totalnow;
+					entriesThisWeek[9]++;
+				}
+
 				if (
 					argonnessen_playercount ||
 					cannith_playercount ||
@@ -223,10 +273,9 @@ exports.runAnnualReport = (population) => {
 					orien_playercount ||
 					sarlona_playercount ||
 					thelanis_playercount ||
-					wayfinder_playercount ||
-					hardcore_playercount
+					wayfinder_playercount
 				) {
-					totalsThisWeek[9] +=
+					totalsThisWeek[10] +=
 						argonnessen_playercount +
 						cannith_playercount +
 						ghallanda_playercount +
@@ -234,9 +283,15 @@ exports.runAnnualReport = (population) => {
 						orien_playercount +
 						sarlona_playercount +
 						thelanis_playercount +
-						wayfinder_playercount +
-						hardcore_playercount;
-					entriesThisWeek[9]++;
+						wayfinder_playercount;
+					entriesThisWeek[10]++;
+				}
+
+				if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
+					maximumThisWeek = totalnow;
+				}
+				if (totalnow < minimumThisWeek || minimumThisWeek === -1) {
+					minimumThisWeek = totalnow;
 				}
 			}
 		}
@@ -253,6 +308,9 @@ exports.runAnnualReport = (population) => {
 		Wayfinder,
 		Hardcore,
 		Total,
+		Permanent,
+		Maximum,
+		Minimum,
 	];
 
 	output.reverse();

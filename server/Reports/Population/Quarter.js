@@ -55,9 +55,21 @@ exports.runQuarterReport = (population) => {
 		color: "hsl(208, 100%, 50%)",
 		data: [],
 	};
+	let Maximum = {
+		id: "Maximum",
+		color: "hsl(123, 100%, 50%)",
+		data: [],
+	};
+	let Minimum = {
+		id: "Minimum",
+		color: "hsl(0, 100%, 50%)",
+		data: [],
+	};
 
 	let lastDay = -1;
 	let entriesThisDay = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let maximumThisDay = -1;
+	let minimumThisDay = -1;
 
 	population.forEach(
 		({
@@ -245,8 +257,19 @@ exports.runQuarterReport = (population) => {
 							x: datetime,
 							y: 0,
 						});
+						Maximum.data.push({
+							x: datetime,
+							y: maximumThisDay,
+						});
+						Minimum.data.push({
+							x: datetime,
+							y: minimumThisDay,
+						});
 
 						entriesThisDay = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+						maximumThisDay = -1;
+						minimumThisDay = -1;
+
 						lastDay = thisDay;
 					} else {
 						// Increment
@@ -303,28 +326,27 @@ exports.runQuarterReport = (population) => {
 							entriesThisDay[8]++;
 						}
 
-						if (
-							argonnessen_playercount ||
-							cannith_playercount ||
-							ghallanda_playercount ||
-							khyber_playercount ||
-							orien_playercount ||
-							sarlona_playercount ||
-							thelanis_playercount ||
-							wayfinder_playercount ||
-							hardcore_playercount
-						) {
-							Total.data[Total.data.length - 1].y +=
-								argonnessen_playercount +
-								cannith_playercount +
-								ghallanda_playercount +
-								khyber_playercount +
-								orien_playercount +
-								sarlona_playercount +
-								thelanis_playercount +
-								wayfinder_playercount +
-								hardcore_playercount;
+						let totalnow =
+							argonnessen_playercount +
+							cannith_playercount +
+							ghallanda_playercount +
+							khyber_playercount +
+							orien_playercount +
+							sarlona_playercount +
+							thelanis_playercount +
+							wayfinder_playercount +
+							hardcore_playercount;
+
+						if (totalnow) {
+							Total.data[Total.data.length - 1].y += totalnow;
 							entriesThisDay[9]++;
+						}
+
+						if (totalnow > maximumThisDay || maximumThisDay === -1) {
+							maximumThisDay = totalnow;
+						}
+						if (totalnow < minimumThisDay || minimumThisDay === -1) {
+							minimumThisDay = totalnow;
 						}
 					}
 				}
@@ -401,6 +423,8 @@ exports.runQuarterReport = (population) => {
 		Wayfinder,
 		Hardcore,
 		Total,
+		Minimum,
+		Maximum,
 	];
 
 	nivoData.reverse();
