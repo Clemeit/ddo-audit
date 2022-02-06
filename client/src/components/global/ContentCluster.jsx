@@ -32,6 +32,9 @@ const ContentCluster = (props) => {
             <h2 className="content-cluster-title">
                 {props.title || "Missing Header"}
                 <a href={getPath()}>
+                    <span className="sr-only">
+                        Link to the '{getId()}' header
+                    </span>
                     <LinkSVG className="anchor-link nav-icon should-invert" />
                 </a>
             </h2>
