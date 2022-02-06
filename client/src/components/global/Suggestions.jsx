@@ -52,6 +52,7 @@ const Suggestions = (props) => {
                 showButtons={true}
                 hideSuggestions={true}
                 hideOnMobile={true}
+                hideVote={true}
                 title="DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />

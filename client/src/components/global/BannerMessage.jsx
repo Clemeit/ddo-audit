@@ -26,20 +26,20 @@ const BannerMessage = (props) => {
             } else {
                 ignorelist = [];
             }
-            Fetch("https://www.playeraudit.com/api/messageservice", 5000).then(
+            Fetch("https://api.ddoaudit.com/messageservice", 5000).then(
                 (response) => {
                     let allmessages = [];
                     response.forEach((message) => {
-                        let affectedpages = message.Pages.split(",");
+                        let affectedpages = message.pages.split(",");
                         if (
                             (affectedpages.includes(props.page) ||
                                 affectedpages.includes("all")) &&
-                            !ignorelist.includes(message.Id.toString())
+                            !ignorelist.includes(message.id.toString())
                         ) {
                             let now = new Date();
                             if (
-                                now >= new Date(message.Start) &&
-                                now <= new Date(message.End)
+                                now >= new Date(message.start) &&
+                                now <= new Date(message.end)
                             ) {
                                 allmessages.push(message);
                             }
@@ -72,26 +72,25 @@ const BannerMessage = (props) => {
                     key={i}
                     className={"banner-message-container"}
                     style={{
-                        backgroundColor: message.Color,
+                        backgroundColor: message.color,
                     }}
                     onClick={() => {
-                        message.NoDismiss == 1
+                        message.nodismiss == 1
                             ? ignoreThisMessage()
-                            : ignoreThisMessage(message.Id);
+                            : ignoreThisMessage(message.id);
                     }}
                 >
                     <p
                         className="banner-message"
                         style={{
-                            cursor: message.NoDismiss == 1 && "default",
+                            cursor: message.nodismiss == 1 && "default",
                         }}
                     >
-                        {message.Message.replace("{0}", message.Start).replace(
-                            "{1}",
-                            message.End
-                        )}
+                        {message.message
+                            .replace("{0}", message.start)
+                            .replace("{1}", message.end)}
                     </p>
-                    {message.NoDismiss == 0 && <CloseSVG />}
+                    {message.nodismiss == 0 && <CloseSVG />}
                 </div>
             ))}
         </div>

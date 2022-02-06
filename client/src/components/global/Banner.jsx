@@ -163,31 +163,33 @@ const Banner = (props) => {
                                     </Link>
                                 )}
                             </div>
-                            <div
-                                className="action-button-container vote-buttons"
-                                style={{
-                                    opacity: mayVote ? 1 : 0,
-                                }}
-                            >
-                                <span
+                            {!props.hideVote && (
+                                <div
+                                    className="action-button-container vote-buttons"
                                     style={{
-                                        fontSize: "large",
-                                        color: "white",
+                                        opacity: mayVote ? 1 : 0,
                                     }}
                                 >
-                                    New Website!
-                                </span>
-                                <ThumbsUpSVG
-                                    className="nav-icon"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => vote("Like")}
-                                />
-                                <ThumbsDownSVG
-                                    className="nav-icon"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => vote("Dislike")}
-                                />
-                            </div>
+                                    <span
+                                        style={{
+                                            fontSize: "large",
+                                            color: "white",
+                                        }}
+                                    >
+                                        New Website!
+                                    </span>
+                                    <ThumbsUpSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Like")}
+                                    />
+                                    <ThumbsDownSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Dislike")}
+                                    />
+                                </div>
+                            )}
                             {voteMessage && (
                                 <div className="action-button-container vote-buttons">
                                     <span
