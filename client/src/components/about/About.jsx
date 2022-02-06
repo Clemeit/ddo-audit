@@ -14,6 +14,10 @@ const About = (props) => {
             <Helmet>
                 <title>{TITLE}</title>
                 <meta
+                    name="description"
+                    content="Learn about the DDO Audit project! Read our mission statement, methodology, and contributing parties."
+                />
+                <meta
                     property="og:image"
                     content="/icons/logo-512px.png"
                     data-react-helmet="true"
