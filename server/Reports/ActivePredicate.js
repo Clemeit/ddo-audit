@@ -5,8 +5,8 @@ exports.isPlayerActive = (
 	lastlevelup,
 	totallevel
 ) => {
-	let MOVEMENT_DAY_THRESHOLD = 5;
-	let QUESTING_DAY_THRESHOLD = 10;
+	let MOVEMENT_DAY_THRESHOLD = 2;
+	let QUESTING_DAY_THRESHOLD = 7;
 	let LEVELUP_DAY_THRESHOLD = 20;
 
 	let seen = new Date(lastseen + "Z").getTime();
