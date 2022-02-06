@@ -159,7 +159,12 @@ const ContentTable = (props) => {
                                             1 +
                                             props.pageNumber * props.pageSize}
                                     </td>
-                                    <td>
+                                    <td
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                        }}
+                                    >
                                         <div
                                             style={{
                                                 cursor: "pointer",
@@ -168,10 +173,17 @@ const ContentTable = (props) => {
                                             }}
                                         >
                                             {quest.QuestName}
-                                            <TimelineSVG
-                                                className="link-icon should-invert"
-                                                style={{ marginLeft: "8px" }}
-                                            />
+                                        </div>
+                                        <div
+                                            className="report-quest-button"
+                                            onClick={(e) => {
+                                                props.reportQuest(
+                                                    quest.QuestName
+                                                );
+                                                e.stopPropagation();
+                                            }}
+                                        >
+                                            Report
                                         </div>
                                     </td>
                                     <td>{questLevelString(quest)}</td>

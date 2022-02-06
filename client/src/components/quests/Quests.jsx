@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 // import Card from "../old_Card";
-// import ReportIssueForm from "../ReportIssueForm";
+// import ReportIssueForm from "../global/ReportIssueForm";
+import ReportQuest from "./ReportQuest";
 import ChartPie from "../global/ChartPie";
 import Banner from "../global/Banner";
 // import ChartTimeOfDay from "../ChartTimeOfDay";
@@ -56,13 +57,21 @@ const Quests = (props) => {
     const [questName, set_questName] = React.useState(null);
     const [questNameFilter, set_questNameFilter] = React.useState("");
     const [levelFilter, set_levelFilter] = React.useState("");
-    const [sortStyle, set_sortStyle] = React.useState("name");
+    const [sortStyle, set_sortStyle] = React.useState("instances");
+    const [sortDirection, setSortDirection] = React.useState("descending");
     const [isRunning, set_isRunning] = React.useState(false);
     const [tableSize, set_tableSize] = React.useState(null);
     const [ellapsedTime, set_ellapsedTime] = React.useState(0);
     const [startTime, set_startTime] = React.useState(null);
+    const [reportFormVisible, setReportFormVisible] = React.useState(false);
+    const [reportedQuest, setReportedQuest] = React.useState(null);
 
     const PAGE_SIZE = 20;
+
+    function reportQuest(quest) {
+        setReportFormVisible(true);
+        setReportedQuest(quest);
+    }
 
     // Fetch the data on page load
     let updateTime;
@@ -169,18 +178,23 @@ const Quests = (props) => {
                     return valid;
                 })
                 .sort(function (a, b) {
+                    let sortmod = 1;
+                    if (sortDirection === "descending") sortmod = -1;
                     if (sortStyle === "duration") {
-                        return b.AverageTime - a.AverageTime;
+                        return (a.AverageTime - b.AverageTime) * sortmod;
                     } else if (sortStyle === "name") {
-                        return a.QuestName.localeCompare(b.QuestName);
+                        return a.QuestName.localeCompare(b.QuestName) * sortmod;
                     } else if (sortStyle === "level") {
                         let alevel = a.HeroicCr || a.EpicCr;
                         let blevel = b.HeroicCr || b.EpicCr;
-                        return alevel - blevel;
+                        return (alevel - blevel) * sortmod;
                     } else if (sortStyle === "adventure pack") {
                         let aadventurepack = a.AdventurePack || "";
                         let badventurepack = b.AdventurePack || "";
-                        return aadventurepack.localeCompare(badventurepack);
+                        return (
+                            aadventurepack.localeCompare(badventurepack) *
+                            sortmod
+                        );
                     } else if (sortStyle === "xp") {
                         let axp = 0;
                         if (a.IsEpic) {
@@ -198,14 +212,14 @@ const Quests = (props) => {
                             ? true
                             : !a.IsEpic && b.IsEpic
                             ? false
-                            : bxp - axp;
+                            : (bxp - axp) * sortmod;
                     } else {
-                        return b.Count - a.Count;
+                        return (a.Count - b.Count) * sortmod;
                     }
                 })
         );
         set_pageNumber(0);
-    }, [questList, questNameFilter, levelFilter, sortStyle]);
+    }, [questList, questNameFilter, levelFilter, sortStyle, sortDirection]);
 
     React.useEffect(() => {
         if (filteredQuestList === null) return;
@@ -492,28 +506,6 @@ const Quests = (props) => {
         }
     }
 
-    // Report Form
-    var [reportFormVisibility, setReportFormVisibility] =
-        React.useState("none");
-    var [reportFormReference, setReportFormReference] = React.useState(null);
-    function showReportForm(reference) {
-        // Grab relevant info from the tile element that's being reported
-        let referenceInfo = {
-            title: reference.title,
-            type: reference.chartType,
-            displayType: reference.displayType,
-            trendType: reference.trendType,
-            showActions: reference.showActions,
-            //data: reference.chartData,
-        };
-        // Show the report form
-        setReportFormReference(referenceInfo);
-        setReportFormVisibility("block");
-    }
-    function hideReportForm() {
-        setReportFormVisibility("none");
-    }
-
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
 
@@ -537,13 +529,11 @@ const Quests = (props) => {
                 />
             </Helmet>
             {isLoading && <LoadingOverlay />}
-            {/* <ReportIssueForm
-                page="quests"
-                showLink={false}
-                visibility={reportFormVisibility}
-                componentReference={reportFormReference}
-                hideReportForm={hideReportForm}
-            /> */}
+            <ReportQuest
+                visible={reportFormVisible}
+                hideForm={() => setReportFormVisible(false)}
+                reportedQuest={reportedQuest}
+            />
             <PopupMessage
                 page="quests"
                 message={popupMessage}
@@ -722,12 +712,23 @@ const Quests = (props) => {
                             <QuestTable
                                 data={paginatedQuestList}
                                 showLastUpdated={false}
-                                reportReference={showReportForm}
+                                reportQuest={(quest) => reportQuest(quest)}
                                 handleSelection={(quest) => loadQuest(quest)}
                                 collapsed={false}
                                 pageNumber={pageNumber}
                                 pageSize={PAGE_SIZE}
-                                handleSort={(style) => set_sortStyle(style)}
+                                handleSort={(style) => {
+                                    if (sortStyle === style) {
+                                        if (sortDirection === "ascending") {
+                                            setSortDirection("descending");
+                                        } else {
+                                            setSortDirection("ascending");
+                                        }
+                                    } else {
+                                        setSortDirection("ascending");
+                                        set_sortStyle(style);
+                                    }
+                                }}
                             />
                             <div
                                 style={{
@@ -863,7 +864,7 @@ const Quests = (props) => {
                                 marginBottom={100}
                                 hideLegend={true}
                                 // tickValues="every 1 day"
-                                // trendType="week"
+                                trendType="week"
                             />
                         </ContentCluster>
                         <ContentCluster
