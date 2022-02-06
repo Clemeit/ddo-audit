@@ -58,7 +58,7 @@ const Directory = (props) => {
                     title: "Guild Activity",
                     description: "Guild size, activity, and members lists.",
                     to: "/guilds",
-                    unavailable: true,
+                    soon: true,
                 },
                 {
                     icon: (
@@ -108,6 +108,7 @@ const Directory = (props) => {
                     description:
                         "Tools developed by the community, for the community.",
                     to: "/community",
+                    unavailable: true,
                 },
                 {
                     icon: <ApiSVG className="nav-icon-large should-invert" />,
@@ -115,6 +116,7 @@ const Directory = (props) => {
                     description:
                         "Look behind the curtain. Get the data for your own projects.",
                     to: "/api",
+                    beta: true,
                 },
                 {
                     icon: (
@@ -237,37 +239,44 @@ const Directory = (props) => {
                 {NAV_OPTIONS.map((option, i) => (
                     <ContentCluster key={i} title={option.title}>
                         <div className="content-cluster-options">
-                            {option.tiles.map((option, i) => (
-                                <Link
-                                    to={option.to}
-                                    key={i}
-                                    className="nav-box shrinkable"
-                                    style={{
-                                        height: "auto",
-                                        minHeight: "150px",
-                                    }}
-                                >
-                                    <div className="nav-box-title">
-                                        {option.icon}
-                                        <h2 className="content-option-title">
-                                            {option.title}
-                                            {option.beta != null && (
-                                                <div className="beta-tag">
-                                                    BETA
-                                                </div>
-                                            )}
-                                            {option.unavailable != null && (
-                                                <div className="soon-tag">
-                                                    SOON
-                                                </div>
-                                            )}
-                                        </h2>
-                                    </div>
-                                    <p className="content-option-description">
-                                        {option.description}
-                                    </p>
-                                </Link>
-                            ))}
+                            {option.tiles
+                                .filter((option) => !option.unavailable)
+                                .map((option, i) => (
+                                    <Link
+                                        to={option.to}
+                                        key={i}
+                                        className={
+                                            "nav-box shrinkable" +
+                                            (option.soon == true
+                                                ? " no-interact"
+                                                : "")
+                                        }
+                                        style={{
+                                            height: "auto",
+                                            minHeight: "150px",
+                                        }}
+                                    >
+                                        <div className="nav-box-title">
+                                            {option.icon}
+                                            <h2 className="content-option-title">
+                                                {option.title}
+                                                {option.beta != null && (
+                                                    <div className="beta-tag">
+                                                        BETA
+                                                    </div>
+                                                )}
+                                                {option.soon != null && (
+                                                    <div className="soon-tag">
+                                                        COMING SOON
+                                                    </div>
+                                                )}
+                                            </h2>
+                                        </div>
+                                        <p className="content-option-description">
+                                            {option.description}
+                                        </p>
+                                    </Link>
+                                ))}
                         </div>
                     </ContentCluster>
                 ))}

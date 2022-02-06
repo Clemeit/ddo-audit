@@ -225,29 +225,35 @@ const ChartLine = (props) => {
                                 props.trendType === "day"
                                     ? "%H:%M"
                                     : props.trendType === "week"
-                                    ? "%d"
-                                    : props.trendType === ""
-                                    ? ""
-                                    : "%b %d, %Y",
+                                    ? "%b %d, %Y"
+                                    : props.trendType === "quarter"
+                                    ? "%b %d, %Y"
+                                    : props.trendType === "annual"
+                                    ? "%b %d, %Y"
+                                    : "",
                             tickValues:
                                 props.tickValues || props.trendType === "day"
                                     ? "every 1 hour"
                                     : props.trendType === "week"
-                                    ? "every 6 hour"
-                                    : props.trendType === ""
-                                    ? ""
-                                    : "every 1 week",
+                                    ? "every 1 day"
+                                    : props.trendType === "quarter"
+                                    ? "every 1 week"
+                                    : props.trendType === "annual"
+                                    ? "every 4 week"
+                                    : "",
                         }}
                         axisLeft={getAxisLeft()}
                         lineWidth={4}
                         enablePoints={false}
                         colors={(d) => d.color}
                         enableArea={
-                            props.noArea
+                            props.showArea
+                                ? true
+                                : props.noArea
                                 ? false
                                 : props.activeFilter !== "Server Activity"
                         }
-                        areaOpacity={0.3}
+                        areaOpacity={props.areaOpacity || 0.3}
                         enableSlices="x"
                         useMesh={true}
                         motionConfig="stiff"

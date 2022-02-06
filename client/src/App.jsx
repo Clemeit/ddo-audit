@@ -42,7 +42,7 @@ const Quests = lazy(() => import("./components/quests/Quests"));
 const Trends = lazy(() => import("./components/trends/Trends"));
 const Suggestions = lazy(() => import("./components/global/Suggestions"));
 const Community = lazy(() => import("./components/community/Community"));
-const Guilds = lazy(() => import("./components/guilds/Guilds"));
+// const Guilds = lazy(() => import("./components/guilds/Guilds"));
 const Api = lazy(() => import("./components/api/Api"));
 const Timeline = lazy(() => import("./components/about/Timeline"));
 
@@ -75,9 +75,9 @@ export default () => {
                         <Route exact path="/quests">
                             <Quests />
                         </Route>
-                        <Route exact path="/guilds">
+                        {/* <Route exact path="/guilds">
                             <Guilds />
-                        </Route>
+                        </Route> */}
                         <Route exact path="/grouping">
                             <Grouping />
                         </Route>

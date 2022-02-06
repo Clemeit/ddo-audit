@@ -694,11 +694,18 @@ html {
     cursor: pointer;
     border-radius: 7px;
     transition: background-color 200ms;
+    user-select: none;
     /* , transform 150ms ease-in-out,
         filter 150ms ease-in-out; */
 }
 
-.nav-box:hover {
+.nav-box.no-interact {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.nav-box:hover:not(.no-interact) {
     /* transform: translate(-4px, -4px);
     filter: drop-shadow(4px 4px 1px black); */
     background-color: var(--highlighted-1);
@@ -1403,6 +1410,36 @@ h2:hover .anchor-link {
     width: min-content;
     border-radius: 5px;
     font-weight: bolder;
+}
+
+.report-quest-button {
+    visibility: hidden;
+    background-color: #aa0000;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 1px 8px;
+    opacity: 0.6;
+    margin-left: auto;
+    color: white;
+}
+
+.report-quest-button:hover {
+    opacity: 1;
+    filter: brightness(120%);
+}
+
+td:hover .report-quest-button {
+    visibility: visible;
+}
+
+.report-quest-form {
+    z-index: 11;
+    position: fixed;
+    width: 100%;
+    max-width: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @media (max-width: 900px) {

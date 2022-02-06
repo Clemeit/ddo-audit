@@ -74,9 +74,9 @@ const LfmFilterBar = (props) => {
                         style={{ marginLeft: props.showSave ? "" : "auto" }}
                         onClick={props.handleFilterButton}
                     >
-                        <SettingsSVG className="nav-icon should-invert" />
+                        <FilterSVG className="nav-icon should-invert" />
                         <span className="filter-bar-text settings hide-on-mobile">
-                            Settings
+                            Filters
                         </span>
                     </div>
                     {props.showNotifications && (
@@ -94,7 +94,7 @@ const LfmFilterBar = (props) => {
                             </span>
                         </Link>
                     )}
-                    <div
+                    {/* <div
                         className="filter-bar-item hide-on-mobile"
                         onClick={() => {
                             set_fullscreen(!fullscreen);
@@ -108,7 +108,7 @@ const LfmFilterBar = (props) => {
                         <span className="filter-bar-text">
                             {fullscreen ? "Go back" : "Fullscreen"}
                         </span>
-                    </div>
+                    </div> */}
                 </div>
                 {props.children}
             </div>
