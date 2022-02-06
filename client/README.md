@@ -1,3 +1,3 @@
-# /client/
+# DDO Audit
 
-Front-end files. A deployable React App can be found under /build
+A deployable Progressive Web Application built in React.
