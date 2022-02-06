@@ -7,7 +7,7 @@ async function fetchArbitraryData(url, type) {
 
 // Fetch server status
 export default fetchArbitraryData(
-    "https://www.playeraudit.com/api/serverstatus",
+    "https://api.ddoaudit.com/gamestatus/serverstatus",
     "json"
 ).then((val) => {
     return val;

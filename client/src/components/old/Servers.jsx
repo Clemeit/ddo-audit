@@ -36,7 +36,7 @@
 //             }
 
 //             fetchArbitraryData(
-//                 "https://www.playeraudit.com/api/serverstatus",
+//                 "https://api.ddoaudit.com/gamestatus/serverstatus",
 //                 "json"
 //             ).then((val) => {
 //                 set_serverStatusData(val);
@@ -268,7 +268,7 @@
 //         }
 
 //         fetchArbitraryData(
-//             "https://www.playeraudit.com/api/serverstatus",
+//             "https://api.ddoaudit.com/gamestatus/serverstatus",
 //             "json"
 //         ).then((val) => {
 //             set_serverStatusData(val);

@@ -25,3 +25,8 @@ server/api_v1/*
 client/build/*
 .env
 bfg.jar
+client/src/components/old/FetchServerStatus.js
+client/src/components/old/GroupingSpecific.jsx
+client/src/components/old/Home.jsx
+client/src/components/old/Servers.jsx
+client/src/components/old/ServerSpecific.jsx

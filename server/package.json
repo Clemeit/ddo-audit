@@ -12,6 +12,7 @@
 		"mysql": "^2.18.1",
 		"mysql2": "^2.3.3",
 		"node-cron": "^3.0.0",
+		"node-fetch": "2",
 		"performance": "^1.4.0",
 		"web-push": "^3.4.4"
 	},
