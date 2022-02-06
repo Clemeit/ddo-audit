@@ -11,11 +11,52 @@ const Trends = (props) => {
     const TITLE = "Data Trends";
 
     const [population1Year, setPopulation1Year] = React.useState(null);
+    const [permanentVsHardcore1Year, setPermanentVsHardcore1Year] =
+        React.useState(null);
+    const [minsAndMaxes1Year, setMinsAndMaxes1Year] = React.useState(null);
+    const [minsAndMaxesQuarter, setMinsAndMaxesQuarter] = React.useState(null);
 
     React.useEffect(() => {
         Fetch("https://api.ddoaudit.com/population/year", 5000).then((val) => {
-            setPopulation1Year(val.filter((series) => series.id !== "Total"));
+            setPopulation1Year(
+                val.filter(
+                    (series) =>
+                        series.id !== "Total" &&
+                        series.id !== "Permanent" &&
+                        series.id !== "Minimum" &&
+                        series.id !== "Maximum"
+                )
+            );
+            setPermanentVsHardcore1Year(
+                val.filter(
+                    (series) =>
+                        series.id === "Permanent" ||
+                        series.id === "Hardcore" ||
+                        series.id === "Total"
+                )
+            );
+            setMinsAndMaxes1Year(
+                val.filter(
+                    (series) =>
+                        series.id === "Total" ||
+                        series.id === "Minimum" ||
+                        series.id === "Maximum"
+                )
+            );
         });
+
+        Fetch("https://api.ddoaudit.com/population/quarter", 5000).then(
+            (val) => {
+                setMinsAndMaxesQuarter(
+                    val.filter(
+                        (series) =>
+                            series.id === "Total" ||
+                            series.id === "Minimum" ||
+                            series.id === "Maximum"
+                    )
+                );
+            }
+        );
     }, []);
 
     return (
@@ -44,7 +85,7 @@ const Trends = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Trends"
-                subtitle="Long-term trends and custom reports"
+                subtitle="Long-term population trends"
             />
             <div className="content-container">
                 <BannerMessage page="trends" />
@@ -52,11 +93,11 @@ const Trends = (props) => {
                 <NoMobileOptimization />
                 <ContentCluster
                     title="Server Population Trends"
-                    description="The last year of trend data for each server displayed as weekly averages. All server downtimes are ignored."
+                    description="The last two years of trend data for each server displayed as weekly averages. All server downtimes are ignored."
                 >
                     <ChartLine
                         data={population1Year}
-                        trendType="quarter"
+                        trendType="annual"
                         activeFilter="Server Activity"
                         showActions={false}
                         showLastUpdated={true}
@@ -66,15 +107,56 @@ const Trends = (props) => {
                     />
                 </ContentCluster>
                 <ContentCluster
-                    title="Live Server and Hardcore Server Trends"
-                    description="The last year of trend data comparing the combined
-                        population of the live servers compared to the
-                        population of the Hardcore League server."
-                ></ContentCluster>
+                    title="Permanent Servers vs. Hardcore League"
+                    description="The last two years of trend data displayed as a total of all servers, total of the permanent servers, and Hardcore League server only. All server downtimes are ignored."
+                >
+                    <ChartLine
+                        data={permanentVsHardcore1Year}
+                        trendType="annual"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                        marginBottom={120}
+                        height="460px"
+                        showArea={true}
+                        areaOpacity={0.1}
+                    />
+                </ContentCluster>
                 <ContentCluster
-                    title="Custom Report"
-                    description="Select a date range and any combination of servers."
-                ></ContentCluster>
+                    title="Weekly Minimum and Maximum Population"
+                    description="The last two years of trend data displayed as weekly minimums, maximums, and averages."
+                >
+                    <ChartLine
+                        data={minsAndMaxes1Year}
+                        trendType="annual"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                        marginBottom={120}
+                        height="460px"
+                        showArea={false}
+                        areaOpacity={0.1}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Daily Minimum and Maximum Population"
+                    description="The last quarter of trend data displayed as daily minimums, maximums, and averages."
+                >
+                    <ChartLine
+                        data={minsAndMaxesQuarter}
+                        trendType="quarter"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                        marginBottom={120}
+                        height="460px"
+                        showArea={false}
+                        areaOpacity={0.1}
+                    />
+                </ContentCluster>
             </div>
         </div>
     );
