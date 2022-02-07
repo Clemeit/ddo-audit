@@ -27,6 +27,21 @@ const Live = (props) => {
 
     const [population24HoursData, setPopulation24HoursData] =
         React.useState(null);
+    const [population24HoursType, setPopulation24HoursType] =
+        React.useState("population");
+
+    React.useEffect(() => {
+        Fetch(
+            `https://api.ddoaudit.com/population/day${
+                population24HoursType === "population" ? "" : "_groups"
+            }`,
+            5000
+        ).then((val) => {
+            setPopulation24HoursData(
+                val.filter((series) => series.id !== "Total")
+            );
+        });
+    }, [population24HoursType]);
 
     function refreshServerStatus() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
@@ -176,8 +191,37 @@ const Live = (props) => {
                     unique={uniqueCountsData}
                     serverstatus={serverStatusData}
                 />
-                <ContentCluster title="Live Population">
-                    <PlayerAndLfmSubtitle data={playerAndLFMCountData} />
+                <ContentCluster
+                    title={`Live ${
+                        population24HoursType === "population"
+                            ? "Population"
+                            : "LFM Count"
+                    }`}
+                    altTitle="Live Data"
+                    description={
+                        <span>
+                            <PlayerAndLfmSubtitle
+                                data={playerAndLFMCountData}
+                            />
+                            <span
+                                className="faux-link"
+                                onClick={() =>
+                                    setPopulation24HoursType(
+                                        population24HoursType === "population"
+                                            ? "groups"
+                                            : "population"
+                                    )
+                                }
+                            >
+                                Click here to switch to{" "}
+                                {population24HoursType === "population"
+                                    ? "LFM"
+                                    : "population"}{" "}
+                                data
+                            </span>
+                        </span>
+                    }
+                >
                     <ChartLine
                         data={population24HoursData}
                         trendType="day"
