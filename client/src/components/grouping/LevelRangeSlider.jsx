@@ -43,7 +43,7 @@ const LevelRangeSlider = (props) => {
             rootStyle={sliderStyle}
             domain={[1, 30]}
             step={1}
-            mode={2}
+            mode={1}
             values={[props.minimumLevel, props.maximumLevel]}
             onChange={props.handleChange}
         >
