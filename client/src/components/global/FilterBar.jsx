@@ -2,11 +2,12 @@ import React from "react";
 import { ReactComponent as ServerSelectSVG } from "../../assets/global/server.svg";
 import { ReactComponent as FilterSVG } from "../../assets/global/filter.svg";
 import { ReactComponent as SettingsSVG } from "../../assets/global/settings.svg";
-import { ReactComponent as SaveSVG } from "../../assets/global/save.svg";
+import { ReactComponent as CaptureSVG } from "../../assets/global/capture.svg";
 import { ReactComponent as NotificationSVG } from "../../assets/global/notification.svg";
 import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
 import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
 import { Link, useHistory } from "react-router-dom";
+import $ from "jquery";
 
 const LfmFilterBar = (props) => {
     const [fullscreen, set_fullscreen] = React.useState(false);
@@ -15,13 +16,24 @@ const LfmFilterBar = (props) => {
         history.goBack();
     };
 
+    React.useEffect(() => {
+        if (fullscreen) {
+            $("#main-banner").css({ display: "none" });
+            $("#main-nav").css({ display: "none" });
+            $("#top-content-padding").css({ display: "none" });
+        } else {
+            $("#main-banner").css({ display: "block" });
+            $("#main-nav").css({ display: "block" });
+            $("#top-content-padding").css({ display: "block" });
+        }
+    }, [fullscreen]);
+
     return (
         <div
             style={{
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                position: fullscreen ? "fixed" : "relative",
                 top: "0px",
                 maxWidth: props.maxWidth + "px",
             }}
@@ -33,7 +45,6 @@ const LfmFilterBar = (props) => {
             <div
                 className="filter-bar"
                 style={{
-                    position: fullscreen ? "fixed" : "relative",
                     top: "0px",
                     maxWidth: props.maxWidth + "px",
                 }}
@@ -63,9 +74,9 @@ const LfmFilterBar = (props) => {
                             style={{ marginLeft: "auto" }}
                             onClick={props.handleSaveButton}
                         >
-                            <SaveSVG className="nav-icon should-invert" />
+                            <CaptureSVG className="nav-icon should-invert" />
                             <span className="filter-bar-text settings hide-on-mobile">
-                                Save
+                                Screenshot
                             </span>
                         </div>
                     )}
@@ -94,7 +105,7 @@ const LfmFilterBar = (props) => {
                             </span>
                         </Link>
                     )}
-                    {/* <div
+                    <div
                         className="filter-bar-item hide-on-mobile"
                         onClick={() => {
                             set_fullscreen(!fullscreen);
@@ -108,7 +119,7 @@ const LfmFilterBar = (props) => {
                         <span className="filter-bar-text">
                             {fullscreen ? "Go back" : "Fullscreen"}
                         </span>
-                    </div> */}
+                    </div>
                 </div>
                 {props.children}
             </div>
