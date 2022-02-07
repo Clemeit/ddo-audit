@@ -55,13 +55,15 @@ const Grouping = () => {
                 </p>
             );
         }
+        let lfmcount = overviewData.filter(
+            (server) => server.ServerName === name
+        )[0];
         return (
             <p
                 className="content-option-description"
                 style={{ color: "var(--text-lfm-number)", fontSize: "1.4rem" }}
             >
-                {overviewData.filter((server) => server.ServerName === name)[0]
-                    .LfmCount + " groups"}
+                {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}
             </p>
         );
     }
