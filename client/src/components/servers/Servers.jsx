@@ -140,12 +140,20 @@ const Directory = (props) => {
 
     const [uniqueData, setUniqueData] = React.useState(null);
     const [serverStatusData, set_serverStatusData] = React.useState(null);
+
     const [serverDistributionData, setServerDistributionData] =
         React.useState(null);
     const [hourlyDistributionData, setHourlyDistributionData] =
         React.useState(null);
     const [dailyDistributionData, setDailyDistributionData] =
         React.useState(null);
+    const [serverGroupDistributionData, setServerGroupDistributionData] =
+        React.useState(null);
+    const [hourlyGroupDistributionData, setHourlyGroupDistributionData] =
+        React.useState(null);
+    const [dailyGroupDistributionData, setDailyGroupDistributionData] =
+        React.useState(null);
+
     const [levelDistributionData, setLevelDistributionData] =
         React.useState(null);
     const [classDistributionData, setClassDistributionData] =
@@ -169,49 +177,79 @@ const Directory = (props) => {
             });
     }
     React.useEffect(() => {
-        Fetch("https://www.playeraudit.com/api/uniquedata", 3000)
+        Fetch("https://www.playeraudit.com/api/uniquedata", 5000)
             .then((val) => {
                 setUniqueData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/serverdistribution", 3000)
+        Fetch("https://api.ddoaudit.com/population/serverdistribution", 5000)
             .then((val) => {
                 setServerDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/hourlydistribution", 3000)
+        Fetch("https://api.ddoaudit.com/population/hourlydistribution", 5000)
             .then((val) => {
                 setHourlyDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/population/dailydistribution", 3000)
+        Fetch("https://api.ddoaudit.com/population/dailydistribution", 5000)
             .then((val) => {
                 setDailyDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/demographics/leveldistribution", 3000)
+        Fetch(
+            "https://api.ddoaudit.com/population/serverdistribution_groups",
+            5000
+        )
+            .then((val) => {
+                setServerGroupDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch(
+            "https://api.ddoaudit.com/population/hourlydistribution_groups",
+            5000
+        )
+            .then((val) => {
+                setHourlyGroupDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch(
+            "https://api.ddoaudit.com/population/dailydistribution_groups",
+            5000
+        )
+            .then((val) => {
+                setDailyGroupDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+        Fetch("https://api.ddoaudit.com/demographics/leveldistribution", 5000)
             .then((val) => {
                 setLevelDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/demographics/classdistribution", 3000)
+        Fetch("https://api.ddoaudit.com/demographics/classdistribution", 5000)
             .then((val) => {
                 setClassDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
             });
-        Fetch("https://api.ddoaudit.com/demographics/racedistribution", 3000)
+        Fetch("https://api.ddoaudit.com/demographics/racedistribution", 5000)
             .then((val) => {
                 setRaceDistributionData(val);
             })
@@ -349,8 +387,15 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Server Population Distribution"
-                    description="Population distribution across the servers over the last
-                        90 days."
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which server is the most populated?
+                            </span>{" "}
+                            Population distribution across the servers over the
+                            last 90 days.
+                        </span>
+                    }
                 >
                     <ChartPie
                         data={serverDistributionData}
@@ -360,7 +405,14 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Hourly Population Distribution"
-                    description="Average population for each hour of the day."
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which server is most active for my time zone?
+                            </span>{" "}
+                            Average population for each hour of the day.
+                        </span>
+                    }
                 >
                     <ChartLine
                         keys={null}
@@ -378,7 +430,14 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Daily Population Distribution"
-                    description="Average population for each day of the week."
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which days are my server most active?
+                            </span>{" "}
+                            Average population for each day of the week.
+                        </span>
+                    }
                 >
                     <ChartBar
                         keys={[...SERVER_NAMES]}
@@ -386,6 +445,75 @@ const Directory = (props) => {
                         legendBottom="Day of Week"
                         legendLeft="Population"
                         data={dailyDistributionData}
+                        noAnim={true}
+                        display="Grouped"
+                        straightLegend={true}
+                        legendOffset={40}
+                        dataIncludesColors={true}
+                        paddingBottom={60}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Server LFM Distribution"
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which server has the most LFMs?
+                            </span>{" "}
+                            LFM distribution across the servers over the last 90
+                            days.
+                        </span>
+                    }
+                >
+                    <ChartPie
+                        data={serverGroupDistributionData}
+                        noAnim={true}
+                        useDataColors={true}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Hourly LFM Distribution"
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which server has the most LFMs for my time zone?
+                            </span>{" "}
+                            Average LFM count for each hour of the day.
+                        </span>
+                    }
+                >
+                    <ChartLine
+                        keys={null}
+                        indexBy={null}
+                        legendBottom="Time of day (EST)"
+                        legendLeft="Groups"
+                        data={hourlyGroupDistributionData}
+                        noAnim={true}
+                        title="Distribution"
+                        marginBottom={60}
+                        trendType=""
+                        noArea={true}
+                        straightLegend={true}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Daily LFM Distribution"
+                    description={
+                        <span>
+                            <span className="lfm-number">
+                                Which days see the most LFMs posted on my
+                                server?
+                            </span>{" "}
+                            Average LFM count for each day of the week.
+                        </span>
+                    }
+                >
+                    <ChartBar
+                        keys={[...SERVER_NAMES]}
+                        indexBy="Day"
+                        legendBottom="Day of Week"
+                        legendLeft="Groups"
+                        data={dailyGroupDistributionData}
                         noAnim={true}
                         display="Grouped"
                         straightLegend={true}
