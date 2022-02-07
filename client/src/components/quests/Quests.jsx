@@ -274,7 +274,7 @@ const Quests = (props) => {
                 high,
             "json"
         ).then((val) => {
-            console.log(val);
+            // console.log(val);
 
             const HOUR_BIN_WIDTH = 2;
             const MAX_DURATION_LIMIT = 3 * 60 * 60;
@@ -444,7 +444,7 @@ const Quests = (props) => {
                 thiscount++;
             }
 
-            console.log(dailypopularity);
+            // console.log(dailypopularity);
 
             let linedata = [
                 {

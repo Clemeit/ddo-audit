@@ -52,7 +52,7 @@ const UniqueCountsSubtitle = (props) => {
                                 GetUniquePlayers(true)) *
                                 100
                         )}
-                        % ({GetUniqueActivePlayers()})
+                        % ({GetUniqueActivePlayers()})*
                     </span>{" "}
                     of whom we consider active{" "}
                     <span

@@ -5,7 +5,7 @@ import Banner from "../global/Banner";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import UniqueCountsSubtitle from "../old/UniqueCountsSubtitle";
+import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
 import ContentCluster from "../global/ContentCluster";
 import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
@@ -269,7 +269,10 @@ const ServersSpecific = () => {
                             readAbout={(m) => readAbout(m)}
                         />
                     }
-                />
+                >
+                    * This data is still new and these numbers will likely
+                    change in the future.
+                </ContentCluster>
                 <ContentCluster
                     title="Hourly LFM Activity"
                     description="Average LFM count for each hour of the day. Data is from the last quarter."

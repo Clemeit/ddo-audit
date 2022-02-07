@@ -1,7 +1,7 @@
 {
     "name": "ddo_audit",
-    "homepage": "https://dev.ddoaudit.com",
-    "version": "0.3.0",
+    "homepage": "https://www.ddoaudit.com",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "@nivo/bar": "^0.70.1",
