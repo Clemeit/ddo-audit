@@ -23,6 +23,12 @@ const CanvasLfmPanel = (props) => {
         let x = (e.clientX - rect.left) * (848 / rect.width); //x position within the element.
         let y = (e.clientY - rect.top) * (848 / rect.width); //y position within the element.
 
+        if (e.type === "click" && x > 743 && x < 826 && y > 51 && y < 71) {
+            // Sort by level
+            props.handleSort("level");
+            return;
+        }
+
         if (x > 605) {
             // 375 border between group and quest
             set_groupSelection({ ...groupSelection, groupIndex: -1 });
@@ -72,7 +78,7 @@ const CanvasLfmPanel = (props) => {
 
     React.useEffect(() => {
         if (!isImageLoaded) {
-            console.log("Waiting on resources");
+            //console.log("Waiting on resources");
             return;
         }
         // Render canvas
@@ -159,7 +165,7 @@ const CanvasLfmPanel = (props) => {
 
         function DrawLfms() {
             if (props.data === null) {
-                console.log("Waiting on data");
+                //console.log("Waiting on data");
                 return;
             }
             props.data.Groups.filter((group) => {
@@ -715,6 +721,10 @@ const CanvasLfmPanel = (props) => {
             let estimatedBottom = cursorPosition[1] + 3 + 170 + 26;
             if (estimatedBottom > canvas.height) {
                 cursorPosition[1] -= estimatedBottom - canvas.height;
+            }
+            let estimatedRight = cursorPosition[0] + 350;
+            if (estimatedRight > canvas.width) {
+                cursorPosition[0] -= estimatedRight - canvas.width;
             }
 
             let fontModifier = props.fontModifier === 0 ? 0 : 4;
