@@ -108,7 +108,10 @@ const Banner = (props) => {
     }, []);
 
     return (
-        <div className={props.hideOnMobile ? "hide-on-mobile" : ""}>
+        <div
+            id="main-banner"
+            className={props.hideOnMobile ? "hide-on-mobile" : ""}
+        >
             <div
                 className="banner"
                 style={{ height: props.small ? "220px" : "500px" }}
@@ -145,7 +148,7 @@ const Banner = (props) => {
                                     target="_blank"
                                     className="primary-button"
                                 >
-                                    Visit our GitHub
+                                    Visit my GitHub
                                 </a>
                                 {!props.hideSuggestions && (
                                     <Link

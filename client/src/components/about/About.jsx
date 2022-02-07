@@ -179,7 +179,7 @@ const About = (props) => {
                             target="_blank"
                             className="primary-button should-invert full-width-mobile"
                         >
-                            Visit our GitHub
+                            Visit my GitHub
                         </a>
                         <Link
                             to="/suggestions"
