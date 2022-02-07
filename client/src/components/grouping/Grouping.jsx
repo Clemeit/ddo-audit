@@ -57,7 +57,7 @@ const Grouping = () => {
         }
         let lfmcount = overviewData.filter(
             (server) => server.ServerName === name
-        )[0];
+        )[0].LfmCount;
         return (
             <p
                 className="content-option-description"
