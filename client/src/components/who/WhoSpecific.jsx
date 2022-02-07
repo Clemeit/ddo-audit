@@ -120,7 +120,9 @@ const WhoSpecific = (props) => {
     const [alternativeLook, setAlternativeLook] = React.useState(true);
     const [activeFilters, setActiveFilter] = React.useState([]);
     const [sortingMethod, setSortingMethod] = React.useState("level");
+    const sortingMethodRef = React.useRef(sortingMethod);
     const [sortingDirection, setSortingDirection] = React.useState("ascending");
+    const sortingDirectionRef = React.useRef(sortingDirection);
 
     const [pageNumber, setPageNumber] = React.useState(0);
 
@@ -266,7 +268,7 @@ const WhoSpecific = (props) => {
         classFilterStates.forEach((state) => {
             if (!state) result = false;
         });
-        console.log(result);
+        // console.log(result);
         return result;
     }
 
@@ -318,6 +320,18 @@ const WhoSpecific = (props) => {
         setExactMatch((exactMatch) => !exactMatch);
     }
 
+    function handleCanvasSort(type) {
+        if (sortingMethodRef.current == type) {
+            setSortingDirection((sortingDirection) =>
+                sortingDirection === "ascending" ? "descending" : "ascending"
+            );
+        } else {
+            setSortingDirection("ascending");
+            setSortingMethod(type);
+            sortingMethodRef.current = type;
+        }
+    }
+
     function ApplyFilters(data) {
         // Apply sorting
         if (sortingMethod === "level") {
@@ -341,6 +355,38 @@ const WhoSpecific = (props) => {
                 data.sort((a, b) =>
                     b.Location.Name.localeCompare(a.Location.Name)
                 );
+            }
+        } else if (sortingMethod === "inparty") {
+            if (sortingDirection === "ascending") {
+                data.sort((a, b) => a.InParty - b.InParty);
+            } else {
+                data.sort((a, b) => b.InParty - a.InParty);
+            }
+        } else if (sortingMethod === "class") {
+            if (sortingDirection === "ascending") {
+                data.sort((a, b) => {
+                    let astring = "";
+                    a.Classes.forEach((c) => {
+                        astring = astring + (c.Name || "");
+                    });
+                    let bstring = "";
+                    b.Classes.forEach((c) => {
+                        bstring = bstring + (c.Name || "");
+                    });
+                    return astring.localeCompare(bstring);
+                });
+            } else {
+                data.sort((a, b) => {
+                    let astring = "";
+                    a.Classes.forEach((c) => {
+                        astring = astring + (c.Name || "");
+                    });
+                    let bstring = "";
+                    b.Classes.forEach((c) => {
+                        bstring = bstring + (c.Name || "");
+                    });
+                    return bstring.localeCompare(astring);
+                });
             }
         } else {
             if (sortingDirection === "ascending") {
@@ -735,7 +781,10 @@ const WhoSpecific = (props) => {
                     style={{ minHeight: "700px" }}
                 >
                     <BannerMessage className="push-on-mobile" page="who" />
-                    <div className="top-content-padding hide-on-mobile" />
+                    <div
+                        id="top-content-padding"
+                        className="top-content-padding hide-on-mobile"
+                    />
                     <FilterBar
                         currentServer={currentServer}
                         showNotifications={false}
@@ -913,6 +962,7 @@ const WhoSpecific = (props) => {
                                                 onChange={() =>
                                                     HandleSortFilter()
                                                 }
+                                                value={sortingMethod}
                                             >
                                                 <option value="level">
                                                     Level
@@ -938,6 +988,7 @@ const WhoSpecific = (props) => {
                                                 onChange={() =>
                                                     HandleDirectionFilter()
                                                 }
+                                                value={sortingDirection}
                                             >
                                                 <option value="ascending">
                                                     Ascending
@@ -1035,6 +1086,9 @@ const WhoSpecific = (props) => {
                                                     !filterPanelVisible
                                                 )
                                             }
+                                            handleSort={(type) => {
+                                                handleCanvasSort(type);
+                                            }}
                                         />
                                         <div className="top-content-padding hide-on-mobile" />
                                     </div>

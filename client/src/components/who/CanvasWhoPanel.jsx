@@ -78,6 +78,26 @@ const CanvasWhoPanel = (props) => {
         if (x > 480 && x < 480 + 28 && y > 142 && y < 142 + 20) {
             props.handleOpenSettings();
         }
+
+        if (x > 21 && x < 41 && y > 205 && y < 226) {
+            props.handleSort("inparty");
+        }
+
+        if (x > 41 && x < 271 && y > 205 && y < 226) {
+            props.handleSort("name");
+        }
+
+        if (x > 271 && x < 387 && y > 205 && y < 226) {
+            props.handleSort("class");
+        }
+
+        if (x > 387 && x < 456 && y > 205 && y < 226) {
+            props.handleSort("level");
+        }
+
+        if (x > 456 && x < 684 && y > 205 && y < 226) {
+            props.handleSort("guild");
+        }
     }
 
     React.useEffect(() => {
