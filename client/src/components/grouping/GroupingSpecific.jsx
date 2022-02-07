@@ -98,6 +98,18 @@ const GroupingSpecific = (props) => {
             });
     }
 
+    function handleCanvasSort(type) {
+        // if (sortingMethodRef.current == type) {
+        setSortAscending((sortAscending) =>
+            sortAscending === true ? false : true
+        );
+        // } else {
+        //     setSortingDirection("ascending");
+        //     setSortingMethod(type);
+        //     sortingMethodRef.current = type;
+        // }
+    }
+
     const location = useLocation().pathname.substring(
         useLocation().pathname.lastIndexOf("/") + 1
     );
@@ -375,10 +387,13 @@ const GroupingSpecific = (props) => {
                     style={{ minHeight: "700px" }}
                 >
                     <BannerMessage className="push-on-mobile" page="grouping" />
-                    <div className="top-content-padding hide-on-mobile" />
+                    <div
+                        id="top-content-padding"
+                        className="top-content-padding hide-on-mobile"
+                    />
                     <FilterBar
                         currentServer={currentServer}
-                        showNotifications={true}
+                        showNotifications={false}
                         showSave={true}
                         maxWidth={848}
                         returnTo="/grouping"
@@ -559,6 +574,7 @@ const GroupingSpecific = (props) => {
                                 adjustedGroupCount={adjustedGroupCount}
                                 fontModifier={fontModifier}
                                 highVisibility={highVisibility}
+                                handleSort={(type) => handleCanvasSort(type)}
                             />
                         ) : (
                             <div className="social-container">
