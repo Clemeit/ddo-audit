@@ -13,4 +13,4 @@ firebase.initializeApp({
     measurementId: "G-YG3R94WB3B",
 });
 
-const messaging = firebase.messaging();
+const messaging = isSupported() ? getMessaging() : null;

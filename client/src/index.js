@@ -5,7 +5,12 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import {
+    getMessaging,
+    getToken,
+    onMessage,
+    isSupported,
+} from "firebase/messaging";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -30,12 +35,15 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 // Firebase messaging object
-const messaging = getMessaging();
+const messaging =
+    isSupported() && navigator.serviceWorker != null ? getMessaging() : null;
 
-onMessage(messaging, (payload) => {
-    console.log("Message received. ", payload);
-    // ...
-});
+if (messaging != null) {
+    onMessage(messaging, (payload) => {
+        //console.log("Message received. ", payload);
+        // ...
+    });
+}
 
 ReactDOM.render(
     <React.StrictMode>
