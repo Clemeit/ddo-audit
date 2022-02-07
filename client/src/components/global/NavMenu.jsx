@@ -25,7 +25,7 @@ const serverNames = [
 
 const NavMenu = (props) => {
     return (
-        <div style={{ position: "fixed", zIndex: 5, width: "100%" }}>
+        <div id="main-nav" className="main-nav-menu">
             <NavBar>
                 <div className="nav-pull">
                     <MenuSVG className="nav-icon" />
