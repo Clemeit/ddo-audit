@@ -4,7 +4,7 @@ import Banner from "../global/Banner";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as EditSVG } from "../../assets/global/edit.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import ContentCluster from "../global/ContentCluster";
 
 const NotificationForm = (props) => {
@@ -21,7 +21,7 @@ const NotificationForm = (props) => {
     const [rules, setRules] = React.useState([]);
 
     // Firebase messaging object
-    const messaging = getMessaging();
+    const messaging = isSupported() ? getMessaging() : null;
 
     React.useEffect(() => {
         let loadrules = JSON.parse(localStorage.getItem("notification-rules"));
@@ -73,7 +73,7 @@ const NotificationForm = (props) => {
     }
 
     function Edit(index) {
-        console.log(index);
+        //console.log(index);
         setServer(rules[index].server);
         setLeaderName(rules[index].leaderName);
         setLevelRange(rules[index].levelRange);
@@ -96,7 +96,7 @@ const NotificationForm = (props) => {
                 setCanNotify(true);
                 permissionGranted();
             } else if (result === "denied") {
-                console.log(result);
+                //console.log(result);
                 setDeniedNotifications(true);
             }
         });
@@ -120,17 +120,17 @@ const NotificationForm = (props) => {
         })
             .then((currentToken) => {
                 if (currentToken) {
-                    console.log(currentToken);
+                    //console.log(currentToken);
                 } else {
                     // Show permission request UI
-                    console.log(
-                        "No registration token available. Request permission to generate one."
-                    );
+                    // console.log(
+                    //     "No registration token available. Request permission to generate one."
+                    // );
                     // ...
                 }
             })
             .catch((err) => {
-                console.log("An error occurred while retrieving token. ", err);
+                // console.log("An error occurred while retrieving token. ", err);
                 // ...
             });
     }
@@ -143,7 +143,7 @@ const NotificationForm = (props) => {
                         userVisibleOnly: true,
                     })
                     .then(function (sub) {
-                        console.log("Endpoint URL: ", sub.endpoint);
+                        // console.log("Endpoint URL: ", sub.endpoint);
                     })
                     .catch(function (e) {
                         if (Notification.permission === "denied") {
