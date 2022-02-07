@@ -13,173 +13,179 @@ const { runDayReport } = require("./Population/Day");
 const { runDailyDistribution } = require("./Population/DailyDistribution");
 const { runHourlyDistribution } = require("./Population/HourlyDistribution");
 const { runServerDistribution } = require("./Population/ServerDistribution");
+const { runUniqueReport } = require("./Population/UniqueCounts");
 
 const { runServerStatusReport } = require("./Game/ServerStatus");
 
 var mysql = require("mysql2");
 var con = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
 });
 
 function GetDateString(datetime) {
-	return `${datetime.getUTCFullYear()}-${
-		datetime.getUTCMonth() + 1
-	}-${datetime.getUTCDate()} 00-00-00`;
+    return `${datetime.getUTCFullYear()}-${
+        datetime.getUTCMonth() + 1
+    }-${datetime.getUTCDate()} 00-00-00`;
 }
 
 con.connect((err) => {
-	if (err) throw err;
-	console.log("Connected to database");
+    if (err) throw err;
+    console.log("Connected to database");
 
-	// Get class data:
-	let classes = [];
-	function getClassData() {
-		classes.length = 0;
-		let classquery = "SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
-		con.query(classquery, (err, result, fields) => {
-			if (err) throw err;
+    // Get class data:
+    let classes = [];
+    function getClassData() {
+        classes.length = 0;
+        let classquery =
+            "SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
+        con.query(classquery, (err, result, fields) => {
+            if (err) throw err;
 
-			result.forEach(({ id, name }) => {
-				if (name !== "Epic")
-					classes.push({
-						id,
-						name,
-					});
-			});
+            result.forEach(({ id, name }) => {
+                if (name !== "Epic")
+                    classes.push({
+                        id,
+                        name,
+                    });
+            });
 
-			console.log(`Retrieved ${classes.length} classes`);
-		});
-	}
+            console.log(`Retrieved ${classes.length} classes`);
+        });
+    }
 
-	// Get race data:
-	let races = [];
-	function getRaceData() {
-		races.length = 0;
-		let racequery = "SELECT * FROM `races` ORDER BY `races`.`name` ASC;";
-		con.query(racequery, (err, result, fields) => {
-			if (err) throw err;
+    // Get race data:
+    let races = [];
+    function getRaceData() {
+        races.length = 0;
+        let racequery = "SELECT * FROM `races` ORDER BY `races`.`name` ASC;";
+        con.query(racequery, (err, result, fields) => {
+            if (err) throw err;
 
-			let total = 0;
+            let total = 0;
 
-			result.forEach(({ name }) => {
-				races.push(name);
-			});
+            result.forEach(({ name }) => {
+                races.push(name);
+            });
 
-			let output = [];
-			races.forEach((race) => {
-				output.push({
-					id: race,
-					label: race,
-					value: 0,
-				});
-			});
+            let output = [];
+            races.forEach((race) => {
+                output.push({
+                    id: race,
+                    label: race,
+                    value: 0,
+                });
+            });
 
-			console.log(`Retrieved ${races.length} races`);
-		});
-	}
+            console.log(`Retrieved ${races.length} races`);
+        });
+    }
 
-	// Get player data:
-	let players = [];
-	function getPlayerData(days) {
-		return new Promise(async (resolve, reject) => {
-			players.length = 0;
-			let query =
-				"SELECT * FROM `players` WHERE `lastseen` >= '" +
-				GetDateString(
-					new Date(
-						new Date(new Date().toDateString()) -
-							1000 * 60 * 60 * 24 * days
-					)
-				) +
-				"';";
-			con.query(query, (err, result, fields) => {
-				if (err) throw reject(err);
+    // Get player data:
+    let players = [];
+    function getPlayerData(days) {
+        return new Promise(async (resolve, reject) => {
+            players.length = 0;
+            let query =
+                "SELECT * FROM `players` WHERE `lastseen` >= '" +
+                GetDateString(
+                    new Date(
+                        new Date(new Date().toDateString()) -
+                            1000 * 60 * 60 * 24 * days
+                    )
+                ) +
+                "';";
+            con.query(query, (err, result, fields) => {
+                if (err) throw reject(err);
 
-				result.forEach((player) => {
-					players.push(player);
-				});
+                result.forEach((player) => {
+                    players.push(player);
+                });
 
-				console.log(`Retrieved ${players.length} players`);
-				resolve();
-			});
-		});
-	}
+                console.log(`Retrieved ${players.length} players`);
+                resolve();
+            });
+        });
+    }
 
-	let population = [];
-	function getPopulationData(days) {
-		return new Promise(async (resolve, reject) => {
-			population.length = 0;
-			let query =
-				"SELECT * FROM `population` WHERE `datetime` >= '" +
-				GetDateString(
-					new Date(new Date().getTime() - 60000 * 60 * 24 * days)
-				) +
-				"' ORDER BY `population`.`datetime` ASC;";
-			con.query(query, (err, result, fields) => {
-				if (err) throw err;
+    let population = [];
+    function getPopulationData(days) {
+        return new Promise(async (resolve, reject) => {
+            population.length = 0;
+            let query =
+                "SELECT * FROM `population` WHERE `datetime` >= '" +
+                GetDateString(
+                    new Date(new Date().getTime() - 60000 * 60 * 24 * days)
+                ) +
+                "' ORDER BY `population`.`datetime` ASC;";
+            con.query(query, (err, result, fields) => {
+                if (err) throw err;
 
-				result.forEach((data) => {
-					data.datetime = new Date(data.datetime + "Z");
-					population.push(data);
-				});
+                result.forEach((data) => {
+                    data.datetime = new Date(data.datetime + "Z");
+                    population.push(data);
+                });
 
-				console.log(
-					`Retrieved ${population.length} population data points`
-				);
-				resolve();
-			});
-		});
-	}
+                console.log(
+                    `Retrieved ${population.length} population data points`
+                );
+                resolve();
+            });
+        });
+    }
 
-	// Every week
-	cron.schedule("0 * * * 0", () => {
-		getPopulationData(365).then(() => {
-			runAnnualReport(population);
-			runQuarterReport(population);
-			runWeekReport(population);
-			runDailyDistribution(population);
-			runHourlyDistribution(population);
-			runServerDistribution(population);
-		});
-	});
+    // Every week
+    cron.schedule("0 * * * 0", () => {
+        getPopulationData(365).then(() => {
+            runAnnualReport(population);
+            runQuarterReport(population);
+            runWeekReport(population);
+            runDailyDistribution(population);
+            runHourlyDistribution(population);
+            runServerDistribution(population);
+        });
+    });
 
-	// Every day
-	cron.schedule("0 0 * * 1-6", () => {
-		getPopulationData(365).then(() => {
-			runQuarterReport(population);
-			runWeekReport(population);
-			runDailyDistribution(population);
-			runHourlyDistribution(population);
-			runServerDistribution(population);
-		});
+    // Every day
+    cron.schedule("0 0 * * 1-6", () => {
+        getPopulationData(365).then(() => {
+            runQuarterReport(population);
+            runWeekReport(population);
+            runDailyDistribution(population, "population");
+            runHourlyDistribution(population, "population");
+            runServerDistribution(population, "population");
+            runDailyDistribution(population, "groups");
+            runHourlyDistribution(population, "groups");
+            runServerDistribution(population, "groups");
+        });
 
-		getClassData();
-		getRaceData();
-		getPlayerData((days = 91)).then(() => {
-			runClassDistribution(players, classes, "normal");
-			runRaceDistribution(players, races, "normal");
-			runLevelDistribution(players, "normal");
-			runClassDistribution(players, classes, "banks");
-			runRaceDistribution(players, races, "banks");
-			runLevelDistribution(players, "banks");
-		});
-	});
+        getClassData();
+        getRaceData();
+        getPlayerData((days = 91)).then(() => {
+            runClassDistribution(players, classes, "normal");
+            runRaceDistribution(players, races, "normal");
+            runLevelDistribution(players, "normal");
+            runClassDistribution(players, classes, "banks");
+            runRaceDistribution(players, races, "banks");
+            runLevelDistribution(players, "banks");
+            runUniqueReport(players);
+        });
+    });
 
-	// Every hour
-	cron.schedule("0 0-22 * * *", () => {});
+    // Every hour
+    cron.schedule("0 0-22 * * *", () => {});
 
-	// Every 5 minutes
-	cron.schedule("1-56/5 * * * *", () => {
-		getPopulationData(1).then(() => {
-			runDayReport(population);
-		});
-	});
+    // Every 5 minutes
+    cron.schedule("1-56/5 * * * *", () => {
+        getPopulationData(1).then(() => {
+            runDayReport(population);
+        });
+    });
 
-	// Every minute
-	cron.schedule("* * * * *", () => {
-		runServerStatusReport();
-	});
+    // Every minute
+    cron.schedule("* * * * *", () => {
+        runServerStatusReport();
+    });
 });
