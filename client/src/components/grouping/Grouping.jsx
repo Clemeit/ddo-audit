@@ -187,9 +187,23 @@ const Grouping = () => {
                     </div>
                 </ContentCluster>
                 <ContentCluster
-                    title="Notifications"
-                    description={
+                    title={
                         <>
+                            Notifications
+                            <div
+                                className="soon-tag"
+                                style={{ marginLeft: "1rem" }}
+                            >
+                                COMING SOON
+                            </div>
+                        </>
+                    }
+                    altTitle="Notifications"
+                    description={
+                        <div
+                            className="no-interact"
+                            style={{ textDecoration: "line-through" }}
+                        >
                             You currently have{" "}
                             <span style={{ color: "var(--text-lfm-number)" }}>
                                 {notificationRuleCount}
@@ -201,7 +215,7 @@ const Grouping = () => {
                                 notification settings
                             </Link>
                             .
-                        </>
+                        </div>
                     }
                     noFade={true}
                 />
