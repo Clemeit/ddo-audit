@@ -5,32 +5,36 @@ import CustomLegend from "./CustomLegend";
 // This pie chart is used to show the server distribution.
 // Pages: Servers
 
-const theme = {
-    background: "var(--base)",
-    textColor: "var(--text)",
-    fontSize: 16,
-    tooltip: {
-        container: {
-            background: "var(--base)",
-            color: "inherit",
-            fontSize: "inherit",
-            borderRadius: "2px",
-            boxShadow: "0 0 6px var(--black)",
-            padding: "5px 9px",
-        },
-        basic: {
-            whiteSpace: "pre",
-            display: "flex",
-            alignItems: "center",
-        },
-        table: {},
-        tableCell: {
-            padding: "3px 5px",
-        },
-    },
-};
-
 const ChartPie = (props) => {
+    const theme = {
+        background: "var(--base)",
+        textColor: "var(--text)",
+        fontSize: 16,
+        tooltip: {
+            container: {
+                background: "var(--base)",
+                color: "inherit",
+                fontSize: "inherit",
+                borderRadius: "2px",
+                boxShadow: "0 0 6px var(--black)",
+                padding: "5px 9px",
+            },
+            basic: {
+                whiteSpace: "pre",
+                display: "flex",
+                alignItems: "center",
+            },
+            table: {},
+            tableCell: {
+                padding: "3px 5px",
+            },
+        },
+    };
+
+    const [isMobileLoaded, setIsMobileLoaded] = React.useState(
+        props.alwaysShow === true ? true : false
+    );
+
     function GetTotalPopulation() {
         let filtered = props.data.filter(
             (series) => !excludedSeries.includes(series.id)
@@ -65,9 +69,20 @@ const ChartPie = (props) => {
         <div>
             <div
                 className={
-                    props.filters || props.showServerFilters
+                    isMobileLoaded
+                        ? "hide-on-mobile"
+                        : "secondary-button should-invert show-on-mobile full-width-mobile"
+                }
+                style={{ display: isMobileLoaded ? "none" : "" }}
+                onClick={() => setIsMobileLoaded(true)}
+            >
+                Show this graph
+            </div>
+            <div
+                className={
+                    (props.filters || props.showServerFilters
                         ? "chart-filterable"
-                        : ""
+                        : "") + (isMobileLoaded ? "" : " hide-on-mobile")
                 }
                 style={{ height: "400px" }}
             >
@@ -150,7 +165,7 @@ const ChartPie = (props) => {
             {!props.hideCustomLegend && (
                 <CustomLegend
                     data={props.data}
-                    isMobileLoaded={true}
+                    isMobileLoaded={isMobileLoaded}
                     excludedSeries={excludedSeries}
                     switchExcludedSeries={(id) => switchExcludedSeries(id)}
                 />

@@ -13,6 +13,7 @@ const PlayerAndLfmSubtitle = (props) => {
                     fontSize: "1.5rem",
                     lineHeight: "normal",
                     color: "var(--text)",
+                    marginBottom: "0px",
                 }}
             >
                 There are currently{" "}
