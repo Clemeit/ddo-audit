@@ -1,2 +1,2 @@
-# DDO Audit as a PWA in React
-This repository houses the DDO Audit Progressive Web App and its associated backend.
+# DDO Audit
+A real-time player population tracking project and live LFM viewer for Dungeons and Dragons Online.
