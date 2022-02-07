@@ -147,12 +147,57 @@ const Directory = (props) => {
         React.useState(null);
     const [dailyDistributionData, setDailyDistributionData] =
         React.useState(null);
-    const [serverGroupDistributionData, setServerGroupDistributionData] =
-        React.useState(null);
-    const [hourlyGroupDistributionData, setHourlyGroupDistributionData] =
-        React.useState(null);
-    const [dailyGroupDistributionData, setDailyGroupDistributionData] =
-        React.useState(null);
+    const [serverDistributionType, setServerDistributionType] =
+        React.useState("population");
+    const [hourlyDistributionType, setHourlyDistributionType] =
+        React.useState("population");
+    const [dailyDistributionType, setDailyDistributionType] =
+        React.useState("population");
+
+    React.useEffect(() => {
+        Fetch(
+            `https://api.ddoaudit.com/population/serverdistribution${
+                serverDistributionType === "population" ? "" : "_groups"
+            }`,
+            5000
+        )
+            .then((val) => {
+                setServerDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }, [serverDistributionType]);
+
+    React.useEffect(() => {
+        Fetch(
+            `https://api.ddoaudit.com/population/hourlydistribution${
+                hourlyDistributionType === "population" ? "" : "_groups"
+            }`,
+            5000
+        )
+            .then((val) => {
+                setHourlyDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }, [hourlyDistributionType]);
+
+    React.useEffect(() => {
+        Fetch(
+            `https://api.ddoaudit.com/population/dailydistribution${
+                dailyDistributionType === "population" ? "" : "_groups"
+            }`,
+            5000
+        )
+            .then((val) => {
+                setDailyDistributionData(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }, [dailyDistributionType]);
 
     const [levelDistributionData, setLevelDistributionData] =
         React.useState(null);
@@ -201,36 +246,6 @@ const Directory = (props) => {
         Fetch("https://api.ddoaudit.com/population/dailydistribution", 5000)
             .then((val) => {
                 setDailyDistributionData(val);
-            })
-            .catch((err) => {
-                dataFailedToLoad();
-            });
-        Fetch(
-            "https://api.ddoaudit.com/population/serverdistribution_groups",
-            5000
-        )
-            .then((val) => {
-                setServerGroupDistributionData(val);
-            })
-            .catch((err) => {
-                dataFailedToLoad();
-            });
-        Fetch(
-            "https://api.ddoaudit.com/population/hourlydistribution_groups",
-            5000
-        )
-            .then((val) => {
-                setHourlyGroupDistributionData(val);
-            })
-            .catch((err) => {
-                dataFailedToLoad();
-            });
-        Fetch(
-            "https://api.ddoaudit.com/population/dailydistribution_groups",
-            5000
-        )
-            .then((val) => {
-                setDailyGroupDistributionData(val);
             })
             .catch((err) => {
                 dataFailedToLoad();
@@ -386,14 +401,44 @@ const Directory = (props) => {
                     </p>
                 </ContentCluster>
                 <ContentCluster
-                    title="Server Population Distribution"
+                    title={`Server ${
+                        serverDistributionType === "population"
+                            ? "Population"
+                            : "LFM"
+                    } Distribution`}
+                    altTitle="Server Distribution"
                     description={
                         <span>
                             <span className="lfm-number">
-                                Which server is the most populated?
+                                {`Which server ${
+                                    serverDistributionType === "population"
+                                        ? "is the most populated"
+                                        : "has the most LFMs"
+                                }?`}
                             </span>{" "}
-                            Population distribution across the servers over the
-                            last 90 days.
+                            {`${
+                                serverDistributionType === "population"
+                                    ? "Population"
+                                    : "LFM"
+                            } distribution across the servers over the
+                            last 90 days.`}
+                            <br />
+                            <span
+                                className="faux-link"
+                                onClick={() =>
+                                    setServerDistributionType(
+                                        serverDistributionType === "population"
+                                            ? "groups"
+                                            : "population"
+                                    )
+                                }
+                            >
+                                Click here to switch to{" "}
+                                {serverDistributionType === "population"
+                                    ? "LFM"
+                                    : "population"}{" "}
+                                data
+                            </span>
                         </span>
                     }
                 >
@@ -401,16 +446,47 @@ const Directory = (props) => {
                         data={serverDistributionData}
                         noAnim={true}
                         useDataColors={true}
+                        alwaysShow={true}
                     />
                 </ContentCluster>
                 <ContentCluster
-                    title="Hourly Population Distribution"
+                    title={`Hourly ${
+                        hourlyDistributionType === "population"
+                            ? "Population"
+                            : "LFM"
+                    } Distribution`}
+                    altTitle="Hourly Distribution"
                     description={
                         <span>
                             <span className="lfm-number">
-                                Which server is most active for my time zone?
+                                {`Which server ${
+                                    hourlyDistributionType === "population"
+                                        ? "is the most active for my time zone"
+                                        : "has the most LFMs for my time zone"
+                                }?`}
                             </span>{" "}
-                            Average population for each hour of the day.
+                            {`Average ${
+                                hourlyDistributionType === "population"
+                                    ? "Population"
+                                    : "LFM count"
+                            } for each hour of the day.`}
+                            <br />
+                            <span
+                                className="faux-link"
+                                onClick={() =>
+                                    setHourlyDistributionType(
+                                        hourlyDistributionType === "population"
+                                            ? "groups"
+                                            : "population"
+                                    )
+                                }
+                            >
+                                Click here to switch to{" "}
+                                {hourlyDistributionType === "population"
+                                    ? "LFM"
+                                    : "population"}{" "}
+                                data
+                            </span>
                         </span>
                     }
                 >
@@ -418,7 +494,11 @@ const Directory = (props) => {
                         keys={null}
                         indexBy={null}
                         legendBottom="Time of day (EST)"
-                        legendLeft="Population"
+                        legendLeft={
+                            hourlyDistributionType === "population"
+                                ? "Population"
+                                : "LFM Count"
+                        }
                         data={hourlyDistributionData}
                         noAnim={true}
                         title="Distribution"
@@ -429,13 +509,43 @@ const Directory = (props) => {
                     />
                 </ContentCluster>
                 <ContentCluster
-                    title="Daily Population Distribution"
+                    title={`Daily ${
+                        dailyDistributionType === "population"
+                            ? "Population"
+                            : "LFM"
+                    } Distribution`}
+                    altTitle="Daily Distribution"
                     description={
                         <span>
                             <span className="lfm-number">
-                                Which days are my server most active?
+                                {`Which days ${
+                                    dailyDistributionType === "population"
+                                        ? "are my server most populated"
+                                        : "have the most LFMs posted"
+                                }?`}
                             </span>{" "}
-                            Average population for each day of the week.
+                            {`Average ${
+                                dailyDistributionType === "population"
+                                    ? "Population"
+                                    : "LFM count"
+                            } for each day of the week.`}
+                            <br />
+                            <span
+                                className="faux-link"
+                                onClick={() =>
+                                    setDailyDistributionType(
+                                        dailyDistributionType === "population"
+                                            ? "groups"
+                                            : "population"
+                                    )
+                                }
+                            >
+                                Click here to switch to{" "}
+                                {dailyDistributionType === "population"
+                                    ? "LFM"
+                                    : "population"}{" "}
+                                data
+                            </span>
                         </span>
                     }
                 >
@@ -443,77 +553,12 @@ const Directory = (props) => {
                         keys={[...SERVER_NAMES]}
                         indexBy="Day"
                         legendBottom="Day of Week"
-                        legendLeft="Population"
+                        legendLeft={
+                            dailyDistributionType === "population"
+                                ? "Population"
+                                : "LFM Count"
+                        }
                         data={dailyDistributionData}
-                        noAnim={true}
-                        display="Grouped"
-                        straightLegend={true}
-                        legendOffset={40}
-                        dataIncludesColors={true}
-                        paddingBottom={60}
-                    />
-                </ContentCluster>
-                <ContentCluster
-                    title="Server LFM Distribution"
-                    description={
-                        <span>
-                            <span className="lfm-number">
-                                Which server has the most LFMs?
-                            </span>{" "}
-                            LFM distribution across the servers over the last 90
-                            days.
-                        </span>
-                    }
-                >
-                    <ChartPie
-                        data={serverGroupDistributionData}
-                        noAnim={true}
-                        useDataColors={true}
-                    />
-                </ContentCluster>
-                <ContentCluster
-                    title="Hourly LFM Distribution"
-                    description={
-                        <span>
-                            <span className="lfm-number">
-                                Which server has the most LFMs for my time zone?
-                            </span>{" "}
-                            Average LFM count for each hour of the day.
-                        </span>
-                    }
-                >
-                    <ChartLine
-                        keys={null}
-                        indexBy={null}
-                        legendBottom="Time of day (EST)"
-                        legendLeft="Groups"
-                        data={hourlyGroupDistributionData}
-                        noAnim={true}
-                        title="Distribution"
-                        marginBottom={60}
-                        trendType=""
-                        noArea={true}
-                        straightLegend={true}
-                    />
-                </ContentCluster>
-                <ContentCluster
-                    title="Daily LFM Distribution"
-                    description={
-                        <span>
-                            <span className="lfm-number">
-                                Which days see the most LFMs posted on my
-                                server?
-                            </span>{" "}
-                            Average LFM count for each day of the week.
-                        </span>
-                    }
-                >
-                    <ChartBar
-                        keys={[...SERVER_NAMES]}
-                        indexBy="Day"
-                        legendBottom="Day of Week"
-                        legendLeft="Groups"
-                        data={dailyGroupDistributionData}
                         noAnim={true}
                         display="Grouped"
                         straightLegend={true}
