@@ -3,6 +3,7 @@ var path = require("path");
 module.exports = function (api) {
     const population = [
         ["day", "day"],
+        ["day_groups", "day_groups"],
         ["week", "week"],
         ["quarter", "quarter"],
         ["year", "year"],

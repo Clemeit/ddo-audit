@@ -180,7 +180,8 @@ con.connect((err) => {
     // Every 5 minutes
     cron.schedule("1-56/5 * * * *", () => {
         getPopulationData(1).then(() => {
-            runDayReport(population);
+            runDayReport(population, "population");
+            runDayReport(population, "groups");
         });
     });
 
