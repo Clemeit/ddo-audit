@@ -38,6 +38,22 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 8, 2022 - Addressing User Feedback"
+                        events={[
+                            "Added population and LFM percent change to the Trends page",
+                            "Added game event markers to the charts on the Trends page",
+                            "Multiple LFM and 'Who' panels can be displayed on the same page",
+                            "Fixed an erroneous location name in the 'Who' panel",
+                        ]}
+                    />
+                    <DevEvent
+                        title="February 7, 2022 - Addressing User Feedback"
+                        events={[
+                            "The level filter on the grouping panel can now be limited to a single level",
+                            "The 'Who' panel can be filtered by location",
+                        ]}
+                    />
+                    <DevEvent
                         title="February 7, 2022 - Release of DDO Audit 2.0"
                         events={["The new website was released to the public"]}
                     />
