@@ -193,6 +193,31 @@ const WhoSpecific = (props) => {
         }, 100);
     }
 
+    var locationNameTimeout;
+    function HandleLocationNameFilter() {
+        clearTimeout(locationNameTimeout);
+        locationNameTimeout = setTimeout(() => {
+            let locationname = document.getElementById("locationname").value;
+            if (locationname) {
+                setActiveFilter([
+                    ...activeFilters.filter(
+                        (filter) => filter.type !== "Location"
+                    ),
+                    {
+                        type: "Location",
+                        value: document.getElementById("locationname").value,
+                    },
+                ]);
+            } else {
+                setActiveFilter([
+                    ...activeFilters.filter(
+                        (filter) => filter.type !== "Location"
+                    ),
+                ]);
+            }
+        }, 100);
+    }
+
     var minimumLevelTimeout;
     function HandleMinimumLevelFilter() {
         clearTimeout(minimumLevelTimeout);
@@ -873,6 +898,34 @@ const WhoSpecific = (props) => {
                                             name="guildname"
                                             onChange={() =>
                                                 HandleGuildNameFilter()
+                                            }
+                                        />
+                                    </div>
+                                    <div
+                                        className="full-width-mobile column-on-mobile"
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            flexWrap: "wrap",
+                                        }}
+                                    >
+                                        <label
+                                            htmlFor="locationname"
+                                            style={{
+                                                fontSize: "1.2rem",
+                                                marginRight: "10px",
+                                                marginBottom: "0px",
+                                            }}
+                                        >
+                                            Location:
+                                        </label>
+                                        <input
+                                            className="full-width-mobile"
+                                            type="text"
+                                            id="locationname"
+                                            name="locationname"
+                                            onChange={() =>
+                                                HandleLocationNameFilter()
                                             }
                                         />
                                     </div>
