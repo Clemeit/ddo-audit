@@ -27,16 +27,19 @@ const ContentCluster = (props) => {
             id={getId()}
             style={{
                 display: props.hidden ? "none" : "",
+                margin: props.noMargin ? "0px" : "",
             }}
         >
             <h2 className="content-cluster-title">
                 {props.title || "Missing Header"}
-                <a href={getPath()}>
-                    <span className="sr-only">
-                        Link to the '{getId()}' header
-                    </span>
-                    <LinkSVG className="anchor-link nav-icon should-invert" />
-                </a>
+                {!props.noLink && (
+                    <a href={getPath()}>
+                        <span className="sr-only">
+                            Link to the '{getId()}' header
+                        </span>
+                        <LinkSVG className="anchor-link nav-icon should-invert" />
+                    </a>
+                )}
             </h2>
             <hr
                 style={{

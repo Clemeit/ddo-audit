@@ -821,9 +821,9 @@ const Endpoints = (props) => {
                         )[0].expanded = !endpoint.expanded;
                         setEndpoints([...teps]);
                     }}
+                    key={i}
                 >
                     <Endpoint
-                        key={i}
                         data={endpoint}
                         handleExpansion={(sub) => {
                             let teps = endpoints;
