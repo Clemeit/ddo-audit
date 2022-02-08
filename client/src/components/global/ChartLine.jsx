@@ -223,7 +223,7 @@ const ChartLine = (props) => {
                         }
                         yScale={{
                             type: "linear",
-                            min: 0,
+                            min: props.yMin || 0,
                             max: "auto",
                             stacked: false,
                             reverse: false,

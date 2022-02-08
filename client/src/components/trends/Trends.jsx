@@ -8,15 +8,34 @@ import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 
 const Trends = (props) => {
-    const TITLE = "Data Trends";
+    const TITLE = "DDO Population Data Trends";
 
     const [population1Year, setPopulation1Year] = React.useState(null);
     const [permanentVsHardcore1Year, setPermanentVsHardcore1Year] =
         React.useState(null);
     const [minsAndMaxes1Year, setMinsAndMaxes1Year] = React.useState(null);
     const [minsAndMaxesQuarter, setMinsAndMaxesQuarter] = React.useState(null);
+    const [quarterDelta, setQuarterDelta] = React.useState(null);
 
     const [markedEvents, setMarkedEvents] = React.useState(null);
+
+    const [quarterDeltaType, setQuarterDeltaType] =
+        React.useState("population");
+
+    React.useEffect(() => {
+        Fetch(
+            `https://api.ddoaudit.com/population/quarter${
+                quarterDeltaType === "population" ? "" : "_groups"
+            }_delta`,
+            5000
+        )
+            .then((val) => {
+                setQuarterDelta(val);
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }, [quarterDeltaType]);
 
     React.useEffect(() => {
         Fetch("https://api.ddoaudit.com/population/year", 5000).then((val) => {
@@ -63,6 +82,12 @@ const Trends = (props) => {
         Fetch("https://api.ddoaudit.com/markedevents", 5000).then((val) => {
             setMarkedEvents(val);
         });
+
+        Fetch("https://api.ddoaudit.com/population/quarter_delta", 5000).then(
+            (val) => {
+                setQuarterDelta(val);
+            }
+        );
     }, []);
 
     return (
@@ -150,6 +175,57 @@ const Trends = (props) => {
                         areaOpacity={0.1}
                         forceHardcore={true}
                         markedEvents={markedEvents}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title={`Server ${
+                        quarterDeltaType === "population"
+                            ? "Population"
+                            : "LFM Count"
+                    } Delta`}
+                    altTitle="Server Delta"
+                    description={
+                        <span>
+                            <span>
+                                The last quater of{" "}
+                                {quarterDeltaType === "population"
+                                    ? "population"
+                                    : "LFM count"}{" "}
+                                delta. Weekly percent changes are shown.
+                            </span>
+                            <br />
+                            <span
+                                className="faux-link"
+                                onClick={() =>
+                                    setQuarterDeltaType(
+                                        quarterDeltaType === "population"
+                                            ? "groups"
+                                            : "population"
+                                    )
+                                }
+                            >
+                                Click here to switch to{" "}
+                                {quarterDeltaType === "population"
+                                    ? "LFM"
+                                    : "population"}{" "}
+                                data
+                            </span>
+                        </span>
+                    }
+                >
+                    <ChartLine
+                        data={quarterDelta}
+                        trendType="quarter"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                        marginBottom={120}
+                        height="460px"
+                        markedEvents={markedEvents}
+                        showArea={true}
+                        yMin={"auto"}
+                        curve="linear"
                     />
                 </ContentCluster>
                 <ContentCluster

@@ -9,6 +9,7 @@ const { runAnnualReport } = require("./Population/Annual");
 const { runQuarterReport } = require("./Population/Quarter");
 const { runWeekReport } = require("./Population/Week");
 const { runDayReport } = require("./Population/Day");
+const { runDeltaReport } = require("./Population/DeltaReport");
 
 const { runDailyDistribution } = require("./Population/DailyDistribution");
 const { runHourlyDistribution } = require("./Population/HourlyDistribution");
@@ -148,10 +149,25 @@ con.connect((err) => {
         });
     });
 
+    // getPopulationData(365).then(() => {
+    //     runQuarterReport(population, "population").then((val) => {
+    //         runDeltaReport(val, "population");
+    //     });
+    //     runQuarterReport(population, "groups").then((val) => {
+    //         runDeltaReport(val, "groups");
+    //     });
+    // });
+
     // Every day
     cron.schedule("0 0 * * 1-6", () => {
         getPopulationData(365).then(() => {
-            runQuarterReport(population);
+            runQuarterReport(population, "population").then((val) => {
+                runDeltaReport(val, "population");
+            });
+            runQuarterReport(population, "groups").then((val) => {
+                runDeltaReport(val, "groups");
+            });
+
             runWeekReport(population);
             runDailyDistribution(population, "population");
             runHourlyDistribution(population, "population");
