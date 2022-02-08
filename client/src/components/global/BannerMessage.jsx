@@ -70,7 +70,10 @@ const BannerMessage = (props) => {
             {messages.map((message, i) => (
                 <div
                     key={i}
-                    className={"banner-message-container"}
+                    className={
+                        "banner-message-container" +
+                        (props.className ? ` ${props.className}` : "")
+                    }
                     style={{
                         backgroundColor: message.color,
                     }}

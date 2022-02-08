@@ -1520,8 +1520,12 @@ td:hover .report-quest-button {
         top: 0px;
     }
 
-    .banner-message.push-on-mobile {
+    .banner-message-container.push-on-mobile {
         transform: translateY(36px);
+    }
+
+    .banner-message {
+        font-size: 1.2rem;
     }
 
     .vote-icon {
