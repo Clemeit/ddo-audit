@@ -7,8 +7,7 @@ import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import Banner from "../global/Banner";
-import ServerStatusDisplay from "../global/ServerStatusDisplay";
-import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
+import { Fetch } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import ChartPie from "../global/ChartPie";
@@ -29,7 +28,7 @@ const Directory = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        "Hardcore",
+        // "Hardcore",
     ];
 
     function GetSVG(world) {

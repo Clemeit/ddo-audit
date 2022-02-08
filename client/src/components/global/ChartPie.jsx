@@ -49,7 +49,9 @@ const ChartPie = (props) => {
         return total;
     }
 
-    const [excludedSeries, setExcludedSeries] = React.useState([""]);
+    const [excludedSeries, setExcludedSeries] = React.useState(
+        props.forceHardcore ? [] : ["Hardcore"]
+    );
     function switchExcludedSeries(series) {
         if (excludedSeries.includes(series.id)) {
             let temp = [...excludedSeries.filter((s) => s != series.id)];
@@ -84,7 +86,7 @@ const ChartPie = (props) => {
                         ? "chart-filterable"
                         : "") + (isMobileLoaded ? "" : " hide-on-mobile")
                 }
-                style={{ height: "400px" }}
+                style={{ height: "420px" }}
             >
                 {props.data ? (
                     <ResponsivePie
@@ -93,7 +95,7 @@ const ChartPie = (props) => {
                         )}
                         innerRadius={props.innerRadius || 0}
                         margin={{
-                            top: isMobile ? 5 : 20,
+                            top: isMobile ? 5 : 30,
                             right: isMobile ? 5 : 140,
                             bottom: isMobile ? 5 : 30,
                             left: isMobile ? 5 : 140,

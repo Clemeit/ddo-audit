@@ -66,7 +66,9 @@ const ChartBar = (props) => {
         setIsMobile(window.innerWidth <= 950);
     }, []);
 
-    const [excludedSeries, setExcludedSeries] = React.useState([""]);
+    const [excludedSeries, setExcludedSeries] = React.useState(
+        props.forceHardcore ? [] : ["Hardcore"]
+    );
     function switchExcludedSeries(server) {
         if (excludedSeries.includes(server)) {
             let temp = [...excludedSeries.filter((s) => s != server)];

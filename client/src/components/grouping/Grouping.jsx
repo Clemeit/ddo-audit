@@ -21,7 +21,7 @@ const Grouping = () => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        "Hardcore",
+        // "Hardcore",
     ];
 
     const [overviewData, setOverviewData] = React.useState(null);

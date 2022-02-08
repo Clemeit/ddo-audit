@@ -132,7 +132,9 @@ const ChartLine = (props) => {
         };
     }
 
-    const [excludedSeries, setExcludedSeries] = React.useState([""]);
+    const [excludedSeries, setExcludedSeries] = React.useState(
+        props.forceHardcore ? [] : ["Hardcore"]
+    );
     function switchExcludedSeries(series) {
         if (excludedSeries.includes(series.id)) {
             let temp = [...excludedSeries.filter((s) => s != series.id)];

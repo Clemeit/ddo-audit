@@ -104,6 +104,7 @@ const Trends = (props) => {
                         reportReference={null}
                         marginBottom={120}
                         height="460px"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -121,6 +122,7 @@ const Trends = (props) => {
                         height="460px"
                         showArea={true}
                         areaOpacity={0.1}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -138,6 +140,7 @@ const Trends = (props) => {
                         height="460px"
                         showArea={false}
                         areaOpacity={0.1}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -155,6 +158,7 @@ const Trends = (props) => {
                         height="460px"
                         showArea={false}
                         areaOpacity={0.1}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
             </div>
