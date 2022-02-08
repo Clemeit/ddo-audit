@@ -4,6 +4,7 @@ import Banner from "./Banner";
 import { Submit } from "../../services/ReportIssueService";
 import Poll from "./Poll";
 import ContentCluster from "./ContentCluster";
+import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 
 const Suggestions = (props) => {
     const TITLE = "DDO Audit | Make a Suggestion";
@@ -58,6 +59,52 @@ const Suggestions = (props) => {
             />
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
+                <ContentCluster
+                    title={
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                lineHeight: "30px",
+                            }}
+                        >
+                            <WarningSVG
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    marginRight: "10px",
+                                }}
+                            />
+                            Please Note
+                        </div>
+                    }
+                    altTitle="Please Note"
+                    noLink={true}
+                    description={
+                        <div>
+                            <p>
+                                I've received a lot of feedback expressing
+                                dissatisfaction with the{" "}
+                                <span className="lfm-number">
+                                    filtering on the LFM panel
+                                </span>
+                                . I completely agree - it's clunky and not
+                                user-friendly. I plan on changing that as soon
+                                as possible. Please be patient.
+                            </p>
+                            <p>
+                                The new website doesn't include all of the
+                                reports or features from the old website.{" "}
+                                <span className="lfm-number">
+                                    If a report or feature is missing
+                                </span>{" "}
+                                and you'd like to see it returned, please let me
+                                know so I can add it.
+                            </p>
+                        </div>
+                    }
+                    noFade={true}
+                />
                 <Poll />
                 <ContentCluster
                     title="Suggestions and Feedback"

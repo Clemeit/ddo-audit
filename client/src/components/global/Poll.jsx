@@ -99,7 +99,8 @@ const Poll = (props) => {
                         // marginBottom: "0px",
                     }}
                 >
-                    Got 15 seconds for a poll? Your feedback helps a lot!
+                    Got 15 seconds for a poll? All fields are optional. Your
+                    feedback helps a lot!
                 </p>
             )}
             {!isPollClosed && (
