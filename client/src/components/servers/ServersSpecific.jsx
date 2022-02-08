@@ -390,6 +390,7 @@ const ServersSpecific = () => {
                         height="460px"
                         showArea={true}
                         areaOpacity={0.1}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
             </div>
