@@ -24,6 +24,8 @@ const Live = (props) => {
     const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
     const [playerAndLFMCountData, setPlayerAndLFMCountData] =
         React.useState(null);
+    const [serverDistributionData, setServerDistributionData] =
+        React.useState(null);
 
     const [population24HoursData, setPopulation24HoursData] =
         React.useState(null);
@@ -144,6 +146,25 @@ const Live = (props) => {
                 setPlayerAndLFMCountData(null);
             });
 
+        Fetch("https://api.ddoaudit.com/population/serverdistribution", 5000)
+            .then((val) => {
+                setServerDistributionData(val);
+            })
+            .catch((err) => {
+                setPopupMessage({
+                    title: "Couldn't get most populated server",
+                    message:
+                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Server distribution error",
+                    submessage:
+                        (err && err.toString()) || "Server distribution error",
+                });
+                setServerDistributionData(null);
+            });
+
         return () => clearInterval(interval); // Clear server status interval
     }, []);
 
@@ -190,6 +211,7 @@ const Live = (props) => {
                     data={quickInfoData}
                     unique={uniqueCountsData}
                     serverstatus={serverStatusData}
+                    serverdistribution={serverDistributionData}
                 />
                 <ContentCluster
                     title={`Live ${

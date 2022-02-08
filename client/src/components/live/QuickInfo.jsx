@@ -27,7 +27,7 @@ const QuickInfo = (props) => {
     }
 
     function GetNews() {
-        Fetch("https://www.playeraudit.com/api_new/news", 5000)
+        Fetch("https://api.ddoaudit.com/news", 5000)
             .then((val) => {
                 setNews(val || []);
             })
@@ -75,6 +75,44 @@ const QuickInfo = (props) => {
         );
     }
 
+    function getMostPopulatedServerLink() {
+        let mostpopulatedserver = "";
+        let population = 0;
+        if (
+            props.serverdistribution == null ||
+            props.serverdistribution == []
+        ) {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (failed to fetch data)
+                </span>
+            );
+        }
+        props.serverdistribution.forEach((series) => {
+            if (series.value > population && series.id !== "Hardcore") {
+                population = series.value;
+                mostpopulatedserver = series.id;
+            }
+        });
+        if (mostpopulatedserver == "unknown (servers are offline)") {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (servers are offline)
+                </span>
+            );
+        }
+        return (
+            <Link
+                id="populous_server"
+                className="blue-link"
+                to={"/servers/" + mostpopulatedserver}
+                style={{ textDecoration: "underline" }}
+            >
+                {mostpopulatedserver}
+            </Link>
+        );
+    }
+
     React.useEffect(() => {
         GetNews();
     }, []);
@@ -98,21 +136,9 @@ const QuickInfo = (props) => {
                     </li>
                     <li>
                         The most populated server is{" "}
-                        {props.data === null ? (
-                            "(Loading...)"
-                        ) : (
-                            <Link
-                                id="populous_server"
-                                className="blue-link"
-                                to={
-                                    "/servers/" +
-                                    props.data.DefaultServer.toLowerCase()
-                                }
-                                style={{ textDecoration: "underline" }}
-                            >
-                                {props.data.DefaultServer}
-                            </Link>
-                        )}
+                        {props.serverdistribution === null
+                            ? "(Loading...)"
+                            : getMostPopulatedServerLink()}
                     </li>
                     <li>
                         In the last quarter, we've seen{" "}
@@ -154,7 +180,7 @@ const QuickInfo = (props) => {
                                     color: "var(--text)",
                                 }}
                             >
-                                <b>{message.Date}:</b> {message.Description}
+                                <b>{message.date}:</b> {message.description}
                             </p>
                         </div>
                     ))
