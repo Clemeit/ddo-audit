@@ -11,7 +11,7 @@ const Poll = (props) => {
     const POLL_OPTIONS = [
         {
             id: 1,
-            title: "LFM Viewer ('Grouping' page)",
+            title: "LFM viewer ('Grouping' page)",
         },
         {
             id: 2,
@@ -19,7 +19,7 @@ const Poll = (props) => {
         },
         {
             id: 3,
-            title: "Server Status ('Live' page)",
+            title: "Server status ('Live' page)",
         },
         {
             id: 4,
@@ -29,9 +29,15 @@ const Poll = (props) => {
             id: 5,
             title: "Website visual appearance",
         },
+        {
+            id: 6,
+            title: "DDO Audit usefulness",
+        },
     ];
 
-    const [voteStates, setVoteStates] = React.useState([-1, -1, -1, -1, -1]);
+    const [voteStates, setVoteStates] = React.useState([
+        -1, -1, -1, -1, -1, -1,
+    ]);
     const [isPollClosed, setIsPollClosed] = React.useState(false);
 
     const [mayVote, setMayVote] = React.useState(false);
@@ -47,11 +53,13 @@ const Poll = (props) => {
         localStorage.setItem("last-poll-time", new Date());
         Submit(
             "Poll",
-            `LFM Viewer: ${voteStates[0] + 1 || "-"}/5\nWho Panel: ${
+            `LFM viewer: ${voteStates[0] + 1 || "-"}/5\nWho panel: ${
                 voteStates[1] + 1 || "-"
-            }/5\nServer Status: ${voteStates[2] + 1 || "-"}/5\nLoading times: ${
+            }/5\nServer status: ${voteStates[2] + 1 || "-"}/5\nLoading times: ${
                 voteStates[3] + 1 || "-"
-            }/5\nVisual appearance: ${voteStates[4] + 1 || "-"}/5`
+            }/5\nVisual appearance: ${
+                voteStates[4] + 1 || "-"
+            }/5\nWebsite usefulness: ${voteStates[5] + 1 || "-"}/5`
         );
     }
 

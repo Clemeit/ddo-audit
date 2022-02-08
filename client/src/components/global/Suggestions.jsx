@@ -61,7 +61,11 @@ const Suggestions = (props) => {
                 <Poll />
                 <ContentCluster
                     title="Suggestions and Feedback"
-                    description="Community feedback has made this project possible."
+                    description={
+                        isSubmitted
+                            ? ""
+                            : "Community feedback has made this project possible."
+                    }
                 >
                     <form>
                         <div
@@ -132,30 +136,32 @@ const Suggestions = (props) => {
                         >
                             We got your message. Thanks!
                         </span>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "flex-end",
-                                gap: "10px",
-                                marginTop: "20px",
-                            }}
-                        >
+                        {isSubmitted === false && (
                             <div
-                                className={
-                                    "primary-button full-width-mobile should-invert" +
-                                    (isSubmitted ? " disabled" : "")
-                                }
                                 style={{
                                     display: "flex",
-                                    justifyContent: "center",
-                                    minWidth: "150px",
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end",
+                                    gap: "10px",
+                                    marginTop: "20px",
                                 }}
-                                onClick={() => SubmitMessage()}
                             >
-                                {isSubmitted ? "Submitted!" : "Submit"}
+                                <div
+                                    className={
+                                        "primary-button full-width-mobile should-invert" +
+                                        (isSubmitted ? " disabled" : "")
+                                    }
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        minWidth: "150px",
+                                    }}
+                                    onClick={() => SubmitMessage()}
+                                >
+                                    Submit
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </form>
                 </ContentCluster>
             </div>
