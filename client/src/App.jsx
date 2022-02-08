@@ -111,6 +111,9 @@ export default () => {
                         <Route exact path="/timeline">
                             <Timeline />
                         </Route>
+                        <Route>
+                            <Directory />
+                        </Route>
                     </Switch>
                 </Layout>
             </Router>
