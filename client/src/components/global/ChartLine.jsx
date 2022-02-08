@@ -5,60 +5,60 @@ import CustomLegend from "./CustomLegend";
 // This chart is used to show the population history (combined or composite) over time.
 // Pages: Home, Servers
 
-const theme = {
-    background: "var(--base)",
-    textColor: "var(--text)",
-    fontSize: 14,
-    axis: {
-        domain: {
+const ChartLine = (props) => {
+    const theme = {
+        background: "var(--base)",
+        textColor: "var(--text)",
+        fontSize: 14,
+        axis: {
+            domain: {
+                line: {
+                    stroke: "#777777",
+                    strokeWidth: 1,
+                },
+            },
+            ticks: {
+                line: {
+                    stroke: "#777777",
+                    strokeWidth: 2,
+                },
+            },
+        },
+        grid: {
             line: {
-                stroke: "#777777",
+                stroke: "#dddddd",
                 strokeWidth: 1,
             },
         },
-        ticks: {
+        crosshair: {
             line: {
-                stroke: "#777777",
-                strokeWidth: 2,
+                stroke: "var(--text)",
+                strokeWidth: 1,
+                strokeOpacity: 1,
+                strokeDasharray: "6 6",
             },
         },
-    },
-    grid: {
-        line: {
-            stroke: "#dddddd",
-            strokeWidth: 1,
+        tooltip: {
+            container: {
+                background: "var(--base)",
+                color: "var(--text)",
+                fontSize: "inherit",
+                borderRadius: "2px",
+                boxShadow: "0 0 6px var(--black)",
+                padding: "5px 9px",
+            },
+            basic: {
+                whiteSpace: "pre",
+                display: "flex",
+                alignItems: "center",
+            },
+            table: {},
+            tableCell: {
+                padding: "3px 5px",
+            },
         },
-    },
-    crosshair: {
-        line: {
-            stroke: "var(--text)",
-            strokeWidth: 1,
-            strokeOpacity: 1,
-            strokeDasharray: "6 6",
-        },
-    },
-    tooltip: {
-        container: {
-            background: "var(--base)",
-            color: "var(--text)",
-            fontSize: "inherit",
-            borderRadius: "2px",
-            boxShadow: "0 0 6px var(--black)",
-            padding: "5px 9px",
-        },
-        basic: {
-            whiteSpace: "pre",
-            display: "flex",
-            alignItems: "center",
-        },
-        table: {},
-        tableCell: {
-            padding: "3px 5px",
-        },
-    },
-};
+    };
 
-const ChartLine = (props) => {
     // const [filteredData, set_filteredData] = React.useState(null);
     const [isMobileLoaded, setIsMobileLoaded] = React.useState(false);
 
@@ -179,6 +179,25 @@ const ChartLine = (props) => {
                             bottom: props.marginBottom || 60,
                             left: isMobile ? 40 : 60,
                         }}
+                        markers={
+                            props.markedEvents && [
+                                ...props.markedEvents.map((me, i) => ({
+                                    axis: "x",
+                                    value: new Date(me.date),
+                                    lineStyle: {
+                                        stroke: me.color,
+                                        strokeWidth: me.width,
+                                    },
+                                    legendOrientation: "vertical",
+                                    legend: me.message,
+                                    textStyle: {
+                                        fill: "var(--text)",
+                                        fontSize: 20,
+                                        // fontWeight: "bold",
+                                    },
+                                })),
+                            ]
+                        }
                         xScale={{
                             type:
                                 props.title === "Popularity over time"

@@ -16,6 +16,8 @@ const Trends = (props) => {
     const [minsAndMaxes1Year, setMinsAndMaxes1Year] = React.useState(null);
     const [minsAndMaxesQuarter, setMinsAndMaxesQuarter] = React.useState(null);
 
+    const [markedEvents, setMarkedEvents] = React.useState(null);
+
     React.useEffect(() => {
         Fetch("https://api.ddoaudit.com/population/year", 5000).then((val) => {
             setPopulation1Year(
@@ -57,6 +59,10 @@ const Trends = (props) => {
                 );
             }
         );
+
+        Fetch("https://api.ddoaudit.com/markedevents", 5000).then((val) => {
+            setMarkedEvents(val);
+        });
     }, []);
 
     return (
@@ -105,6 +111,7 @@ const Trends = (props) => {
                         marginBottom={120}
                         height="460px"
                         forceHardcore={true}
+                        markedEvents={markedEvents}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -123,6 +130,7 @@ const Trends = (props) => {
                         showArea={true}
                         areaOpacity={0.1}
                         forceHardcore={true}
+                        markedEvents={markedEvents}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -141,6 +149,7 @@ const Trends = (props) => {
                         showArea={false}
                         areaOpacity={0.1}
                         forceHardcore={true}
+                        markedEvents={markedEvents}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -159,6 +168,7 @@ const Trends = (props) => {
                         showArea={false}
                         areaOpacity={0.1}
                         forceHardcore={true}
+                        markedEvents={markedEvents}
                     />
                 </ContentCluster>
             </div>
