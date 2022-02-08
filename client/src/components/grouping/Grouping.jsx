@@ -24,9 +24,9 @@ const Grouping = () => {
         // "Hardcore",
     ];
 
-    const [overviewData, setOverviewData] = React.useState(null);
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
+    const [allGroupData, setAllGroupData] = React.useState(null);
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
@@ -45,7 +45,7 @@ const Grouping = () => {
     }
 
     function GetServerDescription(name) {
-        if (overviewData === null || overviewData === undefined) {
+        if (allGroupData == null) {
             return (
                 <p
                     className="content-option-description"
@@ -55,20 +55,34 @@ const Grouping = () => {
                 </p>
             );
         }
-        let lfmcount = overviewData.filter(
-            (server) => server.ServerName === name
-        )[0].LfmCount;
+        let lfmcount = allGroupData.filter((server) => server.Name === name)[0]
+            .GroupCount;
+
+        let raidcount = 0;
+        allGroupData.forEach((server) => {
+            if (server.Name === name) {
+                server.Groups.forEach((group) => {
+                    if (group.Quest && group.Quest.GroupSize === "Raid")
+                        raidcount++;
+                });
+            }
+        });
+
         return (
             <p
                 className="content-option-description"
-                style={{ color: "var(--text-lfm-number)", fontSize: "1.4rem" }}
+                style={{ fontSize: "1.4rem" }}
             >
-                {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}
+                <span style={{ color: "var(--text-lfm-number)" }}>
+                    {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}{" "}
+                </span>
+                {raidcount > 0 &&
+                    `| ${raidcount} raid${raidcount !== 1 ? "s" : ""}`}
             </p>
         );
     }
 
-    React.useEffect(() => {
+    function refreshGroupData() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 setServerStatusData(val);
@@ -88,43 +102,67 @@ const Grouping = () => {
                 setServerStatusData(null);
             });
 
-        Fetch("https://api.ddoaudit.com/gamestatus/populationoverview", 5000)
+        Fetch("https://api.ddoaudit.com/groups/all", 5000)
             .then((val) => {
-                if (VerifyPlayerAndLfmOverview(val)) {
-                    setOverviewData(val);
-                } else {
-                    setPopupMessage({
-                        title: "Something went wrong",
-                        message:
-                            "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
-                        icon: "warning",
-                        fullscreen: false,
-                        reportMessage:
-                            JSON.stringify(val) || "Group data corrupted",
-                    });
-                    setOverviewData(null);
-                }
+                setAllGroupData(val);
             })
             .catch((err) => {
                 setPopupMessage({
                     title: "Couldn't get group data",
                     message:
-                        "We were unable to get group data. You can refresh the page or report the issue.",
+                        "We were unable to get group data. Try refreshing the page. If the issue continues, please report it.",
                     icon: "warning",
                     fullscreen: false,
                     reportMessage:
-                        (err && err.toString()) || "Could not fetch Group data",
-                    submessage:
-                        (err && err.toString()) || "Could not fetch Group data",
+                        (err && err.toString()) || "Group data error",
+                    submessage: (err && err.toString()) || "Group data error",
                 });
+                setAllGroupData(null);
             });
+    }
+
+    React.useEffect(() => {
+        refreshGroupData();
+        const interval = setInterval(() => refreshGroupData(), 60000);
 
         setNotificationRuleCount(
             localStorage.getItem("notification-rules")
                 ? JSON.parse(localStorage.getItem("notification-rules")).length
                 : 0
         );
+
+        return () => clearInterval(interval);
     }, []);
+
+    function getRaidGroups() {
+        return allGroupData.map((server) =>
+            server.Groups.filter(
+                (group) => group.Quest && group.Quest.GroupSize === "Raid"
+            ).map((group, i) => (
+                <Link
+                    to={"/grouping/" + server.Name}
+                    key={i}
+                    className="nav-box shrinkable"
+                >
+                    <div className="nav-box-title">
+                        <h2 className="content-option-title">
+                            {group.Quest.Name}
+                        </h2>
+                    </div>
+                    <p
+                        className="content-option-description"
+                        style={{ fontSize: "1.5rem" }}
+                    >
+                        <span className="lfm-number">{server.Name}</span> |{" "}
+                        {group.Leader.Name} |{" "}
+                        {`${group.Members.length + 1} member${
+                            group.Members.length + 1 !== 1 ? "s" : ""
+                        }`}
+                    </p>
+                </Link>
+            ))
+        );
+    }
 
     return (
         <div>
@@ -184,6 +222,25 @@ const Grouping = () => {
                                 {GetServerDescription(name)}
                             </Link>
                         ))}
+                    </div>
+                </ContentCluster>
+                <ContentCluster title="Current Raids">
+                    <div className="content-cluster-options">
+                        {allGroupData ? (
+                            getRaidGroups() || (
+                                <span
+                                    className="content-cluster-description"
+                                    style={{
+                                        color: "var(--text-faded)",
+                                    }}
+                                >
+                                    When a raid is posted on any server, it will
+                                    appear here.
+                                </span>
+                            )
+                        ) : (
+                            <span>Loading groups...</span>
+                        )}
                     </div>
                 </ContentCluster>
                 <ContentCluster

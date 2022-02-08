@@ -49,14 +49,11 @@ const ContentCluster = (props) => {
             />
             {props.description && (
                 <div
+                    className="content-cluster-description"
                     style={{
-                        textAlign: "justify",
-                        fontSize: "1.5rem",
-                        lineHeight: "normal",
                         color: props.noFade
                             ? "var(--text)"
                             : "var(--text-faded)",
-                        marginBottom: "1rem",
                     }}
                 >
                     {props.description}

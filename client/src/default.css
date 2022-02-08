@@ -667,8 +667,8 @@ body {
     text-decoration: none !important;
     justify-content: center;
     flex-direction: column;
-    width: 440px;
     height: 150px;
+    width: 440px;
     padding: 10px 30px 10px 30px;
     cursor: pointer;
     border-radius: 7px;
@@ -799,6 +799,9 @@ body {
 
 @media (max-width: 500px) {
     .nav-box {
+        width: 100%;
+    }
+    .nav-box.no-width {
         width: 100%;
     }
     .community-box {
@@ -1511,6 +1514,13 @@ td:hover .report-quest-button {
     min-width: 100px;
     min-height: 100px;
     background-color: var(--base);
+}
+
+.content-cluster-description {
+    text-align: justify;
+    font-size: 1.5rem;
+    line-height: normal;
+    margin-bottom: 1rem;
 }
 
 @media (max-width: 1000px) {
