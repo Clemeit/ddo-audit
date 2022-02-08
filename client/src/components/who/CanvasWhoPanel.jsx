@@ -37,7 +37,7 @@ const CanvasWhoPanel = (props) => {
     const PANEL_WIDTH = 706;
     const playerHeight = 42;
     const classCount = 15;
-    const MAXIMUM_RESULTS = 200;
+    const MAXIMUM_RESULTS = props.minimal ? 100 : 200;
 
     function HandleMouseOnCanvas(e) {
         var rect = e.target.getBoundingClientRect();

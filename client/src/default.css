@@ -677,6 +677,10 @@ body {
     user-select: none;
 }
 
+.nav-box.small {
+    height: min-content;
+}
+
 .no-interact {
     cursor: default;
     pointer-events: none;
@@ -1121,6 +1125,7 @@ input[type="radio"] {
     user-select: none;
     transition: filter 250ms;
     padding: 0px 10px;
+    z-index: 1;
 }
 
 .banner-message {
@@ -1424,6 +1429,94 @@ td:hover .report-quest-button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.add-panel-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    justify-content: left;
+    position: fixed;
+    top: 50%;
+    color: var(--text);
+    background-color: var(--highlighted-1);
+    filter: drop-shadow(0px 0px 4px black);
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px 10px 10px 10px;
+    transition: width 200ms, opacity 200ms;
+    opacity: 0.6;
+    font-size: 1.2rem;
+    line-height: 30px;
+    z-index: 1;
+}
+
+.add-panel-button.grouping {
+    transform: translate(450px, 50%);
+}
+
+.add-panel-button.who {
+    transform: translate(380px, 50%);
+}
+
+.feature-vote-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    font-size: large;
+}
+
+@media (max-height: 500px) {
+    .add-panel-button.grouping {
+        transform: translate(0px, 0px);
+        position: absolute;
+        top: 0px;
+    }
+}
+
+.add-panel-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0px 13px 0px 10px;
+}
+
+.add-panel-button:hover {
+    background-color: var(--highlighted-2);
+    filter: drop-shadow(0px 0px 4px black);
+    width: 165px;
+    height: 50px;
+    border-radius: 10px 10px 10px 10px;
+    opacity: 1;
+}
+
+.multi-panel-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.panel-select-container {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+    min-width: 100px;
+    min-height: 100px;
+    background-color: var(--base);
+}
+
+@media (max-width: 1000px) {
+    .add-panel-button {
+        display: none;
+    }
 }
 
 @media (max-width: 900px) {

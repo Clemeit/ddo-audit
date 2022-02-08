@@ -1,7 +1,7 @@
 import React from "react";
 import { ReactComponent as ServerSelectSVG } from "../../assets/global/server.svg";
 import { ReactComponent as FilterSVG } from "../../assets/global/filter.svg";
-import { ReactComponent as SettingsSVG } from "../../assets/global/settings.svg";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { ReactComponent as CaptureSVG } from "../../assets/global/capture.svg";
 import { ReactComponent as NotificationSVG } from "../../assets/global/notification.svg";
 import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
@@ -17,14 +17,16 @@ const LfmFilterBar = (props) => {
     };
 
     React.useEffect(() => {
-        if (fullscreen) {
-            $("#main-banner").css({ display: "none" });
-            $("#main-nav").css({ display: "none" });
-            $("#top-content-padding").css({ display: "none" });
-        } else {
-            $("#main-banner").css({ display: "block" });
-            $("#main-nav").css({ display: "block" });
-            $("#top-content-padding").css({ display: "block" });
+        if (!props.minimal) {
+            if (fullscreen) {
+                $("#main-banner").css({ display: "none" });
+                $("#main-nav").css({ display: "none" });
+                $("#top-content-padding").css({ display: "none" });
+            } else {
+                $("#main-banner").css({ display: "block" });
+                $("#main-nav").css({ display: "block" });
+                $("#top-content-padding").css({ display: "block" });
+            }
         }
     }, [fullscreen]);
 
@@ -50,25 +52,38 @@ const LfmFilterBar = (props) => {
                 }}
             >
                 <div style={{ display: "flex", flexDirection: "row" }}>
-                    <Link
-                        className="filter-bar-item server-selection"
-                        to={props.returnTo}
-                        style={{
-                            textDecoration: "none",
-                            color: "var(--text)",
-                        }}
-                    >
-                        <ServerSelectSVG
-                            className="nav-icon should-invert"
+                    {props.minimal && (
+                        <div
+                            className="filter-bar-item"
+                            onClick={() => props.closePanel()}
+                        >
+                            <CloseSVG className="nav-icon should-invert" />
+                            <span className="filter-bar-text settings hide-on-mobile">
+                                {props.currentServer}
+                            </span>
+                        </div>
+                    )}
+                    {!props.minimal && (
+                        <Link
+                            className="filter-bar-item server-selection"
+                            to={props.returnTo}
                             style={{
-                                width: "30px",
-                                height: "30px",
-                                paddingRight: "5px",
+                                textDecoration: "none",
+                                color: "var(--text)",
                             }}
-                        />
-                        {props.currentServer}
-                    </Link>
-                    {props.showSave && (
+                        >
+                            <ServerSelectSVG
+                                className="nav-icon should-invert"
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    paddingRight: "5px",
+                                }}
+                            />
+                            {props.currentServer}
+                        </Link>
+                    )}
+                    {props.showSave && !props.minimal && (
                         <div
                             className="filter-bar-item"
                             style={{ marginLeft: "auto" }}
@@ -82,7 +97,13 @@ const LfmFilterBar = (props) => {
                     )}
                     <div
                         className="filter-bar-item"
-                        style={{ marginLeft: props.showSave ? "" : "auto" }}
+                        style={{
+                            marginLeft: props.minimal
+                                ? "auto"
+                                : props.showSave
+                                ? ""
+                                : "auto",
+                        }}
                         onClick={props.handleFilterButton}
                     >
                         <FilterSVG className="nav-icon should-invert" />
@@ -90,7 +111,7 @@ const LfmFilterBar = (props) => {
                             Filters
                         </span>
                     </div>
-                    {props.showNotifications && (
+                    {props.showNotifications && !props.minimal && (
                         <Link
                             to="/notifications"
                             className="filter-bar-item"
@@ -105,21 +126,23 @@ const LfmFilterBar = (props) => {
                             </span>
                         </Link>
                     )}
-                    <div
-                        className="filter-bar-item hide-on-mobile"
-                        onClick={() => {
-                            set_fullscreen(!fullscreen);
-                        }}
-                    >
-                        {fullscreen ? (
-                            <FullscreenExitSVG className="nav-icon should-invert " />
-                        ) : (
-                            <FullscreenSVG className="nav-icon should-invert" />
-                        )}
-                        <span className="filter-bar-text">
-                            {fullscreen ? "Go back" : "Fullscreen"}
-                        </span>
-                    </div>
+                    {!props.minimal && (
+                        <div
+                            className="filter-bar-item hide-on-mobile"
+                            onClick={() => {
+                                set_fullscreen(!fullscreen);
+                            }}
+                        >
+                            {fullscreen ? (
+                                <FullscreenExitSVG className="nav-icon should-invert " />
+                            ) : (
+                                <FullscreenSVG className="nav-icon should-invert" />
+                            )}
+                            <span className="filter-bar-text">
+                                {fullscreen ? "Go back" : "Fullscreen"}
+                            </span>
+                        </div>
+                    )}
                 </div>
                 {props.children}
             </div>
