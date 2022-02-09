@@ -20,7 +20,7 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 
 const Directory = (props) => {
-    const TITLE = "DDO Audit";
+    const TITLE = "DDO Audit | Population and LFM Tracking";
 
     const NAV_OPTIONS = [
         {
@@ -177,7 +177,7 @@ const Directory = (props) => {
                 />
                 <meta
                     name="description"
-                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, check to see if your friends are online, and see what server is best for you!"
+                    content="A live summary of DDO's current player population and LFM status. View population trends, check server status, browse live grouping panels, check to see if your friends are online, and decide what server is best for you!"
                 />
             </Helmet>
             <Banner

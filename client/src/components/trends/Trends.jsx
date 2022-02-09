@@ -8,7 +8,7 @@ import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 
 const Trends = (props) => {
-    const TITLE = "DDO Population Data Trends";
+    const TITLE = "DDO Audit | Population Data Trends";
 
     const [population1Year, setPopulation1Year] = React.useState(null);
     const [permanentVsHardcore1Year, setPermanentVsHardcore1Year] =

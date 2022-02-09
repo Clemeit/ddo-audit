@@ -208,11 +208,7 @@ const Quests = (props) => {
                         } else {
                             bxp = b.HeroicEliteXp / b.AverageTime;
                         }
-                        return a.IsEpic && !b.IsEpic
-                            ? true
-                            : !a.IsEpic && b.IsEpic
-                            ? false
-                            : (bxp - axp) * sortmod;
+                        return (axp - bxp) * sortmod;
                     } else {
                         return (a.Count - b.Count) * sortmod;
                     }

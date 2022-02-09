@@ -10,7 +10,7 @@ import ContentCluster from "../global/ContentCluster";
 import PopupMessage from "../global/PopupMessage";
 
 const Guilds = (props) => {
-    const TITLE = "Guild Search";
+    const TITLE = "DDO Guild Member Search";
     const PAGE_SIZE = 30;
     const [isRunning, setIsRunning] = React.useState(null);
 

@@ -10,7 +10,7 @@ import PanelSelectPopup from "./PanelSelectPopup";
 import WhoPanel from "../who/WhoPanel";
 
 const GroupingSpecific = (props) => {
-    const TITLE = "Live LFM Viewer";
+    const TITLE = "DDO Live LFM Viewer";
 
     const SERVER_NAMES = [
         "Argonnessen",

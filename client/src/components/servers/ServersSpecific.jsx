@@ -11,7 +11,7 @@ import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
 
 const ServersSpecific = () => {
-    const TITLE = "Server Status and Demographics";
+    const TITLE = "DDO Audit | Server Status and Demographics";
 
     const SERVER_NAMES = [
         "Argonnessen",

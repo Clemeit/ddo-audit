@@ -20,7 +20,7 @@ import PanelSelectPopup from "../grouping/PanelSelectPopup";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
-    const TITLE = "Live Who Panel";
+    const TITLE = "DDO Live Who Panel";
 
     const SERVER_NAMES = [
         "Argonnessen",

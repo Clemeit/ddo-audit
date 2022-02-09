@@ -14,7 +14,7 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 
 const Live = (props) => {
-    const TITLE = "DDO Server Status";
+    const TITLE = "DDO Audit | Live Server Status";
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
