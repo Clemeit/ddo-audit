@@ -1480,13 +1480,6 @@ td:hover .report-quest-button {
     opacity: 1;
 }
 
-@media (max-height: 500px) {
-    .add-panel-button.grouping {
-        transform: translate(0px, 0px);
-        top: 0px;
-    }
-}
-
 .add-panel-icon {
     width: 30px;
     height: 30px;
