@@ -82,25 +82,27 @@ const Suggestions = (props) => {
                     noLink={true}
                     description={
                         <div>
-                            <p>
-                                I've received a lot of feedback expressing
-                                dissatisfaction with the{" "}
-                                <span className="lfm-number">
-                                    filtering on the LFM panel
-                                </span>
-                                . I completely agree - it's clunky and not
-                                user-friendly. I plan on changing that as soon
-                                as possible. Please be patient.
-                            </p>
-                            <p>
-                                The new website doesn't include all of the
-                                reports or features from the old website.{" "}
-                                <span className="lfm-number">
-                                    If a report or feature is missing
-                                </span>{" "}
-                                and you'd like to see it returned, please let me
-                                know so I can add it.
-                            </p>
+                            <ul>
+                                <li style={{ marginBottom: "20px" }}>
+                                    I've received a lot of feedback expressing
+                                    dissatisfaction with the{" "}
+                                    <span className="lfm-number">
+                                        filtering on the LFM panel.{" "}
+                                    </span>
+                                    I completely agree - it's clunky and not
+                                    user-friendly. I plan on updating it as soon
+                                    as possible. Please be patient.
+                                </li>
+                                <li>
+                                    The new website doesn't include all of the
+                                    reports or features from the old website.{" "}
+                                    <span className="lfm-number">
+                                        If a report or feature is missing
+                                    </span>{" "}
+                                    and you'd like to see it returned, please
+                                    let me know so I can add it.
+                                </li>
+                            </ul>
                         </div>
                     }
                     noFade={true}
@@ -181,7 +183,7 @@ const Suggestions = (props) => {
                                 minHeight: "60px",
                             }}
                         >
-                            We got your message. Thanks!
+                            I got your message. Thanks!
                         </span>
                         {isSubmitted === false && (
                             <div
@@ -211,6 +213,34 @@ const Suggestions = (props) => {
                         )}
                     </form>
                 </ContentCluster>
+                <ContentCluster
+                    title="Disclaimer"
+                    description={
+                        <p
+                            style={{
+                                fontSize: "1.5rem",
+                                lineHeight: "normal",
+                                color: "var(--text)",
+                                marginTop: "30px",
+                            }}
+                        >
+                            This website is in no way affiliated with, or
+                            endorsed by, Standing Stone Games or{" "}
+                            <a
+                                href="https://www.daybreakgames.com/home"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                Daybreak Game Company
+                            </a>
+                            .{" "}
+                            <span className="lfm-number">
+                                Please do not submit personal information, login
+                                details, or bug reports related to the game.
+                            </span>
+                        </p>
+                    }
+                />
             </div>
         </div>
     );
