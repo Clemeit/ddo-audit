@@ -38,6 +38,12 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 9, 2022 - Server Status"
+                        events={[
+                            "Fixed bug causing the server status display to not update during downtimes",
+                        ]}
+                    />
+                    <DevEvent
                         title="February 8, 2022 - Addressing User Feedback"
                         events={[
                             "Added population and LFM percent change to the Trends page",
@@ -45,6 +51,7 @@ const Timeline = (props) => {
                             "Multiple LFM and 'Who' panels can be displayed on the same page",
                             "Fixed an erroneous location name in the 'Who' panel",
                             "Added raid information to the Grouping page",
+                            "Fixed XP for the quest 'Dread Sea Scrolls'",
                         ]}
                     />
                     <DevEvent
