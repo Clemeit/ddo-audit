@@ -42,6 +42,7 @@ const Timeline = (props) => {
                         events={[
                             "Added the 'Double-Click to open the Wiki page' feature to the LFM panel",
                         ]}
+                        color="var(--text-lfm-number)"
                     />
                     <DevEvent
                         title="February 9, 2022 - Server Status"
@@ -59,6 +60,7 @@ const Timeline = (props) => {
                             "Added raid information to the Grouping page",
                             "Fixed XP for the quest 'Dread Sea Scrolls'",
                         ]}
+                        color="var(--text-lfm-number)"
                     />
                     <DevEvent
                         title="February 7, 2022 - Addressing User Feedback"
@@ -66,10 +68,12 @@ const Timeline = (props) => {
                             "The level filter on the grouping panel can now be limited to a single level",
                             "The 'Who' panel can be filtered by location",
                         ]}
+                        color="var(--text-lfm-number)"
                     />
                     <DevEvent
                         title="February 7, 2022 - Release of DDO Audit 2.0"
                         events={["The new website was released to the public"]}
+                        color="var(--text-player-number)"
                     />
                     <DevEvent
                         title="November 3, 2021 - New Domain"
@@ -80,6 +84,7 @@ const Timeline = (props) => {
                         events={[
                             "Work began on the second iteration of this project: a complete rewrite of the website using the React framework and improved backend data collection",
                         ]}
+                        color="var(--text-player-number)"
                     />
                     <DevEvent
                         title="January 15, 2021 - Filters"
