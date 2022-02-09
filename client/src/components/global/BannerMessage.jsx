@@ -1,6 +1,5 @@
 import React from "react";
 import { Fetch } from "../../services/DataLoader";
-import { GetMessage } from "../../services/MessageService";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 
 const BannerMessage = (props) => {
