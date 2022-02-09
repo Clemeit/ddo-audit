@@ -44,6 +44,7 @@ const Timeline = (props) => {
                             "Added game event markers to the charts on the Trends page",
                             "Multiple LFM and 'Who' panels can be displayed on the same page",
                             "Fixed an erroneous location name in the 'Who' panel",
+                            "Added raid information to the Grouping page",
                         ]}
                     />
                     <DevEvent
