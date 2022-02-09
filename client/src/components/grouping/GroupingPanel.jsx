@@ -55,6 +55,8 @@ const Panel = (props) => {
     const [minimumLevel, setMinimumLevel] = React.useState(1);
     const [maximumLevel, setMaximumLevel] = React.useState(30);
     const [sortAscending, setSortAscending] = React.useState();
+    const sortAscendingRef = React.useRef(sortAscending);
+    sortAscendingRef.current = sortAscending;
 
     // const location = useLocation().pathname.substring(
     //     useLocation().pathname.lastIndexOf("/") + 1
@@ -260,6 +262,14 @@ const Panel = (props) => {
         showNotEligible,
     ]);
 
+    function handleCanvasSort() {
+        sortAscendingRef.current = !sortAscendingRef.current;
+        if (!props.minimal) {
+            localStorage.setItem("sort-order", sortAscendingRef.current);
+        }
+        setSortAscending((sortAscending) => !sortAscending);
+    }
+
     function IsExpanded(group) {
         let val = false;
         expandedGroups.forEach((g) => {
@@ -322,18 +332,6 @@ const Panel = (props) => {
             document.body.classList.replace("dark-theme", "light-theme");
             localStorage.setItem("theme", "light-theme");
         }
-    }
-
-    function handleCanvasSort(type) {
-        // if (sortingMethodRef.current == type) {
-        setSortAscending((sortAscending) =>
-            sortAscending === true ? false : true
-        );
-        // } else {
-        //     setSortingDirection("ascending");
-        //     setSortingMethod(type);
-        //     sortingMethodRef.current = type;
-        // }
     }
 
     return (
@@ -532,7 +530,7 @@ const Panel = (props) => {
                         adjustedGroupCount={adjustedGroupCount}
                         fontModifier={fontModifier}
                         highVisibility={highVisibility}
-                        handleSort={(type) => handleCanvasSort(type)}
+                        handleSort={() => handleCanvasSort()}
                     />
                 ) : (
                     <div className="social-container">
