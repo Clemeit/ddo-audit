@@ -66,6 +66,10 @@ exports.runServerStatusReport = () => {
                     .then((data) => {
                         if (data.length < 100) {
                             world.Status = 0;
+                            queue--;
+                            if (!queue) {
+                                resolve(worlds);
+                            }
                         } else {
                             const pattern =
                                 /<allow_billing_role>(?<roles>.*?)<\/allow_billing_role>/;
