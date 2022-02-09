@@ -20,7 +20,7 @@ const serverNames = [
     "Sarlona",
     "Thelanis",
     "Wayfinder",
-    "Hardcore",
+    // "Hardcore",
 ];
 
 const NavMenu = (props) => {
