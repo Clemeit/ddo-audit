@@ -169,24 +169,26 @@ const WhoSpecific = (props) => {
                     style={{ minHeight: "700px", width: "100%" }}
                 >
                     <BannerMessage className="push-on-mobile" page="who" />
-                    {openPanels && openPanels.length === 1 && (
-                        <div
-                            className="add-panel-button who"
-                            onClick={() => {
-                                setPanelSelectPopupVisibility(true);
-                            }}
-                        >
-                            <span>
-                                <AddSVG className="add-panel-icon" />
-                                Add a panel
-                            </span>
-                        </div>
-                    )}
                     <div
                         id="top-content-padding"
                         className="top-content-padding hide-on-mobile"
                     />
-                    <div className="multi-panel-container">{openPanels}</div>
+                    <div className="multi-panel-container">
+                        {openPanels && openPanels.length === 1 && (
+                            <div
+                                className="add-panel-button who"
+                                onClick={() => {
+                                    setPanelSelectPopupVisibility(true);
+                                }}
+                            >
+                                <span>
+                                    <AddSVG className="add-panel-icon" />
+                                    Add a panel
+                                </span>
+                            </div>
+                        )}
+                        {openPanels}
+                    </div>
                     <div className="top-content-padding hide-on-mobile" />
                 </div>
             </div>
