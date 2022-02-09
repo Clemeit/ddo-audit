@@ -1441,9 +1441,9 @@ td:hover .report-quest-button {
     overflow: hidden;
     white-space: nowrap;
     justify-content: left;
-    position: fixed;
-    top: 50%;
+    position: absolute;
     color: var(--text);
+    top: 100px;
     background-color: var(--highlighted-1);
     filter: drop-shadow(0px 0px 4px black);
     cursor: pointer;
@@ -1458,11 +1458,11 @@ td:hover .report-quest-button {
 }
 
 .add-panel-button.grouping {
-    transform: translate(450px, 50%);
+    transform: translate(450px, 0px);
 }
 
 .add-panel-button.who {
-    transform: translate(380px, 50%);
+    transform: translate(380px, 0px);
 }
 
 .feature-vote-container {
@@ -1472,12 +1472,17 @@ td:hover .report-quest-button {
     justify-content: center;
     gap: 10px;
     font-size: large;
+    opacity: 0.4;
+    transition: opacity 200ms;
+}
+
+.feature-vote-container:hover {
+    opacity: 1;
 }
 
 @media (max-height: 500px) {
     .add-panel-button.grouping {
         transform: translate(0px, 0px);
-        position: absolute;
         top: 0px;
     }
 }

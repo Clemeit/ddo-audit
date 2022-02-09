@@ -182,7 +182,9 @@ const PanelSelectPopup = (props) => {
                             </div>
                         ) : (
                             <div className="feature-vote-container">
-                                <span>Is this feature useful?</span>
+                                <span style={{ cursor: "default" }}>
+                                    Is this feature useful?
+                                </span>
                                 <ThumbsUpSVG
                                     className="nav-icon"
                                     style={{ cursor: "pointer" }}
