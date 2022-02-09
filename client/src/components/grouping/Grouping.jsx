@@ -155,9 +155,11 @@ const Grouping = () => {
                     >
                         <span className="lfm-number">{server.Name}</span> |{" "}
                         {group.Leader.Name} |{" "}
-                        {`${group.Members.length + 1} member${
-                            group.Members.length + 1 !== 1 ? "s" : ""
-                        }`}
+                        <span style={{ whiteSpace: "nowrap" }}>
+                            {`${group.Members.length + 1} member${
+                                group.Members.length + 1 !== 1 ? "s" : ""
+                            }`}
+                        </span>
                     </p>
                 </Link>
             ))
