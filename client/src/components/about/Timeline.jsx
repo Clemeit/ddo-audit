@@ -38,6 +38,12 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 9, 2022 - Addressing User Feedback"
+                        events={[
+                            "Added the 'Double-Click to open the Wiki page' feature to the LFM panel",
+                        ]}
+                    />
+                    <DevEvent
                         title="February 9, 2022 - Server Status"
                         events={[
                             "Fixed bug causing the server status display to not update during downtimes",

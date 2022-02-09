@@ -17,6 +17,7 @@ const CanvasLfmPanel = (props) => {
     const panelWidth = 848;
     const lfmHeight = 90;
     const classCount = 15;
+    let lastclickRef = React.useRef(0);
 
     function HandleMouseOnCanvas(e) {
         let rect = e.target.getBoundingClientRect();
@@ -41,11 +42,27 @@ const CanvasLfmPanel = (props) => {
             return;
         }
 
-        let index = Math.floor((y - 72) / 89);
+        let index = Math.floor((y - 72) / 90);
         // if (groupSelection.groupIndex === index) {
         //     if (x < 375 && lastSide === "left") return;
         //     else if (x > 375 && lastSide === "right") return;
         // }
+
+        if (e.type === "click" && x > 375 && x < 605) {
+            if (
+                e.timeStamp - lastclickRef.current.timeStamp < 500 &&
+                Math.abs(e.clientY - lastclickRef.current.clientY) < 10
+            ) {
+                set_groupSelection({
+                    groupIndex: index,
+                    cursorPosition: [x, y],
+                    side,
+                    doubleClick: true,
+                });
+                return;
+            }
+            lastclickRef.current = e;
+        }
 
         let side = "";
         if (x < 375) side = "left";
@@ -87,6 +104,23 @@ const CanvasLfmPanel = (props) => {
         const ctx = canvas.getContext("2d", { alpha: false });
 
         const sprite = spriteRef.current;
+
+        if (groupSelection.doubleClick) {
+            if (
+                groupSelection.groupIndex !== -1 &&
+                groupSelection.groupIndex < props.data.Groups.length
+            ) {
+                let g = props.data.Groups[groupSelection.groupIndex];
+                if (g.Quest != null) {
+                    window.open(
+                        "https://ddowiki.com/page/" +
+                            g.Quest.Name.replace(/ /g, "_"),
+                        "_blank"
+                    );
+                    return;
+                }
+            }
+        }
 
         // Draw the header
         OpenPanel();
@@ -829,15 +863,15 @@ const CanvasLfmPanel = (props) => {
             }
 
             drawOverlayBackground(row);
-            // row++;
-            // drawOverlayBackground(row);
-            // ctx.textAlign = "center";
-            // ctx.font = "italic 15px Arial";
-            // ctx.fillText(
-            //     "Click to open the Wiki page",
-            //     cursorPosition[0] + 175,
-            //     cursorPosition[1] + 3 + 20 * row - 10
-            // );
+            row++;
+            drawOverlayBackground(row);
+            ctx.textAlign = "center";
+            ctx.font = "italic 15px Arial";
+            ctx.fillText(
+                "Double-Click to open the Wiki page",
+                cursorPosition[0] + 175,
+                cursorPosition[1] + 3 + 20 * row - 10
+            );
 
             ctx.drawImage(
                 sprite,
@@ -1128,6 +1162,7 @@ const CanvasLfmPanel = (props) => {
         isImageLoaded,
         groupSelection.groupIndex,
         groupSelection.side,
+        groupSelection.doubleClick,
     ]);
 
     return (
