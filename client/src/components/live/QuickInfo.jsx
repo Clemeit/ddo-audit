@@ -130,7 +130,7 @@ const QuickInfo = (props) => {
                 >
                     <li>
                         The default server is{" "}
-                        {props.data === null
+                        {props.serverstatus === null
                             ? "(Loading...)"
                             : getDefaultServerLink()}
                     </li>

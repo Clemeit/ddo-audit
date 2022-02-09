@@ -20,7 +20,6 @@ const Live = (props) => {
     var [popupMessage, setPopupMessage] = React.useState(null);
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
-    const [quickInfoData, setQuickInfoData] = React.useState(null);
     const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
     const [playerAndLFMCountData, setPlayerAndLFMCountData] =
         React.useState(null);
@@ -66,28 +65,7 @@ const Live = (props) => {
             });
     }
 
-    React.useEffect(() => {
-        refreshServerStatus();
-        const interval = setInterval(() => refreshServerStatus(), 30000); // Server status should refresh on this page
-
-        Fetch("https://www.playeraudit.com/api/quickinfo", 5000)
-            .then((val) => {
-                setQuickInfoData(val);
-            })
-            .catch((err) => {
-                setPopupMessage({
-                    title: "Couldn't get population data",
-                    message:
-                        "We failed to look up the most populated server. Try refreshing the page. If the issue continues, please report it.",
-                    icon: "warning",
-                    fullscreen: false,
-                    reportMessage:
-                        (err && err.toString()) || "Quick info error",
-                    submessage: (err && err.toString()) || "Quick info error",
-                });
-                setQuickInfoData(null);
-            });
-
+    function refreshPopulationAndQuickInfo() {
         Fetch("https://www.playeraudit.com/api/uniquedata", 5000)
             .then((val) => {
                 setUniqueCountsData(val);
@@ -164,8 +142,21 @@ const Live = (props) => {
                 });
                 setServerDistributionData(null);
             });
+    }
 
-        return () => clearInterval(interval); // Clear server status interval
+    React.useEffect(() => {
+        refreshServerStatus();
+        refreshPopulationAndQuickInfo();
+        const interval = setInterval(() => refreshServerStatus(), 30000); // Server status should refresh on this page
+        const interval2 = setInterval(
+            () => refreshPopulationAndQuickInfo(),
+            60000 * 5
+        );
+
+        return () => {
+            clearInterval(interval);
+            clearInterval(interval2);
+        };
     }, []);
 
     return (
@@ -208,7 +199,6 @@ const Live = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ServerStatusDisplay data={serverStatusData} />
                 <QuickInfo
-                    data={quickInfoData}
                     unique={uniqueCountsData}
                     serverstatus={serverStatusData}
                     serverdistribution={serverDistributionData}
