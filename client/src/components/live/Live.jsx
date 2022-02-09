@@ -30,8 +30,13 @@ const Live = (props) => {
         React.useState(null);
     const [population24HoursType, setPopulation24HoursType] =
         React.useState("population");
+    let firstLoadRef = React.useRef(true);
 
     React.useEffect(() => {
+        if (firstLoadRef.current === true) {
+            firstLoadRef.current = false;
+            return;
+        }
         Fetch(
             `https://api.ddoaudit.com/population/day${
                 population24HoursType === "population" ? "" : "_groups"
