@@ -5,6 +5,7 @@ import { Submit } from "../../services/ReportIssueService";
 import Poll from "./Poll";
 import ContentCluster from "./ContentCluster";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
+import { Link } from "react-router-dom";
 
 const Suggestions = (props) => {
     const TITLE = "DDO Audit | Make a Suggestion";
@@ -111,9 +112,22 @@ const Suggestions = (props) => {
                 <ContentCluster
                     title="Suggestions and Feedback"
                     description={
-                        isSubmitted
-                            ? ""
-                            : "Community feedback has made this project possible."
+                        isSubmitted ? (
+                            <span
+                                style={{
+                                    color: "var(--text)",
+                                }}
+                            >
+                                I got your message, thanks!{" "}
+                                <span className="lfm-number">
+                                    When I implement new features or bug fixes,
+                                    I'll mention it on the{" "}
+                                    <Link to="/timeline">Timeline</Link> page.
+                                </span>
+                            </span>
+                        ) : (
+                            "Community feedback has made this project possible."
+                        )
                     }
                 >
                     <form>
@@ -171,20 +185,6 @@ const Suggestions = (props) => {
                                 onChange={(e) => setContact(e.target.value)}
                             />
                         </div>
-                        <span
-                            style={{
-                                display: isSubmitted ? "flex" : "none",
-                                color: "var(--text)",
-                                fontSize: "1.5rem",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                width: "100%",
-                                minHeight: "60px",
-                            }}
-                        >
-                            I got your message. Thanks!
-                        </span>
                         {isSubmitted === false && (
                             <div
                                 style={{
