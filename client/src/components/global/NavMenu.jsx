@@ -42,12 +42,14 @@ const NavMenu = (props) => {
                     </center>
                 </NavItem> */}
                 <NavItem to="/">
-                    <HomeSVG className="nav-icon" />
-                    <span className="nav-text">Home</span>
+                    <div className="nav-icon-container">
+                        <HomeSVG className="nav-icon" />
+                    </div>
+                    <span className="nav-title">Home</span>
                 </NavItem>
                 <NavItem to="/live">
                     <LiveSVG className="nav-icon" />
-                    <span className="nav-text">Live</span>
+                    <span className="nav-title">Live</span>
                 </NavItem>
                 <NavDropdown
                     to="/servers"
@@ -111,15 +113,15 @@ const NavMenu = (props) => {
                 </NavDropdown>
                 <NavItem to="/quests" className="hide-on-mobile">
                     <QuestsSVG className="nav-icon" />
-                    Quests
+                    <span className="nav-title">Quests</span>
                 </NavItem>
                 <NavItem to="/trends" className="hide-on-mobile">
                     <TrendsSVG className="nav-icon" />
-                    <span className="nav-text">Trends</span>
+                    <span className="nav-title">Trends</span>
                 </NavItem>
                 <NavItem to="/about" className="hide-on-mobile">
                     <AboutSVG className="nav-icon" />
-                    <span className="nav-text">About</span>
+                    <span className="nav-title">About</span>
                 </NavItem>
             </NavBar>
             <div className="nav-overlay" />
