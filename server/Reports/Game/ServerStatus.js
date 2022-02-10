@@ -133,6 +133,7 @@ exports.runServerStatusReport = () => {
             save(worlds);
         } else {
             updateWorlds(worlds).then((worlds) => {
+                worlds.sort((a, b) => a.Name.localeCompare(b.Name));
                 save(worlds);
             });
         }
