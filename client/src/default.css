@@ -196,7 +196,7 @@ body {
             rgba(97, 97, 97, 0.466),
             rgba(15, 15, 15, 0.774)
         ),
-        url("./assets/directory/banner.jpg");
+        url("./assets/directory/banner.webp");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -444,7 +444,7 @@ body {
     height: 30px;
 } */
 
-.nav-item:not(.active):hover .nav-title {
+.nav-item:not(.active):hover > .nav-title {
     text-shadow: 0px 0px 7px white;
 }
 
