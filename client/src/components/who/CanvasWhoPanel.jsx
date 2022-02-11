@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whoSprite.jpg";
+import PanelSprite from "../../assets/global/whosprite.jpg";
 
 const CanvasWhoPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences

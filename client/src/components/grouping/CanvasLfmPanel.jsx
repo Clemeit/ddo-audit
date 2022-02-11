@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/lfmSprite.jpg";
+import PanelSprite from "../../assets/global/lfmsprite.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
