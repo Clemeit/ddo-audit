@@ -134,6 +134,66 @@ const Quests = (props) => {
             });
     }
 
+    function getWarningMessage(total) {
+        if (total < 3000 || standardDeviation > 17) {
+            return (
+                <ContentCluster
+                    title={
+                        <span
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                            }}
+                        >
+                            <WarningSVG
+                                style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    marginRight: "10px",
+                                }}
+                            />
+                            Unreliable Data Warning
+                        </span>
+                    }
+                    altTitle="Data warning"
+                    description={
+                        <ul>
+                            {total < 3000 && (
+                                <li style={{ marginBottom: "10px" }}>
+                                    There are {total < 1500 ? "very " : ""}few
+                                    data points for this quest. The provided
+                                    reports may be{" "}
+                                    <span className="red-text">
+                                        {total < 1500
+                                            ? "highly unreliable"
+                                            : "unreliable"}
+                                    </span>
+                                    .
+                                </li>
+                            )}
+                            {standardDeviation > 17 && (
+                                <li style={{ marginBottom: "10px" }}>
+                                    The standard deviation for this dataset is
+                                    very high. The provided reports may be{" "}
+                                    <span className="red-text">
+                                        {standardDeviation > 30
+                                            ? "highly unreliable"
+                                            : "unreliable"}
+                                    </span>
+                                    .
+                                </li>
+                            )}
+                        </ul>
+                    }
+                    noFade={true}
+                ></ContentCluster>
+            );
+        }
+
+        return <></>;
+    }
+
     React.useEffect(() => {
         if (questList === null) {
             set_filteredQuestList(null);
@@ -331,7 +391,7 @@ const Quests = (props) => {
                 durationdata.slice(Math.max(0, ave - Math.min(20, std) * 2))
             );
             set_questName(quest.QuestName);
-            set_standardDeviation(std > 20 ? ">20" : std);
+            set_standardDeviation(std);
             set_average(Math.round(ave * 10) / 10);
             set_outlierCount(outlierCount);
             set_totalTime(Math.round(total / 60));
@@ -544,7 +604,7 @@ const Quests = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Quests"
-                subtitle="Quest popularity, average completion times, and XP/min"
+                subtitle="Quest popularity, average duration, and XP/min"
             />
             <div className="content-container">
                 <BannerMessage page="quests" />
@@ -761,6 +821,7 @@ const Quests = (props) => {
                                     ))}
                             </div>
                         </ContentCluster>
+                        {getWarningMessage(totalDataPoints)}
                         <ContentCluster
                             title={
                                 <span>
