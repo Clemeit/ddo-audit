@@ -111,10 +111,10 @@ const NavMenu = (props) => {
                         </NavSubItem>
                     ))}
                 </NavDropdown>
-                <NavItem to="/quests" className="hide-on-mobile">
+                {/* <NavItem to="/quests" className="hide-on-mobile">
                     <QuestsSVG className="nav-icon" />
                     <span className="nav-title">Quests</span>
-                </NavItem>
+                </NavItem> */}
                 <NavItem to="/trends" className="hide-on-mobile">
                     <TrendsSVG className="nav-icon" />
                     <span className="nav-title">Trends</span>
