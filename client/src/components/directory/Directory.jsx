@@ -47,7 +47,7 @@ const Directory = (props) => {
                     ),
                     title: "Quest Activity",
                     description:
-                        "Content popularity, average completion times, and XP/minute.",
+                        "Content popularity, average duration, and XP/minute.",
                     to: "/quests",
                     beta: true,
                 },
