@@ -152,6 +152,12 @@ const Directory = (props) => {
         React.useState("population");
     const [dailyDistributionType, setDailyDistributionType] =
         React.useState("population");
+    const [levelDistributionDataBanks, setLevelDistributionDataBanks] =
+        React.useState(false);
+    const [classDistributionDataBanks, setClassDistributionDataBanks] =
+        React.useState(false);
+    const [raceDistributionDataBanks, setRaceDistributionDataBanks] =
+        React.useState(false);
 
     React.useEffect(() => {
         Fetch(
@@ -287,6 +293,7 @@ const Directory = (props) => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+        setLevelDistributionDataBanks(true);
     }
 
     function loadClassDistributionBanks() {
@@ -300,6 +307,7 @@ const Directory = (props) => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+        setClassDistributionDataBanks(true);
     }
 
     function loadRaceDistributionBanks() {
@@ -313,6 +321,7 @@ const Directory = (props) => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+        setRaceDistributionDataBanks(true);
     }
 
     function dataFailedToLoad() {
@@ -571,8 +580,16 @@ const Directory = (props) => {
                     description={
                         <>
                             Average percentage of the population at each level.{" "}
-                            <span className="lfm-number">
-                                Bank characters were filtered out of this report{" "}
+                            <span
+                                className={
+                                    levelDistributionDataBanks
+                                        ? "red-text"
+                                        : "lfm-number"
+                                }
+                            >
+                                {levelDistributionDataBanks
+                                    ? "Showing bank characters"
+                                    : "Bank characters were filtered out of this report"}{" "}
                                 <span
                                     className="faux-link"
                                     onClick={() =>
@@ -621,8 +638,16 @@ const Directory = (props) => {
                                 </span>
                             </span>
                             .{" "}
-                            <span className="lfm-number">
-                                Bank characters were filtered out of this report{" "}
+                            <span
+                                className={
+                                    classDistributionDataBanks
+                                        ? "red-text"
+                                        : "lfm-number"
+                                }
+                            >
+                                {classDistributionDataBanks
+                                    ? "Showing bank characters"
+                                    : "Bank characters were filtered out of this report"}{" "}
                                 <span
                                     className="faux-link"
                                     onClick={() =>
@@ -658,8 +683,16 @@ const Directory = (props) => {
                     description={
                         <>
                             Average percentage of the population for each race.{" "}
-                            <span className="lfm-number">
-                                Bank characters were filtered out of this report{" "}
+                            <span
+                                className={
+                                    raceDistributionDataBanks
+                                        ? "red-text"
+                                        : "lfm-number"
+                                }
+                            >
+                                {raceDistributionDataBanks
+                                    ? "Showing bank characters"
+                                    : "Bank characters were filtered out of this report"}{" "}
                                 <span
                                     className="faux-link"
                                     onClick={() =>
