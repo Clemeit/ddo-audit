@@ -149,7 +149,7 @@ const Who = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Who"
-                subtitle="Live Player Lookup"
+                subtitle="Live Who Panel"
             />
             <PopupMessage
                 page="who"

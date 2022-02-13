@@ -18,7 +18,7 @@ import ChartBar from "../global/ChartBar";
 // no-change
 
 const Directory = (props) => {
-    const TITLE = "DDO Audit | Server Status and Demographics";
+    const TITLE = "DDO Server Population and Demographics";
     const SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
@@ -359,7 +359,7 @@ const Directory = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Servers"
-                subtitle="Server population, demographics, and trends"
+                subtitle="Server Population, Demographics, and Trends"
             />
             <PopupMessage
                 page="servers"

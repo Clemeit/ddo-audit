@@ -14,7 +14,7 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 
 const Live = (props) => {
-    const TITLE = "DDO Audit | Live Server Status";
+    const TITLE = "DDO Live Server Status";
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
@@ -190,7 +190,7 @@ const Live = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Live"
-                subtitle="Live population and quick info"
+                subtitle="Server Status and Quick Info"
             />
             <PopupMessage
                 page="live"

@@ -331,7 +331,7 @@ const Guilds = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Guilds"
-                subtitle="Guild size, activity, and members lists"
+                subtitle="Guild Size, Activity, and Members Lists"
             />
             <div className="content-container">
                 <BannerMessage page="guilds" />

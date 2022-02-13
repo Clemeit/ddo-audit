@@ -20,7 +20,7 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 
 const Directory = (props) => {
-    const TITLE = "DDO Audit | Population and LFM Tracking";
+    const TITLE = "DDO Audit | Population Tracking and LFM Viewer";
 
     const NAV_OPTIONS = [
         {

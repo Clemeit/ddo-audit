@@ -116,7 +116,7 @@ const Trends = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Trends"
-                subtitle="Long-term population trends"
+                subtitle="Long-term Population Trends"
             />
             <div className="content-container">
                 <BannerMessage page="trends" />

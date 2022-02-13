@@ -135,6 +135,7 @@ const Quests = (props) => {
     }
 
     function getWarningMessage(total) {
+        if (questName == null) return <></>;
         if (total < 3000 || standardDeviation > 17) {
             return (
                 <ContentCluster
@@ -187,7 +188,7 @@ const Quests = (props) => {
                         </ul>
                     }
                     noFade={true}
-                ></ContentCluster>
+                />
             );
         }
 
@@ -604,7 +605,7 @@ const Quests = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Quests"
-                subtitle="Quest popularity, average duration, and XP/min"
+                subtitle="Quest Popularity, Average Duration, and XP/min"
             />
             <div className="content-container">
                 <BannerMessage page="quests" />
