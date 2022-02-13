@@ -1,8 +1,9 @@
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route } from "react-router-dom";
 import ScrollToTop from "./components/global/ScrollToTop";
 import Layout from "./components/Layout";
 import "./default.css";
+import history from "./history";
 
 // Most visited pages. Don't lazy-load
 // import Grouping from "./components/grouping/Grouping";
@@ -46,6 +47,9 @@ const Community = lazy(() => import("./components/community/Community"));
 // const Guilds = lazy(() => import("./components/guilds/Guilds"));
 const Api = lazy(() => import("./components/api/Api"));
 const Timeline = lazy(() => import("./components/about/Timeline"));
+// const CharacterSelect = lazy(() =>
+//     import("./components/grouping/CharacterSelect")
+// );
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -57,7 +61,7 @@ export default () => {
 
     return (
         <Suspense fallback={<div></div>}>
-            <Router>
+            <Router history={history}>
                 <Layout>
                     <ScrollToTop />
                     <Switch>
@@ -82,6 +86,9 @@ export default () => {
                         <Route exact path="/grouping">
                             <Grouping />
                         </Route>
+                        {/* <Route exact path="/grouping/characterselect">
+                            <CharacterSelect />
+                        </Route> */}
                         <Route exact path="/grouping/:serverName">
                             <GroupingSpecific />
                         </Route>

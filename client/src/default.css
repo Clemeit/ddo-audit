@@ -1534,6 +1534,32 @@ td:hover .report-quest-button {
     margin-bottom: 1rem;
 }
 
+.character-input {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--highlighted-1);
+    border-radius: 5px;
+    gap: 5px;
+    padding: 10px 15px;
+    max-width: 400px;
+}
+
+.labeled-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.labeled-input label {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--text-faded);
+    margin-bottom: 0px;
+}
+
+.labeled-input input {
+    margin-bottom: 10px;
+}
+
 @media (max-width: 1000px) {
     .add-panel-button {
         display: none;
