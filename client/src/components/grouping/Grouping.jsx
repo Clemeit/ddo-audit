@@ -135,12 +135,22 @@ const Grouping = () => {
     }, []);
 
     function getRaidGroups() {
-        return allGroupData.map((server) =>
-            server.Groups.filter(
-                (group) => group.Quest && group.Quest.GroupSize === "Raid"
-            ).map((group, i) => (
+        if (allGroupData == null) return null;
+        let raidgroups = [];
+        allGroupData.forEach((server) => {
+            server.Groups.forEach((group) => {
+                if (group.Quest) {
+                    if (group.Quest.GroupSize === "Raid") {
+                        group.ServerName = server.Name;
+                        raidgroups.push(group);
+                    }
+                }
+            });
+        });
+        if (raidgroups.length !== 0) {
+            return raidgroups.map((group, i) => (
                 <Link
-                    to={"/grouping/" + server.Name}
+                    to={"/grouping/" + group.ServerName}
                     key={i}
                     className="nav-box shrinkable"
                 >
@@ -153,7 +163,7 @@ const Grouping = () => {
                         className="content-option-description"
                         style={{ fontSize: "1.5rem" }}
                     >
-                        <span className="lfm-number">{server.Name}</span> |{" "}
+                        <span className="lfm-number">{group.ServerName}</span> |{" "}
                         {group.Leader.Name} |{" "}
                         <span style={{ whiteSpace: "nowrap" }}>
                             {`${group.Members.length + 1} member${
@@ -162,8 +172,9 @@ const Grouping = () => {
                         </span>
                     </p>
                 </Link>
-            ))
-        );
+            ));
+        }
+        return null;
     }
 
     return (
