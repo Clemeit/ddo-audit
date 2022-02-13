@@ -13,6 +13,8 @@ const API_PORT = process.env.API_PORT;
 
 api.use(cors());
 api.options("*", cors());
+api.use(express.urlencoded());
+api.use(express.json());
 
 // Major endpoints
 require("./Endpoints/Population")(api);
@@ -24,9 +26,9 @@ require("./Endpoints/GameStatus")(api);
 
 // Firebase
 initializeApp({
-	credential: applicationDefault(),
+    credential: applicationDefault(),
 });
 
 api.listen(API_PORT, () => {
-	console.log(`API listening on ${API_PORT}`);
+    console.log(`API listening on ${API_PORT}`);
 });
