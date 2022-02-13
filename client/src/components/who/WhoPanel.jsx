@@ -137,17 +137,67 @@ const WhoPanel = (props) => {
         }
     }
 
-    var characterNameTimeout;
-    function HandleCharacterNameFilter() {
-        clearTimeout(characterNameTimeout);
-        characterNameTimeout = setTimeout(() => {
-            let charactername = document.getElementById("charactername").value;
-            if (charactername) {
+    const [characterNameFilter, setCharacterNameFilter] = React.useState("");
+    const [guildNameFilter, setGuildNameFilter] = React.useState("");
+    const [locationNameFilter, setLocationNameFilter] = React.useState("");
+    const [minimumLevelFilter, setMinimumLevelFilter] = React.useState("");
+    const [maximumLevelFilter, setMaximumLevelFilter] = React.useState("");
+
+    function getLink() {
+        let params = "";
+        if (characterNameFilter) {
+            if (!params) {
+                params += "?";
+            } else {
+                params += "&";
+            }
+            params += "name=" + characterNameFilter;
+        }
+        if (guildNameFilter) {
+            if (!params) {
+                params += "?";
+            } else {
+                params += "&";
+            }
+            params += "guild=" + guildNameFilter;
+        }
+        if (locationNameFilter) {
+            if (!params) {
+                params += "?";
+            } else {
+                params += "&";
+            }
+            params += "location=" + locationNameFilter;
+        }
+        if (minimumLevelFilter) {
+            if (!params) {
+                params += "?";
+            } else {
+                params += "&";
+            }
+            params += "minlevel=" + minimumLevelFilter;
+        }
+        if (maximumLevelFilter) {
+            if (!params) {
+                params += "?";
+            } else {
+                params += "&";
+            }
+            params += "maxlevel=" + maximumLevelFilter;
+        }
+        return `https://www.ddoaudit.com/who/${props.server.toLowerCase()}${params}`;
+    }
+
+    const characterNameTimeoutRef = React.useRef();
+    React.useEffect(() => {
+        clearTimeout(characterNameTimeoutRef.current);
+        characterNameTimeoutRef.current = setTimeout(() => {
+            if (characterNameFilter) {
                 setActiveFilter([
                     ...activeFilters.filter((filter) => filter.type !== "Name"),
                     {
                         type: "Name",
-                        value: document.getElementById("charactername").value,
+                        value: characterNameFilter,
                     },
                 ]);
             } else {
@@ -155,22 +205,21 @@ const WhoPanel = (props) => {
                     ...activeFilters.filter((filter) => filter.type !== "Name"),
                 ]);
             }
-        }, 100);
-    }
+        }, 200);
+    }, [characterNameFilter]);
 
-    var guildNameTimeout;
-    function HandleGuildNameFilter() {
-        clearTimeout(guildNameTimeout);
-        guildNameTimeout = setTimeout(() => {
-            let guildname = document.getElementById("guildname").value;
-            if (guildname) {
+    const guildNameTimeoutRef = React.useRef();
+    React.useEffect(() => {
+        clearTimeout(guildNameTimeoutRef.current);
+        guildNameTimeoutRef.current = setTimeout(() => {
+            if (guildNameFilter) {
                 setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Guild"
                     ),
                     {
                         type: "Guild",
-                        value: document.getElementById("guildname").value,
+                        value: guildNameFilter,
                     },
                 ]);
             } else {
@@ -180,22 +229,21 @@ const WhoPanel = (props) => {
                     ),
                 ]);
             }
-        }, 100);
-    }
+        }, 200);
+    }, [guildNameFilter]);
 
-    var locationNameTimeout;
-    function HandleLocationNameFilter() {
-        clearTimeout(locationNameTimeout);
-        locationNameTimeout = setTimeout(() => {
-            let locationname = document.getElementById("locationname").value;
-            if (locationname) {
+    const locationNameTimeoutRef = React.useRef();
+    React.useEffect(() => {
+        clearTimeout(locationNameTimeoutRef.current);
+        locationNameTimeoutRef.current = setTimeout(() => {
+            if (locationNameFilter) {
                 setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Location"
                     ),
                     {
                         type: "Location",
-                        value: document.getElementById("locationname").value,
+                        value: locationNameFilter,
                     },
                 ]);
             } else {
@@ -205,22 +253,21 @@ const WhoPanel = (props) => {
                     ),
                 ]);
             }
-        }, 100);
-    }
+        }, 200);
+    }, [locationNameFilter]);
 
-    var minimumLevelTimeout;
-    function HandleMinimumLevelFilter() {
-        clearTimeout(minimumLevelTimeout);
-        minimumLevelTimeout = setTimeout(() => {
-            let minimumlevel = document.getElementById("minimumlevel").value;
-            if (minimumlevel) {
+    const minimumLevelTimeoutRef = React.useRef();
+    React.useEffect(() => {
+        clearTimeout(minimumLevelTimeoutRef.current);
+        minimumLevelTimeoutRef.current = setTimeout(() => {
+            if (minimumLevelFilter) {
                 setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Min Level"
                     ),
                     {
                         type: "Min Level",
-                        value: document.getElementById("minimumlevel").value,
+                        value: minimumLevelFilter,
                     },
                 ]);
             } else {
@@ -230,22 +277,21 @@ const WhoPanel = (props) => {
                     ),
                 ]);
             }
-        }, 100);
-    }
+        }, 200);
+    }, [minimumLevelFilter]);
 
-    var maximumLevelTimeout;
-    function HandleMaximumLevelFilter() {
-        clearTimeout(maximumLevelTimeout);
-        maximumLevelTimeout = setTimeout(() => {
-            let maximumlevel = document.getElementById("maximumlevel").value;
-            if (maximumlevel) {
+    const maximumLevelTimeoutRef = React.useRef();
+    React.useEffect(() => {
+        clearTimeout(maximumLevelTimeoutRef.current);
+        maximumLevelTimeoutRef.current = setTimeout(() => {
+            if (maximumLevelFilter) {
                 setActiveFilter([
                     ...activeFilters.filter(
                         (filter) => filter.type !== "Max Level"
                     ),
                     {
                         type: "Max Level",
-                        value: document.getElementById("maximumlevel").value,
+                        value: maximumLevelFilter,
                     },
                 ]);
             } else {
@@ -255,18 +301,8 @@ const WhoPanel = (props) => {
                     ),
                 ]);
             }
-        }, 100);
-    }
-
-    function HandleSortFilter() {
-        let sortfilter = document.getElementById("sort-type").value;
-        setSortingMethod(sortfilter.toLowerCase());
-    }
-
-    function HandleDirectionFilter() {
-        let sortfilter = document.getElementById("sort-direction").value;
-        setSortingDirection(sortfilter.toLowerCase());
-    }
+        }, 200);
+    }, [maximumLevelFilter]);
 
     function handleClassFilter(index) {
         // const temp = [...classFilterStates];
@@ -364,12 +400,14 @@ const WhoPanel = (props) => {
         } else if (sortingMethod === "location") {
             if (sortingDirection === "ascending") {
                 data.sort((a, b) => {
-                    if (a.Name == null || b.Name == null) return 0;
+                    if (a.Location.Name == null || b.Location.Name == null)
+                        return 0;
                     return a.Location.Name.localeCompare(b.Location.Name);
                 });
             } else {
                 data.sort((a, b) => {
-                    if (a.Name == null || b.Name == null) return 0;
+                    if (a.Location.Name == null || b.Location.Name == null)
+                        return 0;
                     return b.Location.Name.localeCompare(a.Location.Name);
                 });
             }
@@ -539,6 +577,53 @@ const WhoPanel = (props) => {
         setAlternativeLook(
             alternativelook !== null ? alternativelook === "true" : false
         );
+
+        // Load filters from URL
+        let urlfilters = new URLSearchParams(window.location.search);
+        let urlname = urlfilters.get("name");
+        let urlguild = urlfilters.get("guild");
+        let urllocation = urlfilters.get("location");
+        let urlminlevel = urlfilters.get("minlevel");
+        let urlmaxlevel = urlfilters.get("maxlevel");
+
+        let activefilterarray = [];
+        if (urlname) {
+            setCharacterNameFilter(urlname);
+            activefilterarray.push({
+                type: "Name",
+                value: urlname,
+            });
+        }
+        if (urlguild) {
+            setGuildNameFilter(urlguild);
+            activefilterarray.push({
+                type: "Guild",
+                value: urlguild,
+            });
+        }
+        if (urllocation) {
+            setLocationNameFilter(urllocation);
+            activefilterarray.push({
+                type: "Location",
+                value: urllocation,
+            });
+        }
+        if (urlminlevel) {
+            setMinimumLevelFilter(urlminlevel);
+            activefilterarray.push({
+                type: "Min Level",
+                value: urlminlevel,
+            });
+        }
+        if (urlmaxlevel) {
+            setMaximumLevelFilter(urlmaxlevel);
+            activefilterarray.push({
+                type: "Max Level",
+                value: urlmaxlevel,
+            });
+        }
+
+        setActiveFilter(activefilterarray);
     }, []);
 
     function GetSnarkyMessage() {
@@ -797,7 +882,10 @@ const WhoPanel = (props) => {
                                     type="text"
                                     id="charactername"
                                     name="charactername"
-                                    onChange={() => HandleCharacterNameFilter()}
+                                    value={characterNameFilter}
+                                    onChange={(e) =>
+                                        setCharacterNameFilter(e.target.value)
+                                    }
                                 />
                             </div>
                             <div
@@ -823,7 +911,10 @@ const WhoPanel = (props) => {
                                     type="text"
                                     id="guildname"
                                     name="guildname"
-                                    onChange={() => HandleGuildNameFilter()}
+                                    value={guildNameFilter}
+                                    onChange={(e) =>
+                                        setGuildNameFilter(e.target.value)
+                                    }
                                 />
                             </div>
                             <div
@@ -849,7 +940,10 @@ const WhoPanel = (props) => {
                                     type="text"
                                     id="locationname"
                                     name="locationname"
-                                    onChange={() => HandleLocationNameFilter()}
+                                    value={locationNameFilter}
+                                    onChange={(e) =>
+                                        setLocationNameFilter(e.target.value)
+                                    }
                                 />
                             </div>
                             <div
@@ -877,8 +971,11 @@ const WhoPanel = (props) => {
                                         type="text"
                                         id="minimumlevel"
                                         name="minimumlevel"
-                                        onChange={() =>
-                                            HandleMinimumLevelFilter()
+                                        value={minimumLevelFilter}
+                                        onChange={(e) =>
+                                            setMinimumLevelFilter(
+                                                e.target.value
+                                            )
                                         }
                                     />
                                     <label
@@ -895,8 +992,11 @@ const WhoPanel = (props) => {
                                         type="text"
                                         id="maximumlevel"
                                         name="maximumlevel"
-                                        onChange={() =>
-                                            HandleMaximumLevelFilter()
+                                        value={maximumLevelFilter}
+                                        onChange={(e) =>
+                                            setMaximumLevelFilter(
+                                                e.target.value
+                                            )
                                         }
                                     />
                                 </div>
@@ -907,6 +1007,7 @@ const WhoPanel = (props) => {
                                     flexDirection: "row",
                                     flexWrap: "wrap",
                                     gap: "10px",
+                                    marginBottom: "10px",
                                 }}
                             >
                                 <label
@@ -935,7 +1036,9 @@ const WhoPanel = (props) => {
                                             maxWidth: "200px",
                                             fontSize: "1.2rem",
                                         }}
-                                        onChange={() => HandleSortFilter()}
+                                        onChange={(e) =>
+                                            setSortingMethod(e.target.value)
+                                        }
                                         value={sortingMethod}
                                     >
                                         <option value="level">Level</option>
@@ -953,7 +1056,9 @@ const WhoPanel = (props) => {
                                             maxWidth: "200px",
                                             fontSize: "1.2rem",
                                         }}
-                                        onChange={() => HandleDirectionFilter()}
+                                        onChange={(e) =>
+                                            setSortingDirection(e.target.value)
+                                        }
                                         value={sortingDirection}
                                     >
                                         <option value="ascending">
@@ -965,6 +1070,20 @@ const WhoPanel = (props) => {
                                     </select>
                                 </div>
                             </div>
+                            <a
+                                className="faux-link"
+                                style={{
+                                    fontSize: "1.2rem",
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                }}
+                                href={getLink()}
+                                target="_blank"
+                            >
+                                Link directly to this page with these filters
+                            </a>
                         </div>
                     </ContentCluster>
                     <ContentCluster title="Accessibility">
@@ -1106,27 +1225,25 @@ const WhoPanel = (props) => {
                                                 }}
                                                 onClick={() => {
                                                     if (filter.type === "Name")
-                                                        document.getElementById(
-                                                            "charactername"
-                                                        ).value = "";
+                                                        setCharacterNameFilter(
+                                                            ""
+                                                        );
                                                     if (filter.type === "Guild")
-                                                        document.getElementById(
-                                                            "guildname"
-                                                        ).value = "";
+                                                        setGuildNameFilter("");
                                                     if (
                                                         filter.type ===
                                                         "Min Level"
                                                     )
-                                                        document.getElementById(
-                                                            "minimumlevel"
-                                                        ).value = "";
+                                                        setMinimumLevelFilter(
+                                                            ""
+                                                        );
                                                     if (
                                                         filter.type ===
                                                         "Max Level"
                                                     )
-                                                        document.getElementById(
-                                                            "maximumlevel"
-                                                        ).value = "";
+                                                        setMaximumLevelFilter(
+                                                            ""
+                                                        );
                                                     setActiveFilter(
                                                         activeFilters.filter(
                                                             (_, index) =>
