@@ -68,7 +68,7 @@ const ChartPie = (props) => {
     }, []);
 
     return (
-        <div>
+        <div style={{ width: "100%" }}>
             <div
                 className={
                     isMobileLoaded
@@ -93,6 +93,8 @@ const ChartPie = (props) => {
                         data={props.data.filter(
                             (series) => !excludedSeries.includes(series.id)
                         )}
+                        startAngle={props.arc ? -90 : 0}
+                        endAngle={props.arc ? 90 : 360}
                         innerRadius={props.innerRadius || 0}
                         margin={{
                             top: isMobile ? 5 : 30,
