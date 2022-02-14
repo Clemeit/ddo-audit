@@ -165,25 +165,37 @@ const QuickInfo = (props) => {
                             fontSize: "1.5rem",
                             lineHeight: "normal",
                             color: "var(--text)",
+                            marginBottom: "30px",
                         }}
                     >
                         Loading news...
                     </span>
                 ) : news.length > 0 ? (
-                    news.map((message, i) => (
-                        <div key={i}>
-                            <p
-                                style={{
-                                    textAlign: "justify",
-                                    fontSize: "1.5rem",
-                                    lineHeight: "normal",
-                                    color: "var(--text)",
-                                }}
-                            >
-                                <b>{message.date}:</b> {message.description}
-                            </p>
-                        </div>
-                    ))
+                    <div
+                        style={{
+                            marginBottom: "30px",
+                        }}
+                    >
+                        {news.map((message, i) => (
+                            <div key={i}>
+                                <p
+                                    style={{
+                                        textAlign: "justify",
+                                        fontSize: "1.5rem",
+                                        lineHeight: "normal",
+                                        color: "var(--text)",
+                                    }}
+                                >
+                                    <b>{message.date}:</b>{" "}
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: message.description,
+                                        }}
+                                    ></span>
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 ) : (
                     <p
                         style={{
@@ -191,6 +203,7 @@ const QuickInfo = (props) => {
                             fontSize: "1.5rem",
                             lineHeight: "normal",
                             color: "var(--text)",
+                            marginBottom: "30px",
                         }}
                     >
                         There's nothing going on in our neck of the woods!
@@ -203,7 +216,6 @@ const QuickInfo = (props) => {
                         style={{
                             color: "var(--text)",
                             textDecoration: "none",
-                            marginTop: "10px",
                         }}
                     >
                         Make a suggestion
