@@ -678,7 +678,7 @@ const WhoPanel = (props) => {
         };
     }, [props.server]);
 
-    function FetchPlayerData() {
+    function FetchPlayerData(timeout = 5000) {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 let serverstatus = false;
@@ -709,7 +709,7 @@ const WhoPanel = (props) => {
                             )
                                 ? props.server
                                 : ""),
-                        5000
+                        timeout
                     )
                         .then((val) => {
                             setLastFetchTime(Date.now());
@@ -749,7 +749,7 @@ const WhoPanel = (props) => {
                             setFailedAttemptCount(failedAttemptRef.current);
                             setLastFetchTime(Date.now());
                             setAttemptedPlayerFetch(true);
-                            if (failedAttemptRef.current > 5) {
+                            if (failedAttemptRef.current > 3) {
                                 props.triggerPopup({
                                     title: "Couldn't fetch player data",
                                     message:
@@ -763,7 +763,7 @@ const WhoPanel = (props) => {
                                 });
                             } else {
                                 recheck = setTimeout(() => {
-                                    FetchPlayerData();
+                                    FetchPlayerData(10000);
                                 }, 250);
                             }
                         });
