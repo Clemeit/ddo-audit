@@ -103,7 +103,7 @@ module.exports = function (api) {
                     LEFT JOIN classes c2 ON p.class2 = c2.id 
                     LEFT JOIN classes c3 ON p.class3 = c3.id 
                     LEFT JOIN classes c4 ON p.class4 = c4.id 
-                    WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -35 SECOND) AND p.anonymous != 1 AND p.server LIKE '${server}';`;
+                    WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -70 SECOND) AND p.anonymous != 1 AND p.server LIKE '${server}';`;
 
                 con.query(query, (err, result, fields) => {
                     if (err) {
