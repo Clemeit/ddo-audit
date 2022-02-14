@@ -113,6 +113,73 @@ const ChartLine = (props) => {
         setIsMobile(window.innerWidth <= 950);
     }, []);
 
+    var options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+    };
+
+    function dateToDateString(dt) {
+        if (dt instanceof Date) {
+            return dt.toLocaleDateString("en-US", props.dateOptions || options);
+        } else {
+            return `${props.tooltipPrefix || ""} ${dt}`;
+        }
+    }
+
+    function getTooltip(slice) {
+        return (
+            <div
+                style={{
+                    background: "var(--highlighted-0)",
+                    padding: "9px 12px",
+                    borderRadius: "5px",
+                    filter: "drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5))",
+                }}
+            >
+                <div style={{ fontSize: "1.1rem" }}>
+                    {dateToDateString(slice.points[0].data.x)}
+                </div>
+                <hr
+                    style={{
+                        backgroundColor: "var(--text)",
+                        opacity: 0.2,
+                        margin: "5px 3px",
+                    }}
+                />
+                {slice.points
+                    .sort((a, b) => b.data.yFormatted - a.data.yFormatted)
+                    .map((point) => (
+                        <div
+                            key={point.id}
+                            style={{
+                                padding: "3px 0",
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: "12px",
+                                    height: "12px",
+                                    backgroundColor: point.serieColor,
+                                }}
+                            />
+                            <strong>{point.serieId}</strong>
+                            <span style={{ marginLeft: "auto" }}>
+                                {point.data.yFormatted}
+                            </span>
+                        </div>
+                    ))}
+            </div>
+        );
+    }
+
     function getAxisLeft() {
         if (isMobile)
             return {
@@ -279,6 +346,7 @@ const ChartLine = (props) => {
                         useMesh={true}
                         motionConfig="stiff"
                         theme={theme}
+                        sliceTooltip={({ slice }) => getTooltip(slice)}
                     ></ResponsiveLine>
                 ) : (
                     <div className="loading-data-message">

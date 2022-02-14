@@ -514,6 +514,7 @@ const Directory = (props) => {
                         trendType=""
                         noArea={true}
                         straightLegend={true}
+                        tooltipPrefix="Hour"
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -619,6 +620,7 @@ const Directory = (props) => {
                         noArea={true}
                         curve="linear"
                         straightLegend={true}
+                        tooltipPrefix="Level"
                     />
                 </ContentCluster>
                 <ContentCluster

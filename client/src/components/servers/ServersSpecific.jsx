@@ -294,6 +294,7 @@ const ServersSpecific = () => {
                         trendType=""
                         noArea={false}
                         straightLegend={true}
+                        tooltipPrefix="Hour"
                     />
                 </ContentCluster>
                 <ContentCluster

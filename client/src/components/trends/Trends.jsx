@@ -10,6 +10,13 @@ import ContentCluster from "../global/ContentCluster";
 const Trends = (props) => {
     const TITLE = "DDO Audit | Population Data Trends";
 
+    const DAY_ONLY = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+
     const [population1Year, setPopulation1Year] = React.useState(null);
     const [permanentVsHardcore1Year, setPermanentVsHardcore1Year] =
         React.useState(null);
@@ -137,6 +144,7 @@ const Trends = (props) => {
                         height="460px"
                         forceHardcore={true}
                         markedEvents={markedEvents}
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -156,6 +164,7 @@ const Trends = (props) => {
                         areaOpacity={0.1}
                         forceHardcore={true}
                         markedEvents={markedEvents}
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -175,6 +184,7 @@ const Trends = (props) => {
                         areaOpacity={0.1}
                         forceHardcore={true}
                         markedEvents={markedEvents}
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -226,6 +236,7 @@ const Trends = (props) => {
                         showArea={true}
                         yMin={"auto"}
                         curve="linear"
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -245,6 +256,7 @@ const Trends = (props) => {
                         areaOpacity={0.1}
                         forceHardcore={true}
                         markedEvents={markedEvents}
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
             </div>
