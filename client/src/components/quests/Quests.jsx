@@ -922,7 +922,8 @@ const Quests = (props) => {
                                 marginBottom={100}
                                 hideLegend={true}
                                 // tickValues="every 1 day"
-                                trendType="week"
+                                trendType="quarter"
+                                curve="linear"
                             />
                         </ContentCluster>
                         <ContentCluster
