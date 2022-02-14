@@ -797,30 +797,6 @@ body {
     font-size: 1.4rem;
 }
 
-@media (max-width: 1800px) {
-    .content-cluster {
-        max-width: 1400px;
-    }
-}
-
-@media (max-width: 1500px) {
-    .content-cluster {
-        max-width: 1100px;
-    }
-}
-
-@media (max-width: 500px) {
-    .nav-box {
-        width: 100%;
-    }
-    .nav-box.no-width {
-        width: 100%;
-    }
-    .community-box {
-        width: 100%;
-    }
-}
-
 .light-theme .nav-icon.should-invert,
 .light-theme .nav-icon-large.should-invert,
 .light-theme .link-icon.should-invert {
@@ -1558,6 +1534,41 @@ td:hover .report-quest-button {
 
 .labeled-input input {
     margin-bottom: 10px;
+}
+
+.multi-pie-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex: 1;
+}
+
+@media (max-width: 1800px) {
+    .content-cluster {
+        max-width: 1400px;
+    }
+    .multi-pie-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .content-cluster {
+        max-width: 1100px;
+    }
+}
+
+@media (max-width: 500px) {
+    .nav-box {
+        width: 100%;
+    }
+    .nav-box.no-width {
+        width: 100%;
+    }
+    .community-box {
+        width: 100%;
+    }
 }
 
 @media (max-width: 1000px) {
