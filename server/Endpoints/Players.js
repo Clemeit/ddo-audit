@@ -67,11 +67,11 @@ module.exports = function (api) {
                         'Population', COUNT(*),
                         'Players', JSON_ARRAYAGG(
                             JSON_OBJECT(
-                                'Name', p.name,
+                                'Name', IF(p.anonymous, 'Anonymous', p.name),
                                 'Gender', p.gender,
                                 'Race', p.race,
-                                'Guild', p.guild,
-                                'Location', JSON_OBJECT('Name', a.name, 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
+                                'Guild', IF(p.anonymous, '(redacted)', p.guild),
+                                'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
                                 'TotalLevel', totallevel,
                                 'Server', server,
                                 'GroupId', groupid,
@@ -103,7 +103,7 @@ module.exports = function (api) {
                     LEFT JOIN classes c2 ON p.class2 = c2.id 
                     LEFT JOIN classes c3 ON p.class3 = c3.id 
                     LEFT JOIN classes c4 ON p.class4 = c4.id 
-                    WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -70 SECOND) AND p.anonymous != 1 AND p.server LIKE '${server}';`;
+                    WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -70 SECOND) AND p.server LIKE '${server}';`;
 
                 con.query(query, (err, result, fields) => {
                     if (err) {
