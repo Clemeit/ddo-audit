@@ -102,7 +102,7 @@ const Directory = (props) => {
     }
 
     function GetServerDescription(name) {
-        if (uniqueData === null || uniqueData === undefined) {
+        if (uniqueData == null) {
             return (
                 <p
                     className="content-option-description"
@@ -113,7 +113,7 @@ const Directory = (props) => {
             );
         }
         return uniqueData
-            .filter((server) => server.ServerName === name)
+            .filter((server) => server.Name === name)
             .map((server, i) => (
                 <p
                     key={i}
@@ -126,13 +126,13 @@ const Directory = (props) => {
                         style={{
                             color: "var(--text-player-number)",
                         }}
-                    >{`${server.UniquePlayers} unique players`}</span>
+                    >{`${server.TotalCharacters} unique players`}</span>
                     <br />
                     <span
                         style={{
                             color: "var(--text-lfm-number)",
                         }}
-                    >{`${server.UniqueGuilds} unique guilds`}</span>
+                    >{`${server.TotalGuilds} unique guilds`}</span>
                 </p>
             ));
     }
@@ -227,7 +227,7 @@ const Directory = (props) => {
             });
     }
     React.useEffect(() => {
-        Fetch("https://www.playeraudit.com/api/uniquedata", 5000)
+        Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
             .then((val) => {
                 setUniqueData(val);
             })

@@ -13,7 +13,7 @@ const QuickInfo = (props) => {
     function GetTotalUniquePlayerCount() {
         let total = 0;
         props.unique.forEach((server) => {
-            total += server.UniquePlayers;
+            total += server.TotalCharacters;
         });
         return FormatWithCommas(total.toString());
     }
@@ -21,7 +21,7 @@ const QuickInfo = (props) => {
     function GetTotalUniqueGuildCount() {
         let total = 0;
         props.unique.forEach((server) => {
-            total += server.UniqueGuilds;
+            total += server.TotalGuilds;
         });
         return FormatWithCommas(total.toString());
     }

@@ -71,7 +71,7 @@ const Live = (props) => {
     }
 
     function refreshPopulationAndQuickInfo() {
-        Fetch("https://www.playeraudit.com/api/uniquedata", 5000)
+        Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
             .then((val) => {
                 setUniqueCountsData(val);
             })
@@ -110,7 +110,7 @@ const Live = (props) => {
                 setPopulation24HoursData(null);
             });
 
-        Fetch("https://www.playeraudit.com/api/playerandlfmcount", 5000)
+        Fetch("https://api.ddoaudit.com/population/latest", 5000)
             .then((val) => {
                 setPlayerAndLFMCountData(val);
             })
