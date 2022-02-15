@@ -20,17 +20,18 @@ exports.runUniqueReport = (players) => {
 
     let characters = [];
     let activecharacters = [];
-    // let guilds = [];
-    // let guildlist = [];
+    let guilds = [];
+
     SERVER_NAMES.forEach((server) => {
         characters.push(0);
         activecharacters.push(0);
-        // guilds.push(0);
+        guilds.push([]);
     });
 
     players.forEach(
         ({
             server,
+            guild,
             lastseen,
             lastactive,
             lastmovement,
@@ -53,6 +54,9 @@ exports.runUniqueReport = (players) => {
                 } else {
                     characters[serverindex]++;
                 }
+                if (!guilds[serverindex].includes(guild)) {
+                    guilds[serverindex].push(guild);
+                }
             }
         }
     );
@@ -64,6 +68,7 @@ exports.runUniqueReport = (players) => {
             Name: SERVER_NAMES[i],
             TotalCharacters: characters[i],
             ActiveCharacters: activecharacters[i],
+            TotalGuilds: guilds[i].length,
         });
     }
 

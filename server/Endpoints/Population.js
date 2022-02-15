@@ -16,6 +16,7 @@ module.exports = function (api) {
         ["dailydistribution_groups", "dailydistributionquarter_groups"],
         ["quarter_delta", "quarter_delta"],
         ["quarter_groups_delta", "quarter_groups_delta"],
+        ["latest", "latest"],
     ];
 
     population.forEach((entry) => {

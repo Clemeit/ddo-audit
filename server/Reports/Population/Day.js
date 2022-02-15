@@ -56,6 +56,9 @@ exports.runDayReport = (population, reporttype) => {
         data: [],
     };
 
+    let currentPopulation = 0;
+    let currentLfms = 0;
+
     population.forEach(
         ({
             datetime,
@@ -83,6 +86,27 @@ exports.runDayReport = (population, reporttype) => {
                 1000 * 60 * 60 * 24
             ) {
                 // datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
+                let totalpopulation =
+                    argonnessen_playercount +
+                    cannith_playercount +
+                    ghallanda_playercount +
+                    khyber_playercount +
+                    orien_playercount +
+                    sarlona_playercount +
+                    thelanis_playercount +
+                    wayfinder_playercount +
+                    hardcore_playercount;
+                let totallfms =
+                    argonnessen_lfmcount +
+                    cannith_lfmcount +
+                    ghallanda_lfmcount +
+                    khyber_lfmcount +
+                    orien_lfmcount +
+                    sarlona_lfmcount +
+                    thelanis_lfmcount +
+                    wayfinder_lfmcount +
+                    hardcore_lfmcount;
+
                 if (reporttype === "population") {
                     Argonnessen.data.push({
                         x: datetime,
@@ -122,16 +146,7 @@ exports.runDayReport = (population, reporttype) => {
                     });
                     Total.data.push({
                         x: datetime,
-                        y:
-                            argonnessen_playercount +
-                            cannith_playercount +
-                            ghallanda_playercount +
-                            khyber_playercount +
-                            orien_playercount +
-                            sarlona_playercount +
-                            thelanis_playercount +
-                            wayfinder_playercount +
-                            hardcore_playercount,
+                        y: totalpopulation,
                     });
                 } else {
                     Argonnessen.data.push({
@@ -172,18 +187,12 @@ exports.runDayReport = (population, reporttype) => {
                     });
                     Total.data.push({
                         x: datetime,
-                        y:
-                            argonnessen_lfmcount +
-                            cannith_lfmcount +
-                            ghallanda_lfmcount +
-                            khyber_lfmcount +
-                            orien_lfmcount +
-                            sarlona_lfmcount +
-                            thelanis_lfmcount +
-                            wayfinder_lfmcount +
-                            hardcore_lfmcount,
+                        y: totallfms,
                     });
                 }
+
+                currentPopulation = totalpopulation;
+                currentLfms = totallfms;
             }
         }
     );
@@ -212,6 +221,19 @@ exports.runDayReport = (population, reporttype) => {
             if (err) throw err;
         }
     );
+
+    if (reporttype === "population") {
+        fs.writeFile(
+            `../api_v1/population/latest.json`,
+            JSON.stringify({
+                Players: currentPopulation,
+                LFMs: currentLfms,
+            }),
+            (err) => {
+                if (err) throw err;
+            }
+        );
+    }
 
     var t1 = new Date();
     console.log(`Finished in ${t1 - t0}ms`);
