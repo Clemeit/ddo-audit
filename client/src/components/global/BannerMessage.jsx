@@ -1,19 +1,34 @@
 import React from "react";
 import { Fetch } from "../../services/DataLoader";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
+import $ from "jquery";
 
 const BannerMessage = (props) => {
     const [messages, setMessages] = React.useState([]);
     const [update, setUpdate] = React.useState(null);
 
     let recheck;
+    let shiftBanner;
     React.useEffect(() => {
         recheck = setInterval(() => {
             setUpdate(new Date());
         }, 3600000);
+        shiftBanner = setInterval(() => {
+            if (window.innerWidth < 900) {
+                $(".banner-message-container").css(
+                    "transform",
+                    `translateY(0%)`
+                );
+                $(".banner-message-container").css(
+                    "filter",
+                    `drop-shadow(0px 0px 7px black)`
+                );
+            }
+        }, 1000);
 
         return function cleanup() {
             clearInterval(recheck);
+            clearInterval(shiftBanner);
         };
     }, []);
 

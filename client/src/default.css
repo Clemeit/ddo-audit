@@ -1578,9 +1578,11 @@ td:hover .report-quest-button {
 }
 
 @media (max-width: 900px) {
-    /* #banner-image {
-        height: var(--short-push-height);
-    } */
+    .banner-message-container {
+        position: fixed;
+        transition: transform 200ms;
+        transform: translateY(-100%);
+    }
 
     #content-push-top {
         height: var(--short-push-height);
