@@ -96,10 +96,8 @@ const Suggestions = (props) => {
                                 fontSize: "1.5rem",
                             }}
                         >
-                            The sheer number of rude and condescending comments
-                            and requests I've received is disappointing. I'm
-                            providing this website because I want to give back
-                            to the community which has given so much to me.
+                            I'm providing this website because I want to give
+                            back to the community which has given so much to me.
                             Hosting fees come out of my own pocket and
                             development time is unpaid.
                         </p>
