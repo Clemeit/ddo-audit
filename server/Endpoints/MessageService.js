@@ -116,6 +116,27 @@ module.exports = function (api) {
             });
         }
 
+        function submitMessage(message) {
+            return new Promise(async (resolve, reject) => {
+                if (message == null) {
+                    reject();
+                } else {
+                    let classquery = `INSERT INTO \`feedback\` (\`datetime\`, \`browser\`, \`title\`, \`comment\`, \`resolved\`) VALUES (CURRENT_TIMESTAMP, ${
+                        con.escape(message.browser) || ""
+                    }, ${con.escape(message.title) || ""}, ${
+                        con.escape(message.comment) || ""
+                    }, '0');`;
+                    con.query(classquery, (err, result, fields) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                }
+            });
+        }
+
         api.get(`/markedevents`, (req, res) => {
             res.setHeader("Content-Type", "application/json");
             getMarkedEvents()
@@ -149,6 +170,18 @@ module.exports = function (api) {
                 .catch((err) => {
                     console.log(err);
                     return {};
+                });
+        });
+
+        api.post(`/submitmessage`, (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            submitMessage(req.body)
+                .then((result) => {
+                    res.send({ state: "Success" });
+                })
+                .catch((err) => {
+                    console.log("Failed to post message:", err);
+                    res.send({ state: "Failed" });
                 });
         });
     });

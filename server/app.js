@@ -13,7 +13,7 @@ const API_PORT = process.env.API_PORT;
 
 api.use(cors());
 api.options("*", cors());
-api.use(express.urlencoded());
+// api.use(express.urlencoded());
 api.use(express.json());
 
 // Major endpoints

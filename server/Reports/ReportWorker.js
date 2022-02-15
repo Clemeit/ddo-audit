@@ -149,15 +149,6 @@ con.connect((err) => {
         });
     });
 
-    // getPopulationData(365).then(() => {
-    //     runQuarterReport(population, "population").then((val) => {
-    //         runDeltaReport(val, "population");
-    //     });
-    //     runQuarterReport(population, "groups").then((val) => {
-    //         runDeltaReport(val, "groups");
-    //     });
-    // });
-
     // Every day
     cron.schedule("0 0 * * 1-6", () => {
         getPopulationData(365).then(() => {
