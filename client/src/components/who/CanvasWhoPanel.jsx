@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whosprite.jpg";
+import PanelSprite from "../../assets/global/whosprite_v2.jpg";
 
 const CanvasWhoPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -79,23 +79,23 @@ const CanvasWhoPanel = (props) => {
             props.handleOpenSettings();
         }
 
-        if (x > 21 && x < 41 && y > 205 && y < 226) {
+        if (x > 21 && x < 41 && y > 230 && y < 251) {
             props.handleSort("inparty");
         }
 
-        if (x > 41 && x < 271 && y > 205 && y < 226) {
+        if (x > 41 && x < 271 && y > 230 && y < 251) {
             props.handleSort("name");
         }
 
-        if (x > 271 && x < 387 && y > 205 && y < 226) {
+        if (x > 271 && x < 387 && y > 230 && y < 251) {
             props.handleSort("class");
         }
 
-        if (x > 387 && x < 456 && y > 205 && y < 226) {
+        if (x > 387 && x < 456 && y > 230 && y < 251) {
             props.handleSort("level");
         }
 
-        if (x > 456 && x < 684 && y > 205 && y < 226) {
+        if (x > 456 && x < 684 && y > 230 && y < 251) {
             props.handleSort("guild");
         }
     }
@@ -167,21 +167,21 @@ const CanvasWhoPanel = (props) => {
 
         // Draws the header and the lastUpdateTime string
         function OpenPanel() {
-            ctx.drawImage(sprite, 0, 0, 706, 235, 0, 0, 706, 235);
+            ctx.drawImage(sprite, 0, 0, 706, 260, 0, 0, 706, 260);
 
             // Draw anyClass checkbox
             // 429, 63, 16, 16
             if (isEveryClassChecked())
-                ctx.drawImage(sprite, 467, 315, 16, 16, 429, 63, 16, 16);
-            else ctx.drawImage(sprite, 450, 315, 16, 16, 429, 63, 16, 16);
+                ctx.drawImage(sprite, 467, 340, 16, 16, 429, 63, 16, 16);
+            else ctx.drawImage(sprite, 450, 340, 16, 16, 429, 63, 16, 16);
 
             if (props.includeRegion)
-                ctx.drawImage(sprite, 467, 315, 16, 16, 177, 171, 16, 16);
-            else ctx.drawImage(sprite, 450, 315, 16, 16, 177, 171, 16, 16);
+                ctx.drawImage(sprite, 467, 340, 16, 16, 177, 171, 16, 16);
+            else ctx.drawImage(sprite, 450, 340, 16, 16, 177, 171, 16, 16);
 
             if (props.exactMatch)
-                ctx.drawImage(sprite, 467, 315, 16, 16, 401, 171, 16, 16);
-            else ctx.drawImage(sprite, 450, 315, 16, 16, 401, 171, 16, 16);
+                ctx.drawImage(sprite, 467, 340, 16, 16, 401, 171, 16, 16);
+            else ctx.drawImage(sprite, 450, 340, 16, 16, 401, 171, 16, 16);
 
             // Draw class toggles
             for (var i = 0; i < 15; i++) {
@@ -242,6 +242,11 @@ const CanvasWhoPanel = (props) => {
             ctx.fillText(timeText, 193, 17);
             ctx.textAlign = "left";
             ctx.textBaseline = "alphabetic";
+
+            // Population
+            ctx.fillText(props.currentPopulation || "0", 174, 210);
+            ctx.fillText(props.currentAnonymous || "0", 341, 210);
+            ctx.fillText(props.data ? props.data.length : "0", 484, 210);
         }
 
         // Draws the chin
@@ -249,7 +254,7 @@ const CanvasWhoPanel = (props) => {
             ctx.drawImage(
                 sprite,
                 0,
-                290,
+                315,
                 706,
                 25,
                 0,
@@ -257,7 +262,7 @@ const CanvasWhoPanel = (props) => {
                     ? Math.min(props.data.length, MAXIMUM_RESULTS)
                     : 4) *
                     playerHeight +
-                    234,
+                    259,
                 706,
                 25
             );
@@ -275,13 +280,13 @@ const CanvasWhoPanel = (props) => {
             for (let i = 0; i < props.data.length; i++) {
                 let player = props.data[i];
                 let x = 24;
-                let y = 229 + i * 42;
+                let y = 229 + i * 42 + 25;
                 // Bounds: 660, 42
                 var width = 660;
                 var height = 42;
 
                 // Draw background panel
-                ctx.drawImage(sprite, 0, 234, 706, 47, 0, y, 706, 47);
+                ctx.drawImage(sprite, 0, 259, 706, 47, 0, y, 706, 47);
 
                 // Draw background gradient:
                 var grad = ctx.createLinearGradient(x, y, x, y + height);
@@ -319,7 +324,7 @@ const CanvasWhoPanel = (props) => {
                     ctx.drawImage(
                         sprite,
                         211,
-                        376,
+                        401,
                         16,
                         20,
                         x + 2,
@@ -547,7 +552,7 @@ const CanvasWhoPanel = (props) => {
             ctx.drawImage(
                 sprite,
                 xsrc,
-                316 + ysrc + state * 30,
+                341 + ysrc + state * 30,
                 30,
                 30,
                 x,
@@ -688,7 +693,7 @@ const CanvasWhoPanel = (props) => {
                     ysrc = 72;
                     break;
             }
-            return [xsrc, ysrc + 376];
+            return [xsrc, ysrc + 401];
         }
 
         // Helper function for getting race icon position
@@ -761,7 +766,7 @@ const CanvasWhoPanel = (props) => {
                     ysrc = 60;
                     break;
             }
-            return [xsrc + 108, ysrc + 376];
+            return [xsrc + 108, ysrc + 401];
         }
     }, [
         props.data,
@@ -801,7 +806,7 @@ const CanvasWhoPanel = (props) => {
                         ? Math.min(props.data.length, MAXIMUM_RESULTS)
                         : 4) *
                         playerHeight +
-                    260
+                    285
                 }
             />
         </div>

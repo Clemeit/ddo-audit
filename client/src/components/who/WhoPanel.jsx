@@ -48,6 +48,8 @@ const WhoPanel = (props) => {
         timestamp: 0,
         data: null,
     });
+    const [currentPopulation, setCurrentPopulation] = React.useState(null);
+    const [currentAnonymous, setCurrentAnonymous] = React.useState(null);
     const [filteredPlayerData, setFilteredPlayerData] = React.useState(null);
     const [paginatedPlayerData, setPaginatedPlayerData] = React.useState(null);
     const [playerCount, setPlayerCount] = React.useState(null);
@@ -703,6 +705,16 @@ const WhoPanel = (props) => {
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
+                        "https://api.ddoaudit.com/gamestatus/populationoverview",
+                        timeout
+                    ).then((val) => {
+                        val.forEach((server) => {
+                            if (server.ServerName === props.server) {
+                                setCurrentPopulation(server.PlayerCount);
+                            }
+                        });
+                    });
+                    Fetch(
                         "https://api.ddoaudit.com/players/" +
                             (serverNamesLowercase.includes(
                                 props.server.toLowerCase()
@@ -722,6 +734,12 @@ const WhoPanel = (props) => {
                                     timestamp: Date.now(),
                                     data: val,
                                 });
+                                setCurrentPopulation(val.Population);
+                                let anon = 0;
+                                val.Players.forEach((player) => {
+                                    if (player.Name === "Anonymous") anon++;
+                                });
+                                setCurrentAnonymous(anon);
                             } else {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);
@@ -1148,6 +1166,8 @@ const WhoPanel = (props) => {
                                 <CanvasWhoPanel
                                     minimal={props.minimal}
                                     data={filteredPlayerData}
+                                    currentPopulation={currentPopulation}
+                                    currentAnonymous={currentAnonymous}
                                     filters={activeFilters}
                                     classFilterStates={classFilterStates}
                                     includeRegion={includeRegion}
