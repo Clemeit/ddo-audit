@@ -11,7 +11,7 @@ import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
 
 const ServersSpecific = () => {
-    const TITLE = "DDO Audit | Server Status and Demographics";
+    const TITLE = "Population and Character Demographics";
 
     const SERVER_NAMES = [
         "Argonnessen",
@@ -228,7 +228,7 @@ const ServersSpecific = () => {
     return (
         <div>
             <Helmet>
-                <title>{`${TITLE} for ${currentServer}`} </title>
+                <title>{`${getServerNamePossessive()} ${TITLE}`} </title>
                 <meta
                     name="description"
                     content={`${getServerNamePossessive()} server population, character demographics, content popularity, and long-term trends.`}

@@ -8,7 +8,7 @@ import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 
 const Trends = (props) => {
-    const TITLE = "DDO Audit | Population Data Trends";
+    const TITLE = "DDO Population Data Trends";
 
     const DAY_ONLY = {
         weekday: "long",
