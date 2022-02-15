@@ -25,7 +25,7 @@ export function Submit(title, comment) {
     else if (isOpera) browser = "opera";
     else browser = "unknown";
 
-    const url = "https://www.playeraudit.com/api/feedback";
+    const url = "https://api.ddoaudit.com/submitmessage";
     const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,6 +33,13 @@ export function Submit(title, comment) {
     };
     console.log(JSON.stringify({ browser, title, comment }));
     fetch(url, requestOptions)
-        .then((response) => console.log("Submitted successfully"))
+        .then((res) => res.json())
+        .then((response) => {
+            if (response && response.state === "Success") {
+                console.log("Submitted successfully");
+            } else {
+                console.log("Failed:", response);
+            }
+        })
         .catch((error) => console.log("Submission error", error));
 }
