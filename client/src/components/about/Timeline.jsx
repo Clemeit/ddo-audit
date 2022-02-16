@@ -38,6 +38,11 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 15, 2022 - Addressing User Feedback"
+                        events={["Added population info to the Who panel"]}
+                        color="var(--text-lfm-number)"
+                    />
+                    <DevEvent
                         title="February 14, 2022 - Addressing User Feedback"
                         events={["Charts now show the date when hovered over"]}
                         color="var(--text-lfm-number)"
