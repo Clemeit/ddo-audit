@@ -48,11 +48,15 @@ const QuickInfo = (props) => {
             );
         }
         props.serverstatus.Worlds.forEach((server) => {
-            if (server.Order == 0) {
-                if (defaultserver == "") {
-                    defaultserver = server.Name;
-                } else {
-                    defaultserver = "unknown (servers are offline)";
+            if (server.Order == null) {
+                defaultserver = "unknown (servers are offline)";
+            } else {
+                if (server.Order == 0) {
+                    if (defaultserver == "") {
+                        defaultserver = server.Name;
+                    } else {
+                        defaultserver = "unknown (servers are offline)";
+                    }
                 }
             }
         });
