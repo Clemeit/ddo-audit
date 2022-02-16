@@ -85,6 +85,7 @@ const Grouping = () => {
     function refreshGroupData() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
+                setPopupMessage(null);
                 setServerStatusData(val);
             })
             .catch((err) => {

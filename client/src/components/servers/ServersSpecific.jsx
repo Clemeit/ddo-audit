@@ -153,6 +153,7 @@ const ServersSpecific = () => {
     function refreshServerStatus() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
+                setPopupMessage(null);
                 setServerStatusData(val);
             })
             .catch(() => {

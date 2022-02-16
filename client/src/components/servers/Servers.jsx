@@ -213,6 +213,7 @@ const Directory = (props) => {
     function refreshServerStatus() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
+                setPopupMessage(null);
                 set_serverStatusData(val);
             })
             .catch(() => {
