@@ -18,7 +18,13 @@ exports.runServerStatusReport = () => {
     ];
 
     function queryWorlds() {
-        return new Promise((resolve, reject) => {
+        let ret = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (!ret.isResolved) {
+                    reject("timeout");
+                }
+            }, 5000);
+
             let worlds = [];
             const DATA_CENTER_SERVER_URL =
                 "http://gls.ddo.com/GLS.DataCenterServer/Service.asmx";
@@ -54,6 +60,7 @@ exports.runServerStatusReport = () => {
                     reject(err);
                 });
         });
+        return ret;
     }
 
     async function updateWorlds(worlds) {
@@ -104,6 +111,9 @@ exports.runServerStatusReport = () => {
                                 resolve(worlds);
                             }
                         }
+                    })
+                    .catch((err) => {
+                        reject(err);
                     });
             });
         });
@@ -121,9 +131,27 @@ exports.runServerStatusReport = () => {
         console.log(`Finished in ${t1 - t0}ms`);
     }
 
-    queryWorlds().then((worlds) => {
-        if (worlds.length === 0) {
+    queryWorlds()
+        .then((worlds) => {
+            if (worlds.length === 0) {
+                // Game worlds are down for maintenance
+                SERVERS.forEach((server) => {
+                    worlds.push({
+                        Name: server,
+                        Status: 0,
+                    });
+                });
+                save(worlds);
+            } else {
+                updateWorlds(worlds).then((worlds) => {
+                    worlds.sort((a, b) => a.Name.localeCompare(b.Name));
+                    save(worlds);
+                });
+            }
+        })
+        .catch((err) => {
             // Game worlds are down for maintenance
+            worlds = [];
             SERVERS.forEach((server) => {
                 worlds.push({
                     Name: server,
@@ -131,11 +159,5 @@ exports.runServerStatusReport = () => {
                 });
             });
             save(worlds);
-        } else {
-            updateWorlds(worlds).then((worlds) => {
-                worlds.sort((a, b) => a.Name.localeCompare(b.Name));
-                save(worlds);
-            });
-        }
-    });
+        });
 };
