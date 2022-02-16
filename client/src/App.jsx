@@ -37,6 +37,7 @@ import WhoSpecific from "./components/who/WhoSpecific";
 import Live from "./components/live/Live";
 import About from "./components/about/About";
 import NotFound from "./components/directory/NotFount";
+// import ActivityTesting from "./components/dev/ActivityTesting";
 
 // Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
@@ -119,6 +120,9 @@ export default () => {
                         <Route exact path="/timeline">
                             <Timeline />
                         </Route>
+                        {/* <Route exact path="/dev">
+                            <ActivityTesting />
+                        </Route> */}
                         <Route>
                             <NotFound />
                         </Route>

@@ -137,6 +137,37 @@ module.exports = function (api) {
             });
         }
 
+        // function GetDateString(datetime) {
+        //     return `${datetime.getUTCFullYear()}-${
+        //         datetime.getUTCMonth() + 1
+        //     }-${datetime.getUTCDate()} 00-00-00`;
+        // }
+        // function getAllPlayers(days) {
+        //     return new Promise(async (resolve, reject) => {
+        //         let players = [];
+        //         let query =
+        //             "SELECT * FROM `players` WHERE `lastseen` >= '" +
+        //             GetDateString(
+        //                 new Date(
+        //                     new Date(new Date().toDateString()) -
+        //                         1000 * 60 * 60 * 24 * days
+        //                 )
+        //             ) +
+        //             "';";
+        //         con.query(query, (err, result, fields) => {
+        //             if (err) {
+        //                 reject(err);
+        //             } else {
+        //                 result.forEach((player) => {
+        //                     players.push(player);
+        //                 });
+
+        //                 resolve(players);
+        //             }
+        //         });
+        //     });
+        // }
+
         servers.forEach((entry) => {
             api.get(`/players/${entry[1]}`, (req, res) => {
                 res.setHeader("Content-Type", "application/json");
@@ -149,6 +180,18 @@ module.exports = function (api) {
                         return {};
                     });
             });
+        });
+
+        api.get("/players/dev", (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            getAllPlayers(1)
+                .then((result) => {
+                    res.send(result);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.send("");
+                });
         });
 
         api.post(`/players/name`, (req, res) => {
