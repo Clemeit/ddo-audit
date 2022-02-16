@@ -153,6 +153,12 @@ html {
     overflow-y: scroll !important;
 }
 
+@-moz-document url-prefix() {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
 body {
     font-family: "Times New Roman", Times, serif;
     background-color: var(--bg);
