@@ -6,6 +6,7 @@ const CanvasWhoPanel = (props) => {
     // TODO: Remove ExactMatch and LocationRegion from the sprite
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
+    const [canvasWidth, setCanvasWidth] = React.useState(0);
 
     const [isImageLoaded, set_isImageLoaded] = React.useState(false);
     const classFilterBounds = [
@@ -25,6 +26,22 @@ const CanvasWhoPanel = (props) => {
         [548, 83, 30, 30],
         [581, 83, 30, 30],
     ];
+
+    function computeInputHeight() {
+        let mod = window.innerWidth <= 950 ? 2 : 1;
+        return `${((24 * canvasWidth) / PANEL_WIDTH) * mod}px`;
+    }
+
+    function computeInputTop() {
+        let mod =
+            window.innerWidth <= 950 ? (24 * canvasWidth) / PANEL_WIDTH : 0;
+        return `${(139 * canvasWidth) / PANEL_WIDTH + 36 - mod / 2}px`;
+    }
+
+    function computeInputTopPadding() {
+        let mod = window.innerWidth <= 950 ? 2 : 1;
+        return `${(((24 * canvasWidth) / PANEL_WIDTH) * mod) / 2}px`;
+    }
 
     function isEveryClassChecked() {
         let result = true;
@@ -67,18 +84,6 @@ const CanvasWhoPanel = (props) => {
             props.handleExactMatch();
         }
 
-        if (x > 125 && x < 125 + 282 && y > 142 && y < 142 + 22) {
-            props.handleOpenSettings();
-        }
-
-        if (x > 429 && x < 429 + 28 && y > 142 && y < 142 + 20) {
-            props.handleOpenSettings();
-        }
-
-        if (x > 480 && x < 480 + 28 && y > 142 && y < 142 + 20) {
-            props.handleOpenSettings();
-        }
-
         if (x > 21 && x < 41 && y > 230 && y < 251) {
             props.handleSort("inparty");
         }
@@ -100,11 +105,21 @@ const CanvasWhoPanel = (props) => {
         }
     }
 
+    function handleCanvasResize() {
+        let rect = canvasRef.current.getBoundingClientRect();
+        setCanvasWidth(rect.width);
+    }
+
     React.useEffect(() => {
         // TODO: Remove listeners
         canvasRef.current.addEventListener("click", (e) => {
             HandleMouseOnCanvas(e);
         });
+        window.addEventListener("resize", (e) => {
+            // setCanvasWidth(canvasRef.current.getBoundingClientRect().width);
+            handleCanvasResize();
+        });
+        handleCanvasResize();
     }, [canvasRef]);
 
     function getNameFilter() {
@@ -216,10 +231,6 @@ const CanvasWhoPanel = (props) => {
             ctx.textAlign = "left";
             ctx.textBaseline = "middle";
             ctx.fillText(getNameFilter(), 130, 151);
-
-            ctx.textAlign = "center";
-            ctx.fillText(getLowLevelFilter(), 443, 152);
-            ctx.fillText(getHighLevelFilter(), 494, 152);
 
             // Last updated
             let lastUpdateTime = new Date();
@@ -790,6 +801,56 @@ const CanvasWhoPanel = (props) => {
                 src={PanelSprite}
                 onLoad={() => set_isImageLoaded(true)}
                 style={{ display: "none" }}
+            />
+            <input
+                id="filter-input"
+                className="who-filter-input"
+                style={{
+                    left: `${(124 * canvasWidth) / PANEL_WIDTH}px`,
+                    top: computeInputTop(),
+                    width: `${(284 * canvasWidth) / PANEL_WIDTH}px`,
+                    height: computeInputHeight(),
+                    fontSize: `${(1.2 * canvasWidth) / PANEL_WIDTH}rem`,
+                    padding: `${computeInputTopPadding()} ${
+                        (7 * canvasWidth) / PANEL_WIDTH
+                    }px`,
+                }}
+                value={props.globalFilter}
+                onChange={(e) => props.handleGlobalFilter(e.target.value)}
+            />
+            <input
+                id="min-level-input"
+                className="who-filter-input"
+                style={{
+                    left: `${(428 * canvasWidth) / PANEL_WIDTH}px`,
+                    top: computeInputTop(),
+                    width: `${(30 * canvasWidth) / PANEL_WIDTH}px`,
+                    height: computeInputHeight(),
+                    textAlign: "center",
+                    padding: "0px",
+                    fontSize: `${(1.2 * canvasWidth) / PANEL_WIDTH}rem`,
+                }}
+                value={props.minimumLevelFilter}
+                onChange={(e) => {
+                    props.handleMinimumLevelFilter(e.target.value);
+                }}
+            />
+            <input
+                id="max-level-input"
+                className="who-filter-input"
+                style={{
+                    left: `${(480 * canvasWidth) / PANEL_WIDTH}px`,
+                    top: computeInputTop(),
+                    width: `${(30 * canvasWidth) / PANEL_WIDTH}px`,
+                    height: computeInputHeight(),
+                    textAlign: "center",
+                    padding: "0px",
+                    fontSize: `${(1.2 * canvasWidth) / PANEL_WIDTH}rem`,
+                }}
+                value={props.maximumLevelFilter}
+                onChange={(e) => {
+                    props.handleMaximumLevelFilter(e.target.value);
+                }}
             />
             {props.children}
             <canvas

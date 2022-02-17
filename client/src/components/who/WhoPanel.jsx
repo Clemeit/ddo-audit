@@ -139,39 +139,21 @@ const WhoPanel = (props) => {
         }
     }
 
-    const [characterNameFilter, setCharacterNameFilter] = React.useState("");
-    const [guildNameFilter, setGuildNameFilter] = React.useState("");
-    const [locationNameFilter, setLocationNameFilter] = React.useState("");
-    const [minimumLevelFilter, setMinimumLevelFilter] = React.useState("");
-    const [maximumLevelFilter, setMaximumLevelFilter] = React.useState("");
+    const [globalFilter, setGlobalFilter] = React.useState("");
+    const [minimumLevelFilter, setMinimumLevelFilter] = React.useState(1);
+    const [maximumLevelFilter, setMaximumLevelFilter] = React.useState(30);
 
     function getLink() {
         let params = "";
-        if (characterNameFilter) {
+        if (globalFilter) {
             if (!params) {
                 params += "?";
             } else {
                 params += "&";
             }
-            params += "name=" + characterNameFilter;
+            params += "filter=" + globalFilter;
         }
-        if (guildNameFilter) {
-            if (!params) {
-                params += "?";
-            } else {
-                params += "&";
-            }
-            params += "guild=" + guildNameFilter;
-        }
-        if (locationNameFilter) {
-            if (!params) {
-                params += "?";
-            } else {
-                params += "&";
-            }
-            params += "location=" + locationNameFilter;
-        }
-        if (minimumLevelFilter) {
+        if (minimumLevelFilter != 1) {
             if (!params) {
                 params += "?";
             } else {
@@ -179,7 +161,7 @@ const WhoPanel = (props) => {
             }
             params += "minlevel=" + minimumLevelFilter;
         }
-        if (maximumLevelFilter) {
+        if (maximumLevelFilter != 30) {
             if (!params) {
                 params += "?";
             } else {
@@ -187,128 +169,11 @@ const WhoPanel = (props) => {
             }
             params += "maxlevel=" + maximumLevelFilter;
         }
+
         return `https://www.ddoaudit.com/who/${props.server.toLowerCase()}${params}`;
     }
 
-    const characterNameTimeoutRef = React.useRef();
-    React.useEffect(() => {
-        clearTimeout(characterNameTimeoutRef.current);
-        characterNameTimeoutRef.current = setTimeout(() => {
-            if (characterNameFilter) {
-                setActiveFilter([
-                    ...activeFilters.filter((filter) => filter.type !== "Name"),
-                    {
-                        type: "Name",
-                        value: characterNameFilter,
-                    },
-                ]);
-            } else {
-                setActiveFilter([
-                    ...activeFilters.filter((filter) => filter.type !== "Name"),
-                ]);
-            }
-        }, 200);
-    }, [characterNameFilter]);
-
-    const guildNameTimeoutRef = React.useRef();
-    React.useEffect(() => {
-        clearTimeout(guildNameTimeoutRef.current);
-        guildNameTimeoutRef.current = setTimeout(() => {
-            if (guildNameFilter) {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Guild"
-                    ),
-                    {
-                        type: "Guild",
-                        value: guildNameFilter,
-                    },
-                ]);
-            } else {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Guild"
-                    ),
-                ]);
-            }
-        }, 200);
-    }, [guildNameFilter]);
-
-    const locationNameTimeoutRef = React.useRef();
-    React.useEffect(() => {
-        clearTimeout(locationNameTimeoutRef.current);
-        locationNameTimeoutRef.current = setTimeout(() => {
-            if (locationNameFilter) {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Location"
-                    ),
-                    {
-                        type: "Location",
-                        value: locationNameFilter,
-                    },
-                ]);
-            } else {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Location"
-                    ),
-                ]);
-            }
-        }, 200);
-    }, [locationNameFilter]);
-
-    const minimumLevelTimeoutRef = React.useRef();
-    React.useEffect(() => {
-        clearTimeout(minimumLevelTimeoutRef.current);
-        minimumLevelTimeoutRef.current = setTimeout(() => {
-            if (minimumLevelFilter) {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Min Level"
-                    ),
-                    {
-                        type: "Min Level",
-                        value: minimumLevelFilter,
-                    },
-                ]);
-            } else {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Min Level"
-                    ),
-                ]);
-            }
-        }, 200);
-    }, [minimumLevelFilter]);
-
-    const maximumLevelTimeoutRef = React.useRef();
-    React.useEffect(() => {
-        clearTimeout(maximumLevelTimeoutRef.current);
-        maximumLevelTimeoutRef.current = setTimeout(() => {
-            if (maximumLevelFilter) {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Max Level"
-                    ),
-                    {
-                        type: "Max Level",
-                        value: maximumLevelFilter,
-                    },
-                ]);
-            } else {
-                setActiveFilter([
-                    ...activeFilters.filter(
-                        (filter) => filter.type !== "Max Level"
-                    ),
-                ]);
-            }
-        }, 200);
-    }, [maximumLevelFilter]);
-
     function handleClassFilter(index) {
-        // const temp = [...classFilterStates];
-        // temp[index] = !temp[index];
         setClassFilterStates((classFilterStates) =>
             classFilterStates.map((r, i) =>
                 i === index ? (r === true ? false : true) : r
@@ -326,25 +191,6 @@ const WhoPanel = (props) => {
     }
 
     function handleAnyClass() {
-        // if (isEveryClassChecked()) {
-        //     setClassFilterStates([
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //         false,
-        //     ]);
-        // } else {
         setClassFilterStates([
             true,
             true,
@@ -461,47 +307,61 @@ const WhoPanel = (props) => {
         // if (activeFilters !== null && activeFilters.length !== 0) {
         data = data.filter((player) => {
             let pass = true;
-            activeFilters.forEach((filter) => {
-                switch (filter.type) {
-                    case "Name":
+
+            // Global filters
+            let splt = globalFilter.split(",");
+            splt.forEach((f) => {
+                let localmatch = false;
+                if (exactMatch) {
+                    if (player.Name == f) {
+                        localmatch = true;
+                    }
+                    if (player.Location.Name && player.Location.Name == f) {
+                        localmatch = true;
+                    }
+                    if (includeRegion) {
                         if (
-                            !player.Name.toLowerCase().includes(
-                                filter.value.toLowerCase()
-                            )
-                        )
-                            pass = false;
-                        break;
-                    case "Guild":
-                        if (
-                            !player.Guild.toLowerCase().includes(
-                                filter.value.toLowerCase()
-                            )
-                        )
-                            pass = false;
-                        break;
-                    case "Location":
-                        if (player.Location.Name == null) {
-                            pass = false;
-                        } else {
-                            if (
-                                !player.Location.Name.toLowerCase().includes(
-                                    filter.value.toLowerCase()
-                                )
-                            )
-                                pass = false;
+                            player.Location.Name &&
+                            player.Location.Region == f
+                        ) {
+                            localmatch = true;
                         }
-                        break;
-                    case "Group":
-                        if (player.GroupId !== filter.value) pass = false;
-                        break;
-                    case "Min Level":
-                        if (player.TotalLevel < filter.value) pass = false;
-                        break;
-                    case "Max Level":
-                        if (player.TotalLevel > filter.value) pass = false;
-                        break;
+                    }
+                    if (player.Guild == f) {
+                        localmatch = true;
+                    }
+                } else {
+                    if (player.Name.toLowerCase().includes(f.toLowerCase())) {
+                        localmatch = true;
+                    }
+                    if (
+                        player.Location.Name &&
+                        player.Location.Name.toLowerCase().includes(
+                            f.toLowerCase()
+                        )
+                    ) {
+                        localmatch = true;
+                    }
+                    if (includeRegion) {
+                        if (
+                            player.Location.Name &&
+                            player.Location.Region.toLowerCase().includes(
+                                f.toLowerCase()
+                            )
+                        ) {
+                            localmatch = true;
+                        }
+                    }
+                    if (player.Guild.toLowerCase().includes(f.toLowerCase())) {
+                        localmatch = true;
+                    }
                 }
+                pass = pass && localmatch;
             });
+
+            if (player.TotalLevel < minimumLevelFilter) pass = false;
+            if (player.TotalLevel > maximumLevelFilter) pass = false;
+
             let classresult = false;
             classFilterStates.forEach((cls, index) => {
                 if (cls === true) {
@@ -554,22 +414,6 @@ const WhoPanel = (props) => {
         return val;
     }
 
-    // const location = useLocation().pathname.substring(
-    //     useLocation().pathname.lastIndexOf("/") + 1
-    // );
-
-    // React.useEffect(() => {
-    //     let serverName =
-    //         location.substring(0, 1).toUpperCase() + location.substring(1);
-    //     if (serverNames.includes(serverName)) {
-    //         // Good server
-    //         setCurrentServer(serverName);
-    //     } else {
-    //         // Bad server
-    //         setCurrentServer(serverNames[0]); // Just default to the first server in the good list
-    //     }
-    // }, [window.location.pathname]);
-
     React.useEffect(() => {
         // Load local storage
         let theme = localStorage.getItem("theme");
@@ -582,6 +426,8 @@ const WhoPanel = (props) => {
 
         // Load filters from URL
         let urlfilters = new URLSearchParams(window.location.search);
+        let urlfilter = urlfilters.get("filter");
+        // Legacy:
         let urlname = urlfilters.get("name");
         let urlguild = urlfilters.get("guild");
         let urllocation = urlfilters.get("location");
@@ -589,43 +435,30 @@ const WhoPanel = (props) => {
         let urlmaxlevel = urlfilters.get("maxlevel");
 
         let activefilterarray = [];
-        if (urlname) {
-            setCharacterNameFilter(urlname);
-            activefilterarray.push({
-                type: "Name",
-                value: urlname,
-            });
-        }
-        if (urlguild) {
-            setGuildNameFilter(urlguild);
-            activefilterarray.push({
-                type: "Guild",
-                value: urlguild,
-            });
-        }
-        if (urllocation) {
-            setLocationNameFilter(urllocation);
-            activefilterarray.push({
-                type: "Location",
-                value: urllocation,
-            });
+        let globalfilter = [];
+        if (urlfilter) {
+            globalfilter.push(urlfilter);
         }
         if (urlminlevel) {
             setMinimumLevelFilter(urlminlevel);
-            activefilterarray.push({
-                type: "Min Level",
-                value: urlminlevel,
-            });
         }
         if (urlmaxlevel) {
             setMaximumLevelFilter(urlmaxlevel);
-            activefilterarray.push({
-                type: "Max Level",
-                value: urlmaxlevel,
-            });
         }
+        // Legacy:
+        if (urlname) {
+            globalfilter.push(urlname);
+        }
+        if (urlguild) {
+            globalfilter.push(urlguild);
+        }
+        if (urllocation) {
+            globalfilter.push(urllocation);
+        }
+        console.log(globalfilter.join(","));
+        setGlobalFilter(globalfilter.join(","));
 
-        setActiveFilter(activefilterarray);
+        // setActiveFilter(activefilterarray);
     }, []);
 
     function GetSnarkyMessage() {
@@ -641,12 +474,17 @@ const WhoPanel = (props) => {
         if (playerData === null || playerData.data === null) return;
         setFilteredPlayerData(ApplyFilters(playerData.data.Players));
     }, [
+        globalFilter,
+        minimumLevelFilter,
+        maximumLevelFilter,
         activeFilters,
         playerData,
         sortingMethod,
         sortingDirection,
         pinnedPlayers,
         classFilterStates,
+        includeRegion,
+        exactMatch,
     ]);
 
     React.useEffect(() => {
@@ -877,217 +715,21 @@ const WhoPanel = (props) => {
                                 gap: "10px",
                             }}
                         >
-                            <div
-                                className="full-width-mobile column-on-mobile"
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                <label
-                                    htmlFor="charactername"
-                                    style={{
-                                        fontSize: "1.2rem",
-                                        marginRight: "10px",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Character name:
-                                </label>
-                                <input
-                                    className="full-width-mobile"
-                                    type="text"
-                                    id="charactername"
-                                    name="charactername"
-                                    value={characterNameFilter}
-                                    onChange={(e) =>
-                                        setCharacterNameFilter(e.target.value)
-                                    }
-                                />
-                            </div>
-                            <div
-                                className="full-width-mobile column-on-mobile"
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                <label
-                                    htmlFor="guildname"
-                                    style={{
-                                        fontSize: "1.2rem",
-                                        marginRight: "10px",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Guild name:
-                                </label>
-                                <input
-                                    className="full-width-mobile"
-                                    type="text"
-                                    id="guildname"
-                                    name="guildname"
-                                    value={guildNameFilter}
-                                    onChange={(e) =>
-                                        setGuildNameFilter(e.target.value)
-                                    }
-                                />
-                            </div>
-                            <div
-                                className="full-width-mobile column-on-mobile"
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                }}
-                            >
-                                <label
-                                    htmlFor="locationname"
-                                    style={{
-                                        fontSize: "1.2rem",
-                                        marginRight: "10px",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Location:
-                                </label>
-                                <input
-                                    className="full-width-mobile"
-                                    type="text"
-                                    id="locationname"
-                                    name="locationname"
-                                    value={locationNameFilter}
-                                    onChange={(e) =>
-                                        setLocationNameFilter(e.target.value)
-                                    }
-                                />
-                            </div>
-                            <div
-                                className="full-width-mobile column-on-mobile"
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                    marginBottom: "10px",
-                                }}
-                            >
-                                <label
-                                    htmlFor="minimumlevel"
-                                    style={{
-                                        fontSize: "1.2rem",
-                                        marginRight: "10px",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Level range:
-                                </label>
-                                <div className="full-width-mobile">
-                                    <input
-                                        className="full-width-mobile"
-                                        type="text"
-                                        id="minimumlevel"
-                                        name="minimumlevel"
-                                        value={minimumLevelFilter}
-                                        onChange={(e) =>
-                                            setMinimumLevelFilter(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <label
-                                        htmlFor="maximumlevel"
-                                        style={{
-                                            padding: "0px 7px 0px 7px",
-                                            fontSize: "1.1rem",
-                                        }}
-                                    >
-                                        to
-                                    </label>
-                                    <input
-                                        className="full-width-mobile"
-                                        type="text"
-                                        id="maximumlevel"
-                                        name="maximumlevel"
-                                        value={maximumLevelFilter}
-                                        onChange={(e) =>
-                                            setMaximumLevelFilter(
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                </div>
-                            </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                    gap: "10px",
-                                    marginBottom: "10px",
-                                }}
-                            >
-                                <label
-                                    htmlFor="sort-type"
-                                    style={{
-                                        fontSize: "1.2rem",
-                                        marginBottom: "0px",
-                                    }}
-                                >
-                                    Sort by
-                                </label>
-
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        gap: "10px",
-                                        flexWrap: "wrap",
-                                    }}
-                                >
-                                    <select
-                                        className="input-select"
-                                        name="sort-type"
-                                        id="sort-type"
-                                        style={{
-                                            maxWidth: "200px",
-                                            fontSize: "1.2rem",
-                                        }}
-                                        onChange={(e) =>
-                                            setSortingMethod(e.target.value)
-                                        }
-                                        value={sortingMethod}
-                                    >
-                                        <option value="level">Level</option>
-                                        <option value="name">Name</option>
-                                        <option value="guild">Guild</option>
-                                        <option value="location">
-                                            Location
-                                        </option>
-                                    </select>
-                                    <select
-                                        className="input-select"
-                                        name="sort-direction"
-                                        id="sort-direction"
-                                        style={{
-                                            maxWidth: "200px",
-                                            fontSize: "1.2rem",
-                                        }}
-                                        onChange={(e) =>
-                                            setSortingDirection(e.target.value)
-                                        }
-                                        value={sortingDirection}
-                                    >
-                                        <option value="ascending">
-                                            Ascending
-                                        </option>
-                                        <option value="descending">
-                                            Descending
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+                            <p style={{ fontSize: "1.3rem" }}>
+                                You can now filter players by clicking on the
+                                text fields directly in the 'Who' panel.
+                            </p>
+                            <p style={{ fontSize: "1.3rem" }}>
+                                When searching by name, guild, or location, you
+                                can separate multiple queries with commas (,).
+                                For example: "
+                                <span className="lfm-number">
+                                    Best Guild Ever,The Marketplace
+                                </span>
+                                " will show characters from the guild "Best
+                                Guild Ever" who are currently in "The
+                                Marketplace"
+                            </p>
                             <a
                                 className="faux-link"
                                 style={{
@@ -1104,47 +746,6 @@ const WhoPanel = (props) => {
                             </a>
                         </div>
                     </ContentCluster>
-                    <ContentCluster title="Accessibility">
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "left",
-                                flexDirection: "column",
-                                alignItems: "start",
-                            }}
-                        >
-                            <label className="filter-panel-group-option show-on-mobile">
-                                <input
-                                    className="input-radio"
-                                    name="darktheme"
-                                    type="checkbox"
-                                    checked={theme === "dark-theme"}
-                                    onChange={() => {
-                                        toggleTheme();
-                                    }}
-                                />
-                                Dark theme
-                            </label>
-                            <label className="filter-panel-group-option">
-                                <input
-                                    className="input-radio"
-                                    name="classislook"
-                                    type="checkbox"
-                                    checked={alternativeLook}
-                                    onChange={() => {
-                                        if (!props.minimal) {
-                                            localStorage.setItem(
-                                                "alternative-who-look",
-                                                !alternativeLook
-                                            );
-                                        }
-                                        setAlternativeLook(!alternativeLook);
-                                    }}
-                                />
-                                Alternative View (easier to see on mobile)
-                            </label>
-                        </div>
-                    </ContentCluster>
                 </div>
             </FilterBar>
             {serverStatus !== false || ignoreServerStatus ? (
@@ -1158,317 +759,52 @@ const WhoPanel = (props) => {
                             alignItems: "center",
                         }}
                     >
-                        {alternativeLook === false ? (
-                            <div>
-                                <div className="sr-only">
-                                    {`The image below is a live preview of ${getServerNamePossessive()} Who panel where all online players are visible.`}
-                                </div>
-                                <CanvasWhoPanel
-                                    minimal={props.minimal}
-                                    data={filteredPlayerData}
-                                    currentPopulation={currentPopulation}
-                                    currentAnonymous={currentAnonymous}
-                                    filters={activeFilters}
-                                    classFilterStates={classFilterStates}
-                                    includeRegion={includeRegion}
-                                    exactMatch={exactMatch}
-                                    handleClassFilter={(i) => {
-                                        handleClassFilter(i);
-                                    }}
-                                    handleAnyClass={() => {
-                                        handleAnyClass();
-                                    }}
-                                    handleIncludeRegion={() => {
-                                        handleIncludeRegion();
-                                    }}
-                                    handleExactMatch={() => {
-                                        handleExactMatch();
-                                    }}
-                                    handleOpenSettings={() =>
-                                        setFilterPanelVisible(
-                                            !filterPanelVisible
-                                        )
-                                    }
-                                    handleSort={(type) => {
-                                        handleCanvasSort(type);
-                                    }}
-                                />
-                                <div className="top-content-padding hide-on-mobile" />
+                        <div>
+                            <div className="sr-only">
+                                {`The image below is a live preview of ${getServerNamePossessive()} Who panel where all online players are visible.`}
                             </div>
-                        ) : (
-                            <div
-                                style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                            <CanvasWhoPanel
+                                minimal={props.minimal}
+                                data={filteredPlayerData}
+                                currentPopulation={currentPopulation}
+                                currentAnonymous={currentAnonymous}
+                                filters={activeFilters}
+                                classFilterStates={classFilterStates}
+                                includeRegion={includeRegion}
+                                exactMatch={exactMatch}
+                                globalFilter={globalFilter}
+                                minimumLevelFilter={minimumLevelFilter}
+                                maximumLevelFilter={maximumLevelFilter}
+                                handleGlobalFilter={(filter) =>
+                                    setGlobalFilter(filter)
+                                }
+                                handleMinimumLevelFilter={(val) => {
+                                    setMinimumLevelFilter(val);
                                 }}
-                            >
-                                {activeFilters && activeFilters.length !== 0 && (
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            justifyContent: "left",
-                                            gap: "5px",
-                                            padding: "5px 10px 5px 10px",
-                                            flexWrap: "wrap",
-                                            alignItems: "center",
-                                            width: "100%",
-                                            maxWidth: "706px",
-                                        }}
-                                    >
-                                        <h4
-                                            style={{
-                                                paddingLeft: "5px",
-                                                marginBottom: "0px",
-                                                color: "var(--text)",
-                                            }}
-                                        >
-                                            Active filters:
-                                        </h4>
-                                        {activeFilters.map((filter, i) => (
-                                            <div
-                                                key={i}
-                                                style={{
-                                                    fontSize: "1.3rem",
-                                                    backgroundColor:
-                                                        "var(--highlighted-1)",
-                                                    padding:
-                                                        "2px 10px 2px 15px",
-                                                    width: "max-content",
-                                                    borderRadius: "10px",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    cursor: "pointer",
-                                                }}
-                                                onClick={() => {
-                                                    if (filter.type === "Name")
-                                                        setCharacterNameFilter(
-                                                            ""
-                                                        );
-                                                    if (filter.type === "Guild")
-                                                        setGuildNameFilter("");
-                                                    if (
-                                                        filter.type ===
-                                                        "Min Level"
-                                                    )
-                                                        setMinimumLevelFilter(
-                                                            ""
-                                                        );
-                                                    if (
-                                                        filter.type ===
-                                                        "Max Level"
-                                                    )
-                                                        setMaximumLevelFilter(
-                                                            ""
-                                                        );
-                                                    setActiveFilter(
-                                                        activeFilters.filter(
-                                                            (_, index) =>
-                                                                index !== i
-                                                        )
-                                                    );
-                                                }}
-                                            >
-                                                <span
-                                                    style={{
-                                                        color: "var(--text-faded)",
-                                                        marginRight: "5px",
-                                                    }}
-                                                >
-                                                    {filter.type}:
-                                                </span>
-                                                <span
-                                                    style={{
-                                                        color: "var(--text)",
-                                                    }}
-                                                >
-                                                    {filter.type === "Group"
-                                                        ? filter.meta
-                                                        : filter.value}
-                                                </span>
-                                                <CloseSVG
-                                                    className="link-icon"
-                                                    style={{
-                                                        margin: "0px 0px 0px 10px",
-                                                        backgroundColor:
-                                                            "var(--gray6)",
-                                                        borderRadius: "50%",
-                                                        padding: "3px",
-                                                    }}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                <div
-                                    className="social-container"
-                                    style={{ paddingTop: "10px" }}
-                                >
-                                    {paginatedPlayerData &&
-                                        paginatedPlayerData.map(
-                                            (player, i) =>
-                                                player.Name !== "Anonymous" && (
-                                                    <Player
-                                                        key={i}
-                                                        handleStarred={() => {
-                                                            if (
-                                                                IsStarred(
-                                                                    player
-                                                                )
-                                                            ) {
-                                                                setPinnedPlayers(
-                                                                    pinnedPlayers.filter(
-                                                                        (p) =>
-                                                                            p.name !==
-                                                                            player.Name
-                                                                    )
-                                                                );
-                                                            } else {
-                                                                setPinnedPlayers(
-                                                                    [
-                                                                        ...pinnedPlayers,
-                                                                        {
-                                                                            name: player.Name,
-                                                                            server: props.server,
-                                                                        },
-                                                                    ]
-                                                                );
-                                                            }
-                                                        }}
-                                                        handleClick={(e) => {
-                                                            if (
-                                                                IsExpanded(
-                                                                    player
-                                                                )
-                                                            ) {
-                                                                setExpandedPlayers(
-                                                                    expandedPlayers.filter(
-                                                                        (p) => {
-                                                                            return (
-                                                                                p.Name !==
-                                                                                player.Name
-                                                                            );
-                                                                        }
-                                                                    )
-                                                                );
-                                                            } else {
-                                                                setExpandedPlayers(
-                                                                    [
-                                                                        ...expandedPlayers,
-                                                                        player,
-                                                                    ]
-                                                                );
-                                                            }
-                                                        }}
-                                                        handleAddFilter={(
-                                                            type
-                                                        ) => {
-                                                            if (
-                                                                type === "Group"
-                                                            ) {
-                                                                setActiveFilter(
-                                                                    [
-                                                                        ...activeFilters,
-                                                                        {
-                                                                            type: "Group",
-                                                                            value: player.GroupId,
-                                                                            meta: player.Name,
-                                                                        },
-                                                                    ]
-                                                                );
-                                                            } else if (
-                                                                type === "Guild"
-                                                            ) {
-                                                                setActiveFilter(
-                                                                    [
-                                                                        ...activeFilters,
-                                                                        {
-                                                                            type: "Guild",
-                                                                            value: player.Guild,
-                                                                        },
-                                                                    ]
-                                                                );
-                                                            } else if (
-                                                                type ===
-                                                                "Location"
-                                                            ) {
-                                                                setActiveFilter(
-                                                                    [
-                                                                        ...activeFilters,
-                                                                        {
-                                                                            type: "Location",
-                                                                            value: player
-                                                                                .Location
-                                                                                .Name,
-                                                                        },
-                                                                    ]
-                                                                );
-                                                            }
-                                                        }}
-                                                        player={player}
-                                                        index={i}
-                                                        expanded={IsExpanded(
-                                                            player
-                                                        )}
-                                                        starred={IsStarred(
-                                                            player
-                                                        )}
-                                                    />
-                                                )
-                                        )}
-                                    {paginatedPlayerData &&
-                                        paginatedPlayerData.count === 0 && (
-                                            <span
-                                                style={{
-                                                    fontSize: "1.6rem",
-                                                    width: "100%",
-                                                    textAlign: "center",
-                                                }}
-                                            >
-                                                No groups meet your current
-                                                filter settings
-                                            </span>
-                                        )}
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            gap: "5px",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            flexWrap: "wrap",
-                                        }}
-                                    >
-                                        {filteredPlayerData &&
-                                            [
-                                                ...Array(
-                                                    Math.ceil(
-                                                        filteredPlayerData.length /
-                                                            PAGE_SIZE
-                                                    )
-                                                ),
-                                            ].map((o, i) => (
-                                                <div
-                                                    key={i}
-                                                    className={
-                                                        pageNumber === i
-                                                            ? "paginationPage active"
-                                                            : "paginationPage"
-                                                    }
-                                                    onClick={() => {
-                                                        setPageNumber(i);
-                                                    }}
-                                                >
-                                                    {i + 1}
-                                                </div>
-                                            ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                                handleMaximumLevelFilter={(val) => {
+                                    setMaximumLevelFilter(val);
+                                }}
+                                handleClassFilter={(i) => {
+                                    handleClassFilter(i);
+                                }}
+                                handleAnyClass={() => {
+                                    handleAnyClass();
+                                }}
+                                handleIncludeRegion={() => {
+                                    handleIncludeRegion();
+                                }}
+                                handleExactMatch={() => {
+                                    handleExactMatch();
+                                }}
+                                handleOpenSettings={() =>
+                                    setFilterPanelVisible(!filterPanelVisible)
+                                }
+                                handleSort={(type) => {
+                                    handleCanvasSort(type);
+                                }}
+                            />
+                            <div className="top-content-padding hide-on-mobile" />
+                        </div>
                     </div>
                 ) : (
                     <span

@@ -1549,6 +1549,15 @@ td:hover .report-quest-button {
     flex: 1;
 }
 
+.who-filter-input {
+    border: none;
+    border-color: transparent !important;
+    background-color: transparent;
+    position: absolute;
+    color: var(--text);
+    outline: none;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;

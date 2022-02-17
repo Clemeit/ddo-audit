@@ -38,6 +38,13 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 17, 2022 - Addressing User Feedback"
+                        events={[
+                            "Redesigned the filter functionality of the Who panel",
+                        ]}
+                        color="var(--text-lfm-number)"
+                    />
+                    <DevEvent
                         title="February 15, 2022 - Addressing User Feedback"
                         events={["Added population info to the Who panel"]}
                         color="var(--text-lfm-number)"
@@ -72,8 +79,8 @@ const Timeline = (props) => {
                         events={[
                             "Added population and LFM percent change to the Trends page",
                             "Added game event markers to the charts on the Trends page",
-                            "Multiple LFM and 'Who' panels can be displayed on the same page",
-                            "Fixed an erroneous location name in the 'Who' panel",
+                            "Multiple LFM and Who panels can be displayed on the same page",
+                            "Fixed an erroneous location name in the Who panel",
                             "Added raid information to the Grouping page",
                             "Fixed XP for the quest 'Dread Sea Scrolls'",
                         ]}
@@ -83,7 +90,7 @@ const Timeline = (props) => {
                         title="February 7, 2022 - Addressing User Feedback"
                         events={[
                             "The level filter on the grouping panel can now be limited to a single level",
-                            "The 'Who' panel can be filtered by location",
+                            "The Who panel can be filtered by location",
                         ]}
                         color="var(--text-lfm-number)"
                     />

@@ -155,32 +155,15 @@ const Suggestions = (props) => {
                             altTitle="Please Note"
                             noLink={true}
                             description={
-                                <div>
-                                    <ul>
-                                        <li style={{ marginBottom: "20px" }}>
-                                            I've received a lot of feedback
-                                            expressing dissatisfaction with the{" "}
-                                            <span className="lfm-number">
-                                                filtering on the LFM panel.{" "}
-                                            </span>
-                                            I completely agree - it's clunky and
-                                            not user-friendly. I plan on
-                                            updating it as soon as possible.
-                                            Please be patient.
-                                        </li>
-                                        <li>
-                                            The new website doesn't include all
-                                            of the reports or features from the
-                                            old website.{" "}
-                                            <span className="lfm-number">
-                                                If a report or feature is
-                                                missing
-                                            </span>{" "}
-                                            and you'd like to see it returned,
-                                            please let me know so I can add it.
-                                        </li>
-                                    </ul>
-                                </div>
+                                <span>
+                                    The new website doesn't include all of the
+                                    reports or features from the old website.{" "}
+                                    <span className="lfm-number">
+                                        If a report or feature is missing
+                                    </span>{" "}
+                                    and you'd like to see it returned, please
+                                    let me know so I can add it.
+                                </span>
                             }
                             noFade={true}
                         />
