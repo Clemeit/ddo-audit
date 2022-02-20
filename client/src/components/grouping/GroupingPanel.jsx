@@ -58,22 +58,6 @@ const Panel = (props) => {
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
 
-    // const location = useLocation().pathname.substring(
-    //     useLocation().pathname.lastIndexOf("/") + 1
-    // );
-    // var [currentServer, setCurrentServer] = React.useState(null);
-    // React.useEffect(() => {
-    //     let serverName =
-    //         location.substring(0, 1).toUpperCase() + location.substring(1);
-    //     if (SERVER_NAMES.includes(serverName)) {
-    //         // Good server
-    //         setCurrentServer(serverName);
-    //     } else {
-    //         // Bad server
-    //         setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
-    //     }
-    // }, [window.location.pathname]);
-
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
             .then((val) => {
@@ -525,6 +509,7 @@ const Panel = (props) => {
             {serverStatus !== false || ignoreServerStatus ? (
                 alternativeLook === false ? (
                     <CanvasLfmPanel
+                        expandedInfo={false}
                         data={filteredServerData}
                         showNotEligible={showNotEligible}
                         adjustedGroupCount={adjustedGroupCount}
