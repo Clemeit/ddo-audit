@@ -135,12 +135,12 @@ const Directory = (props) => {
     const [mayVote, set_mayVote] = React.useState(false);
     React.useEffect(() => {
         let ls = localStorage.getItem("last-major-vote");
-        if (ls !== undefined && ls !== null) {
-            let dt = new Date(ls);
-            let mayvote =
-                new Date(localStorage.getItem("last-major-vote")) <=
-                new Date().getTime() - 1000 * 60 * 60 * 24 * 31;
-            set_mayVote(mayvote);
+        if (ls != null) {
+            // let dt = new Date(ls);
+            // let mayvote =
+            //     new Date(localStorage.getItem("last-major-vote")) <=
+            //     new Date().getTime() - 1000 * 60 * 60 * 24 * 31;
+            set_mayVote(false);
         } else {
             set_mayVote(true);
         }
