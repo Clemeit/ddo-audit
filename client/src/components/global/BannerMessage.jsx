@@ -40,8 +40,8 @@ const BannerMessage = (props) => {
             } else {
                 ignorelist = [];
             }
-            Fetch("https://api.ddoaudit.com/messageservice", 5000).then(
-                (response) => {
+            Fetch("https://api.ddoaudit.com/messageservice", 10000)
+                .then((response) => {
                     let allmessages = [];
                     response.forEach((message) => {
                         let affectedpages = message.pages.split(",");
@@ -61,8 +61,23 @@ const BannerMessage = (props) => {
                     });
 
                     setMessages(allmessages);
-                }
-            );
+                })
+                .catch((err) => {
+                    if (window.navigator.onLine == false) {
+                        setMessages([
+                            {
+                                id: 999,
+                                name: "Offline",
+                                pages: "all",
+                                start: new Date(),
+                                end: new Date(),
+                                message: "No internet connection.",
+                                color: "#AA0000",
+                                nodismiss: 1,
+                            },
+                        ]);
+                    }
+                });
         }
         getM();
     }, [update]);
