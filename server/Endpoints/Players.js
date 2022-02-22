@@ -59,6 +59,42 @@ module.exports = function (api) {
             });
         }
 
+        function getCachedPlayerData(server, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT \`${server}\` AS data FROM players_cached ORDER BY \`players_cached\`.\`datetime\` DESC LIMIT 1;`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            getCachedPlayerData(server, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            resolve(result[0]["data"]);
+                        }
+                    }
+                });
+            });
+        }
+
         function getPlayerData(server, final) {
             return new Promise(async (resolve, reject) => {
                 let query = `
@@ -172,6 +208,20 @@ module.exports = function (api) {
             api.get(`/players/${entry[1]}`, (req, res) => {
                 res.setHeader("Content-Type", "application/json");
                 getPlayerData(entry[0])
+                    .then((result) => {
+                        res.send(result);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        return {};
+                    });
+            });
+        });
+
+        servers.forEach((entry) => {
+            api.get(`/players_cached/${entry[1]}`, (req, res) => {
+                res.setHeader("Content-Type", "application/json");
+                getCachedPlayerData(entry[0])
                     .then((result) => {
                         res.send(result);
                     })
