@@ -18,7 +18,7 @@ export async function Fetch(url, timeout) {
                 resolve(val);
             })
             .catch((err) => {
-                console.log("Failed to fetch data " + err);
+                console.log("Failed to fetch data", err);
                 reject(err);
             });
     });
