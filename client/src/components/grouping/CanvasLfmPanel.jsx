@@ -5,6 +5,7 @@ const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
+    const [panelHeight, setPanelHeight] = React.useState(0);
 
     let [isImageLoaded, set_isImageLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
@@ -93,6 +94,64 @@ const CanvasLfmPanel = (props) => {
         });
     }, [canvasRef]);
 
+    function computePanelHeight(groups) {
+        let top = 0;
+
+        if (groups) {
+            groups
+                .filter((group) => {
+                    return group.Eligible || props.showNotEligible;
+                })
+                .forEach((group, index) => {
+                    let lfmheight = 0;
+                    if (props.expandedInfo) {
+                        let commentlines = [];
+                        const canvas = canvasRef.current;
+                        const ctx = canvas.getContext("2d", { alpha: false });
+
+                        if (group.Comment != null) {
+                            let words = group.Comment.split(" ");
+                            let lines = [];
+                            let currentLine = words[0];
+
+                            for (let i = 1; i < words.length; i++) {
+                                let word = words[i];
+                                let width = ctx.measureText(
+                                    currentLine + " " + word
+                                ).width;
+                                if (width < 330) {
+                                    currentLine += " " + word;
+                                } else {
+                                    lines.push(currentLine);
+                                    currentLine = word;
+                                }
+                            }
+                            lines.push(currentLine);
+                            commentlines = lines;
+                        }
+
+                        if (group.Members.length) {
+                            lfmheight += group.Members.length * 25 + 30;
+                        }
+                        if (group.Comment) {
+                            lfmheight += commentlines.length * 20 + 5;
+                        }
+                        if (group.AdventureActive) {
+                            lfmheight += 20;
+                        }
+                        if (lfmheight < lfmHeight) {
+                            lfmheight = lfmHeight;
+                        }
+                    } else {
+                        lfmheight = lfmHeight;
+                    }
+                    top += lfmheight;
+                });
+        }
+
+        return top;
+    }
+
     React.useEffect(() => {
         if (!isImageLoaded) {
             //console.log("Waiting on resources");
@@ -169,8 +228,12 @@ const CanvasLfmPanel = (props) => {
                 27,
                 0,
                 72 +
-                    (props.data ? Math.max(props.data.Groups.length, 4) : 4) *
-                        lfmHeight,
+                    (props.data
+                        ? Math.max(
+                              computePanelHeight(props.data.Groups),
+                              4 * lfmHeight
+                          )
+                        : 4 * lfmHeight),
                 848,
                 27
             );
@@ -202,16 +265,36 @@ const CanvasLfmPanel = (props) => {
                 //console.log("Waiting on data");
                 return;
             }
+            let top = 72;
             props.data.Groups.filter((group) => {
                 return group.Eligible || props.showNotEligible;
             }).forEach((group, index) => {
                 // Draw background and borders
+                let commentlines = wrapText(group.Comment, 330);
+                let lfmheight = 0;
+                if (props.expandedInfo) {
+                    if (group.Members.length) {
+                        lfmheight += group.Members.length * 25 + 30;
+                    }
+                    if (group.Comment) {
+                        lfmheight += commentlines.length * 20 + 5;
+                    }
+                    if (group.AdventureActive) {
+                        lfmheight += 20;
+                    }
+                    if (lfmheight < lfmHeight) {
+                        lfmheight = lfmHeight;
+                    }
+                } else {
+                    lfmheight = lfmHeight;
+                }
+
                 if (group.Eligible) {
                     let gradient = ctx.createLinearGradient(
                         0,
-                        72 + index * lfmHeight,
+                        top,
                         0,
-                        72 + (index + 1) * lfmHeight
+                        top + lfmheight
                     );
                     gradient.addColorStop(
                         0,
@@ -234,24 +317,24 @@ const CanvasLfmPanel = (props) => {
                 } else {
                     ctx.fillStyle = "#150a06";
                 }
-                ctx.fillRect(26, 73 + lfmHeight * index, 802, lfmHeight);
+                ctx.fillRect(26, top, 802, lfmheight);
 
                 ctx.beginPath();
                 ctx.strokeStyle = "#8f8d74";
                 ctx.lineWidth = 1;
-                ctx.rect(26, 73 + lfmHeight * index, 802, lfmHeight);
+                ctx.rect(26, top, 802, lfmheight);
                 ctx.stroke();
 
-                ctx.moveTo(375, 73 + lfmHeight * index);
-                ctx.lineTo(375, 73 + lfmHeight * index + lfmHeight);
+                ctx.moveTo(375, top);
+                ctx.lineTo(375, top + lfmheight);
                 ctx.stroke();
 
-                ctx.moveTo(605, 73 + lfmHeight * index);
-                ctx.lineTo(605, 73 + lfmHeight * index + lfmHeight);
+                ctx.moveTo(605, top);
+                ctx.lineTo(605, top + lfmheight);
                 ctx.stroke();
 
-                ctx.moveTo(742, 73 + lfmHeight * index);
-                ctx.lineTo(742, 73 + lfmHeight * index + lfmHeight);
+                ctx.moveTo(742, top);
+                ctx.lineTo(742, top + lfmheight);
                 ctx.stroke();
 
                 // Draw party leader's name
@@ -266,7 +349,7 @@ const CanvasLfmPanel = (props) => {
                 ctx.fillText(
                     group.Leader.Name,
                     49,
-                    73 + lfmHeight * index + 18 + props.fontModifier / 2
+                    top + 18 + props.fontModifier / 2
                 );
                 let leaderWidth = ctx.measureText(group.Leader.Name).width;
                 if (group.Leader.Name.startsWith("Clemei")) {
@@ -278,7 +361,7 @@ const CanvasLfmPanel = (props) => {
                         18,
                         18,
                         49 + leaderWidth - 20,
-                        58 + lfmHeight * index + 18,
+                        top,
                         18,
                         18
                     );
@@ -291,7 +374,7 @@ const CanvasLfmPanel = (props) => {
                     group.Leader.TotalLevel ||
                         (group.Leader.Name === "DDO Audit" ? "99" : "0"),
                     360,
-                    90 + lfmHeight * index + props.fontModifier / 2
+                    17 + top + props.fontModifier / 2
                 );
 
                 // Draw level range
@@ -302,24 +385,77 @@ const CanvasLfmPanel = (props) => {
                         " - " +
                         (group.MaximumLevel || "30"),
                     786,
-                    117 + lfmHeight * index
+                    top + lfmheight / 2
                 );
                 ctx.textBaseline = "alphabetic";
 
                 // Draw member count
-                if (group.Members) {
-                    if (group.Members.length > 0) {
-                        ctx.fillStyle = props.highVisibility
-                            ? "white"
-                            : group.Eligible
-                            ? "#b6b193"
-                            : "#95927e";
-                        ctx.textAlign = "left";
-                        ctx.fillText(
-                            "(" + (group.Members.length + 1) + " members)",
-                            49 + leaderWidth + 4,
-                            73 + lfmHeight * index + 18 + props.fontModifier / 2
-                        );
+                if (props.expandedInfo) {
+                    // Classes
+                    let x = 40;
+                    let y = top + 19;
+                    ctx.font = "13px Arial";
+                    ctx.textBaseline = "alphabetic";
+                    ctx.textAlign = "right";
+                    if (group.Leader.Classes != null)
+                        for (let c = 0; c < group.Leader.Classes.length; c++) {
+                            // First pass for icons
+                            let xp = x + 166 + 21 * c;
+                            let yp = y - 15;
+
+                            ctx.fillStyle = "#3e4641";
+                            ctx.fillRect(xp - 1, yp - 1, 20, 20);
+
+                            let classIconPosition = getClassIconPosition(
+                                group.Leader.Classes[c].Name,
+                                true
+                            );
+                            ctx.drawImage(
+                                sprite,
+                                classIconPosition[0],
+                                classIconPosition[1],
+                                18,
+                                18,
+                                xp,
+                                yp,
+                                18,
+                                18
+                            );
+                        }
+                    if (group.Leader.Classes != null)
+                        for (let c = 0; c < group.Leader.Classes.length; c++) {
+                            // Second pass for levels
+                            let xp = x + 166 + 21 * c;
+                            let yp = y - 15;
+
+                            ctx.fillStyle = "black";
+                            ctx.fillText(
+                                group.Leader.Classes[c].Level,
+                                xp + 22,
+                                yp + 18
+                            );
+                            ctx.fillStyle = "white";
+                            ctx.fillText(
+                                group.Leader.Classes[c].Level,
+                                xp + 21,
+                                yp + 17
+                            );
+                        }
+                } else {
+                    if (group.Members) {
+                        if (group.Members.length > 0) {
+                            ctx.fillStyle = props.highVisibility
+                                ? "white"
+                                : group.Eligible
+                                ? "#b6b193"
+                                : "#95927e";
+                            ctx.textAlign = "left";
+                            ctx.fillText(
+                                "(" + (group.Members.length + 1) + " members)",
+                                49 + leaderWidth + 4,
+                                top + 18 + props.fontModifier / 2
+                            );
+                        }
                     }
                 }
 
@@ -341,11 +477,13 @@ const CanvasLfmPanel = (props) => {
                         ctx.fillText(
                             textLines[i],
                             489,
-                            120 +
-                                lfmHeight * index -
+                            top -
+                                7 +
+                                lfmheight / 2 -
                                 (textLines.length -
                                     1 +
-                                    (group.Difficulty.length > 3 ? 1 : 0)) *
+                                    (group.Difficulty.length > 3 ? 1 : 0) -
+                                    1) *
                                     9 +
                                 i * (19 + props.fontModifier)
                         );
@@ -359,11 +497,13 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillText(
                         "(" + group.Difficulty + ")",
                         489,
-                        123 +
-                            lfmHeight * index -
+                        top -
+                            4 +
+                            lfmheight / 2 -
                             (textLines.length -
                                 1 +
-                                (group.Difficulty.length > 3 ? 1 : 0)) *
+                                (group.Difficulty.length > 3 ? 1 : 0) -
+                                1) *
                                 9 +
                             textLines.length * 19 +
                             props.fontModifier
@@ -382,7 +522,7 @@ const CanvasLfmPanel = (props) => {
                     18,
                     18,
                     28,
-                    73 + lfmHeight * index + 3,
+                    top + 3,
                     18,
                     18
                 );
@@ -396,7 +536,7 @@ const CanvasLfmPanel = (props) => {
                         102,
                         60,
                         608,
-                        77 + index * lfmHeight,
+                        4 + top,
                         102,
                         60
                     );
@@ -409,7 +549,7 @@ const CanvasLfmPanel = (props) => {
                             102,
                             60,
                             608,
-                            77 + index * lfmHeight,
+                            4 + top,
                             102,
                             60
                         );
@@ -426,7 +566,7 @@ const CanvasLfmPanel = (props) => {
                                 18,
                                 18,
                                 608 + (i % 5) * 21,
-                                77 + index * lfmHeight + Math.floor(i / 5) * 21,
+                                4 + top + Math.floor(i / 5) * 21,
                                 18,
                                 18
                             );
@@ -470,11 +610,123 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillText(
                         textLines[i],
                         31,
-                        110 +
-                            lfmHeight * index +
+                        37 +
+                            top +
+                            (props.expandedInfo ? 5 : 0) +
                             i * (19 + props.fontModifier) +
+                            (props.expandedInfo
+                                ? group.Members.length * 21
+                                : 0) +
                             props.fontModifier * 1.5
                     );
+                }
+
+                // Draw party members
+                if (props.expandedInfo && group.Members.length) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = "white";
+                    ctx.moveTo(33, top + 20);
+                    ctx.lineTo(33, top + group.Members.length * 21 + 13);
+                    ctx.stroke();
+                    if (group.Members.length) {
+                        for (let i = 0; i < group.Members.length; i++) {
+                            ctx.fillStyle = props.highVisibility
+                                ? "white"
+                                : group.Eligible
+                                ? "#f6f1d3"
+                                : "#988f80";
+                            ctx.font = `${15 + props.fontModifier}px Arial`;
+                            ctx.textAlign = "left";
+                            let member = group.Members[i];
+
+                            let x = 40;
+                            let y = top + 40 + i * 21;
+
+                            ctx.beginPath();
+                            ctx.strokeStyle = "white";
+                            ctx.moveTo(33, top + 20 + i * 21 + 14);
+                            ctx.lineTo(43, top + 20 + i * 21 + 14);
+                            ctx.stroke();
+
+                            // Race
+                            let raceIconBounds = getRaceIconPosition(
+                                member.Gender + " " + member.Race,
+                                group.Eligible
+                            );
+                            ctx.drawImage(
+                                sprite,
+                                raceIconBounds[0],
+                                raceIconBounds[1],
+                                18,
+                                18,
+                                x,
+                                y - 15,
+                                18,
+                                18
+                            );
+
+                            // Name
+                            ctx.fillText(member.Name, x + 20, y);
+
+                            // Classes
+                            ctx.font = "13px Arial";
+                            ctx.textBaseline = "alphabetic";
+                            ctx.textAlign = "right";
+                            if (member.Classes != null)
+                                for (
+                                    let c = 0;
+                                    c < member.Classes.length;
+                                    c++
+                                ) {
+                                    // First pass for icons
+                                    let xp = x + 166 + 21 * c;
+                                    let yp = y - 15;
+
+                                    ctx.fillStyle = "#3e4641";
+                                    ctx.fillRect(xp - 1, yp - 1, 20, 20);
+
+                                    let classIconPosition =
+                                        getClassIconPosition(
+                                            member.Classes[c].Name,
+                                            true
+                                        );
+                                    ctx.drawImage(
+                                        sprite,
+                                        classIconPosition[0],
+                                        classIconPosition[1],
+                                        18,
+                                        18,
+                                        xp,
+                                        yp,
+                                        18,
+                                        18
+                                    );
+                                }
+                            if (member.Classes != null)
+                                for (
+                                    let c = 0;
+                                    c < member.Classes.length;
+                                    c++
+                                ) {
+                                    // Second pass for levels
+                                    let xp = x + 166 + 21 * c;
+                                    let yp = y - 15;
+
+                                    ctx.fillStyle = "black";
+                                    ctx.fillText(
+                                        member.Classes[c].Level,
+                                        xp + 22,
+                                        yp + 18
+                                    );
+                                    ctx.fillStyle = "white";
+                                    ctx.fillText(
+                                        member.Classes[c].Level,
+                                        xp + 21,
+                                        yp + 17
+                                    );
+                                }
+                        }
+                    }
                 }
 
                 // Draw active time
@@ -493,9 +745,10 @@ const CanvasLfmPanel = (props) => {
                                 ? " minute"
                                 : " minutes"),
                         200,
-                        148 + lfmHeight * index
+                        top + lfmheight - 10
                     );
                 }
+                top += lfmheight;
             });
 
             if (
@@ -1190,9 +1443,12 @@ const CanvasLfmPanel = (props) => {
                 }}
                 width={panelWidth}
                 height={
-                    (props.data ? Math.max(props.data.Groups.length, 4) : 4) *
-                        lfmHeight +
-                    99
+                    (props.data
+                        ? Math.max(
+                              computePanelHeight(props.data.Groups),
+                              4 * lfmHeight
+                          )
+                        : 4 * lfmHeight) + 99
                 }
             />
         </div>
