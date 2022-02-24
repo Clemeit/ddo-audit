@@ -139,7 +139,7 @@ con.connect((err) => {
 
     // Every week
     cron.schedule("0 * * * 0", () => {
-        getPopulationData(365).then(() => {
+        getPopulationData(365 * 2).then(() => {
             runAnnualReport(population);
             runQuarterReport(population);
             runWeekReport(population);
