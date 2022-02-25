@@ -93,6 +93,7 @@
 
     --beta: #f18ddc;
     --soon: #e48e59;
+    --new: #aaffaa;
 }
 
 .dark-theme {
@@ -144,6 +145,7 @@
 
     --beta: #b64fa0;
     --soon: #aa5e32;
+    --new: #338833;
 }
 
 html {
@@ -931,6 +933,15 @@ body {
     color: inherit !important;
 }
 
+.new-feature {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    transform: translateY(-10px);
+    background-color: red;
+    border-radius: 100%;
+}
+
 .filter-bar-item:hover {
     background-color: var(--filter-bar-hover);
 }
@@ -1400,6 +1411,19 @@ h2:hover .anchor-link {
     /* width: min-content; */
     border-radius: 5px;
     font-weight: bolder;
+}
+
+.new-tag {
+    background-color: var(--new);
+    padding: 4px 7px;
+    font-size: 1rem;
+    /* width: min-content; */
+    border-radius: 5px;
+    font-weight: bolder;
+}
+
+.new-tag.small {
+    padding: 1px 4px;
 }
 
 .report-quest-button {

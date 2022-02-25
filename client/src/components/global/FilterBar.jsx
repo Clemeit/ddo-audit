@@ -31,6 +31,14 @@ const LfmFilterBar = (props) => {
         }
     }, [fullscreen]);
 
+    const [showNewPermalink, setShowNewPermalink] = React.useState(false);
+    React.useEffect(() => {
+        let prmlnk = localStorage.getItem("feature-notice-permalink");
+        if (!prmlnk) {
+            setTimeout(() => setShowNewPermalink(true), 3000);
+        }
+    }, []);
+
     return (
         <div
             style={{
@@ -69,11 +77,26 @@ const LfmFilterBar = (props) => {
                             className="filter-bar-item no-link-decoration"
                             href={props.permalink}
                             target="_blank"
+                            onClick={() => {
+                                localStorage.setItem(
+                                    "feature-notice-permalink",
+                                    true
+                                );
+                                setShowNewPermalink(false);
+                            }}
                         >
                             <LinkSVG className="nav-icon should-invert" />
                             <span className="filter-bar-text settings hide-on-mobile">
                                 Permalink
                             </span>
+                            {showNewPermalink && (
+                                <span
+                                    className="new-tag small"
+                                    style={{ marginLeft: "7px" }}
+                                >
+                                    NEW
+                                </span>
+                            )}
                         </a>
                     )}
                     {!props.minimal && (
