@@ -690,6 +690,7 @@ const WhoPanel = (props) => {
                 }
                 handleSaveButton={() => download()}
                 closePanel={() => props.closePanel()}
+                permalink={props.permalink}
             >
                 <div
                     className="filter-panel-overlay"

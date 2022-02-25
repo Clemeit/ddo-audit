@@ -31,18 +31,21 @@ const GroupingSpecific = (props) => {
     const location = useLocation().pathname.substring(
         useLocation().pathname.lastIndexOf("/") + 1
     );
-    var [currentServer, setCurrentServer] = React.useState(null);
+    let [currentServer, setCurrentServer] = React.useState(null);
+    let currentServerRef = React.useRef(currentServer);
     React.useEffect(() => {
         let serverName =
             location.substring(0, 1).toUpperCase() + location.substring(1);
         if (SERVER_NAMES.includes(serverName)) {
             // Good server
             setCurrentServer(serverName);
+            currentServerRef.current = serverName;
             setOpenPanels([
                 <LfmPanel
                     server={serverName}
                     key={1}
                     triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={() => permalink()}
                 />,
             ]);
         } else {
@@ -50,6 +53,30 @@ const GroupingSpecific = (props) => {
             setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
         }
     }, [window.location.pathname]);
+
+    function toProperCase(str) {
+        if (!str) return str;
+        return `${str.substring(0, 1).toUpperCase()}${str.substring(1)}`;
+    }
+
+    React.useEffect(() => {
+        let urlfilters = new URLSearchParams(window.location.search);
+        let secondarytype = urlfilters.get("secondarytype");
+        let secondaryserver = urlfilters.get("secondaryserver");
+
+        if (secondarytype && secondaryserver) {
+            let sspc = toProperCase(secondaryserver);
+            if (
+                (secondarytype == "lfm" || secondarytype == "who") &&
+                SERVER_NAMES.includes(sspc)
+            ) {
+                addPanel({
+                    type: secondarytype,
+                    server: sspc,
+                });
+            }
+        }
+    }, []);
 
     function getServerNamePossessive() {
         return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
@@ -65,6 +92,7 @@ const GroupingSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={`https://dev.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         } else if (obj.type === "who") {
@@ -76,6 +104,7 @@ const GroupingSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={`https://dev.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         }

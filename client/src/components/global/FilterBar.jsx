@@ -6,6 +6,7 @@ import { ReactComponent as CaptureSVG } from "../../assets/global/capture.svg";
 import { ReactComponent as NotificationSVG } from "../../assets/global/notification.svg";
 import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
 import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
+import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
 import { Link, useHistory } from "react-router-dom";
 import $ from "jquery";
 
@@ -62,6 +63,18 @@ const LfmFilterBar = (props) => {
                                 {props.currentServer}
                             </span>
                         </div>
+                    )}
+                    {props.minimal && (
+                        <a
+                            className="filter-bar-item no-link-decoration"
+                            href={props.permalink}
+                            target="_blank"
+                        >
+                            <LinkSVG className="nav-icon should-invert" />
+                            <span className="filter-bar-text settings hide-on-mobile">
+                                Permalink
+                            </span>
+                        </a>
                     )}
                     {!props.minimal && (
                         <Link

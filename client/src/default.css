@@ -926,6 +926,11 @@ body {
     color: var(--text);
 }
 
+.filter-bar-item.no-link-decoration {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
 .filter-bar-item:hover {
     background-color: var(--filter-bar-hover);
 }

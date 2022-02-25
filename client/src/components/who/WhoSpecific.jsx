@@ -38,6 +38,32 @@ const WhoSpecific = (props) => {
     const [panelSelectPopupVisibility, setPanelSelectPopupVisibility] =
         React.useState(false);
 
+    const location = useLocation().pathname.substring(
+        useLocation().pathname.lastIndexOf("/") + 1
+    );
+    var [currentServer, setCurrentServer] = React.useState(null);
+    let currentServerRef = React.useRef(currentServer);
+    React.useEffect(() => {
+        let serverName =
+            location.substring(0, 1).toUpperCase() + location.substring(1);
+        if (SERVER_NAMES.includes(serverName)) {
+            // Good server
+            setCurrentServer(serverName);
+            currentServerRef.current = serverName;
+            setOpenPanels([
+                <WhoPanel
+                    server={serverName}
+                    key={1}
+                    triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={() => permalink()}
+                />,
+            ]);
+        } else {
+            // Bad server
+            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+        }
+    }, [window.location.pathname]);
+
     function addPanel(obj) {
         if (obj.type === "lfm") {
             setOpenPanels((openPanels) => [
@@ -48,6 +74,7 @@ const WhoSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={`https://dev.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         } else if (obj.type === "who") {
@@ -59,33 +86,35 @@ const WhoSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
+                    permalink={`https://dev.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         }
     }
 
-    const location = useLocation().pathname.substring(
-        useLocation().pathname.lastIndexOf("/") + 1
-    );
-    var [currentServer, setCurrentServer] = React.useState(null);
+    function toProperCase(str) {
+        if (!str) return str;
+        return `${str.substring(0, 1).toUpperCase()}${str.substring(1)}`;
+    }
+
     React.useEffect(() => {
-        let serverName =
-            location.substring(0, 1).toUpperCase() + location.substring(1);
-        if (SERVER_NAMES.includes(serverName)) {
-            // Good server
-            setCurrentServer(serverName);
-            setOpenPanels([
-                <WhoPanel
-                    server={serverName}
-                    key={1}
-                    triggerPopup={(message) => setPopupMessage(message)}
-                />,
-            ]);
-        } else {
-            // Bad server
-            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+        let urlfilters = new URLSearchParams(window.location.search);
+        let secondarytype = urlfilters.get("secondarytype");
+        let secondaryserver = urlfilters.get("secondaryserver");
+
+        if (secondarytype && secondaryserver) {
+            let sspc = toProperCase(secondaryserver);
+            if (
+                (secondarytype == "lfm" || secondarytype == "who") &&
+                SERVER_NAMES.includes(sspc)
+            ) {
+                addPanel({
+                    type: secondarytype,
+                    server: sspc,
+                });
+            }
         }
-    }, [window.location.pathname]);
+    }, []);
 
     // Report Form
     var [reportFormVisibility, setReportFormVisibility] =
