@@ -92,7 +92,7 @@ const GroupingSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
-                    permalink={`https://dev.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}`}
+                    permalink={`https://www.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         } else if (obj.type === "who") {
@@ -104,7 +104,7 @@ const GroupingSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
-                    permalink={`https://dev.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
+                    permalink={`https://www.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
                 />,
             ]);
         }
