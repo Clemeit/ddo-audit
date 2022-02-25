@@ -9,6 +9,7 @@ import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
 import ContentCluster from "../global/ContentCluster";
 import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
+import CurrentCountsSubtitle from "./CurrentCountsSubtitle";
 
 const ServersSpecific = () => {
     const TITLE = "Population and Character Demographics";
@@ -150,6 +151,7 @@ const ServersSpecific = () => {
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [uniqueData, setUniqueData] = React.useState(null);
+    const [currentData, setCurrentData] = React.useState(null);
     function refreshServerStatus() {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
@@ -176,6 +178,23 @@ const ServersSpecific = () => {
             .catch(() => {
                 setPopupMessage({
                     title: "Couldn't Fetch Unique Data",
+                    message:
+                        "We weren't able to find information on this server. You can refresh the page or report the issue.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage: "Could not fetch unique data. Timeout",
+                });
+            });
+    }
+
+    function fetchCurrentData() {
+        Fetch("https://api.ddoaudit.com/gamestatus/populationoverview", 5000)
+            .then((val) => {
+                setCurrentData(val);
+            })
+            .catch(() => {
+                setPopupMessage({
+                    title: "Couldn't Fetch Current Data",
                     message:
                         "We weren't able to find information on this server. You can refresh the page or report the issue.",
                     icon: "warning",
@@ -214,6 +233,7 @@ const ServersSpecific = () => {
     React.useEffect(() => {
         refreshServerStatus();
         fetchUniqueData();
+        fetchCurrentData();
         fetchPopulationData();
         const interval = setInterval(() => refreshServerStatus, 60000);
         return () => clearInterval(interval);
@@ -264,11 +284,17 @@ const ServersSpecific = () => {
                     title={`${currentServer} Population Trends`}
                     altTitle="Population"
                     description={
-                        <UniqueCountsSubtitle
-                            server={currentServer}
-                            data={uniqueData}
-                            readAbout={(m) => readAbout(m)}
-                        />
+                        <>
+                            <CurrentCountsSubtitle
+                                server={currentServer}
+                                data={currentData}
+                            />
+                            <UniqueCountsSubtitle
+                                server={currentServer}
+                                data={uniqueData}
+                                readAbout={(m) => readAbout(m)}
+                            />
+                        </>
                     }
                 >
                     * This data is still new and these numbers will likely

@@ -61,10 +61,10 @@ const UniqueCountsSubtitle = (props) => {
                     >
                         (read more)
                     </span>
-                    . Fancy joining us?{" "}
+                    .
                 </p>
             ) : (
-                "Loading data..."
+                "Loading unique population data..."
             )}
         </div>
     );
