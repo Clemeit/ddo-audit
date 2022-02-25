@@ -82,7 +82,8 @@ const About = (props) => {
                         population reports. Anonymous players <u>are not</u>{" "}
                         counted in any demographic reports and will never show
                         up in our Who panel (our API includes anonymous players,
-                        but their names are replaced with "Anonymous").
+                        but their names are replaced with "Anonymous" and their
+                        guilds and locations are redacted).
                     </p>
                     <p
                         style={{
