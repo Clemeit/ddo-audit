@@ -15,6 +15,8 @@ const isEdge = !isIE && !!window.StyleMedia;
 const isChrome =
     !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
 
+const LOG_USER_EVENTS = true;
+
 export function Submit(title, comment) {
     // event.preventDefault();
     let browser;
@@ -45,6 +47,7 @@ export function Submit(title, comment) {
 }
 
 export function Log(event, meta) {
+    if (!LOG_USER_EVENTS) return;
     const url = "https://api.ddoaudit.com/log";
     const requestOptions = {
         method: "POST",
