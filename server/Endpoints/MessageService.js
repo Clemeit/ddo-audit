@@ -1,4 +1,5 @@
 var mysql = require("mysql2");
+var requestIp = require("request-ip");
 var con = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -116,16 +117,16 @@ module.exports = function (api) {
             });
         }
 
-        function submitMessage(message) {
+        function submitMessage(message, ipaddress) {
             return new Promise(async (resolve, reject) => {
                 if (message == null) {
                     reject();
                 } else {
-                    let classquery = `INSERT INTO \`feedback\` (\`datetime\`, \`browser\`, \`title\`, \`comment\`, \`resolved\`) VALUES (CURRENT_TIMESTAMP, ${
-                        con.escape(message.browser) || ""
-                    }, ${con.escape(message.title) || ""}, ${
-                        con.escape(message.comment) || ""
-                    }, '0');`;
+                    let classquery = `INSERT INTO \`feedback\` (\`datetime\`, \`ip\`, \`browser\`, \`title\`, \`comment\`, \`resolved\`) VALUES (CURRENT_TIMESTAMP, ${con.escape(
+                        ipaddress || ""
+                    )}, ${con.escape(message.browser) || ""}, ${
+                        con.escape(message.title) || ""
+                    }, ${con.escape(message.comment) || ""}, '0');`;
                     con.query(classquery, (err, result, fields) => {
                         if (err) {
                             reject(err);
@@ -137,14 +138,16 @@ module.exports = function (api) {
             });
         }
 
-        function logEvent(event) {
+        function logEvent(event, ipaddress) {
             return new Promise(async (resolve, reject) => {
                 if (event == null) {
                     reject();
                 } else {
-                    let classquery = `INSERT INTO \`log\` (\`datetime\`, \`event\`, \`meta\`) VALUES (CURRENT_TIMESTAMP, ${
-                        con.escape(event.event) || ""
-                    }, ${con.escape(event.meta) || ""});`;
+                    let classquery = `INSERT INTO \`log\` (\`datetime\`, \`ip\`, \`event\`, \`meta\`) VALUES (CURRENT_TIMESTAMP, ${con.escape(
+                        ipaddress || ""
+                    )}, ${con.escape(event.event) || ""}, ${
+                        con.escape(event.meta) || ""
+                    });`;
                     con.query(classquery, (err, result, fields) => {
                         if (err) {
                             reject(err);
@@ -193,8 +196,9 @@ module.exports = function (api) {
         });
 
         api.post(`/submitmessage`, (req, res) => {
+            var clientIp = requestIp.getClientIp(req);
             res.setHeader("Content-Type", "application/json");
-            submitMessage(req.body)
+            submitMessage(req.body, clientIp)
                 .then((result) => {
                     res.send({ state: "Success" });
                 })
@@ -205,8 +209,9 @@ module.exports = function (api) {
         });
 
         api.post(`/log`, (req, res) => {
+            var clientIp = requestIp.getClientIp(req);
             res.setHeader("Content-Type", "application/json");
-            logEvent(req.body)
+            logEvent(req.body, clientIp)
                 .then((result) => {
                     res.send({ state: "Success" });
                 })
