@@ -45,7 +45,7 @@ const UniqueCountsSubtitle = (props) => {
                     <span className="population-number">
                         {GetUniquePlayers()}
                     </span>{" "}
-                    unique characters,{" "}
+                    unique characters in the last quarter,{" "}
                     <span className="lfm-number">
                         {Math.round(
                             (GetUniqueActivePlayers(true) /
