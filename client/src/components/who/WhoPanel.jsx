@@ -4,7 +4,7 @@ import Player from "./Player";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
 
 const WhoPanel = (props) => {

@@ -4,7 +4,7 @@ import { ReactComponent as UnhappySVG } from "../../assets/global/unhappy.svg";
 import { ReactComponent as NeutralSVG } from "../../assets/global/neutral.svg";
 import { ReactComponent as HappySVG } from "../../assets/global/happy.svg";
 import { ReactComponent as VeryHappySVG } from "../../assets/global/very_happy.svg";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "./ContentCluster";
 
 const Poll = (props) => {

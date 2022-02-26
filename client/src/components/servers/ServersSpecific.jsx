@@ -10,6 +10,7 @@ import ContentCluster from "../global/ContentCluster";
 import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
 import CurrentCountsSubtitle from "./CurrentCountsSubtitle";
+import { Log } from "../../services/CommunicationService";
 
 const ServersSpecific = () => {
     const TITLE = "Population and Character Demographics";
@@ -37,6 +38,7 @@ const ServersSpecific = () => {
     function readAbout(r, callback) {
         switch (r) {
             case "active characters":
+                Log("Read about active characters", `Servers ${currentServer}`);
                 setPopupMessage({
                     title: "Active Characters",
                     message: (

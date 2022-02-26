@@ -1,10 +1,11 @@
 import React from "react";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { Link } from "react-router-dom";
 import $ from "jquery";
+import { Log } from "../../services/CommunicationService";
 
 const Banner = (props) => {
     function toggleTheme() {
@@ -147,6 +148,9 @@ const Banner = (props) => {
                                     rel="noreferrer"
                                     target="_blank"
                                     className="primary-button"
+                                    onClick={() => {
+                                        Log("Clicked GitHub link", "Banner");
+                                    }}
                                 >
                                     Visit my GitHub
                                 </a>

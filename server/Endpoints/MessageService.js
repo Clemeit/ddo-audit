@@ -137,6 +137,25 @@ module.exports = function (api) {
             });
         }
 
+        function logEvent(event) {
+            return new Promise(async (resolve, reject) => {
+                if (event == null) {
+                    reject();
+                } else {
+                    let classquery = `INSERT INTO \`log\` (\`datetime\`, \`event\`, \`meta\`) VALUES (CURRENT_TIMESTAMP, ${
+                        con.escape(event.event) || ""
+                    }, ${con.escape(event.meta) || ""});`;
+                    con.query(classquery, (err, result, fields) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                }
+            });
+        }
+
         api.get(`/markedevents`, (req, res) => {
             res.setHeader("Content-Type", "application/json");
             getMarkedEvents()
@@ -181,6 +200,18 @@ module.exports = function (api) {
                 })
                 .catch((err) => {
                     console.log("Failed to post message:", err);
+                    res.send({ state: "Failed" });
+                });
+        });
+
+        api.post(`/log`, (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            logEvent(req.body)
+                .then((result) => {
+                    res.send({ state: "Success" });
+                })
+                .catch((err) => {
+                    console.log("Failed to log event:", err);
                     res.send({ state: "Failed" });
                 });
         });

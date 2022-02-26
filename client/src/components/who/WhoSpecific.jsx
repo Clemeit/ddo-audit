@@ -11,12 +11,13 @@ import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as AddSVG } from "../../assets/global/add.svg";
 import ContentCluster from "../global/ContentCluster";
 import WhoPanel from "./WhoPanel";
 import LfmPanel from "../grouping/GroupingPanel";
 import PanelSelectPopup from "../grouping/PanelSelectPopup";
+import { Log } from "../../services/CommunicationService";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
@@ -66,6 +67,7 @@ const WhoSpecific = (props) => {
 
     function addPanel(obj) {
         if (obj.type === "lfm") {
+            Log("Added LFM panel", `Who ${currentServer}`);
             setOpenPanels((openPanels) => [
                 ...openPanels,
                 <LfmPanel
@@ -78,6 +80,7 @@ const WhoSpecific = (props) => {
                 />,
             ]);
         } else if (obj.type === "who") {
+            Log("Added Who panel", `Who ${currentServer}`);
             setOpenPanels((openPanels) => [
                 ...openPanels,
                 <WhoPanel

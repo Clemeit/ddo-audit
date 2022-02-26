@@ -9,6 +9,7 @@ import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscr
 import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
 import { Link, useHistory } from "react-router-dom";
 import $ from "jquery";
+import { Log } from "../../services/CommunicationService";
 
 const LfmFilterBar = (props) => {
     const [fullscreen, set_fullscreen] = React.useState(false);
@@ -78,6 +79,7 @@ const LfmFilterBar = (props) => {
                             href={props.permalink}
                             target="_blank"
                             onClick={() => {
+                                Log("Clicked permalink", props.permalink);
                                 localStorage.setItem(
                                     "feature-notice-permalink",
                                     true
@@ -123,7 +125,13 @@ const LfmFilterBar = (props) => {
                         <div
                             className="filter-bar-item"
                             style={{ marginLeft: "auto" }}
-                            onClick={props.handleSaveButton}
+                            onClick={() => {
+                                Log(
+                                    "Took LFM screenshot",
+                                    `Grouping ${props.currentServer}`
+                                );
+                                props.handleSaveButton();
+                            }}
                         >
                             <CaptureSVG className="nav-icon should-invert" />
                             <span className="filter-bar-text settings hide-on-mobile">
@@ -166,6 +174,12 @@ const LfmFilterBar = (props) => {
                         <div
                             className="filter-bar-item hide-on-mobile"
                             onClick={() => {
+                                if (!fullscreen) {
+                                    Log(
+                                        "Entered fullscreen",
+                                        `Grouping ${props.currentServer}`
+                                    );
+                                }
                                 set_fullscreen(!fullscreen);
                             }}
                         >

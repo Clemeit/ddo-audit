@@ -8,6 +8,7 @@ import { ReactComponent as AddSVG } from "../../assets/global/add.svg";
 import LfmPanel from "./GroupingPanel";
 import PanelSelectPopup from "./PanelSelectPopup";
 import WhoPanel from "../who/WhoPanel";
+import { Log } from "../../services/CommunicationService";
 
 const GroupingSpecific = (props) => {
     const TITLE = "DDO Live LFM Viewer";
@@ -84,6 +85,7 @@ const GroupingSpecific = (props) => {
 
     function addPanel(obj) {
         if (obj.type === "lfm") {
+            Log("Added LFM panel", `Grouping ${currentServer}`);
             setOpenPanels((openPanels) => [
                 ...openPanels,
                 <LfmPanel
@@ -96,6 +98,7 @@ const GroupingSpecific = (props) => {
                 />,
             ]);
         } else if (obj.type === "who") {
+            Log("Added Who panel", `Grouping ${currentServer}`);
             setOpenPanels((openPanels) => [
                 ...openPanels,
                 <WhoPanel

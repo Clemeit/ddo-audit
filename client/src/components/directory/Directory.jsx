@@ -8,7 +8,7 @@ import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
 import { ReactComponent as CommunitySVG } from "../../assets/global/community.svg";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { ReactComponent as FeedbackSVG } from "../../assets/global/feedback.svg";

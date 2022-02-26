@@ -14,6 +14,7 @@ import ChartPie from "../global/ChartPie";
 import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 import ChartBar from "../global/ChartBar";
+import { Log } from "../../services/CommunicationService";
 
 // no-change
 
@@ -47,6 +48,7 @@ const Directory = (props) => {
     function readAbout(r, callback) {
         switch (r) {
             case "filter banks characters":
+                Log("Read about bank characters", "Servers");
                 setPopupMessage({
                     title: "Bank Characters",
                     message: (
@@ -85,6 +87,7 @@ const Directory = (props) => {
                 });
                 break;
             case "primary class only":
+                Log("Read about primary class", "Servers");
                 setPopupMessage({
                     title: "Primary Class Only",
                     message: (
@@ -434,13 +437,17 @@ const Directory = (props) => {
                             <br />
                             <span
                                 className="faux-link"
-                                onClick={() =>
+                                onClick={() => {
                                     setServerDistributionType(
                                         serverDistributionType === "population"
                                             ? "groups"
                                             : "population"
-                                    )
-                                }
+                                    );
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Server pie chart"
+                                    );
+                                }}
                             >
                                 Click here to switch to{" "}
                                 {serverDistributionType === "population"
@@ -482,13 +489,17 @@ const Directory = (props) => {
                             <br />
                             <span
                                 className="faux-link"
-                                onClick={() =>
+                                onClick={() => {
                                     setHourlyDistributionType(
                                         hourlyDistributionType === "population"
                                             ? "groups"
                                             : "population"
-                                    )
-                                }
+                                    );
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Server hourly distribution"
+                                    );
+                                }}
                             >
                                 Click here to switch to{" "}
                                 {hourlyDistributionType === "population"
@@ -542,13 +553,17 @@ const Directory = (props) => {
                             <br />
                             <span
                                 className="faux-link"
-                                onClick={() =>
+                                onClick={() => {
                                     setDailyDistributionType(
                                         dailyDistributionType === "population"
                                             ? "groups"
                                             : "population"
-                                    )
-                                }
+                                    );
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Server daily distribution"
+                                    );
+                                }}
                             >
                                 Click here to switch to{" "}
                                 {dailyDistributionType === "population"

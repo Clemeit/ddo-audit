@@ -38,6 +38,13 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="February 25, 2022 - Addressing User Feedback"
+                        events={[
+                            "Added a permalink to the LFM/Who panels when multiple panels are open simultaneously",
+                        ]}
+                        color="var(--text-lfm-number)"
+                    />
+                    <DevEvent
                         title="February 17, 2022 - Addressing User Feedback"
                         events={[
                             "Redesigned the filter functionality of the Who panel",

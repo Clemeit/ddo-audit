@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 
 const ReportQuest = (props) => {
     const [additionalText, setAdditionalText] = React.useState("");

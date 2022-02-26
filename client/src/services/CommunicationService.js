@@ -43,3 +43,17 @@ export function Submit(title, comment) {
         })
         .catch((error) => console.log("Submission error", error));
 }
+
+export function Log(event, meta) {
+    const url = "https://api.ddoaudit.com/log";
+    const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, meta }),
+    };
+
+    fetch(url, requestOptions)
+        .then((res) => res.json())
+        .then((response) => {})
+        .catch((error) => {});
+}

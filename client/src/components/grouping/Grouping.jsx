@@ -9,6 +9,7 @@ import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
+import { Log } from "../../services/CommunicationService";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
@@ -154,6 +155,9 @@ const Grouping = () => {
                     to={"/grouping/" + group.ServerName}
                     key={i}
                     className="nav-box shrinkable"
+                    onClick={() => {
+                        Log("Clicked raid group link", "Grouping");
+                    }}
                 >
                     <div className="nav-box-title">
                         <h2 className="content-option-title">

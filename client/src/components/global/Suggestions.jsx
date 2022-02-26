@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "./Banner";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import Poll from "./Poll";
 import ContentCluster from "./ContentCluster";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";

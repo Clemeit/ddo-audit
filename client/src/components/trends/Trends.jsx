@@ -6,6 +6,7 @@ import BannerMessage from "../global/BannerMessage";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
+import { Log } from "../../services/CommunicationService";
 
 const Trends = (props) => {
     const TITLE = "DDO Population Data Trends";
@@ -206,13 +207,17 @@ const Trends = (props) => {
                             <br />
                             <span
                                 className="faux-link"
-                                onClick={() =>
+                                onClick={() => {
                                     setQuarterDeltaType(
                                         quarterDeltaType === "population"
                                             ? "groups"
                                             : "population"
-                                    )
-                                }
+                                    );
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Trends delta chart"
+                                    );
+                                }}
                             >
                                 Click here to switch to{" "}
                                 {quarterDeltaType === "population"

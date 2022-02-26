@@ -5,7 +5,7 @@ import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
 import ContentCluster from "../global/ContentCluster";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import { Link } from "react-router-dom";
 
 const PanelSelectPopup = (props) => {

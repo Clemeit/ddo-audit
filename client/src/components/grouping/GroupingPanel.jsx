@@ -1,5 +1,5 @@
 import React from "react";
-import { Submit } from "../../services/ReportIssueService";
+import { Submit } from "../../services/CommunicationService";
 import { Fetch, VerifyServerLfmData } from "../../services/DataLoader";
 import ContentCluster from "../global/ContentCluster";
 import CanvasLfmPanel from "./CanvasLfmPanel";

@@ -12,6 +12,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
+import { Log } from "../../services/CommunicationService";
 
 const Live = (props) => {
     const TITLE = "DDO Live Server Status";
@@ -223,13 +224,17 @@ const Live = (props) => {
                             />
                             <span
                                 className="faux-link"
-                                onClick={() =>
+                                onClick={() => {
                                     setPopulation24HoursType(
                                         population24HoursType === "population"
                                             ? "groups"
                                             : "population"
-                                    )
-                                }
+                                    );
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Live"
+                                    );
+                                }}
                             >
                                 Click here to switch to{" "}
                                 {population24HoursType === "population"

@@ -5,6 +5,7 @@ import { ReactComponent as ApiSVG } from "../../assets/global/api.svg";
 import { ReactComponent as TimelineSVG } from "../../assets/global/timeline.svg";
 import Banner from "../global/Banner";
 import ContentCluster from "../global/ContentCluster";
+import { Log } from "../../services/CommunicationService";
 
 const About = (props) => {
     const TITLE = "About DDO Audit";
@@ -179,6 +180,9 @@ const About = (props) => {
                             rel="noreferrer"
                             target="_blank"
                             className="primary-button should-invert full-width-mobile"
+                            onClick={() => {
+                                Log("Clicked GitHub link", "About");
+                            }}
                         >
                             Visit my GitHub
                         </a>
