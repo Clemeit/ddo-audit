@@ -361,7 +361,7 @@ const CanvasLfmPanel = (props) => {
                         18,
                         18,
                         49 + leaderWidth - 20,
-                        top,
+                        top + 3,
                         18,
                         18
                     );
