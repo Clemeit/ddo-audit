@@ -81,7 +81,10 @@ const Panel = (props) => {
     let recheck;
     function RefreshLfms() {
         if (props.server === null) return;
-        Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
+        Fetch(
+            "https://api.ddoaudit.com/gamestatus/serverstatus",
+            5000 + failedAttemptRef.current * 500
+        )
             .then((val) => {
                 let serverstatus = false;
                 if (val.hasOwnProperty("Worlds")) {
@@ -106,7 +109,7 @@ const Panel = (props) => {
                 if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
                         `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
-                        5000
+                        5000 + failedAttemptRef.current * 500
                     )
                         .then((val) => {
                             if (VerifyServerLfmData(val)) {
@@ -121,13 +124,12 @@ const Panel = (props) => {
                                     props.triggerPopup({
                                         title: "Something went wrong",
                                         message:
-                                            "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.",
+                                            "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.",
                                         icon: "warning",
                                         fullscreen: false,
-                                        reportMessage:
-                                            val === null
-                                                ? "Group data returned null"
-                                                : JSON.stringify(val),
+                                        reportMessage: `GL127 Bad group data: ${
+                                            val ? JSON.stringify(val) : "null"
+                                        }`,
                                     });
                                 } else {
                                     recheck = setTimeout(() => {
@@ -148,7 +150,7 @@ const Panel = (props) => {
                                             // Couldn't connect or errored
                                             title = "Couldn't fetch group data";
                                             message =
-                                                "Try refreshing the page. If the issue continues, please report it.";
+                                                "First try refreshing the page. If the issue continues, please report it.";
                                             break;
                                         case 0:
                                             // No groups in table. Server offline?
@@ -159,7 +161,7 @@ const Panel = (props) => {
                                         default:
                                             title = "Something went wrong";
                                             message =
-                                                "Pretty descriptive, I know. Try refreshing the page. If the issue continues, please report it.";
+                                                "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.";
                                             break;
                                     }
                                     props.triggerPopup({
@@ -168,9 +170,9 @@ const Panel = (props) => {
                                         submessage: err && err.toString(),
                                         icon: "warning",
                                         fullscreen: false,
-                                        reportMessage:
-                                            (err && err.toString()) ||
-                                            "Group data generic error (timeout?)",
+                                        reportMessage: `GL171 Group data generic error (timeout?): ${
+                                            err && err.toString()
+                                        }`,
                                     });
                                 });
                             } else {
@@ -188,13 +190,14 @@ const Panel = (props) => {
                     props.triggerPopup({
                         title: "Couldn't fetch server data",
                         message:
-                            "Try refreshing the page. If the issue continues, please report it.",
+                            "First try refreshing the page. If the issue continues, please report it.",
                         submessage:
                             (err && err.toString()) || "Server status timeout",
                         icon: "warning",
                         fullscreen: false,
-                        reportMessage:
-                            (err && err.toString()) || "Server status timeout",
+                        reportMessage: `GL196 Server status generic errr (timeout?): ${
+                            err && err.toString()
+                        }`,
                     });
                 } else {
                     recheck = setTimeout(() => {
