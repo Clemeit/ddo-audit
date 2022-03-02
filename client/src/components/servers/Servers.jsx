@@ -751,8 +751,8 @@ const Directory = (props) => {
                                 </h2>
                             </div>
                             <p className="content-option-description">
-                                Most populated server, default server, and
-                                server status.
+                                Server status, most populated server, and
+                                default server.
                             </p>
                         </Link>
                         <Link

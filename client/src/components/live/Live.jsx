@@ -15,7 +15,7 @@ import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
 
 const Live = (props) => {
-    const TITLE = "DDO Live Server Status";
+    const TITLE = "DDO Server Status";
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);

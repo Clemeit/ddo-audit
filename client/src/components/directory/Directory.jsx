@@ -30,7 +30,7 @@ const Directory = (props) => {
                     icon: <LiveSVG className="nav-icon-large should-invert" />,
                     title: "Quick Info",
                     description:
-                        "Most populated server, default server, and server status.",
+                        "Server status, most populated server, and default server.",
                     to: "/live",
                 },
                 {
@@ -38,7 +38,8 @@ const Directory = (props) => {
                         <ServersSVG className="nav-icon-large should-invert" />
                     ),
                     title: "Server Statistics",
-                    description: "Server population, demographics, and trends.",
+                    description:
+                        "Server population, character demographics, and activity trends.",
                     to: "/servers",
                 },
                 {
@@ -79,13 +80,15 @@ const Directory = (props) => {
                         <GroupingSVG className="nav-icon-large should-invert" />
                     ),
                     title: "Live LFM Viewer",
-                    description: "A live LFM panel for every server.",
+                    description:
+                        "Easily find groups with a live LFM panel for every server.",
                     to: "/grouping",
                 },
                 {
                     icon: <WhoSVG className="nav-icon-large should-invert" />,
                     title: "Live Who List",
-                    description: "Lookup players on this live Who list.",
+                    description:
+                        "Explore a list of online players with a live Who panel.",
                     to: "/who",
                 },
             ],
