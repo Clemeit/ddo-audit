@@ -37,13 +37,15 @@ const PanelSelectPopup = (props) => {
         {
             icon: <GroupingSVG className="nav-icon-large should-invert" />,
             title: "Live LFM Viewer",
-            description: "A live LFM panel for every server.",
+            description:
+                "Easily find groups with a live LFM panel for every server.",
             onClick: () => setPanelType("lfm"),
         },
         {
             icon: <WhoSVG className="nav-icon-large should-invert" />,
             title: "Live Who List",
-            description: "Lookup players on this live Who list.",
+            description:
+                "Explore a list of online players with a live Who panel.",
             onClick: () => setPanelType("who"),
         },
     ];

@@ -274,7 +274,8 @@ const Live = (props) => {
                                 </h2>
                             </div>
                             <p className="content-option-description">
-                                Server population, demographics, and trends.
+                                Server population, character demographics, and
+                                activity trends.
                             </p>
                         </Link>
                         <Link
