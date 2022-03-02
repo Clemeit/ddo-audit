@@ -65,6 +65,7 @@ const Quests = (props) => {
     const [startTime, set_startTime] = React.useState(null);
     const [reportFormVisible, setReportFormVisible] = React.useState(false);
     const [reportedQuest, setReportedQuest] = React.useState(null);
+    const [earliestEntryDate, setEarliestEntryDate] = React.useState(null);
 
     const PAGE_SIZE = 20;
 
@@ -136,7 +137,12 @@ const Quests = (props) => {
 
     function getWarningMessage(total) {
         if (questName == null) return <></>;
-        if (total < 3000 || standardDeviation > 17) {
+        if (
+            total < 3000 ||
+            standardDeviation > 17 ||
+            new Date().getTime() - earliestEntryDate.getTime() <
+                1000 * 60 * 60 * 24 * 21
+        ) {
             return (
                 <ContentCluster
                     title={
@@ -160,6 +166,15 @@ const Quests = (props) => {
                     altTitle="Data warning"
                     description={
                         <ul>
+                            {new Date().getTime() -
+                                earliestEntryDate.getTime() <
+                                1000 * 60 * 60 * 24 * 21 && (
+                                <li style={{ marginBottom: "10px" }}>
+                                    Either this is a new quest or we recently
+                                    started tracking it. Please be patient as we
+                                    collect data.
+                                </li>
+                            )}
                             {total < 3000 && (
                                 <li style={{ marginBottom: "10px" }}>
                                     There are {total < 1500 ? "very " : ""}few
@@ -335,6 +350,7 @@ const Quests = (props) => {
 
             const HOUR_BIN_WIDTH = 2;
             const MAX_DURATION_LIMIT = 3 * 60 * 60;
+            let firstentrydate;
             let max = 0;
             let bincount = 30;
             let values = [];
@@ -345,6 +361,12 @@ const Quests = (props) => {
                 entry.Start = new Date(
                     new Date(entry.Start).getTime() - 5 * 60 * 60 * 1000
                 );
+                if (
+                    firstentrydate == null ||
+                    entry.Start.getTime() < firstentrydate.getTime()
+                ) {
+                    firstentrydate = entry.Start;
+                }
                 if (entry.Duration > MAX_DURATION_LIMIT) {
                     outlierCount++;
                 } else {
@@ -354,6 +376,7 @@ const Quests = (props) => {
                     servercounts[serverNames.indexOf(entry.Server)]++;
                 }
             });
+            setEarliestEntryDate(firstentrydate);
 
             let std = Math.round(math.std(values) / 60);
             let ave = Math.round(total / values.length / 60);
