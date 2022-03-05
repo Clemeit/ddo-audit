@@ -51,7 +51,7 @@ exports.runServerStatusReport = () => {
                         worlds.push({
                             Name: d.groups.world,
                             StatusServerUrl: d.groups.statusserver,
-                            Order: d.groups.order,
+                            Order: +d.groups.order,
                         });
                     } while ((d = pattern.exec(data)) !== null);
                     resolve(worlds);
