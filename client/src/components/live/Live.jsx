@@ -54,6 +54,10 @@ const Live = (props) => {
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 setPopupMessage(null);
+                val.Worlds = [
+                    ...val.Worlds.filter((w) => w.Name !== "Hardcore"),
+                    ...val.Worlds.filter((w) => w.Name === "Hardcore"),
+                ];
                 setServerStatusData(val);
             })
             .catch((err) => {
