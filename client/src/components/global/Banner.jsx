@@ -1,6 +1,7 @@
 import React from "react";
 import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
+import { ReactComponent as TimeSVG } from "../../assets/global/time.svg";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { Link } from "react-router-dom";
@@ -8,6 +9,15 @@ import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
 
 const Banner = (props) => {
+    function getTimeZone() {
+        let timezone = localStorage.getItem("timezone");
+        if (timezone === "est") {
+            return "EST";
+        } else {
+            return "Local";
+        }
+    }
+
     function toggleTheme() {
         let theme = localStorage.getItem("theme");
         if (theme === "light-theme") {
@@ -21,6 +31,20 @@ const Banner = (props) => {
             document.body.classList.replace("dark-theme", "light-theme");
             localStorage.setItem("theme", "light-theme");
         }
+    }
+
+    function toggleTimeZone() {
+        let timezone = localStorage.getItem("timezone");
+        if (timezone === "local") {
+            timezone = "est";
+
+            localStorage.setItem("timezone", "est");
+        } else {
+            timezone = "local";
+
+            localStorage.setItem("timezone", "local");
+        }
+        window.location.reload();
     }
 
     const [voteMessage, set_voteMessage] = React.useState(null);
@@ -211,14 +235,31 @@ const Banner = (props) => {
                         </div>
                     )}
                 </div>
-                <div id="theme-container" onClick={() => toggleTheme()}>
-                    <DarkThemeSVG id="theme-icon" />
-                    <span
-                        className="hide-on-mobile"
-                        style={{ paddingLeft: "5px" }}
+                <div className="options-container">
+                    <div
+                        className="theme-container"
+                        onClick={() => toggleTheme()}
                     >
-                        Theme
-                    </span>
+                        <DarkThemeSVG className="theme-icon" />
+                        <span
+                            className="hide-on-mobile"
+                            style={{ paddingLeft: "5px" }}
+                        >
+                            Theme
+                        </span>
+                    </div>
+                    {/* <div
+                        className="theme-container"
+                        onClick={() => toggleTimeZone()}
+                    >
+                        <TimeSVG />
+                        <span
+                            className="hide-on-mobile"
+                            style={{ paddingLeft: "5px" }}
+                        >
+                            {getTimeZone()}
+                        </span>
+                    </div> */}
                 </div>
             </div>
             {/* <div
