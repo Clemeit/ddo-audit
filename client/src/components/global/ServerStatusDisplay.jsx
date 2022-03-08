@@ -20,11 +20,26 @@ function GetSVG(world) {
     if (!world.hasOwnProperty("Status")) return <PendingSVG />;
     switch (world.Status) {
         case 0:
-            return <OfflineSVG style={{ marginRight: "5px" }} />;
+            return (
+                <>
+                    <OfflineSVG style={{ marginRight: "5px" }} alt="offline" />
+                    <span className="sr-only">{world.Name} is offline</span>
+                </>
+            );
         case 1:
-            return <OnlineSVG style={{ marginRight: "5px" }} />;
+            return (
+                <>
+                    <OnlineSVG style={{ marginRight: "5px" }} alt="online" />
+                    <span className="sr-only">{world.Name} is online</span>
+                </>
+            );
         default:
-            return <PendingSVG style={{ marginRight: "5px" }} />;
+            return (
+                <>
+                    <PendingSVG style={{ marginRight: "5px" }} alt="unknown" />
+                    <span className="sr-only">{world.Name} is loading</span>
+                </>
+            );
     }
 }
 
@@ -56,7 +71,11 @@ const ServerStatusDisplay = (props) => {
                     : ServerNames.map((world, i) => (
                           <div key={i} className="server-status-indicator">
                               <div style={{ paddingRight: "5px" }}>
-                                  {props.data ? <OfflineSVG /> : <PendingSVG />}
+                                  {props.data ? (
+                                      <OfflineSVG alt="offline" />
+                                  ) : (
+                                      <PendingSVG alt="unknown" />
+                                  )}
                               </div>
                               {world}
                           </div>
