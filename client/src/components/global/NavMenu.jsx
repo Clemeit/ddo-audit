@@ -10,8 +10,9 @@ import { ReactComponent as QuestsSVG } from "../../assets/global/quests.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
+import { IsTheBigDay } from "../../services/TheBigDay";
 
-const serverNames = [
+let serverNames = [
     "Argonnessen",
     "Cannith",
     "Ghallanda",
@@ -22,6 +23,10 @@ const serverNames = [
     "Wayfinder",
     // "Hardcore",
 ];
+
+if (IsTheBigDay()) {
+    serverNames = ["Eberron Mega-Server"];
+}
 
 const NavMenu = (props) => {
     return (

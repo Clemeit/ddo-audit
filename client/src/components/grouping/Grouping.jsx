@@ -10,10 +10,11 @@ import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import { IsTheBigDay } from "../../services/TheBigDay";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
-    const SERVER_NAMES = [
+    let SERVER_NAMES = [
         "Argonnessen",
         "Cannith",
         "Ghallanda",
@@ -24,6 +25,10 @@ const Grouping = () => {
         "Wayfinder",
         // "Hardcore",
     ];
+
+    if (IsTheBigDay()) {
+        SERVER_NAMES = ["Eberron Mega-Server"];
+    }
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
@@ -43,6 +48,44 @@ const Grouping = () => {
             default:
                 return <PendingSVG />;
         }
+    }
+
+    function getMegaServerDescription() {
+        if (allGroupData == null) {
+            return (
+                <p
+                    className="content-option-description"
+                    style={{ fontSize: "1.4rem" }}
+                >
+                    Loading...
+                </p>
+            );
+        }
+        let lfmcount = 0;
+        allGroupData.forEach((s) => {
+            lfmcount += s.GroupCount;
+        });
+
+        let raidcount = 0;
+        allGroupData.forEach((server) => {
+            server.Groups.forEach((group) => {
+                if (group.Quest && group.Quest.GroupSize === "Raid")
+                    raidcount++;
+            });
+        });
+
+        return (
+            <p
+                className="content-option-description"
+                style={{ fontSize: "1.4rem" }}
+            >
+                <span style={{ color: "var(--text-lfm-number)" }}>
+                    {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}{" "}
+                </span>
+                {raidcount > 0 &&
+                    `| ${raidcount} raid${raidcount !== 1 ? "s" : ""}`}
+            </p>
+        );
     }
 
     function GetServerDescription(name) {
@@ -152,7 +195,10 @@ const Grouping = () => {
         if (raidgroups.length !== 0) {
             return raidgroups.map((group, i) => (
                 <Link
-                    to={"/grouping/" + group.ServerName}
+                    to={
+                        "/grouping/" +
+                        (IsTheBigDay() ? "megaserver" : group.ServerName)
+                    }
                     key={i}
                     className="nav-box shrinkable"
                     onClick={() => {
@@ -168,8 +214,12 @@ const Grouping = () => {
                         className="content-option-description"
                         style={{ fontSize: "1.5rem" }}
                     >
-                        <span className="lfm-number">{group.ServerName}</span> |{" "}
-                        {group.Leader.Name} |{" "}
+                        <span className="lfm-number">
+                            {IsTheBigDay()
+                                ? "Eberron Mega-Server"
+                                : group.ServerName}
+                        </span>{" "}
+                        | {group.Leader.Name} |{" "}
                         <span style={{ whiteSpace: "nowrap" }}>
                             {`${group.Members.length + 1} member${
                                 group.Members.length + 1 !== 1 ? "s" : ""
@@ -218,28 +268,43 @@ const Grouping = () => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
-                        {SERVER_NAMES.map((name, i) => (
+                        {IsTheBigDay() ? (
                             <Link
-                                to={"/grouping/" + name.toLowerCase()}
-                                key={i}
+                                to={"/grouping/megaserver"}
                                 className="nav-box shrinkable"
                             >
                                 <div className="nav-box-title">
-                                    {serverStatusData
-                                        ? GetSVG(
-                                              serverStatusData.Worlds.filter(
-                                                  (server) =>
-                                                      server.Name === name
-                                              )[0]
-                                          )
-                                        : GetSVG()}
+                                    <OnlineSVG />
                                     <h2 className="content-option-title">
-                                        {name}
+                                        Eberron Mega-Server
                                     </h2>
                                 </div>
-                                {GetServerDescription(name)}
+                                {getMegaServerDescription()}
                             </Link>
-                        ))}
+                        ) : (
+                            SERVER_NAMES.map((name, i) => (
+                                <Link
+                                    to={"/grouping/" + name.toLowerCase()}
+                                    key={i}
+                                    className="nav-box shrinkable"
+                                >
+                                    <div className="nav-box-title">
+                                        {serverStatusData
+                                            ? GetSVG(
+                                                  serverStatusData.Worlds.filter(
+                                                      (server) =>
+                                                          server.Name === name
+                                                  )[0]
+                                              )
+                                            : GetSVG()}
+                                        <h2 className="content-option-title">
+                                            {name}
+                                        </h2>
+                                    </div>
+                                    {GetServerDescription(name)}
+                                </Link>
+                            ))
+                        )}
                     </div>
                 </ContentCluster>
                 <ContentCluster title="Current Raids">

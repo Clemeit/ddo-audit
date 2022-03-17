@@ -3,6 +3,7 @@ import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import ContentCluster from "./ContentCluster";
+import { IsTheBigDay } from "../../services/TheBigDay";
 
 const ServerNames = [
     "Argonnessen",
@@ -59,27 +60,39 @@ const ServerStatusDisplay = (props) => {
                     : "Loading..."
             }
         >
-            <center></center>
             <div className="server-status-container">
-                {props.data && props.data.Worlds
-                    ? props.data.Worlds.map((world, i) => (
-                          <div key={i} className="server-status-indicator">
-                              {GetSVG(world)}
-                              {world.Name}
-                          </div>
-                      ))
-                    : ServerNames.map((world, i) => (
-                          <div key={i} className="server-status-indicator">
-                              <div style={{ paddingRight: "5px" }}>
-                                  {props.data ? (
-                                      <OfflineSVG alt="offline" />
-                                  ) : (
-                                      <PendingSVG alt="unknown" />
-                                  )}
-                              </div>
-                              {world}
-                          </div>
-                      ))}
+                {IsTheBigDay() ? (
+                    <div className="server-status-indicator">
+                        <OnlineSVG
+                            style={{ marginRight: "5px" }}
+                            alt="online"
+                        />
+                        <span className="sr-only">
+                            Eberron Mega-Server is online
+                        </span>
+                        Eberron Mega-Server
+                    </div>
+                ) : props.data && props.data.Worlds ? (
+                    props.data.Worlds.map((world, i) => (
+                        <div key={i} className="server-status-indicator">
+                            {GetSVG(world)}
+                            {world.Name}
+                        </div>
+                    ))
+                ) : (
+                    ServerNames.map((world, i) => (
+                        <div key={i} className="server-status-indicator">
+                            <div style={{ paddingRight: "5px" }}>
+                                {props.data ? (
+                                    <OfflineSVG alt="offline" />
+                                ) : (
+                                    <PendingSVG alt="unknown" />
+                                )}
+                            </div>
+                            {world}
+                        </div>
+                    ))
+                )}
             </div>
         </ContentCluster>
     );

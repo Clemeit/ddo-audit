@@ -6,6 +6,7 @@ import CanvasLfmPanel from "./CanvasLfmPanel";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
+import { IsTheBigDay } from "../../services/TheBigDay";
 
 const Panel = (props) => {
     // Download canvas
@@ -16,18 +17,6 @@ const Panel = (props) => {
         link.href = document.getElementById("lfm-canvas").toDataURL();
         link.click();
     };
-
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
 
     const [theme, setTheme] = React.useState(true);
     const [reported, setReported] = React.useState(false);
@@ -106,7 +95,11 @@ const Panel = (props) => {
                     serverstatus = false;
                     setServerStatus(false);
                 }
-                if (serverstatus === true || ignoreServerStatusRef.current) {
+                if (
+                    IsTheBigDay() ||
+                    serverstatus === true ||
+                    ignoreServerStatusRef.current
+                ) {
                     Fetch(
                         `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
                         5000 + failedAttemptRef.current * 500

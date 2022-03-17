@@ -13,6 +13,7 @@ import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import { IsTheBigDay } from "../../services/TheBigDay";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
@@ -44,9 +45,15 @@ const Live = (props) => {
             }`,
             5000
         ).then((val) => {
-            setPopulation24HoursData(
-                val.filter((series) => series.id !== "Total")
-            );
+            if (IsTheBigDay()) {
+                setPopulation24HoursData(
+                    val.filter((series) => series.id === "Total")
+                );
+            } else {
+                setPopulation24HoursData(
+                    val.filter((series) => series.id !== "Total")
+                );
+            }
         });
     }, [population24HoursType]);
 
@@ -97,9 +104,15 @@ const Live = (props) => {
 
         Fetch("https://api.ddoaudit.com/population/day", 5000)
             .then((val) => {
-                setPopulation24HoursData(
-                    val.filter((series) => series.id !== "Total")
-                );
+                if (IsTheBigDay()) {
+                    setPopulation24HoursData(
+                        val.filter((series) => series.id === "Total")
+                    );
+                } else {
+                    setPopulation24HoursData(
+                        val.filter((series) => series.id !== "Total")
+                    );
+                }
             })
             .catch((err) => {
                 setPopupMessage({
@@ -256,6 +269,7 @@ const Live = (props) => {
                         showActions={false}
                         showLastUpdated={true}
                         reportReference={null}
+                        showArea={IsTheBigDay()}
                     />
                 </ContentCluster>
                 <ContentCluster

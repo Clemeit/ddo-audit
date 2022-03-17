@@ -18,6 +18,7 @@ module.exports = function (api) {
         ["wayfinder"],
         ["hardcore"],
         ["all"],
+        ["megaserver"],
     ];
 
     con.connect((err) => {
@@ -27,7 +28,7 @@ module.exports = function (api) {
         function getGroupData(server, final) {
             return new Promise(async (resolve, reject) => {
                 let query = `SELECT ${
-                    server == "all" ? "*" : server
+                    server == "all" || server == "megaserver" ? "*" : server
                 } FROM \`groups\` ORDER BY \`groups\`.\`datetime\` DESC LIMIT 1;`;
                 con.query(query, (err, result, fields) => {
                     if (err) {
@@ -83,6 +84,45 @@ module.exports = function (api) {
                                     JSON.parse(result[0]["wayfinder"]),
                                     JSON.parse(result[0]["hardcore"]),
                                 ]);
+                            } else if (server == "megaserver") {
+                                let allgroups = [];
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["argonnessen"])
+                                        .Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["cannith"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["ghallanda"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["khyber"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["orien"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["sarlona"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["thelanis"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["wayfinder"]).Groups
+                                );
+                                allgroups.push(
+                                    ...JSON.parse(result[0]["hardcore"]).Groups
+                                );
+                                let megaserver = {
+                                    Name: "Megaserver",
+                                    LastUpdateTime: JSON.parse(
+                                        result[0]["argonnessen"]
+                                    ).LastUpdateTime,
+                                    GroupCount: allgroups.length,
+                                    Groups: allgroups,
+                                };
+                                resolve(megaserver);
                             } else {
                                 resolve(result[0][server]);
                             }
