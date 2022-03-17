@@ -6,6 +6,7 @@ const CanvasLfmPanel = (props) => {
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
     const [panelHeight, setPanelHeight] = React.useState(0);
+    const MINIMUM_LFM_COUNT = 6;
 
     let [isImageLoaded, set_isImageLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
@@ -231,9 +232,9 @@ const CanvasLfmPanel = (props) => {
                     (props.data
                         ? Math.max(
                               computePanelHeight(props.data.Groups),
-                              4 * lfmHeight
+                              MINIMUM_LFM_COUNT * lfmHeight
                           )
-                        : 4 * lfmHeight),
+                        : MINIMUM_LFM_COUNT * lfmHeight),
                 848,
                 27
             );
@@ -243,7 +244,10 @@ const CanvasLfmPanel = (props) => {
         function DrawFiller() {
             for (
                 let i = 0;
-                i < (props.data ? Math.max(props.data.Groups.length, 4) : 4);
+                i <
+                (props.data
+                    ? Math.max(props.data.Groups.length, MINIMUM_LFM_COUNT)
+                    : MINIMUM_LFM_COUNT);
                 i++
             ) {
                 ctx.drawImage(
@@ -1446,9 +1450,9 @@ const CanvasLfmPanel = (props) => {
                     (props.data
                         ? Math.max(
                               computePanelHeight(props.data.Groups),
-                              4 * lfmHeight
+                              MINIMUM_LFM_COUNT * lfmHeight
                           )
-                        : 4 * lfmHeight) + 99
+                        : MINIMUM_LFM_COUNT * lfmHeight) + 99
                 }
             />
         </div>
