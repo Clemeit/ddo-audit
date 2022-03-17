@@ -14,7 +14,7 @@ import ChartLine from "../global/ChartLine";
 import QuestTable from "./QuestTable";
 import PopupMessage from "../global/PopupMessage";
 import ChartBar from "../global/ChartBar";
-import { Fetch } from "../../services/DataLoader";
+import { Fetch, Post } from "../../services/DataLoader";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import BannerMessage from "../global/BannerMessage";
@@ -87,18 +87,23 @@ const Quests = (props) => {
 
         let questlist = [];
 
-        Fetch("https://www.playeraudit.com/api/activity?type=heroic", 30000)
+        Post(
+            "https://api.ddoaudit.com/activity",
+            { questtype: "heroic" },
+            30000
+        )
             .then((val) => {
                 questlist = val;
-                Fetch(
-                    "https://www.playeraudit.com/api/activity?type=epic",
+                Post(
+                    "https://api.ddoaudit.com/activity",
+                    { questtype: "epic" },
                     30000
                 )
                     .then((val) => {
                         let epics = val;
                         epics.forEach((quest) => {
-                            quest.QuestName = quest.QuestName + " (Epic)";
-                            quest.IsEpic = true;
+                            quest.name = quest.name + " (Epic)";
+                            quest.isepic = true;
                         });
                         Array.prototype.push.apply(questlist, epics);
                         clearTimeout(updateTime);
@@ -219,19 +224,16 @@ const Quests = (props) => {
         set_filteredQuestList(
             questList
                 .filter((entry) =>
-                    entry.QuestName.toLowerCase().includes(
-                        questNameFilter.toLowerCase()
-                    )
+                    entry.name
+                        .toLowerCase()
+                        .includes(questNameFilter.toLowerCase())
                 )
                 .filter((entry) => {
                     if (levelFilter === "") return true;
                     let valid = false;
                     levelFilters.forEach((f) => {
                         if (!isNaN(f)) {
-                            if (
-                                entry.HeroicCr === parseInt(f) ||
-                                entry.EpicCr === parseInt(f)
-                            ) {
+                            if (entry.level === parseInt(f)) {
                                 valid = true;
                             }
                         } else {
@@ -242,10 +244,8 @@ const Quests = (props) => {
                             let lower = f.split("-")[0];
                             let upper = f.split("-")[1];
                             if (
-                                (entry.HeroicCr <= parseInt(upper) &&
-                                    entry.HeroicCr >= parseInt(lower)) ||
-                                (entry.EpicCr <= parseInt(upper) &&
-                                    entry.EpicCr >= parseInt(lower))
+                                entry.level <= parseInt(upper) &&
+                                entry.level >= parseInt(lower)
                             ) {
                                 valid = true;
                             }
@@ -257,36 +257,26 @@ const Quests = (props) => {
                     let sortmod = 1;
                     if (sortDirection === "descending") sortmod = -1;
                     if (sortStyle === "duration") {
-                        return (a.AverageTime - b.AverageTime) * sortmod;
+                        return (a.averagetime - b.averagetime) * sortmod;
                     } else if (sortStyle === "name") {
-                        return a.QuestName.localeCompare(b.QuestName) * sortmod;
+                        return a.name.localeCompare(b.name) * sortmod;
                     } else if (sortStyle === "level") {
-                        let alevel = a.HeroicCr || a.EpicCr;
-                        let blevel = b.HeroicCr || b.EpicCr;
-                        return (alevel - blevel) * sortmod;
+                        return (a.level - b.level) * sortmod;
                     } else if (sortStyle === "adventure pack") {
-                        let aadventurepack = a.AdventurePack || "";
-                        let badventurepack = b.AdventurePack || "";
+                        let aadventurepack = a.requiredadventurepack || "";
+                        let badventurepack = b.requiredadventurepack || "";
                         return (
                             aadventurepack.localeCompare(badventurepack) *
                             sortmod
                         );
                     } else if (sortStyle === "xp") {
                         let axp = 0;
-                        if (a.IsEpic) {
-                            axp = a.EpicEliteXp / a.AverageTime;
-                        } else {
-                            axp = a.HeroicEliteXp / a.AverageTime;
-                        }
+                        axp = a.xp / a.averagetime;
                         let bxp = 0;
-                        if (b.IsEpic) {
-                            bxp = b.EpicEliteXp / b.AverageTime;
-                        } else {
-                            bxp = b.HeroicEliteXp / b.AverageTime;
-                        }
+                        bxp = b.xp / b.averagetime;
                         return (axp - bxp) * sortmod;
                     } else {
-                        return (a.Count - b.Count) * sortmod;
+                        return (a.datapoints - b.datapoints) * sortmod;
                     }
                 })
         );
@@ -327,24 +317,17 @@ const Quests = (props) => {
     function loadQuest(quest) {
         setIsLoading(true);
 
-        let low = quest.IsEpic ? 20 : 1;
-        let high = quest.IsEpic ? 30 : 20;
+        let low = quest.isepic ? 20 : 1;
+        let high = quest.isepic ? 30 : 20;
 
-        async function fetchArbitraryData(url, type) {
-            let response = await fetch(url);
-            if (type === "json") response = await response.json();
-            else if (type === "text") response = await response.text();
-            return response;
-        }
-
-        fetchArbitraryData(
-            "https://www.playeraudit.com/api/activity?quest=" +
-                quest.Id +
-                "&low=" +
-                low +
-                "&high=" +
-                high,
-            "json"
+        Post(
+            "https://api.ddoaudit.com/activity",
+            {
+                questid: quest.questid,
+                minimumlevel: low,
+                maximumlevel: high,
+            },
+            15000
         ).then((val) => {
             // console.log(val);
 
@@ -358,22 +341,22 @@ const Quests = (props) => {
             let outlierCount = 0;
             let servercounts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
             val.forEach((entry) => {
-                entry.Start = new Date(
-                    new Date(entry.Start).getTime() - 5 * 60 * 60 * 1000
+                entry.start = new Date(
+                    new Date(entry.start).getTime() - 5 * 60 * 60 * 1000
                 );
                 if (
                     firstentrydate == null ||
-                    entry.Start.getTime() < firstentrydate.getTime()
+                    entry.start.getTime() < firstentrydate.getTime()
                 ) {
-                    firstentrydate = entry.Start;
+                    firstentrydate = entry.start;
                 }
-                if (entry.Duration > MAX_DURATION_LIMIT) {
+                if (entry.duration > MAX_DURATION_LIMIT) {
                     outlierCount++;
                 } else {
-                    if (entry.Duration > max) max = entry.Duration;
-                    values.push(entry.Duration);
-                    total += entry.Duration;
-                    servercounts[serverNames.indexOf(entry.Server)]++;
+                    if (entry.duration > max) max = entry.duration;
+                    values.push(entry.duration);
+                    total += entry.duration;
+                    servercounts[serverNames.indexOf(entry.server)]++;
                 }
             });
             setEarliestEntryDate(firstentrydate);
@@ -392,8 +375,8 @@ const Quests = (props) => {
             val.forEach((entry) => {
                 bins.forEach((bin, index) => {
                     if (
-                        entry.Duration >= bin &&
-                        entry.Duration < bin + binstep
+                        entry.duration >= bin &&
+                        entry.duration < bin + binstep
                     ) {
                         freq[index]++;
                     }
@@ -414,7 +397,7 @@ const Quests = (props) => {
             set_durationData(
                 durationdata.slice(Math.max(0, ave - Math.min(20, std) * 2))
             );
-            set_questName(quest.QuestName);
+            set_questName(quest.name);
             set_standardDeviation(std);
             set_average(Math.round(ave * 10) / 10);
             set_outlierCount(outlierCount);
@@ -459,8 +442,8 @@ const Quests = (props) => {
                 }
             }
             val.forEach((entry) => {
-                let dow = entry.Start.getDay();
-                let hour = entry.Start.getHours();
+                let dow = entry.start.getDay();
+                let hour = entry.start.getHours();
                 instances[dow][Math.floor(hour / HOUR_BIN_WIDTH)]++;
                 tod_instances[Math.floor(hour / HOUR_BIN_WIDTH)]++;
             });
@@ -486,7 +469,7 @@ const Quests = (props) => {
             set_datetimeData(datetimedata);
 
             // popularity over time
-            let sorted = val.sort((a, b) => a.Start > b.Start);
+            let sorted = val.sort((a, b) => a.start > b.start);
             let dailypopularity = [];
             let dailyaverageduration = [];
             let thiscount = 0;
@@ -499,17 +482,17 @@ const Quests = (props) => {
 
             for (let ent = 0; ent < val.length; ent++) {
                 let entry = val[ent];
-                let entryday = entry.Start.getDate();
+                let entryday = entry.start.getDate();
                 if (entryday !== thisday) {
                     if (thisday !== "") {
-                        let datestring = dateToDateString(entry.Start);
+                        let datestring = dateToDateString(entry.start);
                         if (datestring !== "2022-01-07") {
                             dailypopularity.push({
-                                x: dateToDateString(entry.Start),
+                                x: dateToDateString(entry.start),
                                 y: thiscount,
                             });
                             dailyaverageduration.push({
-                                x: dateToDateString(entry.Start),
+                                x: dateToDateString(entry.start),
                                 y: Math.round(
                                     thistotalduration / thiscount / 60
                                 ),
@@ -520,7 +503,7 @@ const Quests = (props) => {
                     thiscount = 0;
                     thisday = entryday;
                 }
-                thistotalduration += entry.Duration;
+                thistotalduration += entry.duration;
                 thiscount++;
             }
 
@@ -991,7 +974,7 @@ const Quests = (props) => {
                                 </span>
                             }
                             altTitle="Popularity Over Time"
-                            description="Popularity of this quest shown as hourly averages throught the day."
+                            description="Popularity of this quest shown as hourly averages throughout the day."
                         >
                             <ChartBar
                                 keys={["Instances"]}

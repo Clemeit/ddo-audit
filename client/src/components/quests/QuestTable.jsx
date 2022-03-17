@@ -20,21 +20,19 @@ const ContentTable = (props) => {
     }
 
     function questLevelString(quest) {
-        return `${quest.HeroicCr ? "Heroic: " + quest.HeroicCr : ""}${
-            quest.HeroicCr && quest.EpicCr ? ", " : ""
-        }${quest.EpicCr ? "Epic: " + quest.EpicCr : ""}`;
+        return `${!quest.isepic ? "Heroic: " + quest.level : ""}${
+            quest.isepic ? "Epic: " + quest.level : ""
+        }`;
     }
 
     function questXpPerMinuteString(quest) {
         return `${
-            quest.HeroicCr
-                ? "HE: " +
-                  Math.round(quest.HeroicEliteXp / (quest.AverageTime / 60))
+            !quest.isepic
+                ? "HE: " + Math.round(quest.xp / (quest.averagetime / 60))
                 : ""
-        }${quest.HeroicCr && quest.EpicCr ? ", " : ""}${
-            quest.EpicCr
-                ? "EE: " +
-                  Math.round(quest.EpicEliteXp / (quest.AverageTime / 60))
+        }${
+            quest.isepic
+                ? "EE: " + Math.round(quest.xp / (quest.averagetime / 60))
                 : ""
         }`;
     }
@@ -149,7 +147,7 @@ const ContentTable = (props) => {
                             {props.data.map((quest, i) => (
                                 <tr
                                     className="content-table-row-highlight"
-                                    key={quest.QuestName}
+                                    key={quest.name}
                                     onClick={() => {
                                         props.handleSelection(quest);
                                     }}
@@ -172,14 +170,12 @@ const ContentTable = (props) => {
                                                 width: "max-content",
                                             }}
                                         >
-                                            {quest.QuestName}
+                                            {quest.name}
                                         </div>
                                         <div
                                             className="report-quest-button"
                                             onClick={(e) => {
-                                                props.reportQuest(
-                                                    quest.QuestName
-                                                );
+                                                props.reportQuest(quest.name);
                                                 e.stopPropagation();
                                             }}
                                         >
@@ -187,12 +183,12 @@ const ContentTable = (props) => {
                                         </div>
                                     </td>
                                     <td>{questLevelString(quest)}</td>
-                                    <td>{quest.AdventurePack || ""}</td>
+                                    <td>{quest.requiredadventurepack || ""}</td>
                                     <td>{questXpPerMinuteString(quest)}</td>
                                     <td>
-                                        {averageTimeString(quest.AverageTime)}
+                                        {averageTimeString(quest.averagetime)}
                                     </td>
-                                    <td>{quest.Count}</td>
+                                    <td>{quest.datapoints}</td>
                                 </tr>
                             ))}
                         </tbody>
