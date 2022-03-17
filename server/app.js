@@ -23,6 +23,8 @@ require("./Endpoints/Groups")(api);
 require("./Endpoints/Players")(api);
 require("./Endpoints/MessageService")(api);
 require("./Endpoints/GameStatus")(api);
+require("./Endpoints/Activity")(api);
+require("./Endpoints/Color")(api);
 
 // Firebase
 initializeApp({
