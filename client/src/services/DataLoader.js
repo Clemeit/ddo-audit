@@ -5,6 +5,19 @@ async function fetchArbitraryData(url, type) {
     return response;
 }
 
+async function postArbitraryData(url, body) {
+    let response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    });
+    response = await response.json();
+    return response;
+}
+
 export async function Fetch(url, timeout) {
     let ret = new Promise(async (resolve, reject) => {
         setTimeout(() => {
@@ -19,6 +32,26 @@ export async function Fetch(url, timeout) {
             })
             .catch((err) => {
                 console.log("Failed to fetch data", err);
+                reject(err);
+            });
+    });
+    return ret;
+}
+
+export async function Post(url, body, timeout) {
+    let ret = new Promise(async (resolve, reject) => {
+        setTimeout(() => {
+            if (!ret.isResolved) {
+                reject("timeout");
+            }
+        }, timeout);
+
+        await postArbitraryData(url, body)
+            .then((val) => {
+                resolve(val);
+            })
+            .catch((err) => {
+                console.log("Failed to post data", err);
                 reject(err);
             });
     });
