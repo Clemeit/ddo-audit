@@ -23,7 +23,29 @@ const GroupingSpecific = (props) => {
         "Thelanis",
         "Wayfinder",
         "Hardcore",
+        "Megaserver",
     ];
+
+    function getBreadcrumbs(servername) {
+        // prettier-ignore
+        return {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Grouping",
+                    item: "https://www.ddoaudit.com/grouping",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: `${servername}`,
+                },
+            ],
+        };
+    }
 
     const [openPanels, setOpenPanels] = React.useState([]);
     const [panelSelectPopupVisibility, setPanelSelectPopupVisibility] =
@@ -119,6 +141,9 @@ const GroupingSpecific = (props) => {
     return (
         currentServer && (
             <div>
+                <script type="application/ld+json">
+                    {JSON.stringify(getBreadcrumbs(currentServer))}
+                </script>
                 <Helmet>
                     <title>{`${TITLE} for ${currentServer}`} </title>
                     <meta

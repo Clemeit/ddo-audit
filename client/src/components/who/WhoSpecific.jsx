@@ -35,6 +35,27 @@ const WhoSpecific = (props) => {
         "Hardcore",
     ];
 
+    function getBreadcrumbs(servername) {
+        // prettier-ignore
+        return {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Who",
+                    item: "https://www.ddoaudit.com/who",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: `${servername}`,
+                },
+            ],
+        };
+    }
+
     const [openPanels, setOpenPanels] = React.useState([]);
     const [panelSelectPopupVisibility, setPanelSelectPopupVisibility] =
         React.useState(false);
@@ -162,6 +183,9 @@ const WhoSpecific = (props) => {
     return (
         currentServer && (
             <div>
+                <script type="application/ld+json">
+                    {JSON.stringify(getBreadcrumbs(currentServer))}
+                </script>
                 <Helmet>
                     <title>{`${TITLE} for ${currentServer}`} </title>
                     <meta

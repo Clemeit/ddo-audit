@@ -27,6 +27,27 @@ const ServersSpecific = () => {
         "Hardcore",
     ];
 
+    function getBreadcrumbs(servername) {
+        // prettier-ignore
+        return {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Servers",
+                    item: "https://www.ddoaudit.com/servers",
+                },
+                {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: `${servername}`,
+                },
+            ],
+        };
+    }
+
     const [population1Year, setPopulation1Year] = React.useState(null);
     const [population1Quarter, setPopulation1Quarter] = React.useState(null);
 
@@ -250,6 +271,9 @@ const ServersSpecific = () => {
 
     return (
         <div>
+            <script type="application/ld+json">
+                {JSON.stringify(getBreadcrumbs(currentServer))}
+            </script>
             <Helmet>
                 <title>{`${getServerNamePossessive()} ${TITLE}`} </title>
                 <meta
