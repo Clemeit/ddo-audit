@@ -1,9 +1,98 @@
 import React, { Component } from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
+import { IsTheBigDay } from "../../services/TheBigDay";
 import ContentCluster from "../global/ContentCluster";
 
 const QuickInfo = (props) => {
+    const FAQ_STRUCTURED = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: [
+            {
+                "@type": "Question",
+                name: "What is DDO's most populated server?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `${getMostPopulatedServerLink(
+                        true
+                    )} is DDO's most populated server.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Which DDO server is the most populated?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `${getMostPopulatedServerLink(
+                        true
+                    )} is DDO's most populated server.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "What is DDO's default server?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `${getDefaultServerLink(
+                        true
+                    )} is currently DDO's default server and will have the most new players.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "What is DDO's player count?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `There have been ${GetTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "How many players does DDO have?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `There have been ${GetTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "What is DDO's best server?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `The best server for you will depend on the number of players online during your preferred play time - check our 'Servers' page. If you're new to DDO, start on ${getDefaultServerLink(
+                        true
+                    )} which is currently DDO's default server.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is DDO still active in 2022?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${GetTotalUniquePlayerCount()} unique characters and ${GetTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is DDO down?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Are the DDO servers offline?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
+                },
+            },
+        ],
+    };
+
     const [news, setNews] = React.useState(null);
 
     function FormatWithCommas(x) {
@@ -11,6 +100,7 @@ const QuickInfo = (props) => {
     }
 
     function GetTotalUniquePlayerCount() {
+        if (!props.unique) return "N/A";
         let total = 0;
         props.unique.forEach((server) => {
             total += server.TotalCharacters;
@@ -19,6 +109,7 @@ const QuickInfo = (props) => {
     }
 
     function GetTotalUniqueGuildCount() {
+        if (!props.unique) return "N/A";
         let total = 0;
         props.unique.forEach((server) => {
             total += server.TotalGuilds;
@@ -34,7 +125,20 @@ const QuickInfo = (props) => {
             .catch(() => {});
     }
 
-    function getDefaultServerLink() {
+    function getMegaServerLink() {
+        return (
+            <Link
+                id="default_server"
+                className="blue-link"
+                to={"/servers/eberron"}
+                style={{ textDecoration: "underline" }}
+            >
+                Eberron Mega-Server
+            </Link>
+        );
+    }
+
+    function getDefaultServerLink(nameonly = false) {
         let defaultserver = "";
         if (
             props.serverstatus == null ||
@@ -60,6 +164,9 @@ const QuickInfo = (props) => {
                 }
             }
         });
+        if (nameonly) {
+            return defaultserver;
+        }
         if (defaultserver == "unknown (servers are offline)") {
             return (
                 <span style={{ color: "var(--red-text)" }}>
@@ -79,7 +186,7 @@ const QuickInfo = (props) => {
         );
     }
 
-    function getMostPopulatedServerLink() {
+    function getMostPopulatedServerLink(nameonly = false) {
         let mostpopulatedserver = "";
         let population = 0;
         if (
@@ -98,6 +205,9 @@ const QuickInfo = (props) => {
                 mostpopulatedserver = series.id;
             }
         });
+        if (nameonly) {
+            return mostpopulatedserver;
+        }
         if (mostpopulatedserver == "unknown (servers are offline)") {
             return (
                 <span style={{ color: "var(--red-text)" }}>
@@ -123,46 +233,90 @@ const QuickInfo = (props) => {
 
     return (
         <>
+            <script type="application/ld+json">
+                {JSON.stringify(FAQ_STRUCTURED)}
+            </script>
             <ContentCluster title="Quick Info">
-                <ul
-                    style={{
-                        fontSize: "1.5rem",
-                        lineHeight: "normal",
-                        paddingLeft: "20px",
-                        color: "var(--text)",
-                    }}
-                >
-                    <li>
-                        The default server is{" "}
-                        {props.serverstatus === null
-                            ? "(Loading...)"
-                            : getDefaultServerLink()}
-                    </li>
-                    <li>
-                        The most populated server is{" "}
-                        {props.serverdistribution === null
-                            ? "(Loading...)"
-                            : getMostPopulatedServerLink()}
-                    </li>
-                    <li>
-                        In the last quarter, we've seen{" "}
-                        <span className="population-number">
-                            {props.unique === null
+                {IsTheBigDay() ? (
+                    <ul
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            paddingLeft: "20px",
+                            color: "var(--text)",
+                        }}
+                    >
+                        <li>The default server is {getMegaServerLink()}</li>
+                        <li>
+                            The most populated server is {getMegaServerLink()}
+                        </li>
+                        <li>
+                            In the last quarter, we've seen{" "}
+                            <span className="population-number">
+                                2,147,483,647
+                            </span>{" "}
+                            unique characters and{" "}
+                            <span className="lfm-number">over 9000</span> unique
+                            guilds
+                        </li>
+                    </ul>
+                ) : (
+                    <ul
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            paddingLeft: "20px",
+                            color: "var(--text)",
+                        }}
+                    >
+                        <li>
+                            The default server is{" "}
+                            {props.serverstatus === null
                                 ? "(Loading...)"
-                                : GetTotalUniquePlayerCount()}
-                        </span>{" "}
-                        unique characters and{" "}
-                        <span className="lfm-number">
-                            {props.unique === null
+                                : getDefaultServerLink()}
+                        </li>
+                        <li>
+                            The most populated server is{" "}
+                            {props.serverdistribution === null
                                 ? "(Loading...)"
-                                : GetTotalUniqueGuildCount()}
-                        </span>{" "}
-                        unique guilds
-                    </li>
-                </ul>
+                                : getMostPopulatedServerLink()}
+                        </li>
+                        <li>
+                            In the last quarter, we've seen{" "}
+                            <span className="population-number">
+                                {props.unique === null
+                                    ? "(Loading...)"
+                                    : GetTotalUniquePlayerCount()}
+                            </span>{" "}
+                            unique characters and{" "}
+                            <span className="lfm-number">
+                                {props.unique === null
+                                    ? "(Loading...)"
+                                    : GetTotalUniqueGuildCount()}
+                            </span>{" "}
+                            unique guilds
+                        </li>
+                    </ul>
+                )}
             </ContentCluster>
             <ContentCluster title="Of Special Note">
-                {news == null ? (
+                {IsTheBigDay() ? (
+                    <p
+                        style={{
+                            textAlign: "justify",
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        <b>April 1, {new Date().getFullYear()}:</b>{" "}
+                        <span>
+                            Big news! The developers of Dungeons and Dragons
+                            Online have decided to merge every server into one
+                            mega-server! Check it out!
+                        </span>
+                    </p>
+                ) : news == null ? (
                     <span
                         style={{
                             textAlign: "justify",
