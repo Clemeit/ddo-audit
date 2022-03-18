@@ -220,7 +220,9 @@ const Panel = (props) => {
                 (group.MinimumLevel >= minimumLevel &&
                     group.MinimumLevel <= maximumLevel) ||
                 (group.MaximumLevel >= minimumLevel &&
-                    group.MaximumLevel <= maximumLevel);
+                    group.MaximumLevel <= maximumLevel) ||
+                (group.MinimumLevel <= minimumLevel &&
+                    group.MaximumLevel >= maximumLevel);
             group.Eligible = levelpass;
             if (levelpass || showNotEligible) {
                 filteredgroups.push(group);
