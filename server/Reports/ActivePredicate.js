@@ -22,11 +22,11 @@ exports.isPlayerActive = (
         isactive = false; // No movement
     if (seen - active > 1000 * 60 * 60 * 24 * QUESTING_DAY_THRESHOLD)
         isactive = false; // No questing
-    // if (
-    // 	totallevel < 30 &&
-    // 	seen - levelup > 1000 * 60 * 60 * 24 * LEVELUP_DAY_THRESHOLD
-    // )
-    // 	isactive = false; // No level-ups (level 30s excluded)
+    if (
+        totallevel < 30 &&
+        seen - levelup > 1000 * 60 * 60 * 24 * LEVELUP_DAY_THRESHOLD
+    )
+        isactive = false; // No level-ups (level 30s excluded)
 
     return isactive;
 };

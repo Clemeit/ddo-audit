@@ -6,7 +6,6 @@ import CanvasLfmPanel from "./CanvasLfmPanel";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
-import { IsTheBigDay } from "../../services/TheBigDay";
 
 const Panel = (props) => {
     // Download canvas
@@ -95,11 +94,7 @@ const Panel = (props) => {
                     serverstatus = false;
                     setServerStatus(false);
                 }
-                if (
-                    IsTheBigDay() ||
-                    serverstatus === true ||
-                    ignoreServerStatusRef.current
-                ) {
+                if (serverstatus === true || ignoreServerStatusRef.current) {
                     Fetch(
                         `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
                         5000 + failedAttemptRef.current * 500

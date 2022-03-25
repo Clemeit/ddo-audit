@@ -10,7 +10,6 @@ import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
-import { IsTheBigDay } from "../../services/TheBigDay";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
@@ -25,10 +24,6 @@ const Grouping = () => {
         "Wayfinder",
         // "Hardcore",
     ];
-
-    if (IsTheBigDay()) {
-        SERVER_NAMES = ["Eberron Mega-Server"];
-    }
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
@@ -195,10 +190,7 @@ const Grouping = () => {
         if (raidgroups.length !== 0) {
             return raidgroups.map((group, i) => (
                 <Link
-                    to={
-                        "/grouping/" +
-                        (IsTheBigDay() ? "megaserver" : group.ServerName)
-                    }
+                    to={"/grouping/" + group.ServerName}
                     key={i}
                     className="nav-box shrinkable"
                     onClick={() => {
@@ -214,12 +206,8 @@ const Grouping = () => {
                         className="content-option-description"
                         style={{ fontSize: "1.5rem" }}
                     >
-                        <span className="lfm-number">
-                            {IsTheBigDay()
-                                ? "Eberron Mega-Server"
-                                : group.ServerName}
-                        </span>{" "}
-                        | {group.Leader.Name} |{" "}
+                        <span className="lfm-number">{group.ServerName}</span> |{" "}
+                        {group.Leader.Name} |{" "}
                         <span style={{ whiteSpace: "nowrap" }}>
                             {`${group.Members.length + 1} member${
                                 group.Members.length + 1 !== 1 ? "s" : ""
@@ -268,43 +256,28 @@ const Grouping = () => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
-                        {IsTheBigDay() ? (
+                        {SERVER_NAMES.map((name, i) => (
                             <Link
-                                to={"/grouping/megaserver"}
+                                to={"/grouping/" + name.toLowerCase()}
+                                key={i}
                                 className="nav-box shrinkable"
                             >
                                 <div className="nav-box-title">
-                                    <OnlineSVG />
+                                    {serverStatusData
+                                        ? GetSVG(
+                                              serverStatusData.Worlds.filter(
+                                                  (server) =>
+                                                      server.Name === name
+                                              )[0]
+                                          )
+                                        : GetSVG()}
                                     <h2 className="content-option-title">
-                                        Eberron Mega-Server
+                                        {name}
                                     </h2>
                                 </div>
-                                {getMegaServerDescription()}
+                                {GetServerDescription(name)}
                             </Link>
-                        ) : (
-                            SERVER_NAMES.map((name, i) => (
-                                <Link
-                                    to={"/grouping/" + name.toLowerCase()}
-                                    key={i}
-                                    className="nav-box shrinkable"
-                                >
-                                    <div className="nav-box-title">
-                                        {serverStatusData
-                                            ? GetSVG(
-                                                  serverStatusData.Worlds.filter(
-                                                      (server) =>
-                                                          server.Name === name
-                                                  )[0]
-                                              )
-                                            : GetSVG()}
-                                        <h2 className="content-option-title">
-                                            {name}
-                                        </h2>
-                                    </div>
-                                    {GetServerDescription(name)}
-                                </Link>
-                            ))
-                        )}
+                        ))}
                     </div>
                 </ContentCluster>
                 <ContentCluster title="Current Raids">

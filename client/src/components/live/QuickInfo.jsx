@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
-import { IsTheBigDay } from "../../services/TheBigDay";
 import ContentCluster from "../global/ContentCluster";
 
 const QuickInfo = (props) => {
@@ -237,86 +236,45 @@ const QuickInfo = (props) => {
                 {JSON.stringify(FAQ_STRUCTURED)}
             </script>
             <ContentCluster title="Quick Info">
-                {IsTheBigDay() ? (
-                    <ul
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            paddingLeft: "20px",
-                            color: "var(--text)",
-                        }}
-                    >
-                        <li>The default server is {getMegaServerLink()}</li>
-                        <li>
-                            The most populated server is {getMegaServerLink()}
-                        </li>
-                        <li>
-                            In the last quarter, we've seen{" "}
-                            <span className="population-number">
-                                2,147,483,647
-                            </span>{" "}
-                            unique characters and{" "}
-                            <span className="lfm-number">over 9000</span> unique
-                            guilds
-                        </li>
-                    </ul>
-                ) : (
-                    <ul
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            paddingLeft: "20px",
-                            color: "var(--text)",
-                        }}
-                    >
-                        <li>
-                            The default server is{" "}
-                            {props.serverstatus === null
+                <ul
+                    style={{
+                        fontSize: "1.5rem",
+                        lineHeight: "normal",
+                        paddingLeft: "20px",
+                        color: "var(--text)",
+                    }}
+                >
+                    <li>
+                        The default server is{" "}
+                        {props.serverstatus === null
+                            ? "(Loading...)"
+                            : getDefaultServerLink()}
+                    </li>
+                    <li>
+                        The most populated server is{" "}
+                        {props.serverdistribution === null
+                            ? "(Loading...)"
+                            : getMostPopulatedServerLink()}
+                    </li>
+                    <li>
+                        In the last quarter, we've seen{" "}
+                        <span className="population-number">
+                            {props.unique === null
                                 ? "(Loading...)"
-                                : getDefaultServerLink()}
-                        </li>
-                        <li>
-                            The most populated server is{" "}
-                            {props.serverdistribution === null
+                                : GetTotalUniquePlayerCount()}
+                        </span>{" "}
+                        unique characters and{" "}
+                        <span className="lfm-number">
+                            {props.unique === null
                                 ? "(Loading...)"
-                                : getMostPopulatedServerLink()}
-                        </li>
-                        <li>
-                            In the last quarter, we've seen{" "}
-                            <span className="population-number">
-                                {props.unique === null
-                                    ? "(Loading...)"
-                                    : GetTotalUniquePlayerCount()}
-                            </span>{" "}
-                            unique characters and{" "}
-                            <span className="lfm-number">
-                                {props.unique === null
-                                    ? "(Loading...)"
-                                    : GetTotalUniqueGuildCount()}
-                            </span>{" "}
-                            unique guilds
-                        </li>
-                    </ul>
-                )}
+                                : GetTotalUniqueGuildCount()}
+                        </span>{" "}
+                        unique guilds
+                    </li>
+                </ul>
             </ContentCluster>
             <ContentCluster title="Of Special Note">
-                {IsTheBigDay() ? (
-                    <p
-                        style={{
-                            textAlign: "justify",
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
-                        <b>April 1, {new Date().getFullYear()}:</b>{" "}
-                        <span>
-                            Big news! The developers of Dungeons and Dragons
-                            Online have decided to merge every server into one
-                            mega-server! Check it out!
-                        </span>
-                    </p>
-                ) : news == null ? (
+                {news == null ? (
                     <span
                         style={{
                             textAlign: "justify",
