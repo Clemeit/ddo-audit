@@ -250,7 +250,10 @@ const ChartLine = (props) => {
                             props.markedEvents && [
                                 ...props.markedEvents.map((me, i) => ({
                                     axis: "x",
-                                    value: new Date(me.date),
+                                    value:
+                                        props.markedEventsType === "numeric"
+                                            ? me.date
+                                            : new Date(me.date),
                                     lineStyle: {
                                         stroke: me.color,
                                         strokeWidth: me.width,

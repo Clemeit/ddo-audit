@@ -162,6 +162,21 @@ const Directory = (props) => {
     const [raceDistributionDataBanks, setRaceDistributionDataBanks] =
         React.useState(false);
 
+    const [timeNowEvent, setTimeNowEvent] = React.useState([]);
+
+    React.useEffect(() => {
+        setTimeNowEvent([
+            {
+                id: 0,
+                date: (((new Date().getUTCHours() - 5) % 24) + 24) % 24,
+                type: "timeevent",
+                message: "Current Time EST",
+                color: "#FF0000",
+                width: 4,
+            },
+        ]);
+    }, []);
+
     React.useEffect(() => {
         Fetch(
             `https://api.ddoaudit.com/population/serverdistribution${
@@ -520,6 +535,8 @@ const Directory = (props) => {
                                 : "LFM Count"
                         }
                         data={hourlyDistributionData}
+                        markedEvents={timeNowEvent}
+                        markedEventsType="numeric"
                         noAnim={true}
                         title="Distribution"
                         marginBottom={60}

@@ -172,6 +172,21 @@ const ServersSpecific = () => {
         }
     }, [window.location.pathname]);
 
+    const [timeNowEvent, setTimeNowEvent] = React.useState([]);
+
+    React.useEffect(() => {
+        setTimeNowEvent([
+            {
+                id: 0,
+                date: (((new Date().getUTCHours() - 5) % 24) + 24) % 24,
+                type: "timeevent",
+                message: "Current Time EST",
+                color: "#FF0000",
+                width: 4,
+            },
+        ]);
+    }, []);
+
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [uniqueData, setUniqueData] = React.useState(null);
     const [currentData, setCurrentData] = React.useState(null);
@@ -343,6 +358,8 @@ const ServersSpecific = () => {
                         }
                         noAnim={true}
                         title="Distribution"
+                        markedEvents={timeNowEvent}
+                        markedEventsType="numeric"
                         marginBottom={60}
                         trendType=""
                         noArea={false}
