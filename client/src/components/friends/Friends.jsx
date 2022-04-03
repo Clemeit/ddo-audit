@@ -25,7 +25,7 @@ const Friends = (props) => {
         "Hardcore",
     ];
 
-    const [openPanels, setOpenPanels] = React.useState([]);
+    const [openPanels, setOpenPanels] = React.useState([<FriendsPanel />]);
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
