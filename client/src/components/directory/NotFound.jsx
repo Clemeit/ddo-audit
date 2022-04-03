@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import ContentCluster from "../global/ContentCluster";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 
-const NotFount = () => {
+const NotFound = () => {
     const TITLE = "DDO Audit | 404 Page Not Found";
 
     return (
@@ -95,4 +95,4 @@ const NotFount = () => {
     );
 };
 
-export default NotFount;
+export default NotFound;

@@ -36,7 +36,7 @@ import Who from "./components/who/Who";
 import WhoSpecific from "./components/who/WhoSpecific";
 import Live from "./components/live/Live";
 import About from "./components/about/About";
-import NotFound from "./components/directory/NotFount";
+import NotFound from "./components/directory/NotFound";
 // import ActivityTesting from "./components/dev/ActivityTesting";
 
 // Lazy loads (uncommon pages)
