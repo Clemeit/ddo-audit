@@ -3,6 +3,7 @@ import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
+import { ReactComponent as FriendsSVG } from "../../assets/global/friends.svg";
 import { ReactComponent as QuestsSVG } from "../../assets/global/quests.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
@@ -50,7 +51,6 @@ const Directory = (props) => {
                     description:
                         "Content popularity, average duration, and XP/minute.",
                     to: "/quests",
-                    beta: true,
                 },
                 // {
                 //     icon: (
@@ -90,6 +90,16 @@ const Directory = (props) => {
                     description:
                         "Explore a list of online players with a live Who panel.",
                     to: "/who",
+                },
+                {
+                    icon: (
+                        <FriendsSVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Friends List",
+                    description:
+                        "Build your own friends list to quickly see who's online.",
+                    to: "/friends",
+                    new: true,
                 },
             ],
         },
@@ -267,6 +277,11 @@ const Directory = (props) => {
                                                 {option.beta != null && (
                                                     <div className="beta-tag">
                                                         BETA
+                                                    </div>
+                                                )}
+                                                {option.new != null && (
+                                                    <div className="new-tag">
+                                                        NEW
                                                     </div>
                                                 )}
                                                 {option.soon != null && (

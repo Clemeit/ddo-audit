@@ -753,7 +753,7 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster title="See Also...">
                     <div className="content-cluster-options">
-                        <Link
+                        {/* <Link
                             to="/live"
                             className="nav-box"
                             style={{
@@ -771,7 +771,7 @@ const Directory = (props) => {
                                 Server status, most populated server, and
                                 default server.
                             </p>
-                        </Link>
+                        </Link> */}
                         <Link
                             to="/trends"
                             className="nav-box"

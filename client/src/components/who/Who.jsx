@@ -6,6 +6,7 @@ import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import { ReactComponent as FriendsSVG } from "../../assets/global/friends.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
@@ -186,6 +187,30 @@ const Who = (props) => {
                                 {GetServerDescription(name)}
                             </Link>
                         ))}
+                    </div>
+                </ContentCluster>
+                <ContentCluster title="See Also...">
+                    <div className="content-cluster-options">
+                        <Link
+                            to="/friends"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <FriendsSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">
+                                    Friends List
+                                    <div className="new-tag">NEW</div>
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                Build your own friends list to quickly see who's
+                                online.
+                            </p>
+                        </Link>
                     </div>
                 </ContentCluster>
             </div>

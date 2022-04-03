@@ -48,6 +48,7 @@ const Community = lazy(() => import("./components/community/Community"));
 // const Guilds = lazy(() => import("./components/guilds/Guilds"));
 const Api = lazy(() => import("./components/api/Api"));
 const Timeline = lazy(() => import("./components/about/Timeline"));
+const Friends = lazy(() => import("./components/friends/Friends"));
 // const CharacterSelect = lazy(() =>
 //     import("./components/grouping/CharacterSelect")
 // );
@@ -98,6 +99,9 @@ export default () => {
                         </Route>
                         <Route exact path="/who">
                             <Who />
+                        </Route>
+                        <Route exact path="/friends">
+                            <Friends />
                         </Route>
                         <Route exact path="/trends">
                             <Trends />
