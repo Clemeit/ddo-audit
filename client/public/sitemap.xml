@@ -9,25 +9,187 @@
    <url>
       <loc>https://www.ddoaudit.com/live</loc>
       <lastmod>2022-02-08T00:00:00+00:00</lastmod>
-      <changefreq>daily</changefreq>
+      <changefreq>always</changefreq>
       <priority>1</priority>
    </url>
    <url>
       <loc>https://www.ddoaudit.com/servers</loc>
       <lastmod>2022-02-08T00:00:00+00:00</lastmod>
       <changefreq>daily</changefreq>
-      <priority>0.7</priority>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/argonnessen</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/cannith</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/ghallanda</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/khyber</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/orien</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/sarlona</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/thelanis</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/wayfinder</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/servers/hardcore</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
    </url>
    <url>
       <loc>https://www.ddoaudit.com/grouping</loc>
       <lastmod>2022-02-08T00:00:00+00:00</lastmod>
-      <changefreq>weekly</changefreq>
+      <changefreq>always</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/argonnessen</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/cannith</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/ghallanda</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/khyber</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/orien</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/sarlona</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/thelanis</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/wayfinder</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/grouping/hardcore</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
       <priority>1</priority>
    </url>
    <url>
       <loc>https://www.ddoaudit.com/who</loc>
       <lastmod>2022-02-08T00:00:00+00:00</lastmod>
-      <changefreq>weekly</changefreq>
+      <changefreq>always</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/argonnessen</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/cannith</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/ghallanda</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/khyber</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/orien</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/sarlona</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/thelanis</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/wayfinder</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
+   </url>
+   <url>
+      <loc>https://www.ddoaudit.com/who/hardcore</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
       <priority>1</priority>
    </url>
    <url>

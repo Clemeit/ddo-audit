@@ -106,15 +106,6 @@ const PanelSelectPopup = (props) => {
                             {`Select a ${
                                 panelType === null ? "Panel" : "Server"
                             }`}
-                            <div
-                                className="beta-tag"
-                                style={{
-                                    height: "min-content",
-                                    marginLeft: "10px",
-                                }}
-                            >
-                                BETA
-                            </div>
                         </div>
                     }
                     noLink={true}
