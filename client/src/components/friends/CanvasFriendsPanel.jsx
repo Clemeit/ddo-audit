@@ -42,6 +42,21 @@ const CanvasFriendsPanel = (props) => {
         if (x >= 471 && x < 668 && y >= 147 && y < 171) {
             props.handleSort("guild");
         }
+
+        if (x >= 610 && x < 672 && y >= 72 && y < 98) {
+            props.addName();
+        }
+
+        if (x >= 294 && x < 407 && y >= 0 && y < 60) {
+            props.removePlayer();
+            return;
+        }
+
+        if (x >= 28 && x < 668 && y >= 172) {
+            props.handleSelectPlayer(Math.floor((y - 172) / PLAYER_HEIGHT));
+        } else {
+            props.handleSelectPlayer(-1);
+        }
     }
 
     function handleCanvasResize() {
@@ -167,10 +182,22 @@ const CanvasFriendsPanel = (props) => {
 
                 // Draw background gradient:
                 var grad = ctx.createLinearGradient(x, y, x, y + height);
-                grad.addColorStop(0, "#3b3b25");
-                grad.addColorStop(0.25, "#4c4a31");
-                grad.addColorStop(0.75, "#4c4a31");
-                grad.addColorStop(1, "#3b3b25");
+                grad.addColorStop(
+                    0,
+                    i === props.selectedPlayerIndex ? "#5b5b45" : "#3b3b25"
+                );
+                grad.addColorStop(
+                    0.25,
+                    i === props.selectedPlayerIndex ? "#5b5b45" : "#4c4a31"
+                );
+                grad.addColorStop(
+                    0.75,
+                    i === props.selectedPlayerIndex ? "#5b5b45" : "#4c4a31"
+                );
+                grad.addColorStop(
+                    1,
+                    i === props.selectedPlayerIndex ? "#5b5b45" : "#3b3b25"
+                );
                 ctx.fillStyle = grad;
                 ctx.fillRect(x, y, width, height);
 
@@ -246,6 +273,20 @@ const CanvasFriendsPanel = (props) => {
                 ctx.textAlign = "left";
                 ctx.textBaseline = "middle";
                 ctx.fillText(player.Name, x + 68, y + 21);
+                ctx.fillStyle = "#9c9881";
+                ctx.textAlign = "right";
+                const namewidth = ctx.measureText(player.Name).width;
+                if (namewidth > 100) {
+                    ctx.fillText(
+                        `[${player.Server.slice(0, 1)}]`,
+                        x + 265,
+                        y + 21
+                    );
+                } else {
+                    ctx.fillText(`[${player.Server}]`, x + 265, y + 21);
+                }
+                ctx.textAlign = "left";
+                ctx.fillStyle = "#f6f1d3";
 
                 // Draw classes:
                 ctx.font = "13px Arial";
@@ -551,6 +592,7 @@ const CanvasFriendsPanel = (props) => {
             <input
                 id="player-input"
                 className="who-filter-input"
+                autoComplete="off"
                 style={{
                     left: `${(80 * canvasWidth) / PANEL_WIDTH}px`,
                     top: computeInputTop(),
@@ -563,6 +605,11 @@ const CanvasFriendsPanel = (props) => {
                 }}
                 value={props.playerInput}
                 onChange={(e) => props.handlePlayerInput(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        props.addName();
+                    }
+                }}
             />
             {/* <input
                 id="comment-input"
