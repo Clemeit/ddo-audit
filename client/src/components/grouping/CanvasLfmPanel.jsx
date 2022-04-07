@@ -1057,6 +1057,35 @@ const CanvasLfmPanel = (props) => {
             let quest = group.Quest;
             let row = 1;
 
+            if (group.Guess) {
+                ctx.fillStyle = "#d3f6f6";
+                drawOverlayBackground(row);
+                ctx.textAlign = "center";
+                ctx.font = "italic 15px Arial";
+                ctx.fillText(
+                    "The leader has not selected a quest.",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+
+                drawOverlayBackground(row);
+                ctx.fillText(
+                    "This is the quest we think they're running",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+                drawOverlayBackground(row);
+                ctx.fillText(
+                    "based on their location and comment.",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+                ctx.fillStyle = "white";
+            }
+
             if (quest.Name != null) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Quest", row); // 1-based index
