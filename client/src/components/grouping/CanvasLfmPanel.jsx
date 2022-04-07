@@ -499,7 +499,7 @@ const CanvasLfmPanel = (props) => {
                         : "#95927e";
                     ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillText(
-                        "(" + group.Difficulty + ")",
+                        "(" + getGroupDifficulty(group) + ")",
                         489,
                         top -
                             4 +
@@ -1203,6 +1203,23 @@ const CanvasLfmPanel = (props) => {
             }
             lines.push(currentLine);
             return lines;
+        }
+
+        // Helper function for getting group difficulty
+        function getGroupDifficulty(group) {
+            if (group.Difficulty != "Reaper") {
+                return group.Difficulty || "";
+            }
+
+            let sanitized = group.Comment.toLowerCase();
+            let pattern = /r(\d\+?)/;
+            if (pattern.test(sanitized)) {
+                // repear specified
+                let num = pattern.exec(sanitized);
+                return `Reaper ${num[1]}`;
+            }
+
+            return "Reaper";
         }
 
         // Helper function for getting race icon position
