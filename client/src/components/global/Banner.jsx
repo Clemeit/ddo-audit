@@ -79,7 +79,7 @@ const Banner = (props) => {
         if (response === "Like") {
             set_voteMessage("Thanks for your feedback!");
         } else {
-            set_voteMessage("We welcome your suggestions!");
+            set_voteMessage("I welcome your suggestions!");
         }
     }
 
@@ -185,7 +185,7 @@ const Banner = (props) => {
                                         style={{
                                             padding:
                                                 voteMessage ===
-                                                "We welcome your suggestions!"
+                                                "I welcome your suggestions!"
                                                     ? "17px 25px"
                                                     : "",
                                         }}
