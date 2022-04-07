@@ -468,9 +468,13 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
-                        ? "#f6f1d3"
+                        ? group.Guess
+                            ? "#d3f6f6"
+                            : "#f6f1d3"
                         : "#988f80";
-                    ctx.font = `${18 + props.fontModifier}px Arial`;
+                    ctx.font = `${group.Guess ? "italic " : ""}${
+                        18 + props.fontModifier
+                    }px Arial`;
                     ctx.textAlign = "center";
                     let textLines = wrapText(group.Quest.Name, 220);
                     if (textLines.length > 2 && props.fontModifier > 0) {
@@ -495,11 +499,13 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
-                        ? "#b6b193"
+                        ? group.Guess
+                            ? "#d3f6f6"
+                            : "#b6b193"
                         : "#95927e";
                     ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillText(
-                        "(" + group.Difficulty + ")",
+                        "(" + getGroupDifficulty(group) + ")",
                         489,
                         top -
                             4 +
@@ -1051,6 +1057,35 @@ const CanvasLfmPanel = (props) => {
             let quest = group.Quest;
             let row = 1;
 
+            if (group.Guess) {
+                ctx.fillStyle = "#d3f6f6";
+                drawOverlayBackground(row);
+                ctx.textAlign = "center";
+                ctx.font = "italic 15px Arial";
+                ctx.fillText(
+                    "The leader has not selected a quest.",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+
+                drawOverlayBackground(row);
+                ctx.fillText(
+                    "This is the quest we think they're running",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+                drawOverlayBackground(row);
+                ctx.fillText(
+                    "based on their location and comment.",
+                    cursorPosition[0] + 175,
+                    cursorPosition[1] + 3 + 20 * row - 6
+                );
+                row++;
+                ctx.fillStyle = "white";
+            }
+
             if (quest.Name != null) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Quest", row); // 1-based index
@@ -1203,6 +1238,62 @@ const CanvasLfmPanel = (props) => {
             }
             lines.push(currentLine);
             return lines;
+        }
+
+        // Helper function for getting group difficulty
+        function getGroupDifficulty(group) {
+            if (!group.Guess && group.Difficulty != "Reaper") {
+                return group.Difficulty;
+            }
+
+            let sanitized = group.Comment.toLowerCase();
+            let normalpattern = /(\ben\b)|(\bnormal\b)/;
+            let hardpattern = /(\beh\b)|(\bhard\b)/;
+            let elitepattern = /(\bee\b)|(\belite\b)/;
+
+            if (group.Guess) {
+                if (normalpattern.test(sanitized)) {
+                    return "Normal";
+                }
+                if (hardpattern.test(sanitized)) {
+                    return "Hard";
+                }
+                if (elitepattern.test(sanitized)) {
+                    return "Elite";
+                }
+            }
+
+            let skullpattern1 = /r(\d+\+?)/;
+            let skullpattern2 = /reaper (\d+\+?)/;
+            let skullpattern3 = /(\d+\+?) skull/;
+
+            let skullcount = 0;
+            if (skullpattern1.test(sanitized)) {
+                let num = skullpattern1.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (skullpattern2.test(sanitized)) {
+                let num = skullpattern2.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (skullpattern3.test(sanitized)) {
+                let num = skullpattern3.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (+skullcount !== 0) {
+                if (+skullcount > 10) {
+                    skullcount = 9001;
+                }
+                return `Reaper ${skullcount}`;
+            }
+
+            if (group.Guess) {
+                return "Normal";
+            }
+            return "Reaper";
         }
 
         // Helper function for getting race icon position
