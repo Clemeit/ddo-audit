@@ -1218,19 +1218,16 @@ const CanvasLfmPanel = (props) => {
 
             let skullcount = 0;
             if (pattern1.test(sanitized)) {
-                // repear specified
                 let num = pattern1.exec(sanitized);
                 skullcount = num[1];
             }
 
             if (pattern2.test(sanitized)) {
-                // repear specified
                 let num = pattern2.exec(sanitized);
                 skullcount = num[1];
             }
 
             if (pattern3.test(sanitized)) {
-                // repear specified
                 let num = pattern3.exec(sanitized);
                 skullcount = num[1];
             }
