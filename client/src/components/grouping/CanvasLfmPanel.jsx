@@ -1212,11 +1212,34 @@ const CanvasLfmPanel = (props) => {
             }
 
             let sanitized = group.Comment.toLowerCase();
-            let pattern = /r(\d\+?)/;
-            if (pattern.test(sanitized)) {
+            let pattern1 = /r(\d+\+?)/;
+            let pattern2 = /reaper (\d+\+?)/;
+            let pattern3 = /(\d+\+?) skull/;
+
+            let skullcount = 0;
+            if (pattern1.test(sanitized)) {
                 // repear specified
-                let num = pattern.exec(sanitized);
-                return `Reaper ${num[1]}`;
+                let num = pattern1.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (pattern2.test(sanitized)) {
+                // repear specified
+                let num = pattern2.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (pattern3.test(sanitized)) {
+                // repear specified
+                let num = pattern3.exec(sanitized);
+                skullcount = num[1];
+            }
+
+            if (+skullcount !== 0) {
+                if (+skullcount > 10) {
+                    skullcount = 9001;
+                }
+                return `Reaper ${skullcount}`;
             }
 
             return "Reaper";
