@@ -468,9 +468,13 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
-                        ? "#f6f1d3"
+                        ? group.Guess
+                            ? "#d3f6f6"
+                            : "#f6f1d3"
                         : "#988f80";
-                    ctx.font = `${18 + props.fontModifier}px Arial`;
+                    ctx.font = `${group.Guess ? "italic " : ""}${
+                        18 + props.fontModifier
+                    }px Arial`;
                     ctx.textAlign = "center";
                     let textLines = wrapText(group.Quest.Name, 220);
                     if (textLines.length > 2 && props.fontModifier > 0) {
@@ -495,7 +499,9 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
-                        ? "#b6b193"
+                        ? group.Guess
+                            ? "#d3f6f6"
+                            : "#b6b193"
                         : "#95927e";
                     ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillText(
@@ -1207,28 +1213,44 @@ const CanvasLfmPanel = (props) => {
 
         // Helper function for getting group difficulty
         function getGroupDifficulty(group) {
-            if (group.Difficulty != "Reaper") {
-                return group.Difficulty || "";
+            if (!group.Guess && group.Difficulty != "Reaper") {
+                return group.Difficulty;
             }
 
             let sanitized = group.Comment.toLowerCase();
-            let pattern1 = /r(\d+\+?)/;
-            let pattern2 = /reaper (\d+\+?)/;
-            let pattern3 = /(\d+\+?) skull/;
+            let normalpattern = /(\ben\b)|(\bnormal\b)/;
+            let hardpattern = /(\beh\b)|(\bhard\b)/;
+            let elitepattern = /(\bee\b)|(\belite\b)/;
+
+            if (group.Guess) {
+                if (normalpattern.test(sanitized)) {
+                    return "Normal";
+                }
+                if (hardpattern.test(sanitized)) {
+                    return "Hard";
+                }
+                if (elitepattern.test(sanitized)) {
+                    return "Elite";
+                }
+            }
+
+            let skullpattern1 = /r(\d+\+?)/;
+            let skullpattern2 = /reaper (\d+\+?)/;
+            let skullpattern3 = /(\d+\+?) skull/;
 
             let skullcount = 0;
-            if (pattern1.test(sanitized)) {
-                let num = pattern1.exec(sanitized);
+            if (skullpattern1.test(sanitized)) {
+                let num = skullpattern1.exec(sanitized);
                 skullcount = num[1];
             }
 
-            if (pattern2.test(sanitized)) {
-                let num = pattern2.exec(sanitized);
+            if (skullpattern2.test(sanitized)) {
+                let num = skullpattern2.exec(sanitized);
                 skullcount = num[1];
             }
 
-            if (pattern3.test(sanitized)) {
-                let num = pattern3.exec(sanitized);
+            if (skullpattern3.test(sanitized)) {
+                let num = skullpattern3.exec(sanitized);
                 skullcount = num[1];
             }
 
@@ -1239,6 +1261,9 @@ const CanvasLfmPanel = (props) => {
                 return `Reaper ${skullcount}`;
             }
 
+            if (group.Guess) {
+                return "Normal";
+            }
             return "Reaper";
         }
 
