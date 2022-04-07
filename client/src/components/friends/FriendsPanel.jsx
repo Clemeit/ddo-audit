@@ -2,6 +2,7 @@ import React from "react";
 import CanvasFriendsPanel from "./CanvasFriendsPanel";
 import { Post } from "../../services/DataLoader";
 import SelectFriend from "./SelectFriend";
+import LoadingOverlay from "../quests/LoadingOverlay";
 
 const FriendsPanel = (props) => {
     const [idList, setIdList] = React.useState([]);
@@ -18,11 +19,14 @@ const FriendsPanel = (props) => {
     const sortMethodRef = React.useRef(sortMethod);
     const [sortDirection, setSortDirection] = React.useState("ascending");
     const [hideOfflineFriends, setHideOfflineFriends] = React.useState(false);
+    const [hideServerNames, setHideServerNames] = React.useState(false);
     const [selectionScreenVisible, setSelectionScreenVisible] =
         React.useState(false);
     const [friendSelectList, setFriendSelectList] = React.useState([]);
     const [selectedPlayerIndex, setSelectedPlayerIndex] = React.useState(-1);
     const selectedPlayerIndexRef = React.useRef(selectedPlayerIndex);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const MAX_LIST_SIZE = 50;
 
     React.useEffect(() => {
         // Load friends list from localstorage
@@ -40,16 +44,26 @@ const FriendsPanel = (props) => {
     }, []);
 
     React.useEffect(() => {
-        if (idList == null || !idList.length) return;
-        console.log(idList);
+        if (idList == null || !idList.length) {
+            setFriendsList([]);
+            return;
+        }
+        setIsLoading(true);
         let body = { ids: idList };
-        Post("http://localhost:23451/friends", body, 5000).then((res) => {
-            setFriendsList(res);
-        });
+        Post("https://api.ddoaudit.com/friends", body, 5000)
+            .then((res) => {
+                setFriendsList(res);
+            })
+            .catch(() => {
+                setFriendsList([]);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }, [idList]);
 
     React.useEffect(() => {
-        if (!friendsList) return;
+        if (!friendsList || !friendsList.length) return;
         let finaldata = friendsList.filter(
             (friend) => friend.Online || !hideOfflineFriends
         );
@@ -58,7 +72,9 @@ const FriendsPanel = (props) => {
         finaldata.sort((a, b) => {
             switch (sortMethod) {
                 case "inparty":
-                    return (b.InParty - a.InParty) * sortmod;
+                    return (
+                        (b.InParty * b.Online - a.InParty * a.Online) * sortmod
+                    );
                 case "name":
                     return a.Name.localeCompare(b.Name) * sortmod;
                 case "class":
@@ -103,25 +119,32 @@ const FriendsPanel = (props) => {
     }
 
     function addName() {
+        setIsLoading(true);
         const body = { name: playerInputValueRef.current };
-        console.log(body);
-        Post("http://localhost:23451/friends/add", body, 10000).then((res) => {
-            if (res.length > 1) {
-                setFriendSelectList(res);
-                setSelectionScreenVisible(true);
-            } else if (res.length === 1) {
-                addCharacterById(res[0].playerid);
-            } else {
-                alert("Player not found.");
-            }
-        });
+        Post("https://api.ddoaudit.com/friends/add", body, 10000)
+            .then((res) => {
+                if (res.characters.length + res.guilds.length > 1) {
+                    setFriendSelectList(res);
+                    setSelectionScreenVisible(true);
+                    setIsLoading(false);
+                } else if (res.characters.length === 1) {
+                    addCharacter(res.characters[0]);
+                } else if (res.guilds.length === 1) {
+                    addGuild(res.guilds[0]);
+                } else {
+                    alert("Player or guild not found.");
+                }
+            })
+            .catch(() => {
+                setIsLoading(false);
+            });
     }
 
     function closeSelectFriend() {
         setSelectionScreenVisible(false);
     }
 
-    function addCharacterById(id) {
+    function addCharacter(character) {
         const list = localStorage.getItem("friends-list");
         let parsed = [];
         try {
@@ -133,10 +156,79 @@ const FriendsPanel = (props) => {
         } catch (e) {
             parsed = [];
         }
-        parsed.push(id);
-        setIdList(parsed);
-        localStorage.setItem("friends-list", JSON.stringify(parsed));
-        setPlayerInputValue("");
+        if (parsed.length + 1 > MAX_LIST_SIZE) {
+            alert("You may only have 50 players on your friends list.");
+        } else {
+            if (!idList.includes(character.playerid)) {
+                parsed.push(character.playerid);
+                setIdList(parsed);
+                localStorage.setItem("friends-list", JSON.stringify(parsed));
+            }
+            setPlayerInputValue("");
+        }
+        setIsLoading(false);
+    }
+
+    function addCharactersByIds(ids) {
+        const list = localStorage.getItem("friends-list");
+        let parsed = [];
+        try {
+            parsed = JSON.parse(list);
+            if (parsed && typeof parsed === "object") {
+            } else {
+                parsed = [];
+            }
+        } catch (e) {
+            parsed = [];
+        }
+
+        if (parsed.length >= MAX_LIST_SIZE) {
+            alert(
+                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+            );
+            return;
+        }
+
+        if (parsed.length + ids.length > MAX_LIST_SIZE) {
+            alert(
+                `You may only have ${MAX_LIST_SIZE} players on your friends list. Adding the first ${
+                    MAX_LIST_SIZE - parsed.length
+                } players.`
+            );
+            ids.slice(0, MAX_LIST_SIZE - parsed.length).forEach((id) => {
+                if (!idList.includes(id)) {
+                    parsed.push(id);
+                }
+            });
+            setIdList(parsed);
+            localStorage.setItem("friends-list", JSON.stringify(parsed));
+            setPlayerInputValue("");
+        } else {
+            ids.forEach((id) => {
+                if (!idList.includes(id)) {
+                    parsed.push(id);
+                }
+            });
+            setIdList(parsed);
+            localStorage.setItem("friends-list", JSON.stringify(parsed));
+            setPlayerInputValue("");
+        }
+    }
+
+    function addGuild(guild) {
+        const body = { guild: guild.name, server: guild.server };
+        Post("https://api.ddoaudit.com/friends/add/guild", body, 10000)
+            .then((res) => {
+                if (res.length) {
+                    let ids = [];
+                    res.forEach((p) => ids.push(p.playerid));
+                    addCharactersByIds(ids);
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     function removePlayer() {
@@ -149,6 +241,7 @@ const FriendsPanel = (props) => {
         }
         let pidtoremove =
             filteredFriendsListRef.current[selectedPlayerIndexRef.current].Id;
+        console.log(pidtoremove, idListRef.current);
         const newidlist = idListRef.current.filter((id) => id !== pidtoremove);
         setIdList(newidlist);
         localStorage.setItem("friends-list", JSON.stringify(newidlist));
@@ -156,12 +249,18 @@ const FriendsPanel = (props) => {
 
     return (
         <div>
+            {isLoading && <LoadingOverlay message="Loading, please wait." />}
             {selectionScreenVisible && (
                 <SelectFriend
                     handleClose={() => closeSelectFriend()}
-                    characters={friendSelectList}
-                    characterSelected={(id) => {
-                        addCharacterById(id);
+                    data={friendSelectList}
+                    characterSelected={(character) => {
+                        addCharacter(character);
+                        closeSelectFriend();
+                        setFriendSelectList([]);
+                    }}
+                    guildSelected={(guild) => {
+                        addGuild(guild);
                         closeSelectFriend();
                         setFriendSelectList([]);
                     }}
@@ -191,6 +290,12 @@ const FriendsPanel = (props) => {
                             )
                         }
                         hideOfflineFriends={hideOfflineFriends}
+                        handleHideServerNames={() =>
+                            setHideServerNames(
+                                (hideServerNames) => !hideServerNames
+                            )
+                        }
+                        hideServerNames={hideServerNames}
                         handleSort={(value) => handleSort(value)}
                         playerInput={playerInputValue}
                         handlePlayerInput={(value) => {
@@ -204,6 +309,7 @@ const FriendsPanel = (props) => {
                             selectedPlayerIndexRef.current = index;
                         }}
                         removePlayer={() => removePlayer()}
+                        isLoading={isLoading}
                     />
                 </div>
             </div>

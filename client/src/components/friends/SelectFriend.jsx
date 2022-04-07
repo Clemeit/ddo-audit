@@ -39,7 +39,7 @@ const SelectFriend = (props) => {
                                 alignItems: "center",
                             }}
                         >
-                            {`Select a character`}
+                            Select a character or guild
                         </div>
                     }
                     noLink={true}
@@ -48,14 +48,12 @@ const SelectFriend = (props) => {
                     noMargin={true}
                 >
                     <span style={{ marginBottom: "0px", fontSize: "1.3rem" }}>
-                        {props.characters.map((character, i) => (
+                        {props.data.characters.map((character, i) => (
                             <div
                                 key={i}
                                 className="nav-box small"
                                 onClick={() => {
-                                    props.characterSelected(
-                                        character.playerid.toString()
-                                    );
+                                    props.characterSelected(character);
                                     close();
                                 }}
                             >
@@ -71,6 +69,29 @@ const SelectFriend = (props) => {
                                     </span>
                                     | Level {character.totallevel}{" "}
                                     {character.guild && `| ${character.guild}`}
+                                </span>
+                            </div>
+                        ))}
+                        {props.data.guilds.map((guild, i) => (
+                            <div
+                                key={i}
+                                className="nav-box small"
+                                onClick={() => {
+                                    props.guildSelected(guild);
+                                    close();
+                                }}
+                            >
+                                <h2
+                                    className="nav-box-title"
+                                    style={{ fontSize: "1.4rem" }}
+                                >
+                                    {guild.name}
+                                </h2>
+                                <span>
+                                    <span className="lfm-number">
+                                        {guild.server}{" "}
+                                    </span>
+                                    | {guild.membercount} members
                                 </span>
                             </div>
                         ))}

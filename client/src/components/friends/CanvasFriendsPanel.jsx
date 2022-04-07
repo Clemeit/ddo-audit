@@ -6,6 +6,8 @@ const CanvasFriendsPanel = (props) => {
     const spriteRef = React.useRef(null);
     const [canvasWidth, setCanvasWidth] = React.useState(0);
     const [isImageLoaded, setIsImageLoaded] = React.useState(false);
+    const playerDataRef = React.useRef(props.data);
+    playerDataRef.current = props.data;
 
     const PANEL_WIDTH = 706;
     const PLAYER_HEIGHT = 42;
@@ -17,6 +19,10 @@ const CanvasFriendsPanel = (props) => {
 
         if (x > 28 && x < 175 && y > 116 && y < 131) {
             props.handleHideOfflineFriends();
+        }
+
+        if (x > 198 && x < 345 && y > 116 && y < 131) {
+            props.handleHideServerNames();
         }
 
         if (x >= 28 && x < 48 && y >= 147 && y < 171) {
@@ -47,7 +53,13 @@ const CanvasFriendsPanel = (props) => {
             props.addName();
         }
 
-        if (x >= 294 && x < 407 && y >= 0 && y < 60) {
+        const removebtn =
+            (playerDataRef.current && playerDataRef.current.length
+                ? Math.max(playerDataRef.current.length, 4)
+                : 4) *
+                PLAYER_HEIGHT +
+            182;
+        if (x >= 294 && x < 407 && y >= removebtn && y < removebtn + 26) {
             props.removePlayer();
             return;
         }
@@ -96,9 +108,6 @@ const CanvasFriendsPanel = (props) => {
         if (!isImageLoaded) {
             return;
         }
-        if (props.data === null) {
-            return;
-        }
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d", { alpha: false });
@@ -121,8 +130,23 @@ const CanvasFriendsPanel = (props) => {
             ctx.drawImage(sprite, 0, 0, 706, 174, 0, 0, 706, 174);
 
             if (props.hideOfflineFriends)
-                ctx.drawImage(sprite, 258, 324, 16, 16, 28, 116, 16, 16);
-            else ctx.drawImage(sprite, 242, 324, 16, 16, 28, 116, 16, 16);
+                ctx.drawImage(sprite, 258, 289, 16, 16, 28, 116, 16, 16);
+            else ctx.drawImage(sprite, 242, 289, 16, 16, 28, 116, 16, 16);
+
+            if (props.hideServerNames)
+                ctx.drawImage(sprite, 258, 289, 16, 16, 198, 116, 16, 16);
+            else ctx.drawImage(sprite, 242, 289, 16, 16, 198, 116, 16, 16);
+
+            ctx.fillStyle =
+                props.data && props.data.length >= 50 ? "#ff5353" : "#f6f1d3";
+            ctx.font = 18 + "px 'Trebuchet MS'"; // 18px
+            ctx.textAlign = "right";
+            ctx.textBaseline = "middle";
+            ctx.fillText(
+                `${props.data ? props.data.length : "0"} / 50 friends`,
+                660,
+                130
+            );
         }
 
         function ClosePanel() {
@@ -131,13 +155,13 @@ const CanvasFriendsPanel = (props) => {
                 0,
                 231,
                 706,
-                93,
+                58,
                 0,
                 (props.data ? Math.max(props.data.length, 4) : 4) *
                     PLAYER_HEIGHT +
                     172,
                 706,
-                93
+                58
             );
         }
 
@@ -157,6 +181,13 @@ const CanvasFriendsPanel = (props) => {
                         PLAYER_HEIGHT
                     );
                 }
+            }
+            if (props.isLoading) {
+                ctx.fillStyle = "#f6f1d3";
+                ctx.font = 25 + "px 'Trebuchet MS'"; // 18px
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("Loading, please wait...", PANEL_WIDTH / 2, 250);
             }
         }
 
@@ -226,7 +257,7 @@ const CanvasFriendsPanel = (props) => {
                 ctx.drawImage(
                     sprite,
                     274 + (player.Online == 0 ? 12 : 0),
-                    324,
+                    289,
                     12,
                     12,
                     x + 25,
@@ -240,7 +271,7 @@ const CanvasFriendsPanel = (props) => {
                     ctx.drawImage(
                         sprite,
                         211,
-                        324,
+                        289,
                         16,
                         20,
                         x + 2,
@@ -273,20 +304,22 @@ const CanvasFriendsPanel = (props) => {
                 ctx.textAlign = "left";
                 ctx.textBaseline = "middle";
                 ctx.fillText(player.Name, x + 68, y + 21);
-                ctx.fillStyle = "#9c9881";
-                ctx.textAlign = "right";
-                const namewidth = ctx.measureText(player.Name).width;
-                if (namewidth > 100) {
-                    ctx.fillText(
-                        `[${player.Server.slice(0, 1)}]`,
-                        x + 265,
-                        y + 21
-                    );
-                } else {
-                    ctx.fillText(`[${player.Server}]`, x + 265, y + 21);
+                if (!props.hideServerNames) {
+                    ctx.fillStyle = "#9c9881";
+                    ctx.textAlign = "right";
+                    const namewidth = ctx.measureText(player.Name).width;
+                    if (namewidth > 100) {
+                        ctx.fillText(
+                            `[${player.Server.slice(0, 1)}]`,
+                            x + 265,
+                            y + 21
+                        );
+                    } else {
+                        ctx.fillText(`[${player.Server}]`, x + 265, y + 21);
+                    }
+                    ctx.textAlign = "left";
+                    ctx.fillStyle = "#f6f1d3";
                 }
-                ctx.textAlign = "left";
-                ctx.fillStyle = "#f6f1d3";
 
                 // Draw classes:
                 ctx.font = "13px Arial";
@@ -498,7 +531,7 @@ const CanvasFriendsPanel = (props) => {
                     ysrc = 72;
                     break;
             }
-            return [xsrc, ysrc + 324];
+            return [xsrc, ysrc + 289];
         }
 
         // Helper function for getting race icon position
@@ -571,9 +604,15 @@ const CanvasFriendsPanel = (props) => {
                     ysrc = 60;
                     break;
             }
-            return [xsrc + 108, ysrc + 324];
+            return [xsrc + 108, ysrc + 289];
         }
-    }, [props.data, isImageLoaded, props.hideOfflineFriends]);
+    }, [
+        props.data,
+        isImageLoaded,
+        props.hideOfflineFriends,
+        props.hideServerNames,
+        props.isLoading,
+    ]);
 
     return (
         <div
@@ -641,7 +680,7 @@ const CanvasFriendsPanel = (props) => {
                 height={
                     (props.data ? Math.max(props.data.length, 4) : 4) *
                         PLAYER_HEIGHT +
-                    265
+                    230
                 }
             />
         </div>
