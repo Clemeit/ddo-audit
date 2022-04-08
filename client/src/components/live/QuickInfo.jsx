@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
 import ContentCluster from "../global/ContentCluster";
+import FAQ from "./FAQ";
 
 const QuickInfo = (props) => {
     const FAQ_STRUCTURED = {
@@ -338,6 +339,12 @@ const QuickInfo = (props) => {
                     </Link>
                 )}
             </ContentCluster>
+            <FAQ
+                mostPopulatedServer={getMostPopulatedServerLink()}
+                defaultServer={getDefaultServerLink()}
+                uniquePlayerCount={GetTotalUniquePlayerCount()}
+                uniqueGuildCount={GetTotalUniqueGuildCount()}
+            />
         </>
     );
 };
