@@ -22,30 +22,12 @@ const QuickInfo = (props) => {
             },
             {
                 "@type": "Question",
-                name: "Which DDO server is the most populated?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `${getMostPopulatedServerLink(
-                        true
-                    )} is DDO's most populated server.`,
-                },
-            },
-            {
-                "@type": "Question",
                 name: "What is DDO's default server?",
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: `${getDefaultServerLink(
                         true
                     )} is currently DDO's default server and will have the most new players.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "What is DDO's player count?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `There have been ${GetTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
                 },
             },
             {
@@ -61,9 +43,17 @@ const QuickInfo = (props) => {
                 name: "What is DDO's best server?",
                 acceptedAnswer: {
                     "@type": "Answer",
-                    text: `The best server for you will depend on the number of players online during your preferred play time - check our 'Servers' page. If you're new to DDO, start on ${getDefaultServerLink(
+                    text: `The best server for you will depend on the number of players online during your preferred play time (check our "Servers" page for more information). If you're new to DDO, start on ${getDefaultServerLink(
                         true
                     )} which is currently DDO's default server.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is DDO down?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `Server status can be checked on our "Live" page. The data is updated every minute.`,
                 },
             },
             {
@@ -72,22 +62,6 @@ const QuickInfo = (props) => {
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${GetTotalUniquePlayerCount()} unique characters and ${GetTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "Is DDO down?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "Are the DDO servers offline?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
                 },
             },
         ],

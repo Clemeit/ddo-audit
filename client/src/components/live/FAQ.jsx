@@ -58,7 +58,7 @@ const FAQ = (props) => {
                 <p style={{ fontSize: "1.4rem" }}>
                     The best server for you will depend on the number of players
                     online during your preferred play time (check our "Servers"
-                    page for most information). If you're new to DDO, start on{" "}
+                    page for more information). If you're new to DDO, start on{" "}
                     {props.defaultServer} which is currently DDO's default
                     server.
                 </p>
