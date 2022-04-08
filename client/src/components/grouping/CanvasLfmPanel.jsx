@@ -1247,9 +1247,9 @@ const CanvasLfmPanel = (props) => {
             }
 
             let sanitized = group.Comment.toLowerCase();
-            let normalpattern = /(\ben\b)|(\bnormal\b)/;
-            let hardpattern = /(\beh\b)|(\bhard\b)/;
-            let elitepattern = /(\bee\b)|(\belite\b)/;
+            let normalpattern = /(\bln\b)(\ben\b)|(\bnormal\b)/;
+            let hardpattern = /(\blh\b)(\beh\b)|(\bhard\b)/;
+            let elitepattern = /(\ble\b)(\bee\b)|(\belite\b)/;
             let reaperpattern = /(\br\b)|(\breaper\b)/;
 
             if (group.Guess) {
