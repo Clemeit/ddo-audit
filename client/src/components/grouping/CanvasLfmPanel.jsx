@@ -1250,6 +1250,7 @@ const CanvasLfmPanel = (props) => {
             let normalpattern = /(\ben\b)|(\bnormal\b)/;
             let hardpattern = /(\beh\b)|(\bhard\b)/;
             let elitepattern = /(\bee\b)|(\belite\b)/;
+            let reaperpattern = /(\br\b)|(\breaper\b)/;
 
             if (group.Guess) {
                 if (normalpattern.test(sanitized)) {
@@ -1266,6 +1267,7 @@ const CanvasLfmPanel = (props) => {
             let skullpattern1 = /r(\d+\+?)/;
             let skullpattern2 = /reaper (\d+\+?)/;
             let skullpattern3 = /(\d+\+?) skull/;
+            let skullpattern4 = /(r\+)/;
 
             let skullcount = 0;
             if (skullpattern1.test(sanitized)) {
@@ -1283,6 +1285,11 @@ const CanvasLfmPanel = (props) => {
                 skullcount = num[1];
             }
 
+            if (skullpattern4.test(sanitized)) {
+                let num = skullpattern4.exec(sanitized);
+                skullcount = "1+";
+            }
+
             if (+skullcount !== 0) {
                 if (+skullcount > 10) {
                     skullcount = 9001;
@@ -1291,6 +1298,9 @@ const CanvasLfmPanel = (props) => {
             }
 
             if (group.Guess) {
+                if (reaperpattern.test(sanitized)) {
+                    return "Reaper";
+                }
                 return "Normal";
             }
             return "Reaper";
