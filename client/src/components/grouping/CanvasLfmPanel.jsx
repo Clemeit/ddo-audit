@@ -293,7 +293,49 @@ const CanvasLfmPanel = (props) => {
                     lfmheight = lfmHeight;
                 }
 
-                if (group.Eligible) {
+                if (isFeytwisted(group)) {
+                    let gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        panelWidth,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(0, "#a11d1d");
+                    gradient.addColorStop(0.2, "#a1a11d");
+                    gradient.addColorStop(0.4, "#1da11f");
+                    gradient.addColorStop(0.6, "#1d9aa1");
+                    gradient.addColorStop(0.8, "#1d1da1");
+                    gradient.addColorStop(1, "#8f1da1");
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
+
+                    gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        0,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(
+                        0,
+                        props.highVisibility ? "#30301e" : "#3b3b25"
+                    );
+                    gradient.addColorStop(
+                        0.25,
+                        props.highVisibility ? "#42402a" : "#4c4a31"
+                    );
+                    gradient.addColorStop(
+                        0.75,
+                        props.highVisibility ? "#42402a" : "#4c4a31"
+                    );
+                    gradient.addColorStop(
+                        1,
+                        props.highVisibility ? "#30301e" : "#3b3b25"
+                    );
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                } else if (group.Eligible) {
                     let gradient = ctx.createLinearGradient(
                         0,
                         top,
@@ -318,10 +360,11 @@ const CanvasLfmPanel = (props) => {
                     );
 
                     ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
                 } else {
                     ctx.fillStyle = "#150a06";
+                    ctx.fillRect(26, top, 802, lfmheight);
                 }
-                ctx.fillRect(26, top, 802, lfmheight);
 
                 ctx.beginPath();
                 ctx.strokeStyle = "#8f8d74";
@@ -1304,6 +1347,15 @@ const CanvasLfmPanel = (props) => {
                 return "Normal";
             }
             return "Reaper";
+        }
+
+        function isFeytwisted(group) {
+            if (
+                group.Comment.toLowerCase().includes("feytwisted") &&
+                group.Quest?.RequiredAdventurePack === "The Feywild"
+            )
+                return true;
+            return false;
         }
 
         // Helper function for getting race icon position
