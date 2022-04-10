@@ -507,7 +507,10 @@ const CanvasLfmPanel = (props) => {
                 }
 
                 // Draw quest
-                if (group.Quest != null) {
+                if (
+                    group.Quest != null &&
+                    (!group.Guess || props.showQuestGuesses)
+                ) {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
@@ -1141,7 +1144,7 @@ const CanvasLfmPanel = (props) => {
             let quest = group.Quest;
             let row = 1;
 
-            if (group.Guess) {
+            if (group.Guess && props.showQuestGuesses) {
                 ctx.fillStyle = "#d3f6f6";
                 drawOverlayBackground(row);
                 ctx.textAlign = "center";
@@ -1626,6 +1629,7 @@ const CanvasLfmPanel = (props) => {
         groupSelection.doubleClick,
         props.showCompletionPercentage,
         props.showMemberCount,
+        props.showQuestGuesses,
     ]);
 
     return (

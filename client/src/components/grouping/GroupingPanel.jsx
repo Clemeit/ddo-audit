@@ -46,6 +46,7 @@ const Panel = (props) => {
     const [showCompletionPercentage, setShowCompletionPercentage] =
         React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
+    const [showQuestGuesses, setShowQuestGuesses] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
 
@@ -306,6 +307,11 @@ const Panel = (props) => {
         setShowMemberCount(
             showmembercount !== null ? showmembercount === "true" : true
         );
+
+        let showquestguesses = localStorage.getItem("quest-guess");
+        setShowQuestGuesses(
+            showquestguesses !== null ? showquestguesses === "true" : true
+        );
     }, []);
 
     // Filter bar
@@ -559,6 +565,24 @@ const Panel = (props) => {
                                 />
                                 Show Member Count
                             </label>
+                            <label className="filter-panel-group-option">
+                                <input
+                                    className="input-radio"
+                                    name="questguess"
+                                    type="checkbox"
+                                    checked={showQuestGuesses}
+                                    onChange={() => {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "quest-guess",
+                                                !showQuestGuesses
+                                            );
+                                        }
+                                        setShowQuestGuesses(!showQuestGuesses);
+                                    }}
+                                />
+                                Show Quest Guesses
+                            </label>
                         </div>
                     </ContentCluster>
                 </div>
@@ -578,6 +602,7 @@ const Panel = (props) => {
                         handleSort={() => handleCanvasSort()}
                         showCompletionPercentage={showCompletionPercentage}
                         showMemberCount={showMemberCount}
+                        showQuestGuesses={showQuestGuesses}
                     />
                 ) : (
                     <div className="social-container">
