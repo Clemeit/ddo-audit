@@ -563,6 +563,42 @@ const CanvasLfmPanel = (props) => {
                     );
                 }
 
+                // Draw quest completion percentage
+                if (group.AdventureActive && group.Quest?.AverageTime) {
+                    // Draw timeline
+                    ctx.closePath();
+                    ctx.strokeStyle = "#80b6cf"; //"#02adfb";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(489 - 100, top + lfmheight - 10);
+                    ctx.lineTo(489 + 100, top + lfmheight - 10);
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw completion bar
+                    ctx.closePath();
+                    ctx.strokeStyle = "#4ba4cc"; //"#02adfb";
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(394, top + lfmheight - 10);
+                    // prettier-ignore
+                    ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / (group.Quest?.AverageTime / 60)), 190),
+                        top + lfmheight - 10
+                    );
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw average time marker
+                    ctx.closePath();
+                    ctx.strokeStyle = "#d48824"; //"#02adfb";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(564, top + lfmheight - 10 - 5);
+                    ctx.lineTo(564, top + lfmheight - 10 + 5);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+
                 // Draw race icon
                 let raceIconBounds = getRaceIconPosition(
                     group.Leader.Gender + " " + group.Leader.Race,
@@ -792,11 +828,9 @@ const CanvasLfmPanel = (props) => {
                         : "#02adfb";
                     ctx.textAlign = "center";
                     ctx.fillText(
-                        "Adventure Active: " +
-                            group.AdventureActive +
-                            (group.AdventureActive === 1
-                                ? " minute"
-                                : " minutes"),
+                        `Adventure Active: ${group.AdventureActive} minute${
+                            group.AdventureActive !== 1 ? "s" : ""
+                        }`,
                         200,
                         top + lfmheight - 10
                     );
@@ -1194,6 +1228,16 @@ const CanvasLfmPanel = (props) => {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Patron", row);
                 drawOverlayInfo(quest.Patron ?? "", row);
+                row++;
+            }
+
+            if (quest.AverageTime != null && quest.AverageTime) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Average Time", row);
+                drawOverlayInfo(
+                    `${Math.round(quest.AverageTime / 60)} minutes`,
+                    row
+                );
                 row++;
             }
 
