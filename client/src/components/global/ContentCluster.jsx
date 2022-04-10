@@ -27,7 +27,12 @@ const ContentCluster = (props) => {
             id={getId()}
             style={{
                 display: props.hidden ? "none" : "",
-                margin: props.noMargin ? "0px" : "",
+                margin: props.noMargin
+                    ? "0px"
+                    : props.smallMargin
+                    ? "10px"
+                    : "",
+                marginBottom: props.smallBottomMargin ? "25px" : "",
             }}
         >
             <h2 className="content-cluster-title">

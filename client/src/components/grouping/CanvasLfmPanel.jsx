@@ -489,7 +489,7 @@ const CanvasLfmPanel = (props) => {
                             );
                         }
                 } else {
-                    if (group.Members) {
+                    if (group.Members && props.showMemberCount) {
                         if (group.Members.length > 0) {
                             ctx.fillStyle = props.highVisibility
                                 ? "white"
@@ -564,7 +564,11 @@ const CanvasLfmPanel = (props) => {
                 }
 
                 // Draw quest completion percentage
-                if (group.AdventureActive && group.Quest?.AverageTime) {
+                if (
+                    group.AdventureActive &&
+                    group.Quest?.AverageTime &&
+                    props.showCompletionPercentage
+                ) {
                     // Draw timeline
                     ctx.closePath();
                     ctx.strokeStyle = "#80b6cf"; //"#02adfb";
@@ -1617,6 +1621,8 @@ const CanvasLfmPanel = (props) => {
         groupSelection.groupIndex,
         groupSelection.side,
         groupSelection.doubleClick,
+        props.showCompletionPercentage,
+        props.showMemberCount,
     ]);
 
     return (

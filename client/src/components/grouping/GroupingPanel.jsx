@@ -43,6 +43,9 @@ const Panel = (props) => {
     const [minimumLevel, setMinimumLevel] = React.useState(1);
     const [maximumLevel, setMaximumLevel] = React.useState(30);
     const [sortAscending, setSortAscending] = React.useState();
+    const [showCompletionPercentage, setShowCompletionPercentage] =
+        React.useState(true);
+    const [showMemberCount, setShowMemberCount] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
 
@@ -289,6 +292,20 @@ const Panel = (props) => {
 
         let fontmodifier = localStorage.getItem("font-modifier");
         setFontModifier(fontmodifier !== null ? +fontmodifier : 0);
+
+        let showcompletionpercentage = localStorage.getItem(
+            "completion-percentage"
+        );
+        setShowCompletionPercentage(
+            showcompletionpercentage !== null
+                ? showcompletionpercentage === "true"
+                : true
+        );
+
+        let showmembercount = localStorage.getItem("member-count");
+        setShowMemberCount(
+            showmembercount !== null ? showmembercount === "true" : true
+        );
     }, []);
 
     // Filter bar
@@ -347,7 +364,7 @@ const Panel = (props) => {
                         padding: "10px",
                     }}
                 >
-                    <ContentCluster title="Filter Groups">
+                    <ContentCluster title="Filter Groups" smallBottomMargin>
                         <div style={{ padding: "15px" }}>
                             <LevelRangeSlider
                                 handleChange={(e) => {
@@ -416,7 +433,7 @@ const Panel = (props) => {
                             </label>
                         </div>
                     </ContentCluster>
-                    <ContentCluster title="Accessibility">
+                    <ContentCluster title="Accessibility" smallBottomMargin>
                         <div
                             style={{
                                 display: "flex",
@@ -440,7 +457,7 @@ const Panel = (props) => {
                             <label className="filter-panel-group-option">
                                 <input
                                     className="input-radio"
-                                    name="classislook"
+                                    name="classiclook"
                                     type="checkbox"
                                     checked={alternativeLook}
                                     onChange={() => {
@@ -495,6 +512,55 @@ const Panel = (props) => {
                             </label>
                         </div>
                     </ContentCluster>
+                    <ContentCluster title="Add-ons" smallBottomMargin>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "left",
+                                flexDirection: "column",
+                                alignItems: "start",
+                            }}
+                        >
+                            <label className="filter-panel-group-option">
+                                <input
+                                    className="input-radio"
+                                    name="completionpercentage"
+                                    type="checkbox"
+                                    checked={showCompletionPercentage}
+                                    onChange={() => {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "completion-percentage",
+                                                !showCompletionPercentage
+                                            );
+                                        }
+                                        setShowCompletionPercentage(
+                                            !showCompletionPercentage
+                                        );
+                                    }}
+                                />
+                                Show Completion Progress Bar
+                            </label>
+                            <label className="filter-panel-group-option">
+                                <input
+                                    className="input-radio"
+                                    name="membercount"
+                                    type="checkbox"
+                                    checked={showMemberCount}
+                                    onChange={() => {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "member-count",
+                                                !showMemberCount
+                                            );
+                                        }
+                                        setShowMemberCount(!showMemberCount);
+                                    }}
+                                />
+                                Show Member Count
+                            </label>
+                        </div>
+                    </ContentCluster>
                 </div>
             </FilterBar>
             <div className="sr-only">
@@ -510,6 +576,8 @@ const Panel = (props) => {
                         fontModifier={fontModifier}
                         highVisibility={highVisibility}
                         handleSort={() => handleCanvasSort()}
+                        showCompletionPercentage={showCompletionPercentage}
+                        showMemberCount={showMemberCount}
                     />
                 ) : (
                     <div className="social-container">
