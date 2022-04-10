@@ -44,7 +44,7 @@ const Panel = (props) => {
     const [maximumLevel, setMaximumLevel] = React.useState(30);
     const [sortAscending, setSortAscending] = React.useState();
     const [showCompletionPercentage, setShowCompletionPercentage] =
-        React.useState(true);
+        React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
@@ -299,7 +299,7 @@ const Panel = (props) => {
         setShowCompletionPercentage(
             showcompletionpercentage !== null
                 ? showcompletionpercentage === "true"
-                : true
+                : false
         );
 
         let showmembercount = localStorage.getItem("member-count");
