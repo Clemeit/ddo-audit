@@ -586,7 +586,7 @@ const CanvasLfmPanel = (props) => {
                     ctx.beginPath();
                     ctx.moveTo(394, top + lfmheight - 10);
                     // prettier-ignore
-                    ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / (group.Quest?.AverageTime / 60)), 190),
+                    ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / group.Quest?.AverageTime ), 190),
                         top + lfmheight - 10
                     );
                     ctx.closePath();
@@ -824,17 +824,18 @@ const CanvasLfmPanel = (props) => {
 
                 // Draw active time
                 if (
-                    group.AdventureActive !== 0 &&
-                    group.AdventureActive !== undefined
+                    group.AdventureActive != null &&
+                    group.AdventureActive !== 0
                 ) {
+                    let modifiedaatime = Math.max(group.AdventureActive, 60);
                     ctx.fillStyle = props.highVisibility
                         ? "#5fcafc"
                         : "#02adfb";
                     ctx.textAlign = "center";
                     ctx.fillText(
                         "Adventure Active: " +
-                            Math.ceil(group.AdventureActive / 60) +
-                            (Math.ceil(group.AdventureActive / 60) === 1
+                            Math.round(modifiedaatime / 60) +
+                            (Math.round(modifiedaatime / 60) === 1
                                 ? " minute"
                                 : " minutes"),
                         200,
