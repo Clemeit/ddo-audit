@@ -6,6 +6,7 @@ import CanvasLfmPanel from "./CanvasLfmPanel";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
+import { Log } from "../../services/CommunicationService";
 
 const Panel = (props) => {
     // Download canvas
@@ -540,6 +541,12 @@ const Panel = (props) => {
                                                 !showCompletionPercentage
                                             );
                                         }
+                                        Log(
+                                            "Clicked Show Completion Percentage",
+                                            !showCompletionPercentage
+                                                ? "true"
+                                                : "false"
+                                        );
                                         setShowCompletionPercentage(
                                             !showCompletionPercentage
                                         );
