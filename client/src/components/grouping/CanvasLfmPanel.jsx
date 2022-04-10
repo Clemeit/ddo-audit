@@ -489,7 +489,7 @@ const CanvasLfmPanel = (props) => {
                             );
                         }
                 } else {
-                    if (group.Members) {
+                    if (group.Members && props.showMemberCount) {
                         if (group.Members.length > 0) {
                             ctx.fillStyle = props.highVisibility
                                 ? "white"
@@ -561,6 +561,46 @@ const CanvasLfmPanel = (props) => {
                             textLines.length * 19 +
                             props.fontModifier
                     );
+                }
+
+                // Draw quest completion percentage
+                if (
+                    group.AdventureActive &&
+                    group.Quest?.AverageTime &&
+                    props.showCompletionPercentage
+                ) {
+                    // Draw timeline
+                    ctx.closePath();
+                    ctx.strokeStyle = "#80b6cf"; //"#02adfb";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(489 - 100, top + lfmheight - 10);
+                    ctx.lineTo(489 + 100, top + lfmheight - 10);
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw completion bar
+                    ctx.closePath();
+                    ctx.strokeStyle = "#4ba4cc"; //"#02adfb";
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(394, top + lfmheight - 10);
+                    // prettier-ignore
+                    ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / group.Quest?.AverageTime ), 190),
+                        top + lfmheight - 10
+                    );
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw average time marker
+                    ctx.closePath();
+                    ctx.strokeStyle = "#d48824"; //"#02adfb";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(564, top + lfmheight - 10 - 5);
+                    ctx.lineTo(564, top + lfmheight - 10 + 5);
+                    ctx.closePath();
+                    ctx.stroke();
                 }
 
                 // Draw race icon
@@ -784,17 +824,18 @@ const CanvasLfmPanel = (props) => {
 
                 // Draw active time
                 if (
-                    group.AdventureActive !== 0 &&
-                    group.AdventureActive !== undefined
+                    group.AdventureActive != null &&
+                    group.AdventureActive !== 0
                 ) {
+                    let modifiedaatime = Math.max(group.AdventureActive, 60);
                     ctx.fillStyle = props.highVisibility
                         ? "#5fcafc"
                         : "#02adfb";
                     ctx.textAlign = "center";
                     ctx.fillText(
                         "Adventure Active: " +
-                            Math.ceil(group.AdventureActive / 60) +
-                            (Math.ceil(group.AdventureActive / 60) === 1
+                            Math.round(modifiedaatime / 60) +
+                            (Math.round(modifiedaatime / 60) === 1
                                 ? " minute"
                                 : " minutes"),
                         200,
@@ -1197,6 +1238,16 @@ const CanvasLfmPanel = (props) => {
                 row++;
             }
 
+            if (quest.AverageTime != null && quest.AverageTime) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Average Time", row);
+                drawOverlayInfo(
+                    `${Math.round(quest.AverageTime / 60)} minutes`,
+                    row
+                );
+                row++;
+            }
+
             drawOverlayBackground(row);
             row++;
             drawOverlayBackground(row);
@@ -1573,6 +1624,8 @@ const CanvasLfmPanel = (props) => {
         groupSelection.groupIndex,
         groupSelection.side,
         groupSelection.doubleClick,
+        props.showCompletionPercentage,
+        props.showMemberCount,
     ]);
 
     return (
