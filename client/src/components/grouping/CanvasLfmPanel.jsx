@@ -832,9 +832,11 @@ const CanvasLfmPanel = (props) => {
                         : "#02adfb";
                     ctx.textAlign = "center";
                     ctx.fillText(
-                        `Adventure Active: ${group.AdventureActive} minute${
-                            group.AdventureActive !== 1 ? "s" : ""
-                        }`,
+                        "Adventure Active: " +
+                            Math.ceil(group.AdventureActive / 60) +
+                            (Math.ceil(group.AdventureActive / 60) === 1
+                                ? " minute"
+                                : " minutes"),
                         200,
                         top + lfmheight - 10
                     );
