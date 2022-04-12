@@ -48,6 +48,7 @@ const Community = lazy(() => import("./components/community/Community"));
 // const Guilds = lazy(() => import("./components/guilds/Guilds"));
 const Api = lazy(() => import("./components/api/Api"));
 const Timeline = lazy(() => import("./components/about/Timeline"));
+const Steps = lazy(() => import("./components/iot/Steps"));
 // const CharacterSelect = lazy(() =>
 //     import("./components/grouping/CharacterSelect")
 // );
@@ -119,6 +120,9 @@ export default () => {
                         </Route>
                         <Route exact path="/timeline">
                             <Timeline />
+                        </Route>
+                        <Route exact path="/steps">
+                            <Steps />
                         </Route>
                         {/* <Route exact path="/dev">
                             <ActivityTesting />
