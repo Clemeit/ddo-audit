@@ -88,9 +88,11 @@ module.exports = function (api) {
             });
         }
 
-        function getColor(final) {
+        function getColor(device, final) {
             return new Promise(async (resolve, reject) => {
-                let classquery = `SELECT \`color\` from \`colors\` WHERE \`device\` = 'desk';`;
+                let classquery = `SELECT \`color\` from \`colors\` WHERE \`device\` = ${con.escape(
+                    device
+                )};`;
                 con.query(classquery, (err, result, fields) => {
                     if (err) {
                         if (final) {
@@ -105,7 +107,7 @@ module.exports = function (api) {
                                 password: process.env.DB_PASS,
                                 database: process.env.DB_NAME,
                             });
-                            getColor(true)
+                            getColor(device, true)
                                 .then((result) => {
                                     console.log("Reconnected!");
                                     resolve(result);
@@ -124,8 +126,10 @@ module.exports = function (api) {
         }
 
         api.get(`/iot/color`, (req, res) => {
+            let device = req.query.device || "desk";
+
             res.setHeader("Content-Type", "application/json");
-            getColor()
+            getColor(device)
                 .then((result) => {
                     res.send({ Color: result });
                 })
