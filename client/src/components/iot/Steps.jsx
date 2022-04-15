@@ -5,11 +5,12 @@ import ChartLine from "../global/ChartLine";
 import { Fetch, Post } from "../../services/DataLoader";
 
 const Steps = (props) => {
+    const [rawData, setRawData] = React.useState([]);
     const [hours, setHours] = React.useState(24);
     const hoursRef = React.useRef(hours);
     hoursRef.current = hours;
     const [summaryData, setSummaryData] = React.useState(null);
-    let mostRecentIndex = 0;
+    const [millis, setMillis] = React.useState(0);
 
     function summarize(data) {
         let frequencydata = [];
@@ -102,16 +103,24 @@ const Steps = (props) => {
         )
             .then((val) => {
                 summarize(val);
+                console.log(val.length);
+                setRawData(val);
             })
             .catch((err) => {});
     }
 
     React.useEffect(() => {
         refreshStepData();
+        setMillis(new Date().getTime());
         const interval = setInterval(() => refreshStepData(), 30000);
+        const interval2 = setInterval(
+            () => setMillis(new Date().getTime()),
+            1000
+        );
 
         return () => {
             clearInterval(interval);
+            clearInterval(interval2);
         };
     }, []);
 
@@ -202,6 +211,92 @@ const Steps = (props) => {
                         marginBottom={0}
                         height="460px"
                     />
+                    <p
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        Most recent activity.
+                    </p>
+                    <table style={{ fontSize: "1.2rem" }}>
+                        <tr>
+                            <th style={{ padding: "5px 20px 5px 0px" }}>
+                                Time
+                            </th>
+                            <th style={{ padding: "5px 20px 5px 0px" }}>
+                                Intensity
+                            </th>
+                        </tr>
+                        {rawData
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.datetime).getTime() -
+                                    new Date(a.datetime).getTime()
+                            )
+                            .map((entry, i) => {
+                                let secdiff = Math.round(
+                                    (millis -
+                                        new Date(entry.datetime).getTime()) /
+                                        1000
+                                );
+
+                                if (secdiff > 60 * 5) {
+                                    return null;
+                                }
+
+                                let displaytext = "";
+                                if (secdiff < 15) {
+                                    displaytext = "Just now";
+                                } else if (secdiff < 60) {
+                                    displaytext = `${secdiff} seconds ago`;
+                                } else if (secdiff < 60 * 60) {
+                                    let mins = Math.round(secdiff / 60);
+                                    displaytext = `${mins} minute${
+                                        mins === 1 ? "" : "s"
+                                    } ago`;
+                                } else {
+                                    let hours = Math.round(secdiff / (60 * 60));
+                                    displaytext = `${hours} hour${
+                                        hours === 1 ? "" : "s"
+                                    } ago`;
+                                }
+
+                                let displaycolor = "white";
+                                if (entry.intensity <= 100) {
+                                    displaycolor = "white";
+                                } else if (entry.intensity <= 200) {
+                                    displaycolor = "orange";
+                                } else if (entry.intensity <= 400) {
+                                    displaycolor = "#ff4400";
+                                } else if (entry.intensity > 400) {
+                                    displaycolor = "red";
+                                }
+
+                                return (
+                                    <tr key={i} style={{ color: displaycolor }}>
+                                        <td
+                                            style={{
+                                                padding: "5px 20px 5px 0px",
+                                            }}
+                                        >
+                                            {new Date(
+                                                entry.datetime
+                                            ).toLocaleString()}{" "}
+                                            ({displaytext})
+                                        </td>
+                                        <td
+                                            style={{
+                                                padding: "5px 20px 5px 0px",
+                                            }}
+                                        >
+                                            {entry.intensity}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                    </table>
                 </ContentCluster>
             </div>
         </div>
