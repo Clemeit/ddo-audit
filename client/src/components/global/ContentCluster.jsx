@@ -32,7 +32,11 @@ const ContentCluster = (props) => {
                     : props.smallMargin
                     ? "10px"
                     : "",
-                marginBottom: props.smallBottomMargin ? "25px" : "",
+                marginBottom: props.noMargin
+                    ? "0px"
+                    : props.smallBottomMargin
+                    ? "25px"
+                    : "",
             }}
         >
             <h2 className="content-cluster-title">
