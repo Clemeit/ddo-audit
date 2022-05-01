@@ -483,7 +483,7 @@ const Panel = (props) => {
                                         setAlternativeLook(!alternativeLook);
                                     }}
                                 />
-                                Alternative View (easier to see on mobile)
+                                Text-Based View
                             </label>
                             <label className="filter-panel-group-option">
                                 <input

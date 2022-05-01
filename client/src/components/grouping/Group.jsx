@@ -64,8 +64,11 @@ const Group = (props) => {
                             color: "var(--blue-text)",
                         }}
                     >
-                        Adventure Active: {props.group.AdventureActive} minute
-                        {props.group.AdventureActive !== 1 ? "s" : ""}
+                        Adventure Active:{" "}
+                        {Math.round(props.group.AdventureActive / 60)} minute
+                        {Math.round(props.group.AdventureActive / 60) !== 1
+                            ? "s"
+                            : ""}
                     </span>
                 )}
             {props.expanded ? (
