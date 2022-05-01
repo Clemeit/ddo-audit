@@ -50,6 +50,7 @@ const Panel = (props) => {
     const [showQuestGuesses, setShowQuestGuesses] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
+    const [showEpicClass, setShowEpicClass] = React.useState(false);
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -313,6 +314,11 @@ const Panel = (props) => {
         setShowQuestGuesses(
             showquestguesses !== null ? showquestguesses === "true" : true
         );
+
+        let showepicclass = localStorage.getItem("show-epic-class");
+        setShowEpicClass(
+            showepicclass !== null ? showepicclass === "true" : false
+        );
     }, []);
 
     // Filter bar
@@ -531,6 +537,28 @@ const Panel = (props) => {
                             <label className="filter-panel-group-option">
                                 <input
                                     className="input-radio"
+                                    name="showepicclass"
+                                    type="checkbox"
+                                    checked={showEpicClass}
+                                    onChange={() => {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "show-epic-class",
+                                                !showEpicClass
+                                            );
+                                        }
+                                        Log(
+                                            "Clicked Show Epic Class",
+                                            !showEpicClass ? "true" : "false"
+                                        );
+                                        setShowEpicClass(!showEpicClass);
+                                    }}
+                                />
+                                Show Epic Class
+                            </label>
+                            <label className="filter-panel-group-option">
+                                <input
+                                    className="input-radio"
                                     name="completionpercentage"
                                     type="checkbox"
                                     checked={showCompletionPercentage}
@@ -610,6 +638,7 @@ const Panel = (props) => {
                         showCompletionPercentage={showCompletionPercentage}
                         showMemberCount={showMemberCount}
                         showQuestGuesses={showQuestGuesses}
+                        showEpicClass={showEpicClass}
                     />
                 ) : (
                     <div className="social-container">

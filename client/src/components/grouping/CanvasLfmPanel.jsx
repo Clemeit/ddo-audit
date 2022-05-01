@@ -990,50 +990,68 @@ const CanvasLfmPanel = (props) => {
                     ctx.font = "13px Arial";
                     ctx.textBaseline = "alphabetic";
                     ctx.textAlign = "right";
-                    if (member.Classes !== null && member.Classes !== undefined)
+                    if (
+                        member.Classes !== null &&
+                        member.Classes !== undefined
+                    ) {
                         for (let c = 0; c < member.Classes.length; c++) {
-                            // First pass for icons
-                            let xp = cursorPosition[0] + 166 + 21 * c;
-                            let yp = cursorPosition[1] + 4 + 41 * i;
+                            if (
+                                member.Classes[c].Name !== "Epic" ||
+                                props.showEpicClass
+                            ) {
+                                // First pass for icons
+                                let xp = cursorPosition[0] + 166 + 21 * c;
+                                let yp = cursorPosition[1] + 4 + 41 * i;
 
-                            ctx.fillStyle = "#3e4641";
-                            ctx.fillRect(xp - 1, yp - 1, 20, 20);
+                                ctx.fillStyle = "#3e4641";
+                                ctx.fillRect(xp - 1, yp - 1, 20, 20);
 
-                            let classIconPosition = getClassIconPosition(
-                                member.Classes[c].Name,
-                                true
-                            );
-                            ctx.drawImage(
-                                sprite,
-                                classIconPosition[0],
-                                classIconPosition[1],
-                                18,
-                                18,
-                                xp,
-                                yp,
-                                18,
-                                18
-                            );
+                                let classIconPosition = getClassIconPosition(
+                                    member.Classes[c].Name,
+                                    true
+                                );
+                                ctx.drawImage(
+                                    sprite,
+                                    classIconPosition[0],
+                                    classIconPosition[1],
+                                    18,
+                                    18,
+                                    xp,
+                                    yp,
+                                    18,
+                                    18
+                                );
+                            }
                         }
-                    if (member.Classes !== null && member.Classes !== undefined)
+                    }
+                    if (
+                        member.Classes !== null &&
+                        member.Classes !== undefined
+                    ) {
                         for (let c = 0; c < member.Classes.length; c++) {
-                            // Second pass for levels
-                            let xp = cursorPosition[0] + 166 + 21 * c;
-                            let yp = cursorPosition[1] + 4 + 41 * i;
+                            if (
+                                member.Classes[c].Name !== "Epic" ||
+                                props.showEpicClass
+                            ) {
+                                // Second pass for levels
+                                let xp = cursorPosition[0] + 166 + 21 * c;
+                                let yp = cursorPosition[1] + 4 + 41 * i;
 
-                            ctx.fillStyle = "black";
-                            ctx.fillText(
-                                member.Classes[c].Level,
-                                xp + 22,
-                                yp + 18
-                            );
-                            ctx.fillStyle = "white";
-                            ctx.fillText(
-                                member.Classes[c].Level,
-                                xp + 21,
-                                yp + 17
-                            );
+                                ctx.fillStyle = "black";
+                                ctx.fillText(
+                                    member.Classes[c].Level,
+                                    xp + 22,
+                                    yp + 18
+                                );
+                                ctx.fillStyle = "white";
+                                ctx.fillText(
+                                    member.Classes[c].Level,
+                                    xp + 21,
+                                    yp + 17
+                                );
+                            }
                         }
+                    }
                 });
             }
 
