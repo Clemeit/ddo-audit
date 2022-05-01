@@ -595,7 +595,7 @@ const WhoPanel = (props) => {
                                     });
                                 } else {
                                     recheck = setTimeout(() => {
-                                        FetchPlayerData();
+                                        FetchPlayerData(10000);
                                     }, 200);
                                 }
                             }
@@ -642,7 +642,7 @@ const WhoPanel = (props) => {
                     });
                 } else {
                     recheck = setTimeout(() => {
-                        FetchPlayerData();
+                        FetchPlayerData(10000);
                     }, 250);
                 }
             });
