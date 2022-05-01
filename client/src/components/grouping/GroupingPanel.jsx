@@ -639,6 +639,7 @@ const Panel = (props) => {
                         showMemberCount={showMemberCount}
                         showQuestGuesses={showQuestGuesses}
                         showEpicClass={showEpicClass}
+                        sortAscending={sortAscending}
                     />
                 ) : (
                     <div className="social-container">

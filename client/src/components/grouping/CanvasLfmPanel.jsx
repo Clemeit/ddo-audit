@@ -217,6 +217,12 @@ const CanvasLfmPanel = (props) => {
                 ctx.textAlign = "left";
                 ctx.textBaseline = "alphabetic";
             }
+            if (props.sortAscending) {
+                // 0, 259  |  30x10 DESC | 746, 55
+                ctx.drawImage(sprite, 30, 259, 30, 10, 746, 55, 30, 10);
+            } else {
+                ctx.drawImage(sprite, 0, 259, 30, 10, 746, 55, 30, 10);
+            }
         }
 
         // Draws the chin
