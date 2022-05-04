@@ -167,21 +167,10 @@ const Banner = (props) => {
                             style={{ position: "relative" }}
                         >
                             <div className="action-button-container">
-                                <a
-                                    href="https://github.com/Clemeit/ddo-audit"
-                                    rel="noreferrer"
-                                    target="_blank"
-                                    className="primary-button"
-                                    onClick={() => {
-                                        Log("Clicked GitHub link", "Banner");
-                                    }}
-                                >
-                                    Visit my GitHub
-                                </a>
                                 {!props.hideSuggestions && (
                                     <Link
                                         to="/suggestions"
-                                        className="secondary-button expandable"
+                                        className="primary-button"
                                         style={{
                                             padding:
                                                 voteMessage ===
@@ -193,6 +182,17 @@ const Banner = (props) => {
                                         Make a suggestion
                                     </Link>
                                 )}
+                                <a
+                                    href="https://github.com/Clemeit/ddo-audit"
+                                    rel="noreferrer"
+                                    target="_blank"
+                                    className="secondary-button expandable"
+                                    onClick={() => {
+                                        Log("Clicked GitHub link", "Banner");
+                                    }}
+                                >
+                                    Visit my GitHub
+                                </a>
                             </div>
                             {!props.hideVote && (
                                 <div

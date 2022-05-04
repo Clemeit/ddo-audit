@@ -176,20 +176,9 @@ const About = (props) => {
                         className="action-button-container"
                         style={{ justifyContent: "flex-start" }}
                     >
-                        <a
-                            href="https://github.com/Clemeit/ddo-audit"
-                            rel="noreferrer"
-                            target="_blank"
-                            className="primary-button should-invert full-width-mobile"
-                            onClick={() => {
-                                Log("Clicked GitHub link", "About");
-                            }}
-                        >
-                            Visit my GitHub
-                        </a>
                         <Link
                             to="/suggestions"
-                            className="secondary-button should-invert full-width-mobile"
+                            className="primary-button should-invert full-width-mobile"
                             style={{
                                 color: "var(--text)",
                                 textDecoration: "none",
@@ -197,6 +186,17 @@ const About = (props) => {
                         >
                             Make a suggestion
                         </Link>
+                        <a
+                            href="https://github.com/Clemeit/ddo-audit"
+                            rel="noreferrer"
+                            target="_blank"
+                            className="secondary-button should-invert full-width-mobile"
+                            onClick={() => {
+                                Log("Clicked GitHub link", "About");
+                            }}
+                        >
+                            Visit my GitHub
+                        </a>
                     </div>
                 </ContentCluster>
                 <ContentCluster
