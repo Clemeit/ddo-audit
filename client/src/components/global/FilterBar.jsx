@@ -7,6 +7,7 @@ import { ReactComponent as NotificationSVG } from "../../assets/global/notificat
 import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.svg";
 import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
 import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
+import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
 import { Link, useHistory } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
@@ -191,6 +192,17 @@ const LfmFilterBar = (props) => {
                             <span className="filter-bar-text">
                                 {fullscreen ? "Go back" : "Fullscreen"}
                             </span>
+                        </div>
+                    )}
+                    {props.showRefreshButton && (
+                        <div
+                            className="filter-bar-item"
+                            onClick={props.handleRefreshButton}
+                        >
+                            <RefreshSVG
+                                className="nav-icon should-invert"
+                                id="lfm-refresh-button"
+                            />
                         </div>
                     )}
                 </div>

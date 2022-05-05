@@ -7,6 +7,7 @@ import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
 import Group from "./Group";
 import { Log } from "../../services/CommunicationService";
+import $ from "jquery";
 
 const Panel = (props) => {
     // Download canvas
@@ -70,9 +71,6 @@ const Panel = (props) => {
         return `${props.server}${props.server === "Thelanis" ? "'" : "'s"}`;
     }
 
-    let groups = [];
-    let direction = 1;
-    let recheck;
     function RefreshLfms() {
         if (props.server === null) return;
         Fetch(
@@ -211,6 +209,15 @@ const Panel = (props) => {
             clearInterval(refreshLfmsTimeout);
         };
     }, [props.server]);
+
+    const refreshButtonAngleRef = React.useRef(null);
+    function refreshButtonHandler() {
+        RefreshLfms();
+        refreshButtonAngleRef.current += 360;
+        $("#lfm-refresh-button").css({
+            transform: `rotate(${refreshButtonAngleRef.current}deg)`,
+        });
+    }
 
     React.useEffect(() => {
         if (unfilteredServerData === null) return;
@@ -354,12 +361,14 @@ const Panel = (props) => {
                 currentServer={props.server}
                 showNotifications={false}
                 showSave={true}
+                showRefreshButton={true}
                 maxWidth={848}
                 returnTo="/grouping"
                 handleFilterButton={() =>
                     setFilterPanelVisible(!filterPanelVisible)
                 }
                 handleSaveButton={() => download()}
+                handleRefreshButton={() => refreshButtonHandler()}
                 closePanel={() => props.closePanel()}
                 permalink={props.permalink}
             >

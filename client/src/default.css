@@ -1592,6 +1592,11 @@ td:hover .report-quest-button {
     outline: none;
 }
 
+#lfm-refresh-button {
+    transition: transform 500ms;
+    margin-right: 0px;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;
