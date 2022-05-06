@@ -1208,7 +1208,7 @@ const CanvasLfmPanel = (props) => {
                 }
             }
 
-            if (quest.AdventureArea != null) {
+            if (quest.AdventureArea) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Takes place in", row);
                 let wrapped = wrapText(quest.AdventureArea, 220);
@@ -1219,7 +1219,7 @@ const CanvasLfmPanel = (props) => {
                 }
             }
 
-            if (quest.QuestJournalGroup != null) {
+            if (quest.QuestJournalGroup) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Nearest hub", row);
                 let wrapped = wrapText(quest.QuestJournalGroup, 220);
@@ -1258,14 +1258,14 @@ const CanvasLfmPanel = (props) => {
                 row++;
             }
 
-            if (quest.Patron != null) {
+            if (quest.Patron) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Patron", row);
                 drawOverlayInfo(quest.Patron ?? "", row);
                 row++;
             }
 
-            if (quest.AverageTime != null && quest.AverageTime) {
+            if (quest.AverageTime) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Average Time", row);
                 drawOverlayInfo(
