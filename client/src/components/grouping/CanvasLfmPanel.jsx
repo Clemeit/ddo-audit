@@ -1249,7 +1249,7 @@ const CanvasLfmPanel = (props) => {
             drawOverlayBackground(row);
             drawOverlayTitle("Adventure pack", row);
             let wrapped = wrapText(
-                quest.RequiredAdventurePack ?? "Free to play",
+                quest.RequiredAdventurePack || "Free to play",
                 220
             );
             for (let i = 0; i < wrapped.length; i++) {
