@@ -107,6 +107,7 @@ const Panel = (props) => {
                                 10000
                             ).then((res) => {
                                 characters.push({
+                                    Name: res.Name,
                                     Server: res.Server,
                                     TotalLevel: res.TotalLevel,
                                 });
@@ -290,18 +291,18 @@ const Panel = (props) => {
         groups.forEach((group) => {
             let levelpass = false;
             if (filterBasedOnMyLevel) {
-                let atleastonecharacter = false;
+                let eligibleCharacters = [];
                 myCharacters.forEach((character) => {
                     if (
                         group.MinimumLevel <= character.TotalLevel &&
                         group.MaximumLevel >= character.TotalLevel &&
                         character.Server === props.server
                     ) {
-                        atleastonecharacter = true;
+                        eligibleCharacters.push(character.Name);
                     }
                 });
-                levelpass = atleastonecharacter;
-                console.log(atleastonecharacter);
+                levelpass = eligibleCharacters.length > 0;
+                group.EligibleCharacters = eligibleCharacters;
             } else {
                 levelpass =
                     (group.MinimumLevel >= minimumLevel &&
