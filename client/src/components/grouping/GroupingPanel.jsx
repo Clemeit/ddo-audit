@@ -1,6 +1,6 @@
 import React from "react";
 import { Submit } from "../../services/CommunicationService";
-import { Fetch, VerifyServerLfmData } from "../../services/DataLoader";
+import { Fetch, VerifyServerLfmData, Post } from "../../services/DataLoader";
 import ContentCluster from "../global/ContentCluster";
 import CanvasLfmPanel from "./CanvasLfmPanel";
 import LevelRangeSlider from "./LevelRangeSlider";
@@ -8,8 +8,10 @@ import FilterBar from "../global/FilterBar";
 import Group from "./Group";
 import { Log } from "../../services/CommunicationService";
 import $ from "jquery";
+import { Link } from "react-router-dom";
 
 const Panel = (props) => {
+    const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
     // Download canvas
     var download = function () {
         // Redraw panel without names
@@ -52,6 +54,16 @@ const Panel = (props) => {
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
     const [showEpicClass, setShowEpicClass] = React.useState(false);
+    const [filterBasedOnMyLevel, setFilterBasedOnMyLevel] =
+        React.useState(false);
+    const [characterIds, setCharacterIds] = React.useState([]);
+    const characterIdsRef = React.useRef(characterIds);
+    characterIdsRef.current = characterIds;
+    const [myCharacters, setMyCharacters] = React.useState([]);
+    const [lastCharacterLookupTime, setLastCharacterLookupTime] =
+        React.useState(0);
+    const lastCharacterLookupTimeRef = React.useRef(lastCharacterLookupTime);
+    lastCharacterLookupTimeRef.current = lastCharacterLookupTime;
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -69,6 +81,48 @@ const Panel = (props) => {
 
     function getServerNamePossessive() {
         return `${props.server}${props.server === "Thelanis" ? "'" : "'s"}`;
+    }
+
+    async function getMyCharacters() {
+        let ret = new Promise((resolve, reject) => {
+            if (
+                !characterIdsRef.current ||
+                characterIdsRef.current.length == 0
+            ) {
+                setMyCharacters([]);
+                resolve();
+            } else {
+                if (
+                    new Date().getTime() - lastCharacterLookupTimeRef.current >
+                    1000 * REFRESH_CHARACTER_LEVEL_INTERVAL
+                ) {
+                    setLastCharacterLookupTime(new Date().getTime());
+                    let characters = [];
+                    let lookups = [];
+                    characterIdsRef.current.forEach((id) => {
+                        lookups.push(
+                            Post(
+                                "http://localhost:23451/players/lookup",
+                                { playerid: id },
+                                10000
+                            ).then((res) => {
+                                characters.push({
+                                    Server: res.Server,
+                                    TotalLevel: res.TotalLevel,
+                                });
+                            })
+                        );
+                    });
+                    Promise.all(lookups).then(() => {
+                        setMyCharacters(characters);
+                        resolve();
+                    });
+                } else {
+                    resolve();
+                }
+            }
+        });
+        return ret;
     }
 
     function RefreshLfms() {
@@ -99,80 +153,89 @@ const Panel = (props) => {
                     setServerStatus(false);
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
-                    Fetch(
-                        `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
-                        5000 + failedAttemptRef.current * 500
-                    )
-                        .then((val) => {
-                            if (VerifyServerLfmData(val)) {
-                                props.triggerPopup(null);
-                                failedAttemptRef.current = 0;
-                                setFailedAttemptCount(failedAttemptRef.current);
-                                setUnfilteredServerData(val);
-                            } else {
+                    getMyCharacters().then(() => {
+                        Fetch(
+                            `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
+                            5000 + failedAttemptRef.current * 500
+                        )
+                            .then((val) => {
+                                if (VerifyServerLfmData(val)) {
+                                    props.triggerPopup(null);
+                                    failedAttemptRef.current = 0;
+                                    setFailedAttemptCount(
+                                        failedAttemptRef.current
+                                    );
+                                    setUnfilteredServerData(val);
+                                } else {
+                                    failedAttemptRef.current++;
+                                    setFailedAttemptCount(
+                                        failedAttemptRef.current
+                                    );
+                                    if (failedAttemptRef.current > 5) {
+                                        props.triggerPopup({
+                                            title: "Something went wrong",
+                                            message:
+                                                "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.",
+                                            icon: "warning",
+                                            fullscreen: false,
+                                            reportMessage: `GL127 Bad group data: ${
+                                                val
+                                                    ? JSON.stringify(val)
+                                                    : "null"
+                                            }`,
+                                        });
+                                    } else {
+                                        recheck = setTimeout(() => {
+                                            RefreshLfms();
+                                        }, 200);
+                                    }
+                                }
+                            })
+                            .catch((err) => {
                                 failedAttemptRef.current++;
                                 setFailedAttemptCount(failedAttemptRef.current);
                                 if (failedAttemptRef.current > 5) {
-                                    props.triggerPopup({
-                                        title: "Something went wrong",
-                                        message:
-                                            "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.",
-                                        icon: "warning",
-                                        fullscreen: false,
-                                        reportMessage: `GL127 Bad group data: ${
-                                            val ? JSON.stringify(val) : "null"
-                                        }`,
+                                    getGroupTableCount().then((result) => {
+                                        let title = "";
+                                        let message = "";
+                                        switch (result) {
+                                            case -1:
+                                                // Couldn't connect or errored
+                                                title =
+                                                    "Couldn't fetch group data";
+                                                message =
+                                                    "First try refreshing the page. If the issue continues, please report it.";
+                                                break;
+                                            case 0:
+                                                // No groups in table. Server offline?
+                                                title = "No group data found";
+                                                message =
+                                                    "The server appears to be online, but we've lost connection. Please try again later.";
+                                                break;
+                                            default:
+                                                title = "Something went wrong";
+                                                message =
+                                                    "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.";
+                                                break;
+                                        }
+                                        props.triggerPopup({
+                                            title: title,
+                                            message: message,
+                                            submessage: err && err.toString(),
+                                            icon: "warning",
+                                            fullscreen: false,
+                                            reportMessage: `GL171 Group data generic error (timeout?): ${
+                                                err && err.toString()
+                                            }`,
+                                        });
                                     });
                                 } else {
                                     recheck = setTimeout(() => {
                                         RefreshLfms();
-                                    }, 200);
+                                    }, 250);
                                 }
-                            }
-                        })
-                        .catch((err) => {
-                            failedAttemptRef.current++;
-                            setFailedAttemptCount(failedAttemptRef.current);
-                            if (failedAttemptRef.current > 5) {
-                                getGroupTableCount().then((result) => {
-                                    let title = "";
-                                    let message = "";
-                                    switch (result) {
-                                        case -1:
-                                            // Couldn't connect or errored
-                                            title = "Couldn't fetch group data";
-                                            message =
-                                                "First try refreshing the page. If the issue continues, please report it.";
-                                            break;
-                                        case 0:
-                                            // No groups in table. Server offline?
-                                            title = "No group data found";
-                                            message =
-                                                "The server appears to be online, but we've lost connection. Please try again later.";
-                                            break;
-                                        default:
-                                            title = "Something went wrong";
-                                            message =
-                                                "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.";
-                                            break;
-                                    }
-                                    props.triggerPopup({
-                                        title: title,
-                                        message: message,
-                                        submessage: err && err.toString(),
-                                        icon: "warning",
-                                        fullscreen: false,
-                                        reportMessage: `GL171 Group data generic error (timeout?): ${
-                                            err && err.toString()
-                                        }`,
-                                    });
-                                });
-                            } else {
-                                recheck = setTimeout(() => {
-                                    RefreshLfms();
-                                }, 250);
-                            }
-                        });
+                            });
+                    });
                 }
             })
             .catch((err) => {
@@ -212,6 +275,7 @@ const Panel = (props) => {
 
     const refreshButtonAngleRef = React.useRef(null);
     function refreshButtonHandler() {
+        setLastCharacterLookupTime(0);
         RefreshLfms();
         refreshButtonAngleRef.current += 360;
         $("#lfm-refresh-button").css({
@@ -224,13 +288,29 @@ const Panel = (props) => {
         let groups = unfilteredServerData.Groups;
         let filteredgroups = [];
         groups.forEach((group) => {
-            let levelpass =
-                (group.MinimumLevel >= minimumLevel &&
-                    group.MinimumLevel <= maximumLevel) ||
-                (group.MaximumLevel >= minimumLevel &&
-                    group.MaximumLevel <= maximumLevel) ||
-                (group.MinimumLevel <= minimumLevel &&
-                    group.MaximumLevel >= maximumLevel);
+            let levelpass = false;
+            if (filterBasedOnMyLevel) {
+                let atleastonecharacter = false;
+                myCharacters.forEach((character) => {
+                    if (
+                        group.MinimumLevel <= character.TotalLevel &&
+                        group.MaximumLevel >= character.TotalLevel &&
+                        character.Server === props.server
+                    ) {
+                        atleastonecharacter = true;
+                    }
+                });
+                levelpass = atleastonecharacter;
+                console.log(atleastonecharacter);
+            } else {
+                levelpass =
+                    (group.MinimumLevel >= minimumLevel &&
+                        group.MinimumLevel <= maximumLevel) ||
+                    (group.MaximumLevel >= minimumLevel &&
+                        group.MaximumLevel <= maximumLevel) ||
+                    (group.MinimumLevel <= minimumLevel &&
+                        group.MaximumLevel >= maximumLevel);
+            }
             group.Eligible = levelpass;
             if (levelpass || showNotEligible) {
                 filteredgroups.push(group);
@@ -248,6 +328,7 @@ const Panel = (props) => {
         unfilteredServerData,
         minimumLevel,
         maximumLevel,
+        filterBasedOnMyLevel,
         sortAscending,
         showNotEligible,
     ]);
@@ -279,6 +360,15 @@ const Panel = (props) => {
 
         let maxlevel = localStorage.getItem("maximum-level");
         setMaximumLevel(maxlevel || 30);
+
+        let filterbymylevel = localStorage.getItem("filter-by-my-level");
+        setFilterBasedOnMyLevel(
+            filterbymylevel !== null ? filterbymylevel === "true" : false
+        );
+
+        setCharacterIds(
+            JSON.parse(localStorage.getItem("registered-characters") || "[]")
+        );
 
         let shownoteligible = localStorage.getItem("show-not-eligible");
         setShowNotEligible(
@@ -387,28 +477,30 @@ const Panel = (props) => {
                     }}
                 >
                     <ContentCluster title="Filter Groups" smallBottomMargin>
-                        <div style={{ padding: "15px" }}>
-                            <LevelRangeSlider
-                                handleChange={(e) => {
-                                    if (e.length) {
-                                        if (!props.minimal) {
-                                            localStorage.setItem(
-                                                "minimum-level",
-                                                e[0]
-                                            );
-                                            localStorage.setItem(
-                                                "maximum-level",
-                                                e[1]
-                                            );
+                        {!filterBasedOnMyLevel && (
+                            <div style={{ padding: "15px" }}>
+                                <LevelRangeSlider
+                                    handleChange={(e) => {
+                                        if (e.length) {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "minimum-level",
+                                                    e[0]
+                                                );
+                                                localStorage.setItem(
+                                                    "maximum-level",
+                                                    e[1]
+                                                );
+                                            }
+                                            setMinimumLevel(e[0]);
+                                            setMaximumLevel(e[1]);
                                         }
-                                        setMinimumLevel(e[0]);
-                                        setMaximumLevel(e[1]);
-                                    }
-                                }}
-                                minimumLevel={minimumLevel}
-                                maximumLevel={maximumLevel}
-                            />
-                        </div>
+                                    }}
+                                    minimumLevel={minimumLevel}
+                                    maximumLevel={maximumLevel}
+                                />
+                            </div>
+                        )}
                         <div
                             style={{
                                 display: "flex",
@@ -417,6 +509,38 @@ const Panel = (props) => {
                                 alignItems: "start",
                             }}
                         >
+                            <label
+                                className="filter-panel-group-option"
+                                style={{ marginBottom: "0px" }}
+                            >
+                                <input
+                                    className="input-radio"
+                                    name="mylevel"
+                                    type="checkbox"
+                                    checked={filterBasedOnMyLevel}
+                                    onChange={() => {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "filter-by-my-level",
+                                                !filterBasedOnMyLevel
+                                            );
+                                        }
+                                        setFilterBasedOnMyLevel(
+                                            !filterBasedOnMyLevel
+                                        );
+                                    }}
+                                />
+                                Filter groups based on my current level
+                            </label>
+                            <Link
+                                to="/registration"
+                                style={{
+                                    marginLeft: "40px",
+                                    fontSize: "1.1rem",
+                                }}
+                            >
+                                Add characters
+                            </Link>
                             <label className="filter-panel-group-option">
                                 <input
                                     className="input-radio"

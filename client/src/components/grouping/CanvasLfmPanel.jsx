@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/lfmsprite.jpg";
+import PanelSprite from "../../assets/global/lfmsprite_v2.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -1562,6 +1562,13 @@ const CanvasLfmPanel = (props) => {
                 case "Male Bladeforged":
                     xsrc = 54;
                     ysrc = 72;
+                    break;
+                case "Male Tabaxi":
+                case "Female Tabaxi":
+                case "Male Tabaxi Trailblazer":
+                case "Female Tabaxi Trailblazer":
+                    xsrc = 90;
+                    ysrc = 36;
                     break;
                 default:
                     xsrc = 72;

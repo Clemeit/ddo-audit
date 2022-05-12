@@ -84,47 +84,15 @@ module.exports = function (api) {
                                     JSON.parse(result[0]["wayfinder"]),
                                     JSON.parse(result[0]["hardcore"]),
                                 ]);
-                            } else if (server == "megaserver") {
-                                let allgroups = [];
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["argonnessen"])
-                                        .Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["cannith"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["ghallanda"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["khyber"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["orien"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["sarlona"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["thelanis"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["wayfinder"]).Groups
-                                );
-                                allgroups.push(
-                                    ...JSON.parse(result[0]["hardcore"]).Groups
-                                );
-                                let megaserver = {
-                                    Name: "Megaserver",
-                                    LastUpdateTime: JSON.parse(
-                                        result[0]["argonnessen"]
-                                    ).LastUpdateTime,
-                                    GroupCount: allgroups.length,
-                                    Groups: allgroups,
-                                };
-                                resolve(megaserver);
                             } else {
-                                resolve(result[0][server]);
+                                if (
+                                    result == undefined ||
+                                    result[0] == undefined
+                                ) {
+                                    reject("null data");
+                                } else {
+                                    resolve(result[0][server]);
+                                }
                             }
                         }
                     }
@@ -140,6 +108,7 @@ module.exports = function (api) {
                         res.send(result);
                     })
                     .catch((err) => {
+                        res.send("");
                         return {};
                     });
             });

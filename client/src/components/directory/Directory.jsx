@@ -12,6 +12,8 @@ import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { ReactComponent as FeedbackSVG } from "../../assets/global/feedback.svg";
+import { ReactComponent as RegisterSVG } from "../../assets/global/register.svg";
+import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
@@ -90,6 +92,21 @@ const Directory = (props) => {
                     description:
                         "Explore a list of online players with a live Who panel.",
                     to: "/who",
+                },
+                {
+                    icon: (
+                        <RegisterSVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Register Characters",
+                    description:
+                        "Add your characters for automatic LFM filtering and raid timer tracking.",
+                    to: "/registration",
+                },
+                {
+                    icon: <TimerSVG className="nav-icon-large should-invert" />,
+                    title: "Raid Timers",
+                    description: "View and manage your current raid timers.",
+                    to: "/raidtimers",
                 },
             ],
         },

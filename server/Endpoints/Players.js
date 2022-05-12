@@ -59,6 +59,122 @@ module.exports = function (api) {
             });
         }
 
+        function lookupPlayerByNameAndServer(name, server, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT CAST(p.playerid as char) as playerid FROM players p WHERE p.name LIKE ${con.escape(
+                    name
+                )} AND p.server LIKE ${con.escape(server)} AND p.anonymous = 0`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            lookupPlayerByNameAndServer(name, server, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            // const stringId =
+                            //     result[0]?.playerid.toString() || "";
+                            // result[0].playerid = stringId;
+                            resolve(result);
+                        }
+                    }
+                });
+            });
+        }
+
+        function getPlayerById(id, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT JSON_OBJECT(
+                    'Name', p.name,
+                    'Gender', p.gender,
+                    'Race', p.race,
+                    'Guild', IF(p.anonymous, '(redacted)', p.guild),
+                    'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
+                    'TotalLevel', totallevel,
+                    'Server', server,
+                    'GroupId', groupid,
+                    'InParty', IF(groupid = 0, 0, 1),
+                    'Classes', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'Name', c1.name,
+                            'Level', p.level1
+                        ),
+                        JSON_OBJECT(
+                            'Name', c2.name,
+                            'Level', p.level2
+                        ),
+                        JSON_OBJECT(
+                            'Name', c3.name,
+                            'Level', p.level3
+                        ),
+                        JSON_OBJECT(
+                            'Name', c4.name,
+                            'Level', p.level4
+                        )
+                    ),
+                    'Online', p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND),
+                    'Anonymous', p.anonymous
+                ) AS data FROM \`players\` p
+                LEFT JOIN areas a ON p.location = a.areaid 
+                LEFT JOIN classes c1 ON p.class1 = c1.id 
+                LEFT JOIN classes c2 ON p.class2 = c2.id 
+                LEFT JOIN classes c3 ON p.class3 = c3.id 
+                LEFT JOIN classes c4 ON p.class4 = c4.id
+                WHERE playerid = ${con.escape(id)}`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            getPlayerById(id, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            // const stringId =
+                            //     result[0]?.playerid.toString() || "";
+                            // result[0].playerid = stringId;
+                            resolve(result);
+                        }
+                    }
+                });
+            });
+        }
+
         function getCachedPlayerData(server, final) {
             return new Promise(async (resolve, reject) => {
                 let query = `SELECT \`${server}\` AS data FROM players_cached ORDER BY \`players_cached\`.\`datetime\` DESC LIMIT 1;`;
@@ -254,6 +370,32 @@ module.exports = function (api) {
                     res.send(result);
                 }
             });
+        });
+
+        api.post(`/players/lookup`, (req, res) => {
+            const name = req.body.name;
+            const server = req.body.server;
+            const id = req.body.playerid;
+            if (id) {
+                getPlayerById(id || 0).then((result) => {
+                    res.setHeader("Content-Type", "application/json");
+                    if (!result || result.length !== 1) {
+                        res.send({ error: "No result for playerid" });
+                    } else {
+                        res.send(result[0].data);
+                    }
+                });
+            } else {
+                if (!name || !server) {
+                    res.setHeader("Content-Type", "application/json");
+                    res.send({ error: "Must include name and server" });
+                } else {
+                    lookupPlayerByNameAndServer(name, server).then((result) => {
+                        res.setHeader("Content-Type", "application/json");
+                        res.send(result);
+                    });
+                }
+            }
         });
     });
 };

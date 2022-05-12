@@ -1597,6 +1597,16 @@ td:hover .report-quest-button {
     margin-right: 0px;
 }
 
+.character-refresh-button {
+    transition: transform 500ms;
+    margin-right: 0px;
+}
+
+.character-table td,
+th {
+    padding-right: 15px;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;
