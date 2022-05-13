@@ -66,6 +66,10 @@ const Panel = (props) => {
         React.useState(0);
     const lastCharacterLookupTimeRef = React.useRef(lastCharacterLookupTime);
     lastCharacterLookupTimeRef.current = lastCharacterLookupTime;
+    const [usingCachedCharacterData, setUsingCachedCharacterData] =
+        React.useState(false);
+    const usingCachedCharacterDataRef = React.useRef(usingCachedCharacterData);
+    usingCachedCharacterDataRef.current = usingCachedCharacterData;
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -96,30 +100,37 @@ const Panel = (props) => {
             } else {
                 if (
                     new Date().getTime() - lastCharacterLookupTimeRef.current >
-                    1000 * REFRESH_CHARACTER_LEVEL_INTERVAL
+                        1000 * REFRESH_CHARACTER_LEVEL_INTERVAL ||
+                    usingCachedCharacterDataRef.current
                 ) {
                     setLastCharacterLookupTime(new Date().getTime());
-                    let characters = [];
-                    let lookups = [];
-                    characterIdsRef.current.forEach((id) => {
-                        lookups.push(
-                            Post(
-                                "http://localhost:23451/players/lookup",
-                                { playerid: id },
-                                10000
-                            ).then((res) => {
-                                characters.push({
-                                    Name: res.Name,
-                                    Server: res.Server,
-                                    TotalLevel: res.TotalLevel,
-                                });
-                            })
-                        );
-                    });
-                    Promise.all(lookups).then(() => {
-                        setMyCharacters(characters);
-                        resolve();
-                    });
+                    Post(
+                        "https://api.ddoaudit.com/players/lookup",
+                        { playerids: characterIdsRef.current },
+                        1000
+                    )
+                        .then((response) => {
+                            if (!response.error) {
+                                setUsingCachedCharacterData(false);
+                                setMyCharacters(response);
+                                localStorage.setItem(
+                                    "last-successful-character-response",
+                                    JSON.stringify(response)
+                                );
+                            }
+                        })
+                        .catch(() => {
+                            console.log("fallback on cached data");
+                            setUsingCachedCharacterData(true);
+                            setMyCharacters(
+                                JSON.parse(
+                                    localStorage.getItem(
+                                        "last-successful-character-response"
+                                    ) || "[]"
+                                )
+                            );
+                        })
+                        .finally(() => resolve());
                 } else {
                     resolve();
                 }
@@ -156,7 +167,7 @@ const Panel = (props) => {
                     setServerStatus(false);
                 }
                 if (serverstatus === true || ignoreServerStatusRef.current) {
-                    getMyCharacters().then(() => {
+                    getMyCharacters().finally(() => {
                         Fetch(
                             `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
                             5000 + failedAttemptRef.current * 500
@@ -490,30 +501,28 @@ const Panel = (props) => {
                     }}
                 >
                     <ContentCluster title="Filter Groups" smallBottomMargin>
-                        {!filterBasedOnMyLevel && (
-                            <div style={{ padding: "15px" }}>
-                                <LevelRangeSlider
-                                    handleChange={(e) => {
-                                        if (e.length) {
-                                            if (!props.minimal) {
-                                                localStorage.setItem(
-                                                    "minimum-level",
-                                                    e[0]
-                                                );
-                                                localStorage.setItem(
-                                                    "maximum-level",
-                                                    e[1]
-                                                );
-                                            }
-                                            setMinimumLevel(e[0]);
-                                            setMaximumLevel(e[1]);
+                        <div style={{ padding: "15px" }}>
+                            <LevelRangeSlider
+                                handleChange={(e) => {
+                                    if (e.length) {
+                                        if (!props.minimal) {
+                                            localStorage.setItem(
+                                                "minimum-level",
+                                                e[0]
+                                            );
+                                            localStorage.setItem(
+                                                "maximum-level",
+                                                e[1]
+                                            );
                                         }
-                                    }}
-                                    minimumLevel={minimumLevel}
-                                    maximumLevel={maximumLevel}
-                                />
-                            </div>
-                        )}
+                                        setMinimumLevel(e[0]);
+                                        setMaximumLevel(e[1]);
+                                    }
+                                }}
+                                minimumLevel={minimumLevel}
+                                maximumLevel={maximumLevel}
+                            />
+                        </div>
                         <div
                             style={{
                                 display: "flex",

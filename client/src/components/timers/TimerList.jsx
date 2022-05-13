@@ -2,11 +2,16 @@ import React from "react";
 import { Post } from "../../services/DataLoader";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
+import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
+import { Link } from "react-router-dom";
+import $ from "jquery";
 
 const TimerList = () => {
     const [characterIds, setCharacterIds] = React.useState();
     const [characters, setCharacters] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
+    const [showFailedToFetchError, setShowFailedToFetchError] =
+        React.useState(false);
 
     React.useEffect(() => {
         let characterIds = JSON.parse(
@@ -21,26 +26,37 @@ const TimerList = () => {
         }
     }, [characterIds]);
 
+    const refreshButtonAngleRef = React.useRef(null);
+    function refreshButtonHandler() {
+        refreshButtonAngleRef.current += 360;
+        $(`.character-refresh-button`).css({
+            transform: `rotate(${refreshButtonAngleRef.current}deg)`,
+        });
+    }
+
     function fetchCharacterData() {
-        let returnedCharacters = [];
-        let lookups = [];
-        characterIds.forEach((id) => {
-            lookups.push(
-                Post(
-                    "http://localhost:23451/players/lookup",
-                    { playerid: id },
-                    10000
-                ).then((res) => {
-                    returnedCharacters.push({ ...res, PlayerId: id });
-                })
-            );
-        });
-        if (lookups.length === 0) {
+        if (characterIds?.length === 0) {
             setLoading(false);
+            return;
         }
-        Promise.all(lookups).then(() => {
-            appendRaidActivity(returnedCharacters);
-        });
+        Post(
+            "https://api.ddoaudit.com/players/lookup",
+            { playerids: characterIds },
+            10000
+        )
+            .then((response) => {
+                if (response.error) {
+                    setLoading(false);
+                    setShowFailedToFetchError(true);
+                } else {
+                    setCharacters(response);
+                    appendRaidActivity(response);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+                setShowFailedToFetchError(true);
+            });
     }
 
     function appendRaidActivity(characters) {
@@ -49,15 +65,21 @@ const TimerList = () => {
         characters.forEach((character) => {
             lookups.push(
                 Post(
-                    "http://localhost:23451/players/raidactivity",
+                    "https://api.ddoaudit.com/players/raidactivity",
                     { playerid: character.PlayerId },
                     10000
-                ).then((res) => {
-                    returnedCharacters.push({
-                        ...character,
-                        RaidActivity: res,
-                    });
-                })
+                )
+                    .then((res) => {
+                        returnedCharacters.push({
+                            ...character,
+                            RaidActivity: res,
+                        });
+                    })
+                    .catch(() => {
+                        setLoading(false);
+                        setShowFailedToFetchError(true);
+                        returnedCharacters.push(characters);
+                    })
             );
         });
 
@@ -126,10 +148,62 @@ const TimerList = () => {
 
     return (
         <div>
+            {showFailedToFetchError && (
+                <div>
+                    <div
+                        style={{
+                            width: "100%",
+                            border: "1px solid red",
+                            borderRadius: "4px",
+                            padding: "7px 10px",
+                            marginBottom: "5px",
+                        }}
+                    >
+                        <span
+                            style={{
+                                fontSize: "1.3rem",
+                                fontWeight: "bold",
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                            }}
+                        >
+                            <ErrorSVG style={{ marginRight: "5px" }} />
+                            Failed to fetch character data
+                        </span>
+                        <span style={{ fontSize: "1.3rem" }}>
+                            Please try again later. If the error persists, try
+                            clearing your browser cookies or let me know of the
+                            problem via the{" "}
+                            <Link to="/suggestions">Suggestions page</Link>.
+                        </span>
+                        <br />
+                        <span
+                            style={{
+                                fontSize: "1.1rem",
+                                color: "var(--text-faded)",
+                            }}
+                        >
+                            Reason: the server took too long to respond
+                        </span>
+                    </div>
+                    <div style={{ height: "15px" }} />
+                </div>
+            )}
             {loading && (!characters || characters.length == 0) && (
-                <span style={{ textAlign: "center", fontSize: "1.4rem" }}>
-                    Loading...
-                </span>
+                <div
+                    style={{
+                        minHeight: "150px",
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <span style={{ textAlign: "center", fontSize: "1.5rem" }}>
+                        Loading...
+                    </span>
+                </div>
             )}
             {characters.map((character, i) => (
                 <div key={i}>
@@ -150,17 +224,27 @@ const TimerList = () => {
                             >
                                 {character.Name}
                             </h4>
-                            <DeleteSVG
-                                className="nav-icon should-invert"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => {}}
-                            />
                             <RefreshSVG
                                 className="nav-icon should-invert character-refresh-button"
                                 style={{ cursor: "pointer" }}
-                                onClick={() => {}}
+                                onClick={() => {
+                                    refreshButtonHandler();
+                                    fetchCharacterData();
+                                }}
                             />
                         </div>
+                        {!character.RaidActivity && (
+                            <span
+                                style={{
+                                    fontSize: "1.3rem",
+                                    color: "var(--text-faded)",
+                                }}
+                            >
+                                {showFailedToFetchError
+                                    ? "Failed to load"
+                                    : "Loading..."}
+                            </span>
+                        )}
                         {character.RaidActivity &&
                             character.RaidActivity.length == 0 && (
                                 <span
