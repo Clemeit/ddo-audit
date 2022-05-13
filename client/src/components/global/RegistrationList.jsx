@@ -23,7 +23,6 @@ const RegistrationList = (props) => {
     function addCharacter(characterId) {
         setLoadingNewCharacter(true);
         if (characterIds.includes(characterId)) {
-            // not working with SAE
             setCharacterExists(true);
             return;
         }
