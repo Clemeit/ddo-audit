@@ -455,7 +455,6 @@ const WhoPanel = (props) => {
         if (urllocation) {
             globalfilter.push(urllocation);
         }
-        console.log(globalfilter.join(","));
         setGlobalFilter(globalfilter.join(","));
 
         // setActiveFilter(activefilterarray);

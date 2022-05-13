@@ -74,7 +74,6 @@ const RegistrationList = (props) => {
                 } else {
                     let sortedCharacters = [];
                     characterIds.forEach((characterId) => {
-                        console.log(characterId);
                         sortedCharacters.push(
                             response.filter(
                                 (character) =>
@@ -82,7 +81,6 @@ const RegistrationList = (props) => {
                             )?.[0]
                         );
                     });
-                    console.log(response, sortedCharacters);
                     setCharacters(sortedCharacters);
                 }
             })
