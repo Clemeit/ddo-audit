@@ -385,7 +385,7 @@ module.exports = function (api) {
         servers.forEach((entry) => {
             api.get(`/players/${entry[1]}`, (req, res) => {
                 res.setHeader("Content-Type", "application/json");
-                getPlayerData(entry[0])
+                getCachedPlayerData(entry[0])
                     .then((result) => {
                         res.send(result);
                     })
@@ -435,6 +435,7 @@ module.exports = function (api) {
             }
         });
 
+        // deprecated
         api.post(`/players/name`, (req, res) => {
             lookupPlayerByName(req.body.name).then((result) => {
                 if (result.length > 10) {
