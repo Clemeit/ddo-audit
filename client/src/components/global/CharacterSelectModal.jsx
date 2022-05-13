@@ -32,7 +32,7 @@ const CharacterSelectModal = (props) => {
         }
         Post(
             "https://api.ddoaudit.com/players/lookup",
-            { name: name, server: server },
+            { name: name.trim(), server: server },
             10000
         ).then((res) => {
             if (res.playerid) {
@@ -92,7 +92,7 @@ const CharacterSelectModal = (props) => {
                         </span>
                     </div>
                 )}
-                {props.characterExists && (
+                {props.characterExists && !lookupError && (
                     <div
                         style={{
                             widht: "100%",

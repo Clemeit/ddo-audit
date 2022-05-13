@@ -38,6 +38,12 @@ const RegistrationList = (props) => {
         );
     }
 
+    function clearRegisteredCharacters() {
+        setCharacterIds([]);
+        localStorage.setItem("registered-characters", "[]");
+        window.location.reload();
+    }
+
     React.useEffect(() => {
         let registedCharacters = JSON.parse(
             localStorage.getItem("registered-characters") || "[]"
@@ -175,6 +181,13 @@ const RegistrationList = (props) => {
                         >
                             Reason: the server took too long to respond
                         </span>
+                        <div
+                            className="secondary-button full-width-mobile"
+                            onClick={() => clearRegisteredCharacters()}
+                            style={{ marginTop: "10px" }}
+                        >
+                            Clear registered characters
+                        </div>
                     </div>
                     <div style={{ height: "15px" }} />
                 </div>
@@ -191,136 +204,148 @@ const RegistrationList = (props) => {
                     characters.length > 0 &&
                     characters.map((character, i) => (
                         <div key={i}>
-                            <div style={{ padding: "10px 0px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginBottom: "15px",
-                                    }}
-                                >
+                            {character && (
+                                <div style={{ padding: "10px 0px" }}>
                                     <div
                                         style={{
-                                            backgroundColor:
-                                                getStatusIndicatorColor(
-                                                    character
-                                                ),
-                                            width: "13px",
-                                            height: "13px",
-                                            borderRadius: "100%",
-                                            marginRight: "7px",
-                                        }}
-                                    />
-                                    <h4
-                                        style={{
-                                            marginBottom: "0px",
-                                            marginRight: "10px",
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginBottom: "15px",
                                         }}
                                     >
-                                        {character.Name}
-                                    </h4>
-                                    <DeleteSVG
-                                        className="nav-icon should-invert"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => removeCharacter(i)}
-                                    />
-                                    <RefreshSVG
-                                        className="nav-icon should-invert character-refresh-button"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => {
-                                            refreshCharacters(i);
-                                            refreshButtonHandler();
+                                        <div
+                                            style={{
+                                                backgroundColor:
+                                                    getStatusIndicatorColor(
+                                                        character
+                                                    ),
+                                                width: "13px",
+                                                height: "13px",
+                                                borderRadius: "100%",
+                                                marginRight: "7px",
+                                            }}
+                                        />
+                                        <h4
+                                            style={{
+                                                marginBottom: "0px",
+                                                marginRight: "10px",
+                                            }}
+                                        >
+                                            {character.Name}
+                                        </h4>
+                                        <DeleteSVG
+                                            className="nav-icon should-invert"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => removeCharacter(i)}
+                                        />
+                                        <RefreshSVG
+                                            className="nav-icon should-invert character-refresh-button"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                                refreshCharacters(i);
+                                                refreshButtonHandler();
+                                            }}
+                                        />
+                                    </div>
+                                    <table
+                                        className="character-table"
+                                        style={{
+                                            width: "100%",
                                         }}
-                                    />
+                                    >
+                                        <thead>
+                                            <tr
+                                                style={{
+                                                    color: "var(--text-faded)",
+                                                    fontWeight: "bold",
+                                                    fontSize: "1.2rem",
+                                                    lineHeight: "15px",
+                                                }}
+                                            >
+                                                <th
+                                                    style={{
+                                                        width: "10%",
+                                                    }}
+                                                >
+                                                    Server
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        width: "10%",
+                                                    }}
+                                                >
+                                                    Level
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        width: "20%",
+                                                    }}
+                                                >
+                                                    Guild
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        width: "30%",
+                                                    }}
+                                                >
+                                                    Classes
+                                                </th>
+                                                <th
+                                                    style={{
+                                                        width: "30%",
+                                                    }}
+                                                >
+                                                    Location
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                style={{
+                                                    fontSize: "1.4rem",
+                                                }}
+                                            >
+                                                <td
+                                                    style={{
+                                                        verticalAlign: "top",
+                                                    }}
+                                                >
+                                                    {character.Server}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        verticalAlign: "top",
+                                                    }}
+                                                >
+                                                    {character.TotalLevel}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        verticalAlign: "top",
+                                                    }}
+                                                >
+                                                    {character.Guild}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        verticalAlign: "top",
+                                                    }}
+                                                >
+                                                    {getClassString(character)}
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        verticalAlign: "top",
+                                                    }}
+                                                >
+                                                    {character.Location?.Name}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <table
-                                    className="character-table"
-                                    style={{
-                                        width: "100%",
-                                    }}
-                                >
-                                    <thead>
-                                        <tr
-                                            style={{
-                                                color: "var(--text-faded)",
-                                                fontWeight: "bold",
-                                                fontSize: "1.2rem",
-                                                lineHeight: "15px",
-                                            }}
-                                        >
-                                            <th
-                                                style={{
-                                                    width: "10%",
-                                                }}
-                                            >
-                                                Server
-                                            </th>
-                                            <th
-                                                style={{
-                                                    width: "10%",
-                                                }}
-                                            >
-                                                Level
-                                            </th>
-                                            <th
-                                                style={{
-                                                    width: "20%",
-                                                }}
-                                            >
-                                                Guild
-                                            </th>
-                                            <th
-                                                style={{
-                                                    width: "30%",
-                                                }}
-                                            >
-                                                Classes
-                                            </th>
-                                            <th
-                                                style={{
-                                                    width: "30%",
-                                                }}
-                                            >
-                                                Location
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            style={{
-                                                fontSize: "1.4rem",
-                                            }}
-                                        >
-                                            <td
-                                                style={{ verticalAlign: "top" }}
-                                            >
-                                                {character.Server}
-                                            </td>
-                                            <td
-                                                style={{ verticalAlign: "top" }}
-                                            >
-                                                {character.TotalLevel}
-                                            </td>
-                                            <td
-                                                style={{ verticalAlign: "top" }}
-                                            >
-                                                {character.Guild}
-                                            </td>
-                                            <td
-                                                style={{ verticalAlign: "top" }}
-                                            >
-                                                {getClassString(character)}
-                                            </td>
-                                            <td
-                                                style={{ verticalAlign: "top" }}
-                                            >
-                                                {character.Location?.Name}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            )}
                             <hr
                                 style={{
                                     backgroundColor: "var(--text)",
