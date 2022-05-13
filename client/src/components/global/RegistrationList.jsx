@@ -243,11 +243,21 @@ const RegistrationList = (props) => {
                                             fontSize: "1.4rem",
                                         }}
                                     >
-                                        <td>{character.Server}</td>
-                                        <td>{character.TotalLevel}</td>
-                                        <td>{character.Guild}</td>
-                                        <td>{getClassString(character)}</td>
-                                        <td>{character.Location.Name}</td>
+                                        <td style={{ verticalAlign: "top" }}>
+                                            {character.Server}
+                                        </td>
+                                        <td style={{ verticalAlign: "top" }}>
+                                            {character.TotalLevel}
+                                        </td>
+                                        <td style={{ verticalAlign: "top" }}>
+                                            {character.Guild}
+                                        </td>
+                                        <td style={{ verticalAlign: "top" }}>
+                                            {getClassString(character)}
+                                        </td>
+                                        <td style={{ verticalAlign: "top" }}>
+                                            {character.Location.Name}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
