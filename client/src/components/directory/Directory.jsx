@@ -107,7 +107,7 @@ const Directory = (props) => {
                     icon: <TimerSVG className="nav-icon-large should-invert" />,
                     title: "Raid Timers",
                     description: "View and manage your current raid timers.",
-                    to: "/raidtimers",
+                    to: "/timers",
                     new: true,
                 },
             ],
