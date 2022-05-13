@@ -31,12 +31,12 @@ const CharacterSelectModal = (props) => {
             return;
         }
         Post(
-            "http://localhost:23451/players/lookup",
+            "https://api.ddoaudit.com/players/lookup",
             { name: name, server: server },
             10000
         ).then((res) => {
-            if (res.length === 1) {
-                props.submit(res[0].playerid);
+            if (res.playerid) {
+                props.submit(res.playerid);
             } else {
                 setLookupError(true);
             }

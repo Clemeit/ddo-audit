@@ -7,6 +7,7 @@ import BannerMessage from "./BannerMessage";
 import ContentCluster from "./ContentCluster";
 import RegistrationList from "./RegistrationList";
 import { Link } from "react-router-dom";
+import NoMobileOptimization from "./NoMobileOptimization";
 
 const CharacterRegistration = () => {
     const TITLE = "DDO Audit Character Registration";
@@ -50,8 +51,9 @@ const CharacterRegistration = () => {
                 subtitle="Character Registration"
             />
             <div className="content-container">
-                <BannerMessage page="grouping" />
+                <BannerMessage page="registration" />
                 <div className="top-content-padding shrink-on-mobile" />
+                <NoMobileOptimization />
                 <ContentCluster
                     title="Characters"
                     description="Register your characters and we'll automatically filter the LFM panel based on your characters' current levels and keep track of your raid timers."
@@ -88,13 +90,16 @@ const CharacterRegistration = () => {
                                     registered, but may return to being
                                     anonymous afterwards. Players marked as
                                     anonymous will not show online/offline
-                                    status and will have their guild and
+                                    status and will have their guild name and
                                     location redacted.
                                 </p>
                                 <p>
-                                    We will <b>never</b> ask for your username,
-                                    password, or personal data. Please do not
-                                    share this type of information with us.
+                                    <span className="lfm-number">
+                                        We will never ask for your username,
+                                        password, or personal data.
+                                    </span>{" "}
+                                    Please do not share this type of information
+                                    with us.
                                 </p>
                             </span>
                         }

@@ -2,8 +2,10 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
+import BannerMessage from "../global/BannerMessage";
 import Card from "../global/Card";
 import ContentCluster from "../global/ContentCluster";
+import NoMobileOptimization from "../global/NoMobileOptimization";
 import TimerList from "./TimerList";
 
 const Timers = (props) => {
@@ -52,7 +54,9 @@ const Timers = (props) => {
                 subtitle="Check Raid Timers"
             />
             <div className="content-container">
+                <BannerMessage page="timers" />
                 <div className="top-content-padding shrink-on-mobile" />
+                <NoMobileOptimization />
                 <ContentCluster
                     title="Raid Timers"
                     description="View your characters' current raid timers based on questing activity."
@@ -94,6 +98,10 @@ const Timers = (props) => {
                                     <li>
                                         There is no distinction between
                                         legendary and heroic versions of a raid.
+                                    </li>
+                                    <li>
+                                        Some raids may not be tracked. If you
+                                        find one, let me know.
                                     </li>
                                 </ul>
                             </span>
