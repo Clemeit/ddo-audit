@@ -6,6 +6,8 @@ import { Fetch, Post } from "../../services/DataLoader";
 
 const CharacterSelectModal = (props) => {
     const [lookupError, setLookupError] = React.useState(false);
+    const [errorTitle, setErrorTitle] = React.useState("");
+    const [errorMessage, setErrorMessage] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
 
     const SERVER_NAMES = [
@@ -34,14 +36,26 @@ const CharacterSelectModal = (props) => {
             "https://api.ddoaudit.com/players/lookup",
             { name: name.trim(), server: server },
             10000
-        ).then((res) => {
-            if (res.playerid) {
-                props.submit(res.playerid);
-            } else {
+        )
+            .then((res) => {
+                if (res.playerid) {
+                    props.submit(res.playerid);
+                } else {
+                    setErrorTitle("Character not found");
+                    setErrorMessage(
+                        "Check that the name and server are correct, and ensure that the character is not marked as anonymous."
+                    );
+                    setLookupError(true);
+                }
+            })
+            .catch(() => {
+                setErrorTitle("Failed to fetch character data");
+                setErrorMessage(
+                    "Something went wrong but it's not your fault. Please try again later."
+                );
                 setLookupError(true);
-            }
-            setIsLoading(false);
-        });
+            })
+            .finally(() => setIsLoading(false));
     }
 
     React.useEffect(() => {
@@ -83,12 +97,10 @@ const CharacterSelectModal = (props) => {
                             }}
                         >
                             <ErrorSVG style={{ marginRight: "5px" }} />
-                            Character not found
+                            {errorTitle}
                         </span>
                         <span style={{ fontSize: "1.1rem" }}>
-                            Check that the name and server are correct, and
-                            ensure that the character is not marked as
-                            anonymous.
+                            {errorMessage}
                         </span>
                     </div>
                 )}
