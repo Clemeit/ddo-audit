@@ -16,6 +16,8 @@ const { runHourlyDistribution } = require("./Population/HourlyDistribution");
 const { runServerDistribution } = require("./Population/ServerDistribution");
 const { runUniqueReport } = require("./Population/UniqueCounts");
 
+const { cachePlayers } = require("./Players/Players");
+
 const { runServerStatusReport } = require("./Game/ServerStatus");
 
 var mysql = require("mysql2");
@@ -111,6 +113,79 @@ con.connect((err) => {
         });
     }
 
+    // Get player data to be cached for API:
+    let cacheablePlayers = [];
+    function getCacheablePlayerData(seconds) {
+        return new Promise(async (resolve, reject) => {
+            let query = `SELECT JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'Name', IF(p.anonymous, 'Anonymous', p.name),
+                        'Gender', p.gender,
+                        'Race', p.race,
+                        'Guild', IF(p.anonymous, '(redacted)', p.guild),
+                        'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
+                        'TotalLevel', totallevel,
+                        'Server', server,
+                        'GroupId', groupid,
+                        'InParty', IF(groupid = 0, 0, 1),
+                        'Classes', JSON_ARRAY(
+                            JSON_OBJECT(
+                                'Name', c1.name,
+                                'Level', p.level1
+                            ),
+                            JSON_OBJECT(
+                                'Name', c2.name,
+                                'Level', p.level2
+                            ),
+                            JSON_OBJECT(
+                                'Name', c3.name,
+                                'Level', p.level3
+                            ),
+                            JSON_OBJECT(
+                                'Name', c4.name,
+                                'Level', p.level4
+                            )
+                        )
+                    )
+                ) AS data
+                FROM players p 
+                LEFT JOIN areas a ON p.location = a.areaid 
+                LEFT JOIN classes c1 ON p.class1 = c1.id 
+                LEFT JOIN classes c2 ON p.class2 = c2.id 
+                LEFT JOIN classes c3 ON p.class3 = c3.id 
+                LEFT JOIN classes c4 ON p.class4 = c4.id 
+                WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -${seconds} SECOND)`;
+
+            con.query(query, (err, result, fields) => {
+                if (err) throw reject(err);
+
+                if (result && result.length) {
+                    cacheablePlayers = result[0]["data"];
+                } else {
+                    cacheablePlayers = [];
+                }
+
+                console.log(`Retrieved ${result[0]["data"].length} players`);
+                resolve();
+            });
+        });
+    }
+
+    function cachePlayerData(servers) {
+        return new Promise(async (resolve, reject) => {
+            // prettier-ignore
+            let query = `INSERT INTO players_cached (datetime, argonnessen, cannith, ghallanda, khyber, orien, sarlona, thelanis, wayfinder, hardcore)
+                         VALUES (CURRENT_TIMESTAMP, ${con.escape(JSON.stringify(servers[0]))}, ${con.escape(JSON.stringify(servers[1]))}, ${con.escape(JSON.stringify(servers[2]))}
+                         , ${con.escape(JSON.stringify(servers[3]))}, ${con.escape(JSON.stringify(servers[4]))}, ${con.escape(JSON.stringify(servers[5]))}, ${con.escape(JSON.stringify(servers[6]))}
+                         , ${con.escape(JSON.stringify(servers[7]))}, ${con.escape(JSON.stringify(servers[8]))})`;
+
+            con.query(query, (err, result, fields) => {
+                if (err) reject(err);
+                resolve();
+            });
+        });
+    }
+
     let population = [];
     function getPopulationData(days) {
         return new Promise(async (resolve, reject) => {
@@ -195,5 +270,13 @@ con.connect((err) => {
     // Every minute
     cron.schedule("* * * * *", () => {
         runServerStatusReport();
+        // cache players so that the API can pull from cache instead of master
+        getCacheablePlayerData(90)
+            .then(() => {
+                cachePlayers(cacheablePlayers).then((servers) =>
+                    cachePlayerData(servers)
+                );
+            })
+            .catch((err) => console.log(err));
     });
 });
