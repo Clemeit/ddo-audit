@@ -1,6 +1,5 @@
 import React from "react";
 import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
-import Player from "./Player";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
@@ -690,64 +689,82 @@ const WhoPanel = (props) => {
                 handleSaveButton={() => download()}
                 closePanel={() => props.closePanel()}
                 permalink={props.permalink}
-            >
-                <div
-                    className="filter-panel-overlay"
-                    style={{
-                        display: filterPanelVisible ? "block" : "none",
-                    }}
-                    onClick={() => setFilterPanelVisible(false)}
-                />
-                <div
-                    className="filter-panel"
-                    style={{
-                        display: filterPanelVisible ? "block" : "none",
-                        padding: "10px",
-                    }}
-                >
-                    <ContentCluster title="Filter Players">
-                        <div
+            />
+            {filterPanelVisible && (
+                <div>
+                    <div
+                        className="filter-panel-overlay"
+                        style={{
+                            display: filterPanelVisible ? "block" : "none",
+                        }}
+                        onClick={() => setFilterPanelVisible(false)}
+                    />
+                    <div
+                        className="filter-panel"
+                        style={{
+                            display: filterPanelVisible ? "block" : "none",
+                            padding: "10px",
+                        }}
+                    >
+                        <CloseSVG
                             style={{
-                                display: "flex",
-                                justifyContent: "left",
-                                flexDirection: "column",
-                                alignItems: "start",
-                                gap: "10px",
+                                position: "absolute",
+                                top: "5px",
+                                right: "5px",
+                                cursor: "pointer",
                             }}
+                            className="nav-icon should-invert"
+                            onClick={() => setFilterPanelVisible(false)}
+                        />
+                        <ContentCluster
+                            title="Filter Players"
+                            smallBottomMargin
+                            noLink={true}
                         >
-                            <p style={{ fontSize: "1.3rem" }}>
-                                You can now filter players by clicking on the
-                                text fields directly in the 'Who' panel.
-                            </p>
-                            <p style={{ fontSize: "1.3rem" }}>
-                                When searching by name, guild, or location, you
-                                can separate multiple queries with commas (,).
-                                For example: "
-                                <span className="lfm-number">
-                                    Best Guild Ever,The Marketplace
-                                </span>
-                                " will show characters from the guild "Best
-                                Guild Ever" who are currently in "The
-                                Marketplace"
-                            </p>
-                            <a
-                                className="faux-link"
+                            <div
                                 style={{
-                                    fontSize: "1.2rem",
                                     display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
+                                    justifyContent: "left",
+                                    flexDirection: "column",
+                                    alignItems: "start",
                                     gap: "10px",
                                 }}
-                                href={getLink()}
-                                target="_blank"
                             >
-                                Link directly to this page with these filters
-                            </a>
-                        </div>
-                    </ContentCluster>
+                                <p style={{ fontSize: "1.3rem" }}>
+                                    You can now filter players by clicking on
+                                    the text fields directly in the 'Who' panel.
+                                </p>
+                                <p style={{ fontSize: "1.3rem" }}>
+                                    When searching by name, guild, or location,
+                                    you can separate multiple queries with
+                                    commas (,). For example: "
+                                    <span className="lfm-number">
+                                        Best Guild Ever,The Marketplace
+                                    </span>
+                                    " will show characters from the guild "Best
+                                    Guild Ever" who are currently in "The
+                                    Marketplace"
+                                </p>
+                                <a
+                                    className="faux-link"
+                                    style={{
+                                        fontSize: "1.2rem",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        flexWrap: "wrap",
+                                        gap: "10px",
+                                    }}
+                                    href={getLink()}
+                                    target="_blank"
+                                >
+                                    Link directly to this page with these
+                                    filters
+                                </a>
+                            </div>
+                        </ContentCluster>
+                    </div>
                 </div>
-            </FilterBar>
+            )}
             {serverStatus !== false || ignoreServerStatus ? (
                 paginatedPlayerData && filteredPlayerData ? (
                     <div

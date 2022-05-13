@@ -522,7 +522,11 @@ const Panel = (props) => {
                             className="nav-icon should-invert"
                             onClick={() => setFilterPanelVisible(false)}
                         />
-                        <ContentCluster title="Filter Groups" smallBottomMargin>
+                        <ContentCluster
+                            title="Filter Groups"
+                            smallBottomMargin
+                            noLink={true}
+                        >
                             <div style={{ padding: "15px" }}>
                                 <LevelRangeSlider
                                     handleChange={(e) => {
