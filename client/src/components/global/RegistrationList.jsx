@@ -33,6 +33,7 @@ const RegistrationList = (props) => {
     }
 
     function removeCharacter(index) {
+        setLoadingNewCharacter(true);
         setCharacterIds((characterIds) =>
             characterIds.filter((_, i) => i != index)
         );
