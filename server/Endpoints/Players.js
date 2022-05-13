@@ -1,4 +1,6 @@
 var mysql = require("mysql2");
+const CryptoJS = require("crypto-js");
+const SECRET = process.env.CRYPTO_PASS;
 var con = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -18,6 +20,22 @@ module.exports = function (api) {
         ["Wayfinder", "wayfinder"],
         ["Hardcore", "hardcore"],
     ];
+
+    function encryptId(playerId) {
+        return CryptoJS.AES.encrypt(playerId, CryptoJS.enc.Utf8.parse(SECRET), {
+            mode: CryptoJS.mode.ECB,
+        }).toString();
+    }
+
+    function decryptId(encryptedString) {
+        return CryptoJS.AES.decrypt(
+            encryptedString,
+            CryptoJS.enc.Utf8.parse(SECRET),
+            {
+                mode: CryptoJS.mode.ECB,
+            }
+        ).toString(CryptoJS.enc.Utf8);
+    }
 
     con.connect((err) => {
         if (err) throw err;
@@ -100,9 +118,15 @@ module.exports = function (api) {
             });
         }
 
-        function getPlayerById(id, final) {
+        function getPlayersByIds(ids, final) {
             return new Promise(async (resolve, reject) => {
-                let query = `SELECT JSON_OBJECT(
+                let escapedIds = [];
+                ids.forEach((id) => {
+                    escapedIds.push(con.escape(id));
+                });
+
+                let query = `SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                    'PlayerId', CAST(p.playerid as char),
                     'Name', p.name,
                     'Gender', p.gender,
                     'Race', p.race,
@@ -132,13 +156,13 @@ module.exports = function (api) {
                     ),
                     'Online', p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND),
                     'Anonymous', p.anonymous
-                ) AS data FROM \`players\` p
+                )) AS data FROM \`players\` p
                 LEFT JOIN areas a ON p.location = a.areaid 
                 LEFT JOIN classes c1 ON p.class1 = c1.id 
                 LEFT JOIN classes c2 ON p.class2 = c2.id 
                 LEFT JOIN classes c3 ON p.class3 = c3.id 
                 LEFT JOIN classes c4 ON p.class4 = c4.id
-                WHERE playerid = ${con.escape(id)}`;
+                WHERE playerid = ${escapedIds.join(" OR playerid = ")}`;
 
                 con.query(query, (err, result, fields) => {
                     if (err) {
@@ -154,7 +178,7 @@ module.exports = function (api) {
                                 password: process.env.DB_PASS,
                                 database: process.env.DB_NAME,
                             });
-                            getPlayerById(id, true)
+                            getPlayersByIds(ids, true)
                                 .then((result) => {
                                     console.log("Reconnected!");
                                     resolve(result);
@@ -179,7 +203,7 @@ module.exports = function (api) {
             return new Promise(async (resolve, reject) => {
                 let query = `SELECT a.questid, TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), DATE_ADD(a.end, INTERVAL 3960 MINUTE)) as remaining, q.name FROM activity a LEFT JOIN quests q ON q.questid = a.questid WHERE a.playerid = ${con.escape(
                     id
-                )} AND a.end > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -3 DAY) AND q.groupsize = 'Raid'`;
+                )} AND a.end > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -66 HOUR) AND q.groupsize = 'Raid'`;
 
                 con.query(query, (err, result, fields) => {
                     if (err) {
@@ -400,13 +424,14 @@ module.exports = function (api) {
 
         api.post(`/players/raidactivity`, (req, res) => {
             const id = req.body.playerid;
+            const decryptedPlayerId = decryptId(id);
             res.setHeader("Content-Type", "application/json");
             if (id) {
-                getRecentRaidActivity(id).then((result) => {
+                getRecentRaidActivity(decryptedPlayerId).then((result) => {
                     res.send(result);
                 });
             } else {
-                res.send({ error: "No player id found" });
+                res.send({ error: "No player with that id found" });
             }
         });
 
@@ -426,12 +451,28 @@ module.exports = function (api) {
             const name = req.body.name;
             const server = req.body.server;
             const id = req.body.playerid;
-            if (id) {
-                getPlayerById(id || 0).then((result) => {
-                    res.setHeader("Content-Type", "application/json");
+            const ids = req.body.playerids;
+            if (id || ids) {
+                res.setHeader("Content-Type", "application/json");
+                let decryptedPlayerIds = [];
+                if (id) {
+                    decryptedPlayerIds.push(decryptId(id));
+                } else if (ids) {
+                    ids.forEach((encryptedId) =>
+                        decryptedPlayerIds.push(decryptId(encryptedId))
+                    );
+                }
+                if (!decryptedPlayerIds || decryptedPlayerIds.length === 0) {
+                    res.send({ error: "No playerids found" });
+                    return;
+                }
+                getPlayersByIds(decryptedPlayerIds).then((result) => {
                     if (!result || result.length !== 1) {
                         res.send({ error: "No result for playerid" });
                     } else {
+                        result[0].data.forEach((player) => {
+                            player.PlayerId = encryptId(player.PlayerId);
+                        });
                         res.send(result[0].data);
                     }
                 });
@@ -441,8 +482,13 @@ module.exports = function (api) {
                     res.send({ error: "Must include name and server" });
                 } else {
                     lookupPlayerByNameAndServer(name, server).then((result) => {
-                        res.setHeader("Content-Type", "application/json");
-                        res.send(result);
+                        if (result.length === 1) {
+                            const playerId = encryptId(result[0].playerid);
+                            res.setHeader("Content-Type", "application/json");
+                            res.send({ playerid: playerId });
+                        } else {
+                            res.send({ error: "Bad result length" });
+                        }
                     });
                 }
             }
