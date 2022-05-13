@@ -83,7 +83,7 @@ const CharacterSelectModal = (props) => {
                             }}
                         >
                             <ErrorSVG style={{ marginRight: "5px" }} />
-                            Couldn't find character
+                            Character not found
                         </span>
                         <span style={{ fontSize: "1.1rem" }}>
                             Check that the name and server are correct, and

@@ -2,9 +2,11 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import Banner from "./Banner";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
+import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
 import BannerMessage from "./BannerMessage";
 import ContentCluster from "./ContentCluster";
 import RegistrationList from "./RegistrationList";
+import { Link } from "react-router-dom";
 
 const CharacterRegistration = () => {
     const TITLE = "DDO Audit Character Registration";
@@ -106,6 +108,28 @@ const CharacterRegistration = () => {
                         </div>
                     </ContentCluster>
                 )}
+                <ContentCluster title="See Also...">
+                    <div className="content-cluster-options">
+                        <Link
+                            to="/timers"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <TimerSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">
+                                    Raid Timers
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                View and manage your current raid timers.
+                            </p>
+                        </Link>
+                    </div>
+                </ContentCluster>
             </div>
         </div>
     );

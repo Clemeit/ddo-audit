@@ -175,6 +175,44 @@ module.exports = function (api) {
             });
         }
 
+        function getRecentRaidActivity(id, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT a.questid, TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), DATE_ADD(a.end, INTERVAL 3960 MINUTE)) as remaining, q.name FROM activity a LEFT JOIN quests q ON q.questid = a.questid WHERE a.playerid = ${con.escape(
+                    id
+                )} AND a.end > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -3 DAY) AND q.groupsize = 'Raid'`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            getRecentRaidActivity(id, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                });
+            });
+        }
+
         function getCachedPlayerData(server, final) {
             return new Promise(async (resolve, reject) => {
                 let query = `SELECT \`${server}\` AS data FROM players_cached ORDER BY \`players_cached\`.\`datetime\` DESC LIMIT 1;`;
@@ -358,6 +396,18 @@ module.exports = function (api) {
                     console.log(err);
                     res.send("");
                 });
+        });
+
+        api.post(`/players/raidactivity`, (req, res) => {
+            const id = req.body.playerid;
+            res.setHeader("Content-Type", "application/json");
+            if (id) {
+                getRecentRaidActivity(id).then((result) => {
+                    res.send(result);
+                });
+            } else {
+                res.send({ error: "No player id found" });
+            }
         });
 
         api.post(`/players/name`, (req, res) => {

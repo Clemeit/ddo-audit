@@ -47,6 +47,8 @@ const Panel = (props) => {
     const [minimumLevel, setMinimumLevel] = React.useState(1);
     const [maximumLevel, setMaximumLevel] = React.useState(30);
     const [sortAscending, setSortAscending] = React.useState();
+    const [showEligibleCharacters, setShowEligibleCharacters] =
+        React.useState(false);
     const [showCompletionPercentage, setShowCompletionPercentage] =
         React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
@@ -332,6 +334,7 @@ const Panel = (props) => {
         filterBasedOnMyLevel,
         sortAscending,
         showNotEligible,
+        showEligibleCharacters,
     ]);
 
     function handleCanvasSort() {
@@ -369,6 +372,15 @@ const Panel = (props) => {
 
         setCharacterIds(
             JSON.parse(localStorage.getItem("registered-characters") || "[]")
+        );
+
+        let showeligiblecharacters = localStorage.getItem(
+            "show-eligible-characters"
+        );
+        setShowEligibleCharacters(
+            showeligiblecharacters !== null
+                ? showeligiblecharacters === "true"
+                : false
         );
 
         let shownoteligible = localStorage.getItem("show-not-eligible");
@@ -512,7 +524,9 @@ const Panel = (props) => {
                         >
                             <label
                                 className="filter-panel-group-option"
-                                style={{ marginBottom: "0px" }}
+                                style={{
+                                    marginBottom: "0px",
+                                }}
                             >
                                 <input
                                     className="input-radio"
@@ -531,8 +545,42 @@ const Panel = (props) => {
                                         );
                                     }}
                                 />
-                                Filter groups based on my current level
+                                Filter groups based on my current level{" "}
+                                <span
+                                    className="new-tag small"
+                                    style={{ marginLeft: "7px" }}
+                                >
+                                    NEW
+                                </span>
                             </label>
+                            {filterBasedOnMyLevel && (
+                                <label
+                                    className="filter-panel-group-option"
+                                    style={{
+                                        marginLeft: "40px",
+                                        marginBottom: "0px",
+                                    }}
+                                >
+                                    <input
+                                        className="input-radio"
+                                        name="showeligiblecharacters"
+                                        type="checkbox"
+                                        checked={showEligibleCharacters}
+                                        onChange={() => {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "show-eligible-characters",
+                                                    !showEligibleCharacters
+                                                );
+                                            }
+                                            setShowEligibleCharacters(
+                                                !showEligibleCharacters
+                                            );
+                                        }}
+                                    />
+                                    Show my eligible characters
+                                </label>
+                            )}
                             <Link
                                 to="/registration"
                                 style={{
@@ -774,6 +822,7 @@ const Panel = (props) => {
                         showQuestGuesses={showQuestGuesses}
                         showEpicClass={showEpicClass}
                         sortAscending={sortAscending}
+                        showEligibleCharacters={showEligibleCharacters}
                     />
                 ) : (
                     <div className="social-container">

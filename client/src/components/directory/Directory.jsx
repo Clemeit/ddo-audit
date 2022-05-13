@@ -101,12 +101,14 @@ const Directory = (props) => {
                     description:
                         "Add your characters for automatic LFM filtering and raid timer tracking.",
                     to: "/registration",
+                    new: true,
                 },
                 {
                     icon: <TimerSVG className="nav-icon-large should-invert" />,
                     title: "Raid Timers",
                     description: "View and manage your current raid timers.",
                     to: "/raidtimers",
+                    new: true,
                 },
             ],
         },
@@ -281,6 +283,11 @@ const Directory = (props) => {
                                             {option.icon}
                                             <h2 className="content-option-title">
                                                 {option.title}
+                                                {option.new != null && (
+                                                    <div className="new-tag">
+                                                        NEW
+                                                    </div>
+                                                )}
                                                 {option.beta != null && (
                                                     <div className="beta-tag">
                                                         BETA

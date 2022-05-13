@@ -421,7 +421,11 @@ const CanvasLfmPanel = (props) => {
                 }
 
                 // Draw party leader's level or eligible characters
-                if (group.EligibleCharacters.length) {
+                if (
+                    group.EligibleCharacters &&
+                    group.EligibleCharacters.length &&
+                    props.showEligibleCharacters
+                ) {
                     ctx.font = `${15}px Arial`;
                     let visibleString =
                         group.EligibleCharacters[0] +

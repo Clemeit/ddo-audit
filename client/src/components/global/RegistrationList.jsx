@@ -2,7 +2,7 @@ import React from "react";
 import CharacterSelectModal from "./CharacterSelectModal";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
-import { Fetch, Post } from "../../services/DataLoader";
+import { Post } from "../../services/DataLoader";
 import $ from "jquery";
 
 const RegistrationList = (props) => {
@@ -69,6 +69,9 @@ const RegistrationList = (props) => {
                 })
             );
         });
+        if (lookups.length === 0) {
+            setLoading(false);
+        }
         Promise.all(lookups).then(() => {
             let sorted = [];
             characterIds.forEach((id) => {
@@ -82,7 +85,7 @@ const RegistrationList = (props) => {
     }
 
     React.useEffect(() => {
-        if (characterIds && characterIds.length) {
+        if (characterIds) {
             setLoading(true);
             refreshCharacters();
         } else {
@@ -129,14 +132,19 @@ const RegistrationList = (props) => {
                 }}
             >
                 {loading && (!characters || characters.length == 0) && (
-                    <span style={{ textAlign: "center", fontSize: "1.4rem" }}>
+                    <span
+                        style={{
+                            textAlign: "center",
+                            fontSize: "1.4rem",
+                        }}
+                    >
                         Loading...
                     </span>
                 )}
                 {characters &&
                     characters.length > 0 &&
                     characters.map((character, i) => (
-                        <div>
+                        <div key={i}>
                             <div
                                 style={{
                                     display: "flex",
@@ -183,66 +191,65 @@ const RegistrationList = (props) => {
                                     width: "100%",
                                 }}
                             >
-                                <tr
-                                    style={{
-                                        color: "var(--text-faded)",
-                                        fontWeight: "bold",
-                                        fontSize: "1.2rem",
-                                        lineHeight: "15px",
-                                    }}
-                                >
-                                    <th
+                                <thead>
+                                    <tr
                                         style={{
-                                            width: "10%",
-                                            marginBottom: "-5px",
+                                            color: "var(--text-faded)",
+                                            fontWeight: "bold",
+                                            fontSize: "1.2rem",
+                                            lineHeight: "15px",
                                         }}
                                     >
-                                        Server
-                                    </th>
-                                    <th
+                                        <th
+                                            style={{
+                                                width: "10%",
+                                            }}
+                                        >
+                                            Server
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: "10%",
+                                            }}
+                                        >
+                                            Level
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: "20%",
+                                            }}
+                                        >
+                                            Guild
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: "30%",
+                                            }}
+                                        >
+                                            Classes
+                                        </th>
+                                        <th
+                                            style={{
+                                                width: "30%",
+                                            }}
+                                        >
+                                            Location
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
                                         style={{
-                                            width: "10%",
-                                            marginBottom: "-5px",
+                                            fontSize: "1.4rem",
                                         }}
                                     >
-                                        Level
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: "20%",
-                                            marginBottom: "-5px",
-                                        }}
-                                    >
-                                        Guild
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: "30%",
-                                            marginBottom: "-5px",
-                                        }}
-                                    >
-                                        Classes
-                                    </th>
-                                    <th
-                                        style={{
-                                            width: "30%",
-                                            marginBottom: "-5px",
-                                        }}
-                                    >
-                                        Location
-                                    </th>
-                                </tr>
-                                <tr
-                                    style={{
-                                        fontSize: "1.4rem",
-                                    }}
-                                >
-                                    <td>{character.Server}</td>
-                                    <td>{character.TotalLevel}</td>
-                                    <td>{character.Guild}</td>
-                                    <td>{getClassString(character)}</td>
-                                    <td>{character.Location.Name}</td>
-                                </tr>
+                                        <td>{character.Server}</td>
+                                        <td>{character.TotalLevel}</td>
+                                        <td>{character.Guild}</td>
+                                        <td>{getClassString(character)}</td>
+                                        <td>{character.Location.Name}</td>
+                                    </tr>
+                                </tbody>
                             </table>
                             <hr
                                 style={{
