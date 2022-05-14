@@ -8,6 +8,7 @@ import ContentCluster from "./ContentCluster";
 import RegistrationList from "./RegistrationList";
 import { Link } from "react-router-dom";
 import NoMobileOptimization from "./NoMobileOptimization";
+import { Log } from "../../services/CommunicationService";
 
 const CharacterRegistration = () => {
     const TITLE = "DDO Audit Character Registration";
@@ -107,7 +108,13 @@ const CharacterRegistration = () => {
                     >
                         <div
                             className="secondary-button should-invert"
-                            onClick={() => dismissDisclaimer()}
+                            onClick={() => {
+                                dismissDisclaimer();
+                                Log(
+                                    "Dismissed disclaimer",
+                                    "Character registration"
+                                );
+                            }}
                         >
                             Dismiss
                         </div>

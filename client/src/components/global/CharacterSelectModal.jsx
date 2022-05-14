@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
+import { Log } from "../../services/CommunicationService";
 import { Fetch, Post } from "../../services/DataLoader";
 import PageMessage from "./PageMessage";
 
@@ -49,6 +50,7 @@ const CharacterSelectModal = (props) => {
         )
             .then((res) => {
                 if (res.playerid) {
+                    Log("Registered character", `${name.trim()}, ${server}`);
                     props.submit(res.playerid);
                 } else {
                     setErrorTitle("Character not found");
@@ -59,6 +61,7 @@ const CharacterSelectModal = (props) => {
                 }
             })
             .catch(() => {
+                Log("Character registration failed", "Timeout");
                 setErrorTitle("Failed to fetch character data");
                 setErrorMessage(
                     "The server took too long to respond. Please try again later."

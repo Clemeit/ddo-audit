@@ -575,6 +575,12 @@ const Panel = (props) => {
                                                     !filterBasedOnMyLevel
                                                 );
                                             }
+                                            Log(
+                                                "Clicked filter based on my level",
+                                                !filterBasedOnMyLevel
+                                                    ? "true"
+                                                    : "false"
+                                            );
                                             setFilterBasedOnMyLevel(
                                                 !filterBasedOnMyLevel
                                             );
