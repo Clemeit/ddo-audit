@@ -57,7 +57,7 @@ const CharacterRegistration = () => {
                 <NoMobileOptimization />
                 <ContentCluster
                     title="Characters"
-                    description="Register your characters and we'll automatically filter the LFM panel based on your characters' current levels and keep track of your raid timers."
+                    description="Register your characters and we'll automatically keep track of your raid timers and filter the LFM panel based on your characters' current levels."
                 >
                     <RegistrationList />
                 </ContentCluster>

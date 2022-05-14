@@ -1,9 +1,9 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { Log } from "../../services/CommunicationService";
 import Banner from "../global/Banner";
 import BannerMessage from "../global/BannerMessage";
-import Card from "../global/Card";
 import ContentCluster from "../global/ContentCluster";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import TimerList from "./TimerList";
@@ -31,7 +31,7 @@ const Timers = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Check your raid timers before you log in!"
+                    content="Check raid timers for all of your characters before you log in!"
                 />
                 <meta
                     property="og:image"
@@ -110,7 +110,10 @@ const Timers = (props) => {
                     >
                         <div
                             className="secondary-button should-invert"
-                            onClick={() => dismissDisclaimer()}
+                            onClick={() => {
+                                dismissDisclaimer();
+                                Log("Dismissed disclaimer", "Raid timers");
+                            }}
                         >
                             Dismiss
                         </div>

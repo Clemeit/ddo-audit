@@ -10,6 +10,7 @@ import Group from "./Group";
 import { Log } from "../../services/CommunicationService";
 import $ from "jquery";
 import { Link } from "react-router-dom";
+import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
     const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
@@ -527,28 +528,108 @@ const Panel = (props) => {
                             smallBottomMargin
                             noLink={true}
                         >
-                            <div style={{ padding: "15px" }}>
-                                <LevelRangeSlider
-                                    handleChange={(e) => {
-                                        if (e.length) {
-                                            if (!props.minimal) {
-                                                localStorage.setItem(
-                                                    "minimum-level",
-                                                    e[0]
-                                                );
-                                                localStorage.setItem(
-                                                    "maximum-level",
-                                                    e[1]
-                                                );
-                                            }
-                                            setMinimumLevel(e[0]);
-                                            setMaximumLevel(e[1]);
-                                        }
+                            {filterBasedOnMyLevel ? (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        width: "100%",
+                                        fontSize: "1.2rem",
+                                        marginTop: "-10px",
                                     }}
-                                    minimumLevel={minimumLevel}
-                                    maximumLevel={maximumLevel}
-                                />
-                            </div>
+                                >
+                                    {myCharacters &&
+                                        myCharacters.length > 0 && (
+                                            <span
+                                                style={{ fontSize: "1.3rem" }}
+                                            >
+                                                Filtering LFMs based on your
+                                                characters:
+                                            </span>
+                                        )}
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            justifyContent: "center",
+                                            flexWrap: "wrap",
+                                            columnGap: "3px",
+                                            rowGap: "3px",
+                                            width: "100%",
+                                            padding: "5px 0px 10px 0px",
+                                        }}
+                                    >
+                                        {(!myCharacters ||
+                                            myCharacters.length === 0) && (
+                                            <div
+                                                style={{
+                                                    width: "100%",
+                                                }}
+                                            >
+                                                <PageMessage
+                                                    type="info"
+                                                    title="No registered characters"
+                                                    message={
+                                                        <>
+                                                            You need to{" "}
+                                                            <Link to="/registration">
+                                                                add some
+                                                                characters
+                                                            </Link>{" "}
+                                                            first.
+                                                        </>
+                                                    }
+                                                    fontSize={1.1}
+                                                />
+                                            </div>
+                                        )}
+                                        {myCharacters &&
+                                            myCharacters.map((character) => (
+                                                <span
+                                                    style={{
+                                                        border: "1px solid green",
+                                                        borderRadius: "3px",
+                                                        padding: "0px 6px",
+                                                    }}
+                                                >
+                                                    {character.Name}{" "}
+                                                    <span
+                                                        style={{
+                                                            color: "var(--text-faded)",
+                                                        }}
+                                                    >
+                                                        {`- ${character.TotalLevel}, ${character.Server}`}
+                                                    </span>
+                                                </span>
+                                            ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div style={{ padding: "15px", width: "100%" }}>
+                                    <LevelRangeSlider
+                                        handleChange={(e) => {
+                                            if (e.length) {
+                                                if (!props.minimal) {
+                                                    localStorage.setItem(
+                                                        "minimum-level",
+                                                        e[0]
+                                                    );
+                                                    localStorage.setItem(
+                                                        "maximum-level",
+                                                        e[1]
+                                                    );
+                                                }
+                                                setMinimumLevel(e[0]);
+                                                setMaximumLevel(e[1]);
+                                            }
+                                        }}
+                                        minimumLevel={minimumLevel}
+                                        maximumLevel={maximumLevel}
+                                    />
+                                </div>
+                            )}
                             <div
                                 style={{
                                     display: "flex",
