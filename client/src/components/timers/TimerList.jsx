@@ -1,8 +1,9 @@
 import React from "react";
 import { Post } from "../../services/DataLoader";
-import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
+import { ReactComponent as InfoSVG } from "../../assets/global/info.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
+import PageMessage from "../global/PageMessage";
 import { Link } from "react-router-dom";
 import $ from "jquery";
 
@@ -149,47 +150,39 @@ const TimerList = () => {
     return (
         <div>
             {showFailedToFetchError && (
-                <div>
-                    <div
-                        style={{
-                            width: "100%",
-                            border: "1px solid red",
-                            borderRadius: "4px",
-                            padding: "7px 10px",
-                            marginBottom: "5px",
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: "1.3rem",
-                                fontWeight: "bold",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            <ErrorSVG style={{ marginRight: "5px" }} />
-                            Failed to fetch character data
-                        </span>
-                        <span style={{ fontSize: "1.3rem" }}>
+                <PageMessage
+                    type="error"
+                    title="Failed to fetch character data"
+                    message={
+                        <>
                             Please try again later. If the error persists, try
                             clearing your browser cookies or let me know of the
                             problem via the{" "}
                             <Link to="/suggestions">Suggestions page</Link>.
-                        </span>
-                        <br />
-                        <span
-                            style={{
-                                fontSize: "1.1rem",
-                                color: "var(--text-faded)",
-                            }}
-                        >
-                            Reason: the server took too long to respond
-                        </span>
-                    </div>
-                    <div style={{ height: "15px" }} />
-                </div>
+                        </>
+                    }
+                    submessage="Reason: the server took too long to respond"
+                    fontSize={1.3}
+                    pushBottom={true}
+                />
             )}
+            {!loading &&
+                !showFailedToFetchError &&
+                (!characters || characters.length == 0) && (
+                    <PageMessage
+                        type="info"
+                        title="No registered characters"
+                        message={
+                            <>
+                                You need to add a character to track raid
+                                timers. Do so with the button below.
+                            </>
+                        }
+                        submessage="Reason: the server took too long to respond"
+                        fontSize={1.3}
+                        pushBottom={true}
+                    />
+                )}
             {loading && (!characters || characters.length == 0) && (
                 <div
                     style={{

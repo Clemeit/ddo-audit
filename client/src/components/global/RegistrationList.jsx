@@ -6,6 +6,7 @@ import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { Post } from "../../services/DataLoader";
 import $ from "jquery";
 import { Link } from "react-router-dom";
+import PageMessage from "./PageMessage";
 
 const RegistrationList = (props) => {
     const CHARACTER_LIMIT = 10;
@@ -144,53 +145,21 @@ const RegistrationList = (props) => {
     return (
         <div>
             {showFailedToFetchError && (
-                <div>
-                    <div
-                        style={{
-                            width: "100%",
-                            border: "1px solid red",
-                            borderRadius: "4px",
-                            padding: "7px 10px",
-                            marginBottom: "5px",
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: "1.3rem",
-                                fontWeight: "bold",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            <ErrorSVG style={{ marginRight: "5px" }} />
-                            Failed to fetch character data
-                        </span>
-                        <span style={{ fontSize: "1.3rem" }}>
+                <PageMessage
+                    type="error"
+                    title="Failed to fetch character data"
+                    message={
+                        <>
                             Please try again later. If the error persists, try
                             clearing your browser cookies or let me know of the
                             problem via the{" "}
                             <Link to="/suggestions">Suggestions page</Link>.
-                        </span>
-                        <br />
-                        <span
-                            style={{
-                                fontSize: "1.1rem",
-                                color: "var(--text-faded)",
-                            }}
-                        >
-                            Reason: the server took too long to respond
-                        </span>
-                        <div
-                            className="secondary-button full-width-mobile"
-                            onClick={() => clearRegisteredCharacters()}
-                            style={{ marginTop: "10px" }}
-                        >
-                            Clear registered characters
-                        </div>
-                    </div>
-                    <div style={{ height: "15px" }} />
-                </div>
+                        </>
+                    }
+                    submessage="Reason: the server took too long to respond"
+                    fontSize={1.3}
+                    pushBottom={true}
+                />
             )}
             {characterSelectModalShown && (
                 <CharacterSelectModal

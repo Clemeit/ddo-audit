@@ -3,6 +3,7 @@ import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { Fetch, Post } from "../../services/DataLoader";
+import PageMessage from "./PageMessage";
 
 const CharacterSelectModal = (props) => {
     const [lookupError, setLookupError] = React.useState(false);
@@ -29,6 +30,8 @@ const CharacterSelectModal = (props) => {
         if (isLoading) return;
         setIsLoading(true);
         if (!name || !server) {
+            setErrorTitle("Invalid input");
+            setErrorMessage("Please enter a name and server.");
             setLookupError(true);
             return;
         }
@@ -51,7 +54,7 @@ const CharacterSelectModal = (props) => {
             .catch(() => {
                 setErrorTitle("Failed to fetch character data");
                 setErrorMessage(
-                    "Something went wrong but it's not your fault. Please try again later."
+                    "The server took too long to respond. Please try again later."
                 );
                 setLookupError(true);
             })
@@ -78,58 +81,20 @@ const CharacterSelectModal = (props) => {
                 />
                 <h2>Add Character</h2>
                 {lookupError && (
-                    <div
-                        style={{
-                            widht: "100%",
-                            border: "1px solid red",
-                            borderRadius: "4px",
-                            padding: "7px 10px",
-                            marginBottom: "5px",
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: "1.1rem",
-                                fontWeight: "bold",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            <ErrorSVG style={{ marginRight: "5px" }} />
-                            {errorTitle}
-                        </span>
-                        <span style={{ fontSize: "1.1rem" }}>
-                            {errorMessage}
-                        </span>
-                    </div>
+                    <PageMessage
+                        type="error"
+                        title={errorTitle}
+                        message={errorMessage}
+                        fontSize={1.1}
+                    />
                 )}
                 {props.characterExists && !lookupError && (
-                    <div
-                        style={{
-                            widht: "100%",
-                            border: "1px solid orange",
-                            borderRadius: "4px",
-                            padding: "7px 10px",
-                            marginBottom: "5px",
-                        }}
-                    >
-                        <span
-                            style={{
-                                fontSize: "1.1rem",
-                                fontWeight: "bold",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            <WarningSVG style={{ marginRight: "5px" }} />
-                            Registration
-                        </span>
-                        <span style={{ fontSize: "1.1rem" }}>
-                            This character is already registered.
-                        </span>
-                    </div>
+                    <PageMessage
+                        type="warning"
+                        title="Duplicate entry"
+                        message="This character is already registered."
+                        fontSize={1.1}
+                    />
                 )}
                 <label
                     style={{
