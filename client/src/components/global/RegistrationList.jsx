@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import PageMessage from "./PageMessage";
 
 const RegistrationList = (props) => {
-    const CHARACTER_LIMIT = 10;
+    const CHARACTER_LIMIT = 15;
 
     const [characterIds, setCharacterIds] = React.useState([]);
     const [characters, setCharacters] = React.useState([]);
