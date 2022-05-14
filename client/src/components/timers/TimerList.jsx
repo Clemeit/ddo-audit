@@ -11,8 +11,8 @@ import { Log } from "../../services/CommunicationService";
 import YesNoModal from "../global/YesNoModal";
 
 const TimerList = () => {
-    const [characterIds, setCharacterIds] = React.useState();
-    const [characters, setCharacters] = React.useState([]);
+    const [characterIds, setCharacterIds] = React.useState(null);
+    const [characters, setCharacters] = React.useState();
     const [loading, setLoading] = React.useState(true);
     const [showFailedToFetchError, setShowFailedToFetchError] =
         React.useState(false);
@@ -48,10 +48,11 @@ const TimerList = () => {
     }
 
     function fetchCharacterData() {
-        if (characterIds?.length === 0) {
+        if (!characterIds || characterIds.length === 0) {
             setLoading(false);
             return;
         }
+        setLoading(true);
         Post(
             "https://api.ddoaudit.com/players/lookup",
             { playerids: characterIds },
@@ -108,46 +109,51 @@ const TimerList = () => {
             );
         });
 
-        if (lookups.length === 0) {
-            setLoading(false);
-        }
-        Promise.all(lookups).then(() => {
-            // remove raids that are off timer (negative)
-            returnedCharacters.forEach((character) => {
-                character.RaidActivity = character.RaidActivity.filter(
-                    (raid) => raid.remaining > 0
-                );
-            });
+        if (lookups.length !== 0) {
+            Promise.all(lookups).then(() => {
+                // remove raids that are off timer (negative)
+                returnedCharacters.forEach((character) => {
+                    character.RaidActivity = character.RaidActivity.filter(
+                        (raid) => raid.remaining > 0
+                    );
+                });
 
-            // remove the first instance of duplicate raids
-            returnedCharacters.forEach((character) => {
-                character.RaidActivity.sort(
-                    (a, b) => a.remaining - b.remaining
-                );
-                let raids = [];
-                for (let i = character.RaidActivity.length - 1; i >= 0; i--) {
-                    if (raids.includes(character.RaidActivity[i].name)) {
-                        character.RaidActivity = character.RaidActivity.filter(
-                            (_, index) => i != index
-                        );
-                    } else {
-                        raids.push(character.RaidActivity[i].name);
+                // remove the first instance of duplicate raids
+                returnedCharacters.forEach((character) => {
+                    character.RaidActivity.sort(
+                        (a, b) => a.remaining - b.remaining
+                    );
+                    let raids = [];
+                    for (
+                        let i = character.RaidActivity.length - 1;
+                        i >= 0;
+                        i--
+                    ) {
+                        if (raids.includes(character.RaidActivity[i].name)) {
+                            character.RaidActivity =
+                                character.RaidActivity.filter(
+                                    (_, index) => i != index
+                                );
+                        } else {
+                            raids.push(character.RaidActivity[i].name);
+                        }
                     }
-                }
-            });
+                });
 
-            // remove raids hidden by the user
-            returnedCharacters.forEach((character) => {
-                character.RaidActivity = character.RaidActivity.filter(
-                    (raid) => !hiddenTimerIds.includes(raid.id)
+                // remove raids hidden by the user
+                returnedCharacters.forEach((character) => {
+                    character.RaidActivity = character.RaidActivity.filter(
+                        (raid) => !hiddenTimerIds.includes(raid.id)
+                    );
+                });
+
+                returnedCharacters.sort(
+                    (a, b) => b.RaidActivity?.length - a.RaidActivity?.length
                 );
+                setCharacters(returnedCharacters);
+                setLoading(false);
             });
-
-            returnedCharacters.sort(
-                (a, b) => b.RaidActivity?.length - a.RaidActivity?.length
-            );
-            setCharacters(returnedCharacters);
-        });
+        }
     }
 
     function getTimeTillEnd(raid) {
@@ -245,7 +251,158 @@ const TimerList = () => {
                         pushBottom={true}
                     />
                 )}
-            {loading && (!characters || characters.length == 0) && (
+            {characters &&
+                characters.map((character, i) => (
+                    <div key={i}>
+                        {character && (
+                            <>
+                                <div style={{ padding: "10px 0px" }}>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginBottom: "10px",
+                                        }}
+                                    >
+                                        <h4
+                                            style={{
+                                                marginBottom: "0px",
+                                                marginRight: "10px",
+                                            }}
+                                        >
+                                            {character.Name}{" "}
+                                            <span
+                                                style={{
+                                                    color: "var(--text-faded)",
+                                                }}
+                                            >
+                                                | {character.Server}
+                                            </span>
+                                        </h4>
+                                        <RefreshSVG
+                                            className="nav-icon should-invert character-refresh-button"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                                refreshButtonHandler();
+                                                fetchCharacterData();
+                                            }}
+                                        />
+                                    </div>
+                                    {!character.RaidActivity && (
+                                        <span
+                                            style={{
+                                                fontSize: "1.3rem",
+                                                color: "var(--text-faded)",
+                                            }}
+                                        >
+                                            {showFailedToFetchError
+                                                ? "Failed to load"
+                                                : "Loading..."}
+                                        </span>
+                                    )}
+                                    {character.RaidActivity &&
+                                        character.RaidActivity.length == 0 && (
+                                            <span
+                                                style={{
+                                                    fontSize: "1.3rem",
+                                                    color: "var(--text-faded)",
+                                                }}
+                                            >
+                                                No raid timers on record
+                                            </span>
+                                        )}
+                                    {character.RaidActivity &&
+                                        character.RaidActivity.length > 0 && (
+                                            <table
+                                                className="character-table"
+                                                style={{
+                                                    width: "100%",
+                                                }}
+                                            >
+                                                <thead>
+                                                    <tr
+                                                        style={{
+                                                            color: "var(--text-faded)",
+                                                            fontWeight: "bold",
+                                                            fontSize: "1.2rem",
+                                                            lineHeight: "15px",
+                                                        }}
+                                                    >
+                                                        <th
+                                                            style={{
+                                                                width: "30%",
+                                                            }}
+                                                        >
+                                                            Raid
+                                                        </th>
+                                                        <th
+                                                            style={{
+                                                                width: "65%",
+                                                            }}
+                                                        >
+                                                            Timer
+                                                        </th>
+                                                        <th
+                                                            style={{
+                                                                width: "5%",
+                                                            }}
+                                                        ></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {character.RaidActivity.map(
+                                                        (raid, ri) => (
+                                                            <tr
+                                                                key={ri}
+                                                                style={{
+                                                                    fontSize:
+                                                                        "1.3rem",
+                                                                }}
+                                                            >
+                                                                <td className="lfm-number">
+                                                                    {raid.name}
+                                                                </td>
+                                                                <td>
+                                                                    {getTimeTillEnd(
+                                                                        raid
+                                                                    )}
+                                                                </td>
+                                                                <td>
+                                                                    <DeleteSVG
+                                                                        className="fading-icon"
+                                                                        onClick={() => {
+                                                                            setShowYesNoModal(
+                                                                                true
+                                                                            );
+                                                                            setSelectedTimerId(
+                                                                                raid.id
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                </div>
+                            </>
+                        )}
+                        <hr
+                            style={{
+                                backgroundColor: "var(--text)",
+                                opacity: 0.2,
+                                margin: "5px 3px",
+                            }}
+                        />
+                        {i == characters.length - 1 && (
+                            <div style={{ height: "20px" }} />
+                        )}
+                    </div>
+                ))}
+            {loading && characters == null && (
                 <div
                     style={{
                         minHeight: "150px",
@@ -260,156 +417,6 @@ const TimerList = () => {
                     </span>
                 </div>
             )}
-            {characters.map((character, i) => (
-                <div key={i}>
-                    {character && (
-                        <>
-                            <div style={{ padding: "10px 0px" }}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginBottom: "10px",
-                                    }}
-                                >
-                                    <h4
-                                        style={{
-                                            marginBottom: "0px",
-                                            marginRight: "10px",
-                                        }}
-                                    >
-                                        {character.Name}{" "}
-                                        <span
-                                            style={{
-                                                color: "var(--text-faded)",
-                                            }}
-                                        >
-                                            | {character.Server}
-                                        </span>
-                                    </h4>
-                                    <RefreshSVG
-                                        className="nav-icon should-invert character-refresh-button"
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => {
-                                            refreshButtonHandler();
-                                            fetchCharacterData();
-                                        }}
-                                    />
-                                </div>
-                                {!character.RaidActivity && (
-                                    <span
-                                        style={{
-                                            fontSize: "1.3rem",
-                                            color: "var(--text-faded)",
-                                        }}
-                                    >
-                                        {showFailedToFetchError
-                                            ? "Failed to load"
-                                            : "Loading..."}
-                                    </span>
-                                )}
-                                {character.RaidActivity &&
-                                    character.RaidActivity.length == 0 && (
-                                        <span
-                                            style={{
-                                                fontSize: "1.3rem",
-                                                color: "var(--text-faded)",
-                                            }}
-                                        >
-                                            No raid timers on record
-                                        </span>
-                                    )}
-                                {character.RaidActivity &&
-                                    character.RaidActivity.length > 0 && (
-                                        <table
-                                            className="character-table"
-                                            style={{
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <thead>
-                                                <tr
-                                                    style={{
-                                                        color: "var(--text-faded)",
-                                                        fontWeight: "bold",
-                                                        fontSize: "1.2rem",
-                                                        lineHeight: "15px",
-                                                    }}
-                                                >
-                                                    <th
-                                                        style={{
-                                                            width: "30%",
-                                                        }}
-                                                    >
-                                                        Raid
-                                                    </th>
-                                                    <th
-                                                        style={{
-                                                            width: "65%",
-                                                        }}
-                                                    >
-                                                        Timer
-                                                    </th>
-                                                    <th
-                                                        style={{
-                                                            width: "5%",
-                                                        }}
-                                                    ></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {character.RaidActivity.map(
-                                                    (raid, ri) => (
-                                                        <tr
-                                                            key={ri}
-                                                            style={{
-                                                                fontSize:
-                                                                    "1.3rem",
-                                                            }}
-                                                        >
-                                                            <td className="lfm-number">
-                                                                {raid.name}
-                                                            </td>
-                                                            <td>
-                                                                {getTimeTillEnd(
-                                                                    raid
-                                                                )}
-                                                            </td>
-                                                            <td>
-                                                                <DeleteSVG
-                                                                    className="fading-icon"
-                                                                    onClick={() => {
-                                                                        setShowYesNoModal(
-                                                                            true
-                                                                        );
-                                                                        setSelectedTimerId(
-                                                                            raid.id
-                                                                        );
-                                                                    }}
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    )}
-                            </div>
-                        </>
-                    )}
-                    <hr
-                        style={{
-                            backgroundColor: "var(--text)",
-                            opacity: 0.2,
-                            margin: "5px 3px",
-                        }}
-                    />
-                    {i == characters.length - 1 && (
-                        <div style={{ height: "20px" }} />
-                    )}
-                </div>
-            ))}
         </div>
     );
 };
