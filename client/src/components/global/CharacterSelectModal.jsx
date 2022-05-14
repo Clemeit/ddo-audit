@@ -28,13 +28,20 @@ const CharacterSelectModal = (props) => {
 
     function getCharacterHash() {
         if (isLoading) return;
-        setIsLoading(true);
         if (!name || !server) {
             setErrorTitle("Invalid input");
             setErrorMessage("Please enter a name and server.");
             setLookupError(true);
             return;
         }
+        let validString = /^[a-zA-Z0-9\-]+$/;
+        if (!validString.test(name) || name.length === 0 || name.length > 20) {
+            setErrorTitle("Invalid input");
+            setErrorMessage("Please enter a valid name and server.");
+            setLookupError(true);
+            return;
+        }
+        setIsLoading(true);
         Post(
             "https://api.ddoaudit.com/players/lookup",
             { name: name.trim(), server: server },
