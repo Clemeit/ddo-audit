@@ -53,6 +53,10 @@ const CharacterSelectModal = (props) => {
                     Log("Registered character", `${name.trim()}, ${server}`);
                     props.submit(res.playerid);
                 } else {
+                    Log(
+                        "Character registration failed",
+                        `Not found: ${name.trim()}, ${server}`
+                    );
                     setErrorTitle("Character not found");
                     setErrorMessage(
                         "Check that the name and server are correct, and ensure that the character is not marked as anonymous."

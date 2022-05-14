@@ -6,6 +6,7 @@ import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import PageMessage from "../global/PageMessage";
 import { Link } from "react-router-dom";
 import $ from "jquery";
+import { Log } from "../../services/CommunicationService";
 
 const TimerList = () => {
     const [characterIds, setCharacterIds] = React.useState();
@@ -49,6 +50,10 @@ const TimerList = () => {
                 if (response.error) {
                     setLoading(false);
                     setShowFailedToFetchError(true);
+                    Log(
+                        "Failed to fetch characters",
+                        `${response.error || "No error"}`
+                    );
                 } else {
                     setCharacters(response);
                     appendRaidActivity(response);
@@ -57,6 +62,7 @@ const TimerList = () => {
             .catch(() => {
                 setLoading(false);
                 setShowFailedToFetchError(true);
+                Log("Failed to fetch characters", "Timeout");
             });
     }
 
@@ -80,6 +86,10 @@ const TimerList = () => {
                         setLoading(false);
                         setShowFailedToFetchError(true);
                         returnedCharacters.push(characters);
+                        Log(
+                            "Failed to fetch raid timers",
+                            `Timeout for ${character.Name}`
+                        );
                     })
             );
         });
