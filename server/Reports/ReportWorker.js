@@ -270,11 +270,17 @@ con.connect((err) => {
     // Every minute
     cron.schedule("* * * * *", () => {
         runServerStatusReport();
+
         // cache players so that the API can pull from cache instead of master
+        var t0 = new Date();
+        console.log(`Caching player data`);
         getCacheablePlayerData(90)
             .then(() => {
                 cachePlayers(cacheablePlayers).then((servers) =>
-                    cachePlayerData(servers)
+                    cachePlayerData(servers).then(() => {
+                        var t1 = new Date();
+                        console.log(`-> Finished in ${t1 - t0}ms`);
+                    })
                 );
             })
             .catch((err) => console.log(err));

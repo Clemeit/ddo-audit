@@ -3,9 +3,6 @@ require("dotenv").config();
 
 exports.cachePlayers = (players) => {
     return new Promise((resolve, reject) => {
-        var t0 = new Date();
-        console.log(`Caching player data`);
-
         let argonnessen = { Name: "Argonnessen", Players: [], Population: 0 };
         let cannith = { Name: "Cannith", Players: [], Population: 0 };
         let ghallanda = { Name: "Ghallanda", Players: [], Population: 0 };
@@ -59,9 +56,6 @@ exports.cachePlayers = (players) => {
         thelanis.Population = thelanis.Players.length;
         wayfinder.Population = wayfinder.Players.length;
         hardcore.Population = hardcore.Players.length;
-
-        var t1 = new Date();
-        console.log(`-> Finished in ${t1 - t0}ms`);
 
         resolve([
             argonnessen,
