@@ -201,7 +201,7 @@ module.exports = function (api) {
 
         function getRecentRaidActivity(id, final) {
             return new Promise(async (resolve, reject) => {
-                let query = `SELECT a.questid, TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), DATE_ADD(a.end, INTERVAL 3960 MINUTE)) as remaining, q.name FROM activity a LEFT JOIN quests q ON q.questid = a.questid WHERE a.playerid = ${con.escape(
+                let query = `SELECT a.questid, TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), DATE_ADD(a.end, INTERVAL 3960 MINUTE)) as remaining, q.name, a.id FROM activity a LEFT JOIN quests q ON q.questid = a.questid WHERE a.playerid = ${con.escape(
                     id
                 )} AND a.end > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -66 HOUR) AND q.groupsize = 'Raid'`;
 

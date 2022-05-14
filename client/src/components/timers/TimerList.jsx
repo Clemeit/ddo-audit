@@ -3,10 +3,12 @@ import { Post } from "../../services/DataLoader";
 import { ReactComponent as InfoSVG } from "../../assets/global/info.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
+import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import PageMessage from "../global/PageMessage";
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
+import YesNoModal from "../global/YesNoModal";
 
 const TimerList = () => {
     const [characterIds, setCharacterIds] = React.useState();
@@ -14,6 +16,9 @@ const TimerList = () => {
     const [loading, setLoading] = React.useState(true);
     const [showFailedToFetchError, setShowFailedToFetchError] =
         React.useState(false);
+    const [showYesNoModal, setShowYesNoModal] = React.useState(false);
+    const [selectedTimerId, setSelectedTimerId] = React.useState(-1);
+    const [hiddenTimerIds, setHiddenTimerIds] = React.useState([]);
 
     React.useEffect(() => {
         let characterIds = JSON.parse(
@@ -27,6 +32,12 @@ const TimerList = () => {
             fetchCharacterData();
         }
     }, [characterIds]);
+
+    React.useEffect(() => {
+        if (hiddenTimerIds && characters) {
+            appendRaidActivity(characters);
+        }
+    }, [hiddenTimerIds]);
 
     const refreshButtonAngleRef = React.useRef(null);
     function refreshButtonHandler() {
@@ -67,6 +78,9 @@ const TimerList = () => {
     }
 
     function appendRaidActivity(characters) {
+        if (characters == null) {
+            setCharacters([]);
+        }
         let returnedCharacters = [];
         let lookups = [];
         characters.forEach((character) => {
@@ -122,6 +136,13 @@ const TimerList = () => {
                 }
             });
 
+            // remove raids hidden by the user
+            returnedCharacters.forEach((character) => {
+                character.RaidActivity = character.RaidActivity.filter(
+                    (raid) => !hiddenTimerIds.includes(raid.id)
+                );
+            });
+
             returnedCharacters.sort(
                 (a, b) => b.RaidActivity?.length - a.RaidActivity?.length
             );
@@ -157,8 +178,40 @@ const TimerList = () => {
         return returnStringArray.join(", ");
     }
 
+    function removeRaidTimer() {
+        if (selectedTimerId != null) {
+            const hiddenTimerIds = JSON.parse(
+                localStorage.getItem("hidden-raid-timer-ids") || "[]"
+            );
+            hiddenTimerIds.push(selectedTimerId);
+            localStorage.setItem(
+                "hidden-raid-timer-ids",
+                JSON.stringify(hiddenTimerIds || [])
+            );
+            setHiddenTimerIds(hiddenTimerIds);
+        }
+        setShowYesNoModal(false);
+        setSelectedTimerId(null);
+    }
+
+    React.useEffect(() => {
+        const hiddenTimerIds = JSON.parse(
+            localStorage.getItem("hidden-raid-timer-ids") || "[]"
+        );
+        setHiddenTimerIds(hiddenTimerIds);
+    }, []);
+
     return (
         <div>
+            {showYesNoModal && (
+                <YesNoModal
+                    title="Remove this raid timer?"
+                    message="This will hide the current timer."
+                    yes={() => removeRaidTimer()}
+                    no={() => setShowYesNoModal(false)}
+                    close={() => setShowYesNoModal(false)}
+                />
+            )}
             {showFailedToFetchError && (
                 <PageMessage
                     type="error"
@@ -178,7 +231,7 @@ const TimerList = () => {
             )}
             {!loading &&
                 !showFailedToFetchError &&
-                (!characters || characters.length == 0) && (
+                (!characterIds || characterIds.length == 0) && (
                     <PageMessage
                         type="info"
                         title="No registered characters"
@@ -293,11 +346,16 @@ const TimerList = () => {
                                                     </th>
                                                     <th
                                                         style={{
-                                                            width: "70%",
+                                                            width: "65%",
                                                         }}
                                                     >
                                                         Timer
                                                     </th>
+                                                    <th
+                                                        style={{
+                                                            width: "5%",
+                                                        }}
+                                                    ></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -317,6 +375,19 @@ const TimerList = () => {
                                                                 {getTimeTillEnd(
                                                                     raid
                                                                 )}
+                                                            </td>
+                                                            <td>
+                                                                <DeleteSVG
+                                                                    className="fading-icon"
+                                                                    onClick={() => {
+                                                                        setShowYesNoModal(
+                                                                            true
+                                                                        );
+                                                                        setSelectedTimerId(
+                                                                            raid.id
+                                                                        );
+                                                                    }}
+                                                                />
                                                             </td>
                                                         </tr>
                                                     )

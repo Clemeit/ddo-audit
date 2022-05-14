@@ -1616,6 +1616,15 @@ th {
     padding-right: 15px;
 }
 
+.fading-icon {
+    cursor: pointer;
+    opacity: 0.3;
+}
+
+.fading-icon:hover {
+    opacity: 1;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;
