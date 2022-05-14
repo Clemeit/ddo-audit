@@ -17,6 +17,7 @@
         "@types/react-router-dom": "^5.1.5",
         "bootstrap": "^4.3.1",
         "connected-react-router": "6.5.2",
+        "crypto-js": "^4.1.1",
         "d3": "^7.0.0",
         "firebase": "^9.6.4",
         "history": "4.10.1",

@@ -103,7 +103,6 @@ const Steps = (props) => {
         )
             .then((val) => {
                 summarize(val);
-                console.log(val.length);
                 setRawData(val);
             })
             .catch((err) => {});

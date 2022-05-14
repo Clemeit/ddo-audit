@@ -206,7 +206,6 @@ const LfmFilterBar = (props) => {
                         </div>
                     )}
                 </div>
-                {props.children}
             </div>
         </div>
     );

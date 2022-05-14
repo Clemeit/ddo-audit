@@ -93,7 +93,7 @@
 
     --beta: #f18ddc;
     --soon: #e48e59;
-    --new: #aaffaa;
+    --new: #aaffff;
 }
 
 .dark-theme {
@@ -145,7 +145,7 @@
 
     --beta: #b64fa0;
     --soon: #aa5e32;
-    --new: #338833;
+    --new: #339999;
 }
 
 html {
@@ -953,9 +953,18 @@ body {
 }
 
 .filter-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 4;
-    width: 100%;
     background-color: var(--base);
+    max-width: 600px;
+    max-height: 90%;
+    overflow-y: auto;
+    width: 100%;
+    border-radius: 5px;
+    filter: drop-shadow(0px 0px 5px black);
 }
 
 .filter-panel-overlay {
@@ -1597,6 +1606,16 @@ td:hover .report-quest-button {
     margin-right: 0px;
 }
 
+.character-refresh-button {
+    transition: transform 500ms;
+    margin-right: 0px;
+}
+
+.character-table td,
+th {
+    padding-right: 15px;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;
@@ -1638,6 +1657,17 @@ td:hover .report-quest-button {
 }
 
 @media (max-width: 900px) {
+    .filter-panel {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        transform: translate(0%, 0%);
+        width: 100%;
+        max-height: 100%;
+        max-width: unset;
+        overflow-y: scroll;
+    }
+
     .banner-message-container {
         position: fixed;
         transition: transform 200ms;

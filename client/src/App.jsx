@@ -49,9 +49,10 @@ const Community = lazy(() => import("./components/community/Community"));
 const Api = lazy(() => import("./components/api/Api"));
 const Timeline = lazy(() => import("./components/about/Timeline"));
 const Steps = lazy(() => import("./components/iot/Steps"));
-// const CharacterSelect = lazy(() =>
-//     import("./components/grouping/CharacterSelect")
-// );
+const Timers = lazy(() => import("./components/timers/Timers"));
+const CharacterRegistration = lazy(() =>
+    import("./components/global/CharacterRegistration")
+);
 
 export default () => {
     const theme = localStorage.getItem("theme");
@@ -88,14 +89,17 @@ export default () => {
                         <Route exact path="/grouping">
                             <Grouping />
                         </Route>
-                        {/* <Route exact path="/grouping/characterselect">
-                            <CharacterSelect />
-                        </Route> */}
+                        <Route exact path="/registration">
+                            <CharacterRegistration />
+                        </Route>
                         <Route exact path="/grouping/:serverName">
                             <GroupingSpecific />
                         </Route>
                         <Route exact path="/notifications">
                             <NotificationForm />
+                        </Route>
+                        <Route exact path="/timers">
+                            <Timers />
                         </Route>
                         <Route exact path="/who">
                             <Who />

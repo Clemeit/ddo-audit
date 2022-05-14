@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/lfmsprite.jpg";
+import PanelSprite from "../../assets/global/lfmsprite_v2.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -420,17 +420,49 @@ const CanvasLfmPanel = (props) => {
                     );
                 }
 
-                // Draw party leader's level
-                ctx.textAlign = "center";
-                ctx.font = `${15 + props.fontModifier}px Arial`;
-                ctx.fillText(
-                    group.Leader.TotalLevel ||
-                        (group.Leader.Name === "DDO Audit" ? "99" : "0"),
-                    360,
-                    17 + top + props.fontModifier / 2
-                );
+                // Draw party leader's level or eligible characters
+                if (
+                    group.EligibleCharacters &&
+                    group.EligibleCharacters.length &&
+                    props.showEligibleCharacters
+                ) {
+                    ctx.font = `${15}px Arial`;
+                    let visibleString =
+                        group.EligibleCharacters[0] +
+                        (group.EligibleCharacters.length > 1
+                            ? `, +${group.EligibleCharacters.length - 1}`
+                            : "");
+                    ctx.strokeStyle = "#8fcf74";
+                    ctx.fillStyle = "#8fcf74";
+                    let characterWidth = ctx.measureText(visibleString).width;
+                    ctx.textAlign = "right";
+                    ctx.fillText(visibleString, 360, 20 + top);
+                    ctx.beginPath();
+                    ctx.rect(
+                        360 - characterWidth - 10,
+                        6 + top,
+                        characterWidth + 20,
+                        17
+                    );
+                    ctx.stroke();
+                    ctx.fillStyle = props.highVisibility
+                        ? "white"
+                        : group.Eligible
+                        ? "#f6f1d3"
+                        : "#988f80";
+                } else {
+                    ctx.font = `${15 + props.fontModifier}px Arial`;
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        group.Leader.TotalLevel ||
+                            (group.Leader.Name === "DDO Audit" ? "99" : "0"),
+                        360,
+                        17 + top + props.fontModifier / 2
+                    );
+                }
 
                 // Draw level range
+                ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.font = `${16 + props.fontModifier}px Arial`;
                 ctx.fillText(
@@ -1562,6 +1594,13 @@ const CanvasLfmPanel = (props) => {
                 case "Male Bladeforged":
                     xsrc = 54;
                     ysrc = 72;
+                    break;
+                case "Male Tabaxi":
+                case "Female Tabaxi":
+                case "Male Tabaxi Trailblazer":
+                case "Female Tabaxi Trailblazer":
+                    xsrc = 90;
+                    ysrc = 36;
                     break;
                 default:
                     xsrc = 72;

@@ -814,6 +814,7 @@ const CanvasWhoPanel = (props) => {
                     padding: `${computeInputTopPadding()} ${
                         (7 * canvasWidth) / PANEL_WIDTH
                     }px`,
+                    color: "white",
                 }}
                 value={props.globalFilter}
                 onChange={(e) => props.handleGlobalFilter(e.target.value)}
@@ -829,6 +830,7 @@ const CanvasWhoPanel = (props) => {
                     textAlign: "center",
                     padding: "0px",
                     fontSize: `${(1.2 * canvasWidth) / PANEL_WIDTH}rem`,
+                    color: "white",
                 }}
                 value={props.minimumLevelFilter}
                 onChange={(e) => {
@@ -846,6 +848,7 @@ const CanvasWhoPanel = (props) => {
                     textAlign: "center",
                     padding: "0px",
                     fontSize: `${(1.2 * canvasWidth) / PANEL_WIDTH}rem`,
+                    color: "white",
                 }}
                 value={props.maximumLevelFilter}
                 onChange={(e) => {
