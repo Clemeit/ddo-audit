@@ -175,10 +175,9 @@ const TimerList = () => {
                         message={
                             <>
                                 You need to add a character to track raid
-                                timers. Do so with the button below.
+                                timers. Please click the button below.
                             </>
                         }
-                        submessage="Reason: the server took too long to respond"
                         fontSize={1.3}
                         pushBottom={true}
                     />
