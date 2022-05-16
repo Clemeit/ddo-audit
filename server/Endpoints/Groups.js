@@ -103,6 +103,7 @@ module.exports = function (api) {
         servers.forEach((entry) => {
             api.get(`/groups/${entry}`, (req, res) => {
                 res.setHeader("Content-Type", "application/json");
+                res.set("Cache-Control", "no-store");
                 getGroupData(entry)
                     .then((result) => {
                         res.send(result);
