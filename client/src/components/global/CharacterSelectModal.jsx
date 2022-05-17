@@ -51,7 +51,7 @@ const CharacterSelectModal = (props) => {
             .then((res) => {
                 if (res.playerid) {
                     Log("Registered character", `${name.trim()}, ${server}`);
-                    props.submit(res.playerid);
+                    props.submit(res.playerid, server);
                 } else {
                     Log(
                         "Character registration failed",
@@ -77,6 +77,9 @@ const CharacterSelectModal = (props) => {
 
     React.useEffect(() => {
         document.getElementById("name-input").focus();
+        if (props.lastServer) {
+            setServer(props.lastServer);
+        }
     }, []);
 
     return (

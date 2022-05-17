@@ -2,7 +2,6 @@ import React from "react";
 import CharacterSelectModal from "./CharacterSelectModal";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
-import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { Post } from "../../services/DataLoader";
 import $ from "jquery";
 import { Link } from "react-router-dom";
@@ -15,6 +14,7 @@ const RegistrationList = (props) => {
     const [characters, setCharacters] = React.useState([]);
     const [characterSelectModalShown, setCharacterSelectModalShown] =
         React.useState(false);
+    const [lastServer, setLastServer] = React.useState("Argonnessen");
     const [characterExists, setCharacterExists] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const [loadingNewCharacter, setLoadingNewCharacter] = React.useState(false);
@@ -169,7 +169,11 @@ const RegistrationList = (props) => {
             )}
             {characterSelectModalShown && (
                 <CharacterSelectModal
-                    submit={(characterId) => addCharacter(characterId)}
+                    lastServer={lastServer}
+                    submit={(characterId, serverName) => {
+                        addCharacter(characterId);
+                        setLastServer(serverName);
+                    }}
                     close={() => setCharacterSelectModalShown(false)}
                     characterExists={characterExists}
                 />
