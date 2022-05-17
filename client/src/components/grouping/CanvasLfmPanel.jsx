@@ -1,11 +1,10 @@
 import React from "react";
-import PanelSprite from "../../assets/global/lfmsprite_v2.jpg";
+import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
-    const [panelHeight, setPanelHeight] = React.useState(0);
     const MINIMUM_LFM_COUNT = 6;
 
     let [isImageLoaded, set_isImageLoaded] = React.useState(false);
@@ -155,11 +154,10 @@ const CanvasLfmPanel = (props) => {
 
     React.useEffect(() => {
         if (!isImageLoaded) {
-            //console.log("Waiting on resources");
             return;
         }
+
         // Render canvas
-        // console.log("render");
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d", { alpha: false });
 
@@ -272,7 +270,6 @@ const CanvasLfmPanel = (props) => {
 
         function DrawLfms() {
             if (props.data === null) {
-                //console.log("Waiting on data");
                 return;
             }
             let top = 72;
@@ -580,6 +577,23 @@ const CanvasLfmPanel = (props) => {
                                 i * (19 + props.fontModifier)
                         );
                     }
+
+                    if (group.CharactersOnTimer) {
+                        // draw timer icon
+                        ctx.drawImage(
+                            sprite,
+                            764,
+                            189,
+                            18,
+                            18,
+                            585,
+                            top + 2,
+                            18,
+                            18
+                        );
+                    }
+
+                    ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
@@ -587,7 +601,6 @@ const CanvasLfmPanel = (props) => {
                             ? "#d3f6f6"
                             : "#b6b193"
                         : "#95927e";
-                    ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillText(
                         "(" + getGroupDifficulty(group) + ")",
                         489,
@@ -1158,7 +1171,15 @@ const CanvasLfmPanel = (props) => {
             if (group === null) return;
             if (group.Quest == null) return;
 
-            let estimatedBottom = cursorPosition[1] + 3 + 170 + 26;
+            let estimatedBottom =
+                cursorPosition[1] +
+                3 +
+                170 +
+                26 +
+                (group.CharactersOnTimer
+                    ? group.CharactersOnTimer.length * 20 + 15
+                    : 0) +
+                (group.Guess && props.showQuestGuesses ? 60 : 0);
             if (estimatedBottom > canvas.height) {
                 cursorPosition[1] -= estimatedBottom - canvas.height;
             }
@@ -1199,6 +1220,30 @@ const CanvasLfmPanel = (props) => {
 
             let quest = group.Quest;
             let row = 1;
+
+            // raid timers
+            if (group.CharactersOnTimer && group.CharactersOnTimer.length > 0) {
+                ctx.fillStyle = "#f6d3d3";
+                drawOverlayBackground(row);
+                drawOverlayTitle("Raid timers", row);
+                group.CharactersOnTimer.forEach((character) => {
+                    let wrapped = wrapText(
+                        `${character.Name} (${getTimeTillEnd(
+                            character,
+                            group.Quest.Name
+                        )})`,
+                        220
+                    );
+                    for (let i = 0; i < wrapped.length; i++) {
+                        if (i > 0) drawOverlayBackground(row);
+                        drawOverlayInfo(wrapped[i], row);
+                        row++;
+                        drawOverlayBackground(row);
+                    }
+                });
+                row++;
+                ctx.fillStyle = "white";
+            }
 
             if (group.Guess && props.showQuestGuesses) {
                 ctx.fillStyle = "#d3f6f6";
@@ -1299,7 +1344,7 @@ const CanvasLfmPanel = (props) => {
 
             if (quest.AverageTime) {
                 drawOverlayBackground(row);
-                drawOverlayTitle("Average Time", row);
+                drawOverlayTitle("Average time", row);
                 drawOverlayInfo(
                     `${Math.round(quest.AverageTime / 60)} minutes`,
                     row
@@ -1345,6 +1390,39 @@ const CanvasLfmPanel = (props) => {
                     20
                 ); // Background
                 ctx.globalAlpha = 1;
+            }
+
+            function getTimeTillEnd(character, questName) {
+                let raid = character.RaidActivity.filter(
+                    (raid) =>
+                        raid.name.toLowerCase() === questName.toLowerCase()
+                );
+                if (raid.length > 0) {
+                    raid = raid[0];
+                } else {
+                    return "Unknown";
+                }
+
+                let remainingMinutes = raid.remaining;
+                const timeInDays = Math.floor(
+                    remainingMinutes / (60 * 60 * 24)
+                );
+                remainingMinutes = remainingMinutes % (60 * 60 * 24);
+                const timeInHours = Math.floor(remainingMinutes / (60 * 60));
+                remainingMinutes = remainingMinutes % (60 * 60);
+                const timeInMinutes = Math.floor(remainingMinutes / 60);
+                let returnStringArray = [];
+                if (timeInDays != 0) {
+                    returnStringArray.push(`${timeInDays}d`);
+                }
+                if (timeInHours != 0) {
+                    returnStringArray.push(`${timeInHours}h`);
+                }
+                if (timeInMinutes != 0) {
+                    returnStringArray.push(`${timeInMinutes}m`);
+                }
+
+                return returnStringArray.join(", ");
             }
 
             // Helper function for drawing the title of a quest info field

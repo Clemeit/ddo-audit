@@ -58,12 +58,16 @@ const Panel = (props) => {
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
     const [showEpicClass, setShowEpicClass] = React.useState(false);
+    const [showRaidTimerIndicator, setShowRaidTimerIndicator] =
+        React.useState(false);
     const [filterBasedOnMyLevel, setFilterBasedOnMyLevel] =
         React.useState(false);
     const [characterIds, setCharacterIds] = React.useState([]);
     const characterIdsRef = React.useRef(characterIds);
     characterIdsRef.current = characterIds;
-    const [myCharacters, setMyCharacters] = React.useState([]);
+    const [myCharacters, setMyCharacters] = React.useState(null);
+    const [myCharactersWithRaidActivity, setMyCharactersWithRaidActivity] =
+        React.useState(null);
     const [lastCharacterLookupTime, setLastCharacterLookupTime] =
         React.useState(0);
     const lastCharacterLookupTimeRef = React.useRef(lastCharacterLookupTime);
@@ -72,6 +76,7 @@ const Panel = (props) => {
         React.useState(false);
     const usingCachedCharacterDataRef = React.useRef(usingCachedCharacterData);
     usingCachedCharacterDataRef.current = usingCachedCharacterData;
+    const [hiddenTimerIds, setHiddenTimerIds] = React.useState([]);
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -90,6 +95,97 @@ const Panel = (props) => {
     function getServerNamePossessive() {
         return `${props.server}${props.server === "Thelanis" ? "'" : "'s"}`;
     }
+
+    async function appendMyRaidTimers() {
+        let ret = new Promise((resolve, reject) => {
+            if (myCharacters != null && myCharacters.length !== 0) {
+                let lookups = [];
+                let returnedCharacters = [];
+                myCharacters.forEach((character) => {
+                    lookups.push(
+                        Post(
+                            "https://api.ddoaudit.com/players/raidactivity",
+                            { playerid: character.PlayerId },
+                            5000
+                        )
+                            .then((res) => {
+                                returnedCharacters.push({
+                                    ...character,
+                                    RaidActivity: res,
+                                });
+                            })
+                            .catch(() => {
+                                setMyCharactersWithRaidActivity(myCharacters);
+                                Log(
+                                    "Failed to fetch raid timers for LFM",
+                                    `Timeout for ${character.Name}`
+                                );
+                            })
+                    );
+                });
+
+                if (lookups.length !== 0) {
+                    Promise.all(lookups).then(() => {
+                        // remove raids that are off timer (negative)
+                        returnedCharacters.forEach((character) => {
+                            character.RaidActivity =
+                                character.RaidActivity.filter(
+                                    (raid) => raid.remaining > 0
+                                );
+                        });
+
+                        // remove the first instance of duplicate raids
+                        returnedCharacters.forEach((character) => {
+                            character.RaidActivity.sort(
+                                (a, b) => a.remaining - b.remaining
+                            );
+                            let raids = [];
+                            for (
+                                let i = character.RaidActivity.length - 1;
+                                i >= 0;
+                                i--
+                            ) {
+                                if (
+                                    raids.includes(
+                                        character.RaidActivity[i].name
+                                    )
+                                ) {
+                                    character.RaidActivity =
+                                        character.RaidActivity.filter(
+                                            (_, index) => i != index
+                                        );
+                                } else {
+                                    raids.push(character.RaidActivity[i].name);
+                                }
+                            }
+                        });
+
+                        // remove raids hidden by the user
+                        returnedCharacters.forEach((character) => {
+                            character.RaidActivity =
+                                character.RaidActivity.filter(
+                                    (raid) => !hiddenTimerIds.includes(raid.id)
+                                );
+                        });
+
+                        returnedCharacters.sort(
+                            (a, b) =>
+                                b.RaidActivity?.length - a.RaidActivity?.length
+                        );
+                        setMyCharactersWithRaidActivity(returnedCharacters);
+                    });
+                }
+            } else {
+                setMyCharactersWithRaidActivity([]);
+                resolve();
+            }
+        });
+        return ret;
+    }
+
+    React.useEffect(() => {
+        appendMyRaidTimers();
+    }, [myCharacters]);
 
     async function getMyCharacters() {
         let ret = new Promise((resolve, reject) => {
@@ -299,6 +395,29 @@ const Panel = (props) => {
         });
     }
 
+    // Helper function returns the character on timer for a raid
+    function getTimers(group) {
+        let characters = [];
+        if (
+            myCharactersWithRaidActivity &&
+            myCharactersWithRaidActivity.length > 0 &&
+            group.Quest != null
+        ) {
+            myCharactersWithRaidActivity.forEach((character) => {
+                character.RaidActivity.forEach((raid) => {
+                    if (
+                        group.Quest.Name === raid.name &&
+                        raid.remaining &&
+                        character.Server === props.server
+                    ) {
+                        characters.push(character);
+                    }
+                });
+            });
+        }
+        return characters;
+    }
+
     React.useEffect(() => {
         if (unfilteredServerData === null) return;
         let groups = unfilteredServerData.Groups;
@@ -331,6 +450,20 @@ const Panel = (props) => {
             if (levelpass || showNotEligible) {
                 filteredgroups.push(group);
             }
+
+            // check raid timers
+            if (
+                showRaidTimerIndicator &&
+                myCharactersWithRaidActivity != null &&
+                myCharactersWithRaidActivity.length > 0
+            ) {
+                const charactersOnTimer = getTimers(group);
+                if (charactersOnTimer.length > 0) {
+                    group.CharactersOnTimer = charactersOnTimer;
+                }
+            } else {
+                group.CharactersOnTimer = null;
+            }
         });
         setFilteredServerData({
             ...unfilteredServerData,
@@ -348,6 +481,8 @@ const Panel = (props) => {
         sortAscending,
         showNotEligible,
         showEligibleCharacters,
+        showRaidTimerIndicator,
+        myCharactersWithRaidActivity,
     ]);
 
     function handleCanvasSort() {
@@ -438,10 +573,24 @@ const Panel = (props) => {
             showquestguesses !== null ? showquestguesses === "true" : true
         );
 
+        let showraidtimerindicator = localStorage.getItem(
+            "show-raid-timer-indicator"
+        );
+        setShowRaidTimerIndicator(
+            showraidtimerindicator !== null
+                ? showraidtimerindicator === "true"
+                : false
+        );
+
         let showepicclass = localStorage.getItem("show-epic-class");
         setShowEpicClass(
             showepicclass !== null ? showepicclass === "true" : false
         );
+
+        const hiddenTimerIds = JSON.parse(
+            localStorage.getItem("hidden-raid-timer-ids") || "[]"
+        );
+        setHiddenTimerIds(hiddenTimerIds);
     }, []);
 
     // Filter bar
@@ -842,6 +991,55 @@ const Panel = (props) => {
                                     alignItems: "start",
                                 }}
                             >
+                                <label className="filter-panel-group-option">
+                                    <input
+                                        className="input-radio"
+                                        name="showraidtimerindicator"
+                                        type="checkbox"
+                                        checked={showRaidTimerIndicator}
+                                        onChange={() => {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "show-raid-timer-indicator",
+                                                    !showRaidTimerIndicator
+                                                );
+                                            }
+                                            Log(
+                                                "Clicked Show Raid Timer Indicator",
+                                                !showRaidTimerIndicator
+                                                    ? "true"
+                                                    : "false"
+                                            );
+                                            setShowRaidTimerIndicator(
+                                                !showRaidTimerIndicator
+                                            );
+                                        }}
+                                    />
+                                    Show Raid Timer Indicator{" "}
+                                    <span
+                                        className="new-tag small"
+                                        style={{ marginLeft: "7px" }}
+                                    >
+                                        NEW
+                                    </span>
+                                </label>
+                                {showRaidTimerIndicator &&
+                                    myCharacters.length === 0 && (
+                                        <span
+                                            style={{
+                                                marginTop: "-7px",
+                                                marginBottom: "7px",
+                                                marginLeft: "40px",
+                                                fontSize: "1.1rem",
+                                            }}
+                                        >
+                                            You'll need to{" "}
+                                            <Link to="/registration">
+                                                add a character
+                                            </Link>{" "}
+                                            first
+                                        </span>
+                                    )}
                                 <label className="filter-panel-group-option">
                                     <input
                                         className="input-radio"
