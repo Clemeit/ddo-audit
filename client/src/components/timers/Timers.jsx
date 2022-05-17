@@ -128,17 +128,17 @@ const Timers = (props) => {
                                         Is this feature useful?
                                     </span>
                                     <ThumbsUpSVG
-                                        className="nav-icon"
+                                        className="nav-icon should-invert"
                                         style={{ cursor: "pointer" }}
                                         onClick={() => vote("Like")}
                                     />
                                     <ThumbsDownSVG
-                                        className="nav-icon"
+                                        className="nav-icon should-invert"
                                         style={{ cursor: "pointer" }}
                                         onClick={() => vote("Dislike")}
                                     />
                                     <CloseSVG
-                                        className="nav-icon"
+                                        className="nav-icon should-invert"
                                         style={{ cursor: "pointer" }}
                                         onClick={() => vote(null)}
                                     />
