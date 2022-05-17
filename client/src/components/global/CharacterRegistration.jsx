@@ -29,10 +29,11 @@ const CharacterRegistration = () => {
         }
 
         let ls = localStorage.getItem("feature-vote-character-registration");
-        if (ls == null) {
+        let registeredCharacters = JSON.parse(
+            localStorage.getItem("registered-characters") || "[]"
+        );
+        if (registeredCharacters.length > 0 && ls == null) {
             setMayVote(true);
-        } else {
-            setMayVote(false);
         }
     }, []);
 

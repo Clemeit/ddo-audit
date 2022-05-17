@@ -11,7 +11,7 @@ import PageMessage from "./PageMessage";
 const RegistrationList = (props) => {
     const CHARACTER_LIMIT = 15;
 
-    const [characterIds, setCharacterIds] = React.useState([]);
+    const [characterIds, setCharacterIds] = React.useState(null);
     const [characters, setCharacters] = React.useState([]);
     const [characterSelectModalShown, setCharacterSelectModalShown] =
         React.useState(false);
@@ -23,12 +23,15 @@ const RegistrationList = (props) => {
 
     function addCharacter(characterId) {
         setLoadingNewCharacter(true);
-        if (characterIds.includes(characterId)) {
+        if (characterIds != null && characterIds.includes(characterId)) {
             setCharacterExists(true);
             return;
         }
         setCharacterExists(false);
-        setCharacterIds((characterIds) => [...characterIds, characterId]);
+        setCharacterIds((characterIds) => [
+            ...(characterIds || []),
+            characterId,
+        ]);
         setCharacterSelectModalShown(false);
     }
 
@@ -46,11 +49,11 @@ const RegistrationList = (props) => {
     }
 
     React.useEffect(() => {
-        let registedCharacters = JSON.parse(
+        let registeredCharacters = JSON.parse(
             localStorage.getItem("registered-characters") || "[]"
         );
-        if (registedCharacters.length) {
-            setCharacterIds(registedCharacters);
+        if (registeredCharacters.length) {
+            setCharacterIds(registeredCharacters);
         }
     }, []);
 
@@ -80,14 +83,16 @@ const RegistrationList = (props) => {
                     setCharacters([]);
                 } else {
                     let sortedCharacters = [];
-                    characterIds.forEach((characterId) => {
-                        sortedCharacters.push(
-                            response.filter(
-                                (character) =>
-                                    character.PlayerId === characterId
-                            )?.[0]
-                        );
-                    });
+                    if (characterIds != null) {
+                        characterIds.forEach((characterId) => {
+                            sortedCharacters.push(
+                                response.filter(
+                                    (character) =>
+                                        character.PlayerId === characterId
+                                )?.[0]
+                            );
+                        });
+                    }
                     setCharacters(sortedCharacters);
                 }
             })
@@ -135,6 +140,7 @@ const RegistrationList = (props) => {
     }
 
     function atCharacterLimit() {
+        if (characterIds == null) return false;
         return characterIds.length >= CHARACTER_LIMIT;
     }
 

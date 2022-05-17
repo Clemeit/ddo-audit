@@ -27,10 +27,11 @@ const Timers = (props) => {
         }
 
         let ls = localStorage.getItem("feature-vote-raid-timers");
-        if (ls == null) {
+        let registeredCharacters = JSON.parse(
+            localStorage.getItem("registered-characters") || "[]"
+        );
+        if (registeredCharacters.length > 0 && ls == null) {
             setMayVote(true);
-        } else {
-            setMayVote(false);
         }
     }, []);
 
