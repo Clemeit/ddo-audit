@@ -812,7 +812,8 @@ body {
 
 .light-theme .nav-icon.should-invert,
 .light-theme .nav-icon-large.should-invert,
-.light-theme .link-icon.should-invert {
+.light-theme .link-icon.should-invert,
+.light-theme .add-panel-icon.should-invert {
     filter: invert();
 }
 
