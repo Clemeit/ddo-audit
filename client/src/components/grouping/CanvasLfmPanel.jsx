@@ -1393,9 +1393,8 @@ const CanvasLfmPanel = (props) => {
             }
 
             function getTimeTillEnd(character, questName) {
-                let raid = character.RaidActivity.filter(
-                    (raid) =>
-                        raid.name.toLowerCase() === questName.toLowerCase()
+                let raid = character.RaidActivity.filter((raid) =>
+                    questName.toLowerCase().includes(raid.name.toLowerCase())
                 );
                 if (raid.length > 0) {
                     raid = raid[0];
