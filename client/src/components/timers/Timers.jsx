@@ -3,14 +3,21 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Log } from "../../services/CommunicationService";
 import Banner from "../global/Banner";
+import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
+import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 import NoMobileOptimization from "../global/NoMobileOptimization";
+import { Submit } from "../../services/CommunicationService";
 import TimerList from "./TimerList";
 
 const Timers = (props) => {
     const TITLE = "Raid Timers";
     const [disclaimerVisible, setDisclaimerVisible] = React.useState(false);
+    const [mayVote, setMayVote] = React.useState(false);
+    const [hasVoted, setHasVoted] = React.useState(false);
+    const [voteResponse, setVoteResponse] = React.useState(null);
 
     React.useEffect(() => {
         if (localStorage.getItem("hide-raid-timer-disclaimer")) {
@@ -18,7 +25,30 @@ const Timers = (props) => {
         } else {
             setDisclaimerVisible(true);
         }
+
+        let ls = localStorage.getItem("feature-vote-raid-timers");
+        if (ls == null) {
+            setMayVote(true);
+        } else {
+            setMayVote(false);
+        }
     }, []);
+
+    function vote(response) {
+        if (response != null) {
+            Submit("Feature: Raid Timers", response);
+            if (response === "Like") {
+                setVoteResponse("positive");
+            } else {
+                setVoteResponse("negative");
+            }
+        } else {
+            setVoteResponse("close");
+            setMayVote(false);
+        }
+        setHasVoted(true);
+        localStorage.setItem("feature-vote-raid-timers", new Date());
+    }
 
     function dismissDisclaimer() {
         setDisclaimerVisible(false);
@@ -70,6 +100,51 @@ const Timers = (props) => {
                             Manage characters
                         </Link>
                     </div>
+                    {mayVote && (
+                        <div
+                            className="feature-vote-container"
+                            style={{ opacity: hasVoted ? 1 : "" }}
+                        >
+                            {hasVoted ? (
+                                <>
+                                    <span style={{ cursor: "default" }}>
+                                        {voteResponse === "positive" ? (
+                                            "That's great to hear! Thanks."
+                                        ) : (
+                                            <>
+                                                Have a moment to{" "}
+                                                <Link to="/suggestions">
+                                                    suggest an improvement
+                                                </Link>
+                                                ?
+                                            </>
+                                        )}
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span style={{ cursor: "default" }}>
+                                        Is this feature useful?
+                                    </span>
+                                    <ThumbsUpSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Like")}
+                                    />
+                                    <ThumbsDownSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Dislike")}
+                                    />
+                                    <CloseSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote(null)}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    )}
                 </ContentCluster>
                 {disclaimerVisible && (
                     <ContentCluster
@@ -101,7 +176,11 @@ const Timers = (props) => {
                                     </li>
                                     <li>
                                         Some raids may not be tracked. If you
-                                        find one, let me know.
+                                        find one,{" "}
+                                        <Link to="/suggestions">
+                                            let me know
+                                        </Link>
+                                        .
                                     </li>
                                 </ul>
                             </span>

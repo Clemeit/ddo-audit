@@ -3,16 +3,23 @@ import { Helmet } from "react-helmet";
 import Banner from "./Banner";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
+import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
+import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import BannerMessage from "./BannerMessage";
 import ContentCluster from "./ContentCluster";
 import RegistrationList from "./RegistrationList";
 import { Link } from "react-router-dom";
 import NoMobileOptimization from "./NoMobileOptimization";
+import { Submit } from "../../services/CommunicationService";
 import { Log } from "../../services/CommunicationService";
 
 const CharacterRegistration = () => {
     const TITLE = "DDO Audit Character Registration";
     const [disclaimerVisible, setDisclaimerVisible] = React.useState(false);
+    const [mayVote, setMayVote] = React.useState(false);
+    const [hasVoted, setHasVoted] = React.useState(false);
+    const [voteResponse, setVoteResponse] = React.useState(null);
 
     React.useEffect(() => {
         if (localStorage.getItem("hide-character-registration-disclaimer")) {
@@ -20,7 +27,30 @@ const CharacterRegistration = () => {
         } else {
             setDisclaimerVisible(true);
         }
+
+        let ls = localStorage.getItem("feature-vote-character-registration");
+        if (ls == null) {
+            setMayVote(true);
+        } else {
+            setMayVote(false);
+        }
     }, []);
+
+    function vote(response) {
+        if (response != null) {
+            Submit("Feature: Character Registration", response);
+            if (response === "Like") {
+                setVoteResponse("positive");
+            } else {
+                setVoteResponse("negative");
+            }
+        } else {
+            setVoteResponse("close");
+            setMayVote(false);
+        }
+        setHasVoted(true);
+        localStorage.setItem("feature-vote-character-registration", new Date());
+    }
 
     function dismissDisclaimer() {
         setDisclaimerVisible(false);
@@ -60,6 +90,51 @@ const CharacterRegistration = () => {
                     description="Register your characters and we'll automatically keep track of your raid timers and filter the LFM panel based on your characters' current levels."
                 >
                     <RegistrationList />
+                    {mayVote && (
+                        <div
+                            className="feature-vote-container"
+                            style={{ opacity: hasVoted ? 1 : "" }}
+                        >
+                            {hasVoted ? (
+                                <>
+                                    <span style={{ cursor: "default" }}>
+                                        {voteResponse === "positive" ? (
+                                            "That's great to hear! Thanks."
+                                        ) : (
+                                            <>
+                                                Have a moment to{" "}
+                                                <Link to="/suggestions">
+                                                    suggest an improvement
+                                                </Link>
+                                                ?
+                                            </>
+                                        )}
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span style={{ cursor: "default" }}>
+                                        Is this feature easy to use?
+                                    </span>
+                                    <ThumbsUpSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Like")}
+                                    />
+                                    <ThumbsDownSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote("Dislike")}
+                                    />
+                                    <CloseSVG
+                                        className="nav-icon"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => vote(null)}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    )}
                 </ContentCluster>
                 {disclaimerVisible && (
                     <ContentCluster
