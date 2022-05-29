@@ -38,6 +38,34 @@ const Timeline = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Timeline">
                     <DevEvent
+                        title="May 15, 2022 - Character Registration"
+                        events={[
+                            "Added character registration allowing for more user-specific features",
+                            "Added raid timer tracking",
+                            "Added automatic LFM panel filtering based on character level",
+                        ]}
+                    />
+                    <DevEvent
+                        title="May 13, 2022 - Improved Who Panel Loading Times"
+                        events={[
+                            "Leveraged data caching to significantly improve the loading speed of the Who panel",
+                        ]}
+                    />
+                    <DevEvent
+                        title="April 10, 2022 - Average Quest Times"
+                        events={[
+                            "Added average quest time to the quest description popup on the LFM viewer",
+                            'Added quest completion progress bars to the LFM panel (enable feature under "Filters")',
+                        ]}
+                    />
+                    <DevEvent
+                        title="April 7, 2022 - Intelligent LFM Viewer"
+                        events={[
+                            "The LFM viewer automatically populates the quest field if the leader doesn't select a quest",
+                            "Skull count is added to the difficulty selection if the leader specifies it in the comment field",
+                        ]}
+                    />
+                    <DevEvent
                         title="February 25, 2022 - Addressing User Feedback"
                         events={[
                             "Added a permalink to the LFM/Who panels when multiple panels are open simultaneously",

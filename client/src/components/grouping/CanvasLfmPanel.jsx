@@ -1,11 +1,10 @@
 import React from "react";
-import PanelSprite from "../../assets/global/lfmsprite.jpg";
+import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
-    const [panelHeight, setPanelHeight] = React.useState(0);
     const MINIMUM_LFM_COUNT = 6;
 
     let [isImageLoaded, set_isImageLoaded] = React.useState(false);
@@ -155,11 +154,10 @@ const CanvasLfmPanel = (props) => {
 
     React.useEffect(() => {
         if (!isImageLoaded) {
-            //console.log("Waiting on resources");
             return;
         }
+
         // Render canvas
-        // console.log("render");
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d", { alpha: false });
 
@@ -217,6 +215,12 @@ const CanvasLfmPanel = (props) => {
                 ctx.textAlign = "left";
                 ctx.textBaseline = "alphabetic";
             }
+            if (props.sortAscending) {
+                // 0, 259  |  30x10 DESC | 746, 55
+                ctx.drawImage(sprite, 30, 259, 30, 10, 746, 55, 30, 10);
+            } else {
+                ctx.drawImage(sprite, 0, 259, 30, 10, 746, 55, 30, 10);
+            }
         }
 
         // Draws the chin
@@ -266,7 +270,6 @@ const CanvasLfmPanel = (props) => {
 
         function DrawLfms() {
             if (props.data === null) {
-                //console.log("Waiting on data");
                 return;
             }
             let top = 72;
@@ -293,7 +296,49 @@ const CanvasLfmPanel = (props) => {
                     lfmheight = lfmHeight;
                 }
 
-                if (group.Eligible) {
+                if (isFeytwisted(group)) {
+                    let gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        panelWidth,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(0, "#a11d1d");
+                    gradient.addColorStop(0.2, "#a1a11d");
+                    gradient.addColorStop(0.4, "#1da11f");
+                    gradient.addColorStop(0.6, "#1d9aa1");
+                    gradient.addColorStop(0.8, "#1d1da1");
+                    gradient.addColorStop(1, "#8f1da1");
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
+
+                    gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        0,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(
+                        0,
+                        props.highVisibility ? "#30301e" : "#3b3b25"
+                    );
+                    gradient.addColorStop(
+                        0.25,
+                        props.highVisibility ? "#42402a" : "#4c4a31"
+                    );
+                    gradient.addColorStop(
+                        0.75,
+                        props.highVisibility ? "#42402a" : "#4c4a31"
+                    );
+                    gradient.addColorStop(
+                        1,
+                        props.highVisibility ? "#30301e" : "#3b3b25"
+                    );
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                } else if (group.Eligible) {
                     let gradient = ctx.createLinearGradient(
                         0,
                         top,
@@ -318,10 +363,11 @@ const CanvasLfmPanel = (props) => {
                     );
 
                     ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
                 } else {
                     ctx.fillStyle = "#150a06";
+                    ctx.fillRect(26, top, 802, lfmheight);
                 }
-                ctx.fillRect(26, top, 802, lfmheight);
 
                 ctx.beginPath();
                 ctx.strokeStyle = "#8f8d74";
@@ -371,17 +417,49 @@ const CanvasLfmPanel = (props) => {
                     );
                 }
 
-                // Draw party leader's level
-                ctx.textAlign = "center";
-                ctx.font = `${15 + props.fontModifier}px Arial`;
-                ctx.fillText(
-                    group.Leader.TotalLevel ||
-                        (group.Leader.Name === "DDO Audit" ? "99" : "0"),
-                    360,
-                    17 + top + props.fontModifier / 2
-                );
+                // Draw party leader's level or eligible characters
+                if (
+                    group.EligibleCharacters &&
+                    group.EligibleCharacters.length &&
+                    props.showEligibleCharacters
+                ) {
+                    ctx.font = `${15}px Arial`;
+                    let visibleString =
+                        group.EligibleCharacters[0] +
+                        (group.EligibleCharacters.length > 1
+                            ? `, +${group.EligibleCharacters.length - 1}`
+                            : "");
+                    ctx.strokeStyle = "#8fcf74";
+                    ctx.fillStyle = "#8fcf74";
+                    let characterWidth = ctx.measureText(visibleString).width;
+                    ctx.textAlign = "right";
+                    ctx.fillText(visibleString, 360, 20 + top);
+                    ctx.beginPath();
+                    ctx.rect(
+                        360 - characterWidth - 10,
+                        6 + top,
+                        characterWidth + 20,
+                        17
+                    );
+                    ctx.stroke();
+                    ctx.fillStyle = props.highVisibility
+                        ? "white"
+                        : group.Eligible
+                        ? "#f6f1d3"
+                        : "#988f80";
+                } else {
+                    ctx.font = `${15 + props.fontModifier}px Arial`;
+                    ctx.textAlign = "center";
+                    ctx.fillText(
+                        group.Leader.TotalLevel ||
+                            (group.Leader.Name === "DDO Audit" ? "99" : "0"),
+                        360,
+                        17 + top + props.fontModifier / 2
+                    );
+                }
 
                 // Draw level range
+                ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.font = `${16 + props.fontModifier}px Arial`;
                 ctx.fillText(
@@ -446,7 +524,7 @@ const CanvasLfmPanel = (props) => {
                             );
                         }
                 } else {
-                    if (group.Members) {
+                    if (group.Members && props.showMemberCount) {
                         if (group.Members.length > 0) {
                             ctx.fillStyle = props.highVisibility
                                 ? "white"
@@ -464,7 +542,10 @@ const CanvasLfmPanel = (props) => {
                 }
 
                 // Draw quest
-                if (group.Quest != null) {
+                if (
+                    group.Quest != null &&
+                    (!group.Guess || props.showQuestGuesses)
+                ) {
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
@@ -496,6 +577,23 @@ const CanvasLfmPanel = (props) => {
                                 i * (19 + props.fontModifier)
                         );
                     }
+
+                    if (group.CharactersOnTimer) {
+                        // draw timer icon
+                        ctx.drawImage(
+                            sprite,
+                            764,
+                            189,
+                            18,
+                            18,
+                            585,
+                            top + 2,
+                            18,
+                            18
+                        );
+                    }
+
+                    ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
@@ -503,7 +601,6 @@ const CanvasLfmPanel = (props) => {
                             ? "#d3f6f6"
                             : "#b6b193"
                         : "#95927e";
-                    ctx.font = `${14 + props.fontModifier}px Arial`;
                     ctx.fillText(
                         "(" + getGroupDifficulty(group) + ")",
                         489,
@@ -518,6 +615,46 @@ const CanvasLfmPanel = (props) => {
                             textLines.length * 19 +
                             props.fontModifier
                     );
+                }
+
+                // Draw quest completion percentage
+                if (
+                    group.AdventureActive &&
+                    group.Quest?.AverageTime &&
+                    props.showCompletionPercentage
+                ) {
+                    // Draw timeline
+                    ctx.closePath();
+                    ctx.strokeStyle = "#80b6cf"; //"#02adfb";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(489 - 100, top + lfmheight - 10);
+                    ctx.lineTo(489 + 100, top + lfmheight - 10);
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw completion bar
+                    ctx.closePath();
+                    ctx.strokeStyle = "#4ba4cc"; //"#02adfb";
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(394, top + lfmheight - 10);
+                    // prettier-ignore
+                    ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / group.Quest?.AverageTime ), 190),
+                        top + lfmheight - 10
+                    );
+                    ctx.closePath();
+                    ctx.stroke();
+
+                    // Draw average time marker
+                    ctx.closePath();
+                    ctx.strokeStyle = "#d48824"; //"#02adfb";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(564, top + lfmheight - 10 - 5);
+                    ctx.lineTo(564, top + lfmheight - 10 + 5);
+                    ctx.closePath();
+                    ctx.stroke();
                 }
 
                 // Draw race icon
@@ -741,17 +878,18 @@ const CanvasLfmPanel = (props) => {
 
                 // Draw active time
                 if (
-                    group.AdventureActive !== 0 &&
-                    group.AdventureActive !== undefined
+                    group.AdventureActive != null &&
+                    group.AdventureActive !== 0
                 ) {
+                    let modifiedaatime = Math.max(group.AdventureActive, 60);
                     ctx.fillStyle = props.highVisibility
                         ? "#5fcafc"
                         : "#02adfb";
                     ctx.textAlign = "center";
                     ctx.fillText(
                         "Adventure Active: " +
-                            group.AdventureActive +
-                            (group.AdventureActive === 1
+                            Math.round(modifiedaatime / 60) +
+                            (Math.round(modifiedaatime / 60) === 1
                                 ? " minute"
                                 : " minutes"),
                         200,
@@ -903,50 +1041,68 @@ const CanvasLfmPanel = (props) => {
                     ctx.font = "13px Arial";
                     ctx.textBaseline = "alphabetic";
                     ctx.textAlign = "right";
-                    if (member.Classes !== null && member.Classes !== undefined)
+                    if (
+                        member.Classes !== null &&
+                        member.Classes !== undefined
+                    ) {
                         for (let c = 0; c < member.Classes.length; c++) {
-                            // First pass for icons
-                            let xp = cursorPosition[0] + 166 + 21 * c;
-                            let yp = cursorPosition[1] + 4 + 41 * i;
+                            if (
+                                member.Classes[c].Name !== "Epic" ||
+                                props.showEpicClass
+                            ) {
+                                // First pass for icons
+                                let xp = cursorPosition[0] + 166 + 21 * c;
+                                let yp = cursorPosition[1] + 4 + 41 * i;
 
-                            ctx.fillStyle = "#3e4641";
-                            ctx.fillRect(xp - 1, yp - 1, 20, 20);
+                                ctx.fillStyle = "#3e4641";
+                                ctx.fillRect(xp - 1, yp - 1, 20, 20);
 
-                            let classIconPosition = getClassIconPosition(
-                                member.Classes[c].Name,
-                                true
-                            );
-                            ctx.drawImage(
-                                sprite,
-                                classIconPosition[0],
-                                classIconPosition[1],
-                                18,
-                                18,
-                                xp,
-                                yp,
-                                18,
-                                18
-                            );
+                                let classIconPosition = getClassIconPosition(
+                                    member.Classes[c].Name,
+                                    true
+                                );
+                                ctx.drawImage(
+                                    sprite,
+                                    classIconPosition[0],
+                                    classIconPosition[1],
+                                    18,
+                                    18,
+                                    xp,
+                                    yp,
+                                    18,
+                                    18
+                                );
+                            }
                         }
-                    if (member.Classes !== null && member.Classes !== undefined)
+                    }
+                    if (
+                        member.Classes !== null &&
+                        member.Classes !== undefined
+                    ) {
                         for (let c = 0; c < member.Classes.length; c++) {
-                            // Second pass for levels
-                            let xp = cursorPosition[0] + 166 + 21 * c;
-                            let yp = cursorPosition[1] + 4 + 41 * i;
+                            if (
+                                member.Classes[c].Name !== "Epic" ||
+                                props.showEpicClass
+                            ) {
+                                // Second pass for levels
+                                let xp = cursorPosition[0] + 166 + 21 * c;
+                                let yp = cursorPosition[1] + 4 + 41 * i;
 
-                            ctx.fillStyle = "black";
-                            ctx.fillText(
-                                member.Classes[c].Level,
-                                xp + 22,
-                                yp + 18
-                            );
-                            ctx.fillStyle = "white";
-                            ctx.fillText(
-                                member.Classes[c].Level,
-                                xp + 21,
-                                yp + 17
-                            );
+                                ctx.fillStyle = "black";
+                                ctx.fillText(
+                                    member.Classes[c].Level,
+                                    xp + 22,
+                                    yp + 18
+                                );
+                                ctx.fillStyle = "white";
+                                ctx.fillText(
+                                    member.Classes[c].Level,
+                                    xp + 21,
+                                    yp + 17
+                                );
+                            }
                         }
+                    }
                 });
             }
 
@@ -1015,7 +1171,15 @@ const CanvasLfmPanel = (props) => {
             if (group === null) return;
             if (group.Quest == null) return;
 
-            let estimatedBottom = cursorPosition[1] + 3 + 170 + 26;
+            let estimatedBottom =
+                cursorPosition[1] +
+                3 +
+                170 +
+                26 +
+                (group.CharactersOnTimer
+                    ? group.CharactersOnTimer.length * 20 + 15
+                    : 0) +
+                (group.Guess && props.showQuestGuesses ? 60 : 0);
             if (estimatedBottom > canvas.height) {
                 cursorPosition[1] -= estimatedBottom - canvas.height;
             }
@@ -1057,7 +1221,31 @@ const CanvasLfmPanel = (props) => {
             let quest = group.Quest;
             let row = 1;
 
-            if (group.Guess) {
+            // raid timers
+            if (group.CharactersOnTimer && group.CharactersOnTimer.length > 0) {
+                ctx.fillStyle = "#f6d3d3";
+                drawOverlayBackground(row);
+                drawOverlayTitle("Raid timers", row);
+                group.CharactersOnTimer.forEach((character) => {
+                    let wrapped = wrapText(
+                        `${character.Name} (${getTimeTillEnd(
+                            character,
+                            group.Quest.Name
+                        )})`,
+                        220
+                    );
+                    for (let i = 0; i < wrapped.length; i++) {
+                        if (i > 0) drawOverlayBackground(row);
+                        drawOverlayInfo(wrapped[i], row);
+                        row++;
+                        drawOverlayBackground(row);
+                    }
+                });
+                row++;
+                ctx.fillStyle = "white";
+            }
+
+            if (group.Guess && props.showQuestGuesses) {
                 ctx.fillStyle = "#d3f6f6";
                 drawOverlayBackground(row);
                 ctx.textAlign = "center";
@@ -1097,7 +1285,7 @@ const CanvasLfmPanel = (props) => {
                 }
             }
 
-            if (quest.AdventureArea != null) {
+            if (quest.AdventureArea) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Takes place in", row);
                 let wrapped = wrapText(quest.AdventureArea, 220);
@@ -1108,7 +1296,7 @@ const CanvasLfmPanel = (props) => {
                 }
             }
 
-            if (quest.QuestJournalGroup != null) {
+            if (quest.QuestJournalGroup) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Nearest hub", row);
                 let wrapped = wrapText(quest.QuestJournalGroup, 220);
@@ -1138,7 +1326,7 @@ const CanvasLfmPanel = (props) => {
             drawOverlayBackground(row);
             drawOverlayTitle("Adventure pack", row);
             let wrapped = wrapText(
-                quest.RequiredAdventurePack ?? "Free to play",
+                quest.RequiredAdventurePack || "Free to play",
                 220
             );
             for (let i = 0; i < wrapped.length; i++) {
@@ -1147,10 +1335,20 @@ const CanvasLfmPanel = (props) => {
                 row++;
             }
 
-            if (quest.Patron != null) {
+            if (quest.Patron) {
                 drawOverlayBackground(row);
                 drawOverlayTitle("Patron", row);
                 drawOverlayInfo(quest.Patron ?? "", row);
+                row++;
+            }
+
+            if (quest.AverageTime) {
+                drawOverlayBackground(row);
+                drawOverlayTitle("Average time", row);
+                drawOverlayInfo(
+                    `${Math.round(quest.AverageTime / 60)} minutes`,
+                    row
+                );
                 row++;
             }
 
@@ -1192,6 +1390,38 @@ const CanvasLfmPanel = (props) => {
                     20
                 ); // Background
                 ctx.globalAlpha = 1;
+            }
+
+            function getTimeTillEnd(character, questName) {
+                let raid = character.RaidActivity.filter((raid) =>
+                    questName.toLowerCase().includes(raid.name.toLowerCase())
+                );
+                if (raid.length > 0) {
+                    raid = raid[0];
+                } else {
+                    return "Unknown";
+                }
+
+                let remainingMinutes = raid.remaining;
+                const timeInDays = Math.floor(
+                    remainingMinutes / (60 * 60 * 24)
+                );
+                remainingMinutes = remainingMinutes % (60 * 60 * 24);
+                const timeInHours = Math.floor(remainingMinutes / (60 * 60));
+                remainingMinutes = remainingMinutes % (60 * 60);
+                const timeInMinutes = Math.floor(remainingMinutes / 60);
+                let returnStringArray = [];
+                if (timeInDays != 0) {
+                    returnStringArray.push(`${timeInDays}d`);
+                }
+                if (timeInHours != 0) {
+                    returnStringArray.push(`${timeInHours}h`);
+                }
+                if (timeInMinutes != 0) {
+                    returnStringArray.push(`${timeInMinutes}m`);
+                }
+
+                return returnStringArray.join(", ");
             }
 
             // Helper function for drawing the title of a quest info field
@@ -1247,9 +1477,10 @@ const CanvasLfmPanel = (props) => {
             }
 
             let sanitized = group.Comment.toLowerCase();
-            let normalpattern = /(\ben\b)|(\bnormal\b)/;
-            let hardpattern = /(\beh\b)|(\bhard\b)/;
-            let elitepattern = /(\bee\b)|(\belite\b)/;
+            let normalpattern = /(\bln\b)(\ben\b)|(\bnormal\b)/;
+            let hardpattern = /(\blh\b)(\beh\b)|(\bhard\b)/;
+            let elitepattern = /(\ble\b)(\bee\b)|(\belite\b)/;
+            let reaperpattern = /(\br\b)|(\breaper\b)/;
 
             if (group.Guess) {
                 if (normalpattern.test(sanitized)) {
@@ -1266,6 +1497,7 @@ const CanvasLfmPanel = (props) => {
             let skullpattern1 = /r(\d+\+?)/;
             let skullpattern2 = /reaper (\d+\+?)/;
             let skullpattern3 = /(\d+\+?) skull/;
+            let skullpattern4 = /(r\+)/;
 
             let skullcount = 0;
             if (skullpattern1.test(sanitized)) {
@@ -1283,6 +1515,11 @@ const CanvasLfmPanel = (props) => {
                 skullcount = num[1];
             }
 
+            if (skullpattern4.test(sanitized)) {
+                let num = skullpattern4.exec(sanitized);
+                skullcount = "1+";
+            }
+
             if (+skullcount !== 0) {
                 if (+skullcount > 10) {
                     skullcount = 9001;
@@ -1291,9 +1528,21 @@ const CanvasLfmPanel = (props) => {
             }
 
             if (group.Guess) {
+                if (reaperpattern.test(sanitized)) {
+                    return "Reaper";
+                }
                 return "Normal";
             }
             return "Reaper";
+        }
+
+        function isFeytwisted(group) {
+            if (
+                group.Comment.toLowerCase().includes("feytwisted") &&
+                group.Quest?.RequiredAdventurePack === "The Feywild"
+            )
+                return true;
+            return false;
         }
 
         // Helper function for getting race icon position
@@ -1423,6 +1672,13 @@ const CanvasLfmPanel = (props) => {
                     xsrc = 54;
                     ysrc = 72;
                     break;
+                case "Male Tabaxi":
+                case "Female Tabaxi":
+                case "Male Tabaxi Trailblazer":
+                case "Female Tabaxi Trailblazer":
+                    xsrc = 90;
+                    ysrc = 36;
+                    break;
                 default:
                     xsrc = 72;
                     ysrc = 72;
@@ -1511,6 +1767,9 @@ const CanvasLfmPanel = (props) => {
         groupSelection.groupIndex,
         groupSelection.side,
         groupSelection.doubleClick,
+        props.showCompletionPercentage,
+        props.showMemberCount,
+        props.showQuestGuesses,
     ]);
 
     return (

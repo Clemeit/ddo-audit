@@ -106,11 +106,11 @@ const Suggestions = (props) => {
                                 fontSize: "1.5rem",
                             }}
                         >
+                            If you have a suggestion, request, or comment, I'd
+                            love to hear it!{" "}
                             <span className="lfm-number">
-                                If you have a suggestion, request, or comment,
-                                I'd love to hear it!
-                            </span>{" "}
-                            But keep it civil.
+                                But please keep it civil.
+                            </span>
                         </p>
                         <div
                             className={`primary-button should-invert full-width-mobile ${
@@ -156,13 +156,21 @@ const Suggestions = (props) => {
                             noLink={true}
                             description={
                                 <span>
-                                    The new website doesn't include all of the
-                                    reports or features from the old website.{" "}
-                                    <span className="lfm-number">
-                                        If a report or feature is missing
-                                    </span>{" "}
-                                    and you'd like to see it returned, please
-                                    let me know so I can add it.
+                                    <p>
+                                        As a result of work and real life,{" "}
+                                        <span className="lfm-number">
+                                            I've had to significantly reduce the
+                                            amount of development time I spend
+                                            on the website.
+                                        </span>{" "}
+                                        I still take note of all the feature
+                                        requests that are being submitted, and
+                                        I'll do my best to get around to each of
+                                        them eventually! I'm currently
+                                        prioritizing bug reports. Thank you for
+                                        your understanding.
+                                    </p>
+                                    <p>Clemeit of Thelanis</p>
                                 </span>
                             }
                             noFade={true}

@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
 import ContentCluster from "../global/ContentCluster";
+import FAQ from "./FAQ";
 
 const QuickInfo = (props) => {
     const FAQ_STRUCTURED = {
@@ -12,16 +13,6 @@ const QuickInfo = (props) => {
             {
                 "@type": "Question",
                 name: "What is DDO's most populated server?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `${getMostPopulatedServerLink(
-                        true
-                    )} is DDO's most populated server.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "Which DDO server is the most populated?",
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: `${getMostPopulatedServerLink(
@@ -41,14 +32,6 @@ const QuickInfo = (props) => {
             },
             {
                 "@type": "Question",
-                name: "What is DDO's player count?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `There have been ${GetTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
-                },
-            },
-            {
-                "@type": "Question",
                 name: "How many players does DDO have?",
                 acceptedAnswer: {
                     "@type": "Answer",
@@ -60,9 +43,17 @@ const QuickInfo = (props) => {
                 name: "What is DDO's best server?",
                 acceptedAnswer: {
                     "@type": "Answer",
-                    text: `The best server for you will depend on the number of players online during your preferred play time - check our 'Servers' page. If you're new to DDO, start on ${getDefaultServerLink(
+                    text: `The best server for you will depend on the number of players online during your preferred play time (check our "Servers" page for more information). If you're new to DDO, start on ${getDefaultServerLink(
                         true
                     )} which is currently DDO's default server.`,
+                },
+            },
+            {
+                "@type": "Question",
+                name: "Is DDO down?",
+                acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `Server status can be checked on our "Live" page. The data is updated every minute.`,
                 },
             },
             {
@@ -71,22 +62,6 @@ const QuickInfo = (props) => {
                 acceptedAnswer: {
                     "@type": "Answer",
                     text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${GetTotalUniquePlayerCount()} unique characters and ${GetTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "Is DDO down?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
-                },
-            },
-            {
-                "@type": "Question",
-                name: "Are the DDO servers offline?",
-                acceptedAnswer: {
-                    "@type": "Answer",
-                    text: `Server status can be checked on our 'Live' page. The data is updated every minute.`,
                 },
             },
         ],
@@ -338,6 +313,12 @@ const QuickInfo = (props) => {
                     </Link>
                 )}
             </ContentCluster>
+            <FAQ
+                mostPopulatedServer={getMostPopulatedServerLink()}
+                defaultServer={getDefaultServerLink()}
+                uniquePlayerCount={GetTotalUniquePlayerCount()}
+                uniqueGuildCount={GetTotalUniqueGuildCount()}
+            />
         </>
     );
 };
