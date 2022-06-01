@@ -14,6 +14,7 @@ import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
     const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
+    const MAX_LEVEL = 32;
     // Download canvas
     var download = function () {
         // Redraw panel without names
@@ -47,7 +48,7 @@ const Panel = (props) => {
     const [highVisibility, setHighVisibility] = React.useState();
     const [alternativeLook, setAlternativeLook] = React.useState();
     const [minimumLevel, setMinimumLevel] = React.useState(1);
-    const [maximumLevel, setMaximumLevel] = React.useState(30);
+    const [maximumLevel, setMaximumLevel] = React.useState(MAX_LEVEL);
     const [sortAscending, setSortAscending] = React.useState();
     const [showEligibleCharacters, setShowEligibleCharacters] =
         React.useState(false);
@@ -513,7 +514,7 @@ const Panel = (props) => {
         setMinimumLevel(minlevel || 1);
 
         let maxlevel = localStorage.getItem("maximum-level");
-        setMaximumLevel(maxlevel || 30);
+        setMaximumLevel(maxlevel || MAX_LEVEL);
 
         let filterbymylevel = localStorage.getItem("filter-by-my-level");
         setFilterBasedOnMyLevel(

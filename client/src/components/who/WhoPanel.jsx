@@ -7,17 +7,7 @@ import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
 
 const WhoPanel = (props) => {
-    const serverNames = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
+    const MAX_LEVEL = 32;
 
     const serverNamesLowercase = [
         "argonnessen",
@@ -140,7 +130,8 @@ const WhoPanel = (props) => {
 
     const [globalFilter, setGlobalFilter] = React.useState("");
     const [minimumLevelFilter, setMinimumLevelFilter] = React.useState(1);
-    const [maximumLevelFilter, setMaximumLevelFilter] = React.useState(30);
+    const [maximumLevelFilter, setMaximumLevelFilter] =
+        React.useState(MAX_LEVEL);
 
     function getLink() {
         let params = "";
@@ -160,7 +151,7 @@ const WhoPanel = (props) => {
             }
             params += "minlevel=" + minimumLevelFilter;
         }
-        if (maximumLevelFilter != 30) {
+        if (maximumLevelFilter != MAX_LEVEL) {
             if (!params) {
                 params += "?";
             } else {
