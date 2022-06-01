@@ -48,7 +48,7 @@ const SelectFriend = (props) => {
                     noMargin={true}
                 >
                     <span style={{ marginBottom: "0px", fontSize: "1.3rem" }}>
-                        {props.data.characters.map((character, i) => (
+                        {props.data.players.map((character, i) => (
                             <div
                                 key={i}
                                 className="nav-box small"
@@ -61,14 +61,14 @@ const SelectFriend = (props) => {
                                     className="nav-box-title"
                                     style={{ fontSize: "1.4rem" }}
                                 >
-                                    {character.name}
+                                    {character.Name}
                                 </h2>
                                 <span>
                                     <span className="lfm-number">
-                                        {character.server}{" "}
+                                        {character.Server}{" "}
                                     </span>
-                                    | Level {character.totallevel}{" "}
-                                    {character.guild && `| ${character.guild}`}
+                                    | Level {character.TotalLevel}{" "}
+                                    {character.Guild && `| ${character.Guild}`}
                                 </span>
                             </div>
                         ))}

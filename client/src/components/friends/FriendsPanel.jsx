@@ -2,10 +2,9 @@ import React from "react";
 import CanvasFriendsPanel from "./CanvasFriendsPanel";
 import { Post } from "../../services/DataLoader";
 import SelectFriend from "./SelectFriend";
-import LoadingOverlay from "../quests/LoadingOverlay";
 
 const FriendsPanel = (props) => {
-    const [idList, setIdList] = React.useState([]);
+    const [idList, setIdList] = React.useState(null);
     const idListRef = React.useRef(idList);
     idListRef.current = idList;
     const [friendsList, setFriendsList] = React.useState([]);
@@ -20,11 +19,13 @@ const FriendsPanel = (props) => {
     const [sortDirection, setSortDirection] = React.useState("ascending");
     const [hideOfflineFriends, setHideOfflineFriends] = React.useState(false);
     const [hideServerNames, setHideServerNames] = React.useState(false);
+    const [hidePlayerLocations, setHidePlayerLocations] = React.useState(false);
     const [selectionScreenVisible, setSelectionScreenVisible] =
         React.useState(false);
     const [friendSelectList, setFriendSelectList] = React.useState([]);
-    const [selectedPlayerIndex, setSelectedPlayerIndex] = React.useState(-1);
-    const selectedPlayerIndexRef = React.useRef(selectedPlayerIndex);
+    const [selectedPlayers, setSelectedPlayers] = React.useState([]);
+    const selectedPlayersRef = React.useRef(selectedPlayers);
+    selectedPlayersRef.current = selectedPlayers;
     const [isLoading, setIsLoading] = React.useState(false);
     const MAX_LIST_SIZE = 50;
 
@@ -49,21 +50,41 @@ const FriendsPanel = (props) => {
             return;
         }
         setIsLoading(true);
-        let body = { ids: idList };
-        Post("https://api.ddoaudit.com/friends", body, 5000)
-            .then((res) => {
-                setFriendsList(res);
+
+        Post(
+            "https://api.ddoaudit.com/players/lookup",
+            { playerids: idList },
+            10000
+        )
+            .then((response) => {
+                if (response.error) {
+                    setFriendsList([]);
+                } else {
+                    let sortedCharacters = [];
+                    if (idList !== null && idList.length > 0) {
+                        idList.forEach((characterId) => {
+                            sortedCharacters.push(
+                                response.filter(
+                                    (character) =>
+                                        character.PlayerId === characterId
+                                )?.[0]
+                            );
+                        });
+                    }
+                    setFriendsList(sortedCharacters);
+                }
             })
-            .catch(() => {
-                setFriendsList([]);
-            })
+            .catch(() => {})
             .finally(() => {
                 setIsLoading(false);
             });
     }, [idList]);
 
     React.useEffect(() => {
-        if (!friendsList || !friendsList.length) return;
+        if (!friendsList || !friendsList.length) {
+            setFilteredFriendsList([]);
+            return;
+        }
         let finaldata = friendsList.filter(
             (friend) => friend.Online || !hideOfflineFriends
         );
@@ -103,7 +124,7 @@ const FriendsPanel = (props) => {
         hideOfflineFriends,
         sortMethod,
         sortDirection,
-        selectedPlayerIndex,
+        selectedPlayers,
     ]);
 
     function handleSort(value) {
@@ -119,16 +140,20 @@ const FriendsPanel = (props) => {
     }
 
     function addName() {
+        if (isLoading || selectionScreenVisible) return;
         setIsLoading(true);
-        const body = { name: playerInputValueRef.current };
-        Post("https://api.ddoaudit.com/friends/add", body, 10000)
+        const body = {
+            name: playerInputValueRef.current,
+            guild: playerInputValueRef.current,
+        };
+        Post("https://api.ddoaudit.com/players/lookup", body, 10000)
             .then((res) => {
-                if (res.characters.length + res.guilds.length > 1) {
+                if (res.players.length + res.guilds.length > 1) {
                     setFriendSelectList(res);
                     setSelectionScreenVisible(true);
                     setIsLoading(false);
-                } else if (res.characters.length === 1) {
-                    addCharacter(res.characters[0]);
+                } else if (res.players.length === 1) {
+                    addCharacter(res.players[0]);
                 } else if (res.guilds.length === 1) {
                     addGuild(res.guilds[0]);
                 } else {
@@ -136,6 +161,9 @@ const FriendsPanel = (props) => {
                 }
             })
             .catch(() => {
+                setIsLoading(false);
+            })
+            .finally(() => {
                 setIsLoading(false);
             });
     }
@@ -148,19 +176,15 @@ const FriendsPanel = (props) => {
         const list = localStorage.getItem("friends-list");
         let parsed = [];
         try {
-            parsed = JSON.parse(list);
-            if (parsed && typeof parsed === "object") {
-            } else {
-                parsed = [];
-            }
+            parsed = JSON.parse(list || "[]");
         } catch (e) {
             parsed = [];
         }
-        if (parsed.length + 1 > MAX_LIST_SIZE) {
+        if (parsed.length >= MAX_LIST_SIZE) {
             alert("You may only have 50 players on your friends list.");
         } else {
-            if (!idList.includes(character.playerid)) {
-                parsed.push(character.playerid);
+            if (!idList.includes(character.PlayerId)) {
+                parsed.push(character.PlayerId);
                 setIdList(parsed);
                 localStorage.setItem("friends-list", JSON.stringify(parsed));
             }
@@ -195,12 +219,12 @@ const FriendsPanel = (props) => {
                     MAX_LIST_SIZE - parsed.length
                 } players.`
             );
-            ids.slice(0, MAX_LIST_SIZE - parsed.length).forEach((id) => {
+            ids.forEach((id) => {
                 if (!idList.includes(id)) {
                     parsed.push(id);
                 }
             });
-            setIdList(parsed);
+            setIdList(parsed.slice(0, MAX_LIST_SIZE - parsed.length));
             localStorage.setItem("friends-list", JSON.stringify(parsed));
             setPlayerInputValue("");
         } else {
@@ -217,12 +241,10 @@ const FriendsPanel = (props) => {
 
     function addGuild(guild) {
         const body = { guild: guild.name, server: guild.server };
-        Post("https://api.ddoaudit.com/friends/add/guild", body, 10000)
+        Post("https://api.ddoaudit.com/guilds/lookup", body, 10000)
             .then((res) => {
                 if (res.length) {
-                    let ids = [];
-                    res.forEach((p) => ids.push(p.playerid));
-                    addCharactersByIds(ids);
+                    addCharactersByIds(res);
                 }
             })
             .catch(() => {})
@@ -232,24 +254,19 @@ const FriendsPanel = (props) => {
     }
 
     function removePlayer() {
-        if (
-            selectedPlayerIndexRef.current === -1 ||
-            selectedPlayerIndexRef.current >=
-                filteredFriendsListRef.current.length
-        ) {
+        if (selectedPlayersRef.current.length === 0) {
             return;
+        } else {
+            let newIdList = idListRef.current.filter(
+                (pid) => !selectedPlayersRef.current.includes(pid)
+            );
+            setIdList(newIdList);
+            localStorage.setItem("friends-list", JSON.stringify(newIdList));
         }
-        let pidtoremove =
-            filteredFriendsListRef.current[selectedPlayerIndexRef.current].Id;
-        console.log(pidtoremove, idListRef.current);
-        const newidlist = idListRef.current.filter((id) => id !== pidtoremove);
-        setIdList(newidlist);
-        localStorage.setItem("friends-list", JSON.stringify(newidlist));
     }
 
     return (
         <div>
-            {isLoading && <LoadingOverlay message="Loading, please wait." />}
             {selectionScreenVisible && (
                 <SelectFriend
                     handleClose={() => closeSelectFriend()}
@@ -295,6 +312,13 @@ const FriendsPanel = (props) => {
                                 (hideServerNames) => !hideServerNames
                             )
                         }
+                        hidePlayerLocations={hidePlayerLocations}
+                        handleHidePlayerLocations={() => {
+                            setHidePlayerLocations(
+                                (playerLocations) => !playerLocations
+                            );
+                        }}
+                        hideLocation={false}
                         hideServerNames={hideServerNames}
                         handleSort={(value) => handleSort(value)}
                         playerInput={playerInputValue}
@@ -303,10 +327,46 @@ const FriendsPanel = (props) => {
                             playerInputValueRef.current = value;
                         }}
                         addName={() => addName()}
-                        selectedPlayerIndex={selectedPlayerIndex}
+                        selectedPlayers={selectedPlayersRef.current.map(
+                            (pid) => {
+                                let i = -1;
+                                filteredFriendsListRef.current.forEach(
+                                    (player, playerIndex) => {
+                                        if (player.PlayerId === pid) {
+                                            i = playerIndex;
+                                        }
+                                    }
+                                );
+                                return i;
+                            }
+                        )}
                         handleSelectPlayer={(index) => {
-                            setSelectedPlayerIndex(index);
-                            selectedPlayerIndexRef.current = index;
+                            if (
+                                index < 0 ||
+                                index >
+                                    filteredFriendsListRef.current.length - 1
+                            ) {
+                                return;
+                            }
+
+                            let indexPid =
+                                filteredFriendsListRef.current[index].PlayerId;
+
+                            if (selectedPlayersRef.current.includes(indexPid)) {
+                                setSelectedPlayers((selectedPlayers) =>
+                                    selectedPlayers.filter(
+                                        (i) => i !== indexPid
+                                    )
+                                );
+                            } else {
+                                setSelectedPlayers((selectedPlayers) => [
+                                    ...selectedPlayers,
+                                    filteredFriendsListRef.current[index]
+                                        .PlayerId,
+                                ]);
+                            }
+                            // setSelectedPlayers(index);
+                            // selectedPlayersRef.current = index;
                         }}
                         removePlayer={() => removePlayer()}
                         isLoading={isLoading}

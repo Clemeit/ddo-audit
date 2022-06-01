@@ -4,28 +4,13 @@ import { useLocation } from "react-router-dom";
 import Banner from "../global/Banner";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import { Submit } from "../../services/CommunicationService";
-import ContentCluster from "../global/ContentCluster";
 import FriendsPanel from "./FriendsPanel";
-import { Log } from "../../services/CommunicationService";
 
 const Friends = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
-    const TITLE = "DDO Friends List";
+    const TITLE = "Friends List";
 
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
-
-    const [openPanels, setOpenPanels] = React.useState([<FriendsPanel />]);
+    const [openPanels] = React.useState([<FriendsPanel />]);
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
@@ -33,7 +18,7 @@ const Friends = (props) => {
     return (
         <div>
             <Helmet>
-                <title>Friends List</title>
+                <title>{TITLE}</title>
                 <meta
                     name="description"
                     content="Build your own friends list to quickly check who's online!"
@@ -52,7 +37,7 @@ const Friends = (props) => {
                 showButtons={false}
                 hideOnMobile={true}
                 title="Friends List"
-                subtitle="Placeholder"
+                subtitle="Are Your Friends Online?"
             />
             <PopupMessage
                 page={"friends"}

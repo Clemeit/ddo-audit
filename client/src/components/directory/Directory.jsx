@@ -101,6 +101,7 @@ const Directory = (props) => {
                     description:
                         "Build your own friends list to quickly see who's online.",
                     to: "/friends",
+                    new: true,
                 },
                 {
                     icon: (
@@ -300,11 +301,6 @@ const Directory = (props) => {
                                                 {option.beta != null && (
                                                     <div className="beta-tag">
                                                         BETA
-                                                    </div>
-                                                )}
-                                                {option.new != null && (
-                                                    <div className="new-tag">
-                                                        NEW
                                                     </div>
                                                 )}
                                                 {option.soon != null && (

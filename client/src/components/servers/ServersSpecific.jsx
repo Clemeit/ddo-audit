@@ -77,7 +77,7 @@ const ServersSpecific = () => {
                                 </li>
                                 <li>
                                     A character has increased in level within 20
-                                    days of last being online (level 30
+                                    days of last being online (level 32
                                     characters are excluded)
                                 </li>
                             </ul>

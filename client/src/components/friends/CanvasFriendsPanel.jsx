@@ -11,6 +11,7 @@ const CanvasFriendsPanel = (props) => {
 
     const PANEL_WIDTH = 706;
     const PLAYER_HEIGHT = 42;
+    const LOCATION_HEIGHT = 20;
 
     function HandleMouseOnCanvas(e) {
         var rect = e.target.getBoundingClientRect();
@@ -23,6 +24,10 @@ const CanvasFriendsPanel = (props) => {
 
         if (x > 198 && x < 345 && y > 116 && y < 131) {
             props.handleHideServerNames();
+        }
+
+        if (x > 368 && x < 525 && y > 116 && y < 131) {
+            props.handleHidePlayerLocations();
         }
 
         if (x >= 28 && x < 48 && y >= 147 && y < 171) {
@@ -57,7 +62,8 @@ const CanvasFriendsPanel = (props) => {
             (playerDataRef.current && playerDataRef.current.length
                 ? Math.max(playerDataRef.current.length, 4)
                 : 4) *
-                PLAYER_HEIGHT +
+                (PLAYER_HEIGHT +
+                    (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) +
             182;
         if (x >= 294 && x < 407 && y >= removebtn && y < removebtn + 26) {
             props.removePlayer();
@@ -65,7 +71,13 @@ const CanvasFriendsPanel = (props) => {
         }
 
         if (x >= 28 && x < 668 && y >= 172) {
-            props.handleSelectPlayer(Math.floor((y - 172) / PLAYER_HEIGHT));
+            props.handleSelectPlayer(
+                Math.floor(
+                    (y - 172) /
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT))
+                )
+            );
         } else {
             props.handleSelectPlayer(-1);
         }
@@ -98,8 +110,12 @@ const CanvasFriendsPanel = (props) => {
             HandleMouseOnCanvas(e);
         });
         window.addEventListener("resize", (e) => {
-            // setCanvasWidth(canvasRef.current.getBoundingClientRect().width);
             handleCanvasResize();
+        });
+        window.addEventListener("keyup", (e) => {
+            if (e.key === "Delete") {
+                props.removePlayer();
+            }
         });
         handleCanvasResize();
     }, [canvasRef]);
@@ -126,6 +142,17 @@ const CanvasFriendsPanel = (props) => {
         // Draw friends
         if (props.data != null) DrawFriends();
 
+        if (props.isLoading) {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(PANEL_WIDTH / 2 - 200, 230, 400, 40);
+
+            ctx.fillStyle = "#f6f1d3";
+            ctx.font = 25 + "px 'Trebuchet MS'"; // 18px
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("Loading, please wait...", PANEL_WIDTH / 2, 250);
+        }
+
         function OpenPanel() {
             ctx.drawImage(sprite, 0, 0, 706, 174, 0, 0, 706, 174);
 
@@ -136,6 +163,10 @@ const CanvasFriendsPanel = (props) => {
             if (props.hideServerNames)
                 ctx.drawImage(sprite, 258, 289, 16, 16, 198, 116, 16, 16);
             else ctx.drawImage(sprite, 242, 289, 16, 16, 198, 116, 16, 16);
+
+            if (props.hidePlayerLocations)
+                ctx.drawImage(sprite, 258, 289, 16, 16, 368, 116, 16, 16);
+            else ctx.drawImage(sprite, 242, 289, 16, 16, 368, 116, 16, 16);
 
             ctx.fillStyle =
                 props.data && props.data.length >= 50 ? "#ff5353" : "#f6f1d3";
@@ -158,7 +189,8 @@ const CanvasFriendsPanel = (props) => {
                 58,
                 0,
                 (props.data ? Math.max(props.data.length, 4) : 4) *
-                    PLAYER_HEIGHT +
+                    (PLAYER_HEIGHT +
+                        (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) +
                     172,
                 706,
                 58
@@ -168,7 +200,13 @@ const CanvasFriendsPanel = (props) => {
         function DrawFiller() {
             if (props.data == null || props.data.length < 4) {
                 for (let i = 0; i < 4; i++) {
-                    let y = 174 + i * PLAYER_HEIGHT;
+                    let y =
+                        174 +
+                        i *
+                            (PLAYER_HEIGHT +
+                                (props.hidePlayerLocations
+                                    ? 0
+                                    : LOCATION_HEIGHT));
                     ctx.drawImage(
                         sprite,
                         0,
@@ -178,25 +216,25 @@ const CanvasFriendsPanel = (props) => {
                         0,
                         y,
                         706,
-                        PLAYER_HEIGHT
+                        PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)
                     );
                 }
-            }
-            if (props.isLoading) {
-                ctx.fillStyle = "#f6f1d3";
-                ctx.font = 25 + "px 'Trebuchet MS'"; // 18px
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText("Loading, please wait...", PANEL_WIDTH / 2, 250);
             }
         }
 
         function DrawFriends() {
             for (let i = 0; i < props.data.length; i++) {
-                let y = 174 + i * PLAYER_HEIGHT;
+                let y =
+                    174 +
+                    i *
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT));
                 let x = 28;
                 var width = 639;
-                var height = 42;
+                var height =
+                    PLAYER_HEIGHT +
+                    (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT);
                 let player = props.data[i];
 
                 ctx.drawImage(
@@ -208,26 +246,27 @@ const CanvasFriendsPanel = (props) => {
                     0,
                     y,
                     706,
-                    PLAYER_HEIGHT
+                    PLAYER_HEIGHT +
+                        (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)
                 );
 
                 // Draw background gradient:
                 var grad = ctx.createLinearGradient(x, y, x, y + height);
                 grad.addColorStop(
                     0,
-                    i === props.selectedPlayerIndex ? "#5b5b45" : "#3b3b25"
+                    props.selectedPlayers.includes(i) ? "#5b5b45" : "#3b3b25"
                 );
                 grad.addColorStop(
                     0.25,
-                    i === props.selectedPlayerIndex ? "#5b5b45" : "#4c4a31"
+                    props.selectedPlayers.includes(i) ? "#5b5b45" : "#4c4a31"
                 );
                 grad.addColorStop(
                     0.75,
-                    i === props.selectedPlayerIndex ? "#5b5b45" : "#4c4a31"
+                    props.selectedPlayers.includes(i) ? "#5b5b45" : "#4c4a31"
                 );
                 grad.addColorStop(
                     1,
-                    i === props.selectedPlayerIndex ? "#5b5b45" : "#3b3b25"
+                    props.selectedPlayers.includes(i) ? "#5b5b45" : "#3b3b25"
                 );
                 ctx.fillStyle = grad;
                 ctx.fillRect(x, y, width, height);
@@ -242,26 +281,56 @@ const CanvasFriendsPanel = (props) => {
                 // Draw dividers:
                 ctx.beginPath();
                 ctx.moveTo(x + 21, y);
-                ctx.lineTo(x + 21, y + PLAYER_HEIGHT - 2);
+                ctx.lineTo(
+                    x + 21,
+                    y +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) -
+                        2
+                );
                 ctx.moveTo(x + 41, y);
-                ctx.lineTo(x + 41, y + PLAYER_HEIGHT - 2);
+                ctx.lineTo(
+                    x + 41,
+                    y +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) -
+                        2
+                );
                 ctx.moveTo(x + 273, y);
-                ctx.lineTo(x + 273, y + PLAYER_HEIGHT - 2);
+                ctx.lineTo(
+                    x + 273,
+                    y +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) -
+                        2
+                );
                 ctx.moveTo(x + 391, y);
-                ctx.lineTo(x + 391, y + PLAYER_HEIGHT - 2);
+                ctx.lineTo(
+                    x + 391,
+                    y +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) -
+                        2
+                );
                 ctx.moveTo(x + 443, y);
-                ctx.lineTo(x + 443, y + PLAYER_HEIGHT - 2);
+                ctx.lineTo(
+                    x + 443,
+                    y +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) -
+                        2
+                );
                 ctx.stroke();
 
-                // Draw group status:
+                // Draw online status:
                 ctx.drawImage(
                     sprite,
-                    274 + (player.Online == 0 ? 12 : 0),
+                    274 + (player.Anonymous ? 24 : player.Online == 0 ? 12 : 0),
                     289,
                     12,
                     12,
                     x + 25,
-                    y + 13,
+                    y + 13 + (props.hidePlayerLocations ? 0 : 12),
                     12,
                     12
                 );
@@ -275,7 +344,7 @@ const CanvasFriendsPanel = (props) => {
                         16,
                         20,
                         x + 2,
-                        y + 10,
+                        y + 10 + (props.hidePlayerLocations ? 0 : 10),
                         16,
                         20
                     );
@@ -321,11 +390,22 @@ const CanvasFriendsPanel = (props) => {
                     ctx.fillStyle = "#f6f1d3";
                 }
 
+                // Draw location
+                if (!props.hidePlayerLocations) {
+                    ctx.fillStyle = "#f6f1d3";
+                    ctx.font = 15 + "px 'Trebuchet MS'"; // 18px
+                    ctx.fillText(player.Location?.Name, x + 45, y + 45);
+                }
+
                 // Draw classes:
                 ctx.font = "13px Arial";
                 ctx.textAlign = "right";
                 for (var j = 0; j < player.Classes.length; j++) {
-                    if (player.Classes[j].Name == null) continue;
+                    if (
+                        player.Classes[j].Name == null ||
+                        player.Classes[j].Name === "Epic"
+                    )
+                        continue;
 
                     let classIconPosition = getClassIconPosition(
                         player.Classes[j].Name,
@@ -338,7 +418,7 @@ const CanvasFriendsPanel = (props) => {
                         18,
                         18,
                         x + 279 + 21 * j,
-                        y + 10,
+                        y + 10 + (props.hidePlayerLocations ? 0 : 11),
                         18,
                         18
                     );
@@ -347,13 +427,13 @@ const CanvasFriendsPanel = (props) => {
                     ctx.fillText(
                         player.Classes[j].Level,
                         x + 279 + 21 * j + 22,
-                        y + 20 + 5
+                        y + 20 + 5 + (props.hidePlayerLocations ? 0 : 11)
                     );
                     ctx.fillStyle = "white";
                     ctx.fillText(
                         player.Classes[j].Level,
                         x + 279 + 21 * j + 21,
-                        y + 20 + 4
+                        y + 20 + 4 + (props.hidePlayerLocations ? 0 : 11)
                     );
                 }
 
@@ -361,7 +441,11 @@ const CanvasFriendsPanel = (props) => {
                 ctx.fillStyle = "#f6f1d3";
                 ctx.textAlign = "center";
                 ctx.font = 17 + "px Arial"; // 15px
-                ctx.fillText(player.TotalLevel, x + 416, y + 21);
+                ctx.fillText(
+                    player.TotalLevel,
+                    x + 416,
+                    y + 21 + (props.hidePlayerLocations ? 0 : 11)
+                );
 
                 // Guild name:
                 ctx.font = "15px 'Trebuchet MS'";
@@ -370,9 +454,17 @@ const CanvasFriendsPanel = (props) => {
                 } else {
                     let guildname = wrapText(player.Guild, 230);
                     if (guildname.length > 1) {
-                        ctx.fillText(guildname[0] + "...", x + 542, y + 22);
+                        ctx.fillText(
+                            guildname[0] + "...",
+                            x + 542,
+                            y + 22 + (props.hidePlayerLocations ? 0 : 11)
+                        );
                     } else if (guildname.length === 1) {
-                        ctx.fillText(guildname[0], x + 542, y + 22);
+                        ctx.fillText(
+                            guildname[0],
+                            x + 542,
+                            y + 22 + (props.hidePlayerLocations ? 0 : 11)
+                        );
                     }
                 }
             }
@@ -607,10 +699,11 @@ const CanvasFriendsPanel = (props) => {
             return [xsrc + 108, ysrc + 289];
         }
     }, [
-        props.data,
         isImageLoaded,
+        props.data,
         props.hideOfflineFriends,
         props.hideServerNames,
+        props.hidePlayerLocations,
         props.isLoading,
     ]);
 
@@ -679,7 +772,8 @@ const CanvasFriendsPanel = (props) => {
                 width={PANEL_WIDTH}
                 height={
                     (props.data ? Math.max(props.data.length, 4) : 4) *
-                        PLAYER_HEIGHT +
+                        (PLAYER_HEIGHT +
+                            (props.hidePlayerLocations ? 0 : LOCATION_HEIGHT)) +
                     230
                 }
             />

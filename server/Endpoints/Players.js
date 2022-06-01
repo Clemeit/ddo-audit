@@ -118,6 +118,122 @@ module.exports = function (api) {
             });
         }
 
+        function lookupAllPlayersByName(name, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT JSON_ARRAYAGG(JSON_OBJECT(
+                    'PlayerId', CAST(p.playerid as char),
+                    'Name', p.name,
+                    'Gender', p.gender,
+                    'Race', p.race,
+                    'Guild', IF(p.anonymous, '(redacted)', p.guild),
+                    'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
+                    'TotalLevel', totallevel,
+                    'Server', server,
+                    'GroupId', groupid,
+                    'InParty', IF(groupid = 0, 0, 1),
+                    'Classes', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'Name', c1.name,
+                            'Level', p.level1
+                        ),
+                        JSON_OBJECT(
+                            'Name', c2.name,
+                            'Level', p.level2
+                        ),
+                        JSON_OBJECT(
+                            'Name', c3.name,
+                            'Level', p.level3
+                        ),
+                        JSON_OBJECT(
+                            'Name', c4.name,
+                            'Level', p.level4
+                        )
+                    ),
+                    'Online', p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND),
+                    'Anonymous', p.anonymous
+                )) AS data FROM \`players\` p
+                LEFT JOIN areas a ON p.location = a.areaid 
+                LEFT JOIN classes c1 ON p.class1 = c1.id 
+                LEFT JOIN classes c2 ON p.class2 = c2.id 
+                LEFT JOIN classes c3 ON p.class3 = c3.id 
+                LEFT JOIN classes c4 ON p.class4 = c4.id
+                WHERE p.name LIKE ${con.escape(
+                    name
+                )} AND p.anonymous = 0 ORDER BY p.lastseen DESC LIMIT 10`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            lookupAllPlayersByName(name, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            // const stringId =
+                            //     result[0]?.playerid.toString() || "";
+                            // result[0].playerid = stringId;
+                            resolve(result);
+                        }
+                    }
+                });
+            });
+        }
+
+        function lookupAllGuildsByName(name, final) {
+            return new Promise(async (resolve, reject) => {
+                let query = `SELECT * FROM \`guilds_cached\` g WHERE g.name LIKE ${con.escape(
+                    name
+                )}`;
+
+                con.query(query, (err, result, fields) => {
+                    if (err) {
+                        if (final) {
+                            console.log("Failed to reconnect. Aborting!");
+                            reject(err);
+                        } else {
+                            console.log("Attempting to reconnect...");
+                            // Try to reconnect:
+                            con = mysql.createConnection({
+                                host: process.env.DB_HOST,
+                                user: process.env.DB_USER,
+                                password: process.env.DB_PASS,
+                                database: process.env.DB_NAME,
+                            });
+                            lookupAllGuildsByName(name, true)
+                                .then((result) => {
+                                    console.log("Reconnected!");
+                                    resolve(result);
+                                })
+                                .catch((err) => reject(err));
+                        }
+                    } else {
+                        if (result == null) {
+                            reject("null data");
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                });
+            });
+        }
+
         function getPlayersByIds(ids, final) {
             return new Promise(async (resolve, reject) => {
                 let escapedIds = [];
@@ -351,6 +467,61 @@ module.exports = function (api) {
             });
         }
 
+        function lookupPlayersByGuild(body, final) {
+            return new Promise(async (resolve, reject) => {
+                const re = /^[a-z0-9- ]+$/i;
+                let gname = body.guild;
+                let gserver = body.server;
+
+                let goodrequest = re.test(gname) && re.test(gserver);
+
+                gname = body.guild;
+                gserver = body.server;
+
+                if (goodrequest) {
+                    let query = `SELECT CAST(p.playerid AS CHAR) as playerid 
+                        FROM \`players\` p 
+                        WHERE p.anonymous = 0 AND p.name != 'Anonymous' AND p.server = ${con.escape(
+                            gserver
+                        )} AND p.guild = ${con.escape(gname)} 
+                        ORDER BY p.lastseen DESC 
+                        LIMIT 50;`;
+
+                    con.query(query, (err, result, fields) => {
+                        if (err) {
+                            if (final) {
+                                console.log("Failed to reconnect. Aborting!");
+                                reject(err);
+                            } else {
+                                console.log("Attempting to reconnect...");
+                                // Try to reconnect:
+                                con = mysql.createConnection({
+                                    host: process.env.DB_HOST,
+                                    user: process.env.DB_USER,
+                                    password: process.env.DB_PASS,
+                                    database: process.env.DB_NAME,
+                                });
+                                lookupPlayersByGuild(body, true)
+                                    .then((result) => {
+                                        console.log("Reconnected!");
+                                        resolve(result);
+                                    })
+                                    .catch((err) => reject(err));
+                            }
+                        } else {
+                            if (result == null) {
+                                reject("null data");
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    });
+                } else {
+                    reject("bad name");
+                }
+            });
+        }
+
         // function GetDateString(datetime) {
         //     return `${datetime.getUTCFullYear()}-${
         //         datetime.getUTCMonth() + 1
@@ -448,11 +619,31 @@ module.exports = function (api) {
             });
         });
 
+        api.post(`/guilds/lookup`, (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            lookupPlayersByGuild(req.body)
+                .then((result) => {
+                    if (result && result.length > 0) {
+                        let returnArray = [];
+                        result.forEach((pidObject) => {
+                            returnArray.push(encryptId(pidObject.playerid));
+                        });
+                        res.send(returnArray);
+                    } else {
+                        res.send({ error: "no results" });
+                    }
+                })
+                .catch(() => {
+                    res.send({ error: "bad request" });
+                });
+        });
+
         api.post(`/players/lookup`, (req, res) => {
             const name = req.body.name;
             const server = req.body.server;
             const id = req.body.playerid;
             const ids = req.body.playerids;
+            const guild = req.body.guild;
             if (id || ids) {
                 res.setHeader("Content-Type", "application/json");
                 let decryptedPlayerIds = [];
@@ -478,9 +669,50 @@ module.exports = function (api) {
                     }
                 });
             } else {
-                if (!name || !server) {
+                if (!name) {
                     res.setHeader("Content-Type", "application/json");
-                    res.send({ error: "Must include name and server" });
+                    res.send({ error: "Must include name" });
+                } else if (name && !server) {
+                    let returnData = {
+                        players: [],
+                        guilds: [],
+                    };
+
+                    lookupAllPlayersByName(name)
+                        .then((playerresult) => {
+                            if (
+                                playerresult.length === 1 &&
+                                playerresult[0].data !== null
+                            ) {
+                                playerresult[0].data.forEach((player) => {
+                                    player.PlayerId = encryptId(
+                                        player.PlayerId
+                                    );
+                                });
+                                returnData.players = playerresult[0].data;
+                            }
+                        })
+                        .finally(() => {
+                            if (guild != null) {
+                                lookupAllGuildsByName(guild)
+                                    .then((guildresult) => {
+                                        returnData.guilds = guildresult;
+                                    })
+                                    .finally(() => {
+                                        res.setHeader(
+                                            "Content-Type",
+                                            "application/json"
+                                        );
+                                        res.send(returnData);
+                                    });
+                            } else {
+                                res.setHeader(
+                                    "Content-Type",
+                                    "application/json"
+                                );
+                                res.send(returnData.players);
+                            }
+                        });
                 } else {
                     lookupPlayerByNameAndServer(name, server).then((result) => {
                         if (result.length === 1) {
