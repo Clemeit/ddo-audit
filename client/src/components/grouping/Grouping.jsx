@@ -10,6 +10,7 @@ import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import RaidGroupCluster from "./RaidGroupCluster";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
@@ -283,17 +284,7 @@ const Grouping = () => {
                 <ContentCluster title="Current Raids">
                     <div className="content-cluster-options">
                         {allGroupData ? (
-                            getRaidGroups() || (
-                                <span
-                                    className="content-cluster-description"
-                                    style={{
-                                        color: "var(--text-faded)",
-                                    }}
-                                >
-                                    When a raid is posted on any server, it will
-                                    appear here.
-                                </span>
-                            )
+                            <RaidGroupCluster data={allGroupData} />
                         ) : (
                             <span>Loading groups...</span>
                         )}

@@ -15,6 +15,13 @@ const CanvasLfmPanel = (props) => {
         cursorPosition: [0, 0],
     });
 
+    const [highlightRaids, setHighlightRaids] = React.useState(false);
+    React.useEffect(() => {
+        if (window.location.search === "?highlight=raids") {
+            setHighlightRaids(true);
+        }
+    }, [window.location.pathname]);
+
     const panelWidth = 848;
     const lfmHeight = 90;
     const classCount = 15;
@@ -337,6 +344,51 @@ const CanvasLfmPanel = (props) => {
                     );
 
                     ctx.fillStyle = gradient;
+                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                } else if (
+                    group.Quest?.GroupSize === "Raid" &&
+                    highlightRaids
+                ) {
+                    let gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        panelWidth,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(0, "#1da1a1");
+                    gradient.addColorStop(1, "#1d6ca1");
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
+
+                    if (group.Eligible) {
+                        gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            0,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(
+                            0,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        gradient.addColorStop(
+                            0.25,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            0.75,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            1,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        ctx.fillStyle = gradient;
+                    } else {
+                        ctx.fillStyle = "#150a06";
+                    }
+
                     ctx.fillRect(31, top + 5, 792, lfmheight - 10);
                 } else if (group.Eligible) {
                     let gradient = ctx.createLinearGradient(
@@ -1539,7 +1591,9 @@ const CanvasLfmPanel = (props) => {
         function isFeytwisted(group) {
             if (
                 group.Comment.toLowerCase().includes("feytwisted") &&
-                group.Quest?.RequiredAdventurePack === "The Feywild"
+                group.Quest?.RequiredAdventurePack.toLowerCase().includes(
+                    "feywild"
+                )
             )
                 return true;
             return false;

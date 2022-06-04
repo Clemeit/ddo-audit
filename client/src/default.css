@@ -1667,6 +1667,9 @@ th {
 }
 
 @media (max-width: 900px) {
+    .nav-box.shrinkable.no-padding-mobile {
+        padding: 0px;
+    }
     .filter-panel {
         position: fixed;
         top: 0px;
