@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
+import { Log } from "../../services/CommunicationService";
 
 const RaidGroupCluster = (props) => {
     const CANVAS_REFS = [
@@ -37,6 +38,22 @@ const RaidGroupCluster = (props) => {
             }
         });
         return result;
+    }
+
+    function gameRaidCount() {
+        if (props.data && props.data.length) {
+            let result = 0;
+            props.data.forEach((server) => {
+                server.Groups.forEach((group) => {
+                    if (group.Quest?.GroupSize === "Raid") {
+                        result += 1;
+                    }
+                });
+            });
+            return result;
+        } else {
+            return 0;
+        }
     }
 
     function drawRaidsToPanels() {
@@ -695,6 +712,7 @@ const RaidGroupCluster = (props) => {
                 flexDirection: "column",
                 gap: "10px",
                 width: "100%",
+                fontSize: "1.5rem",
             }}
         >
             <img
@@ -703,12 +721,18 @@ const RaidGroupCluster = (props) => {
                 onLoad={() => setIsImageLoaded(true)}
                 style={{ display: "none" }}
             />
+            {gameRaidCount() === 0 && (
+                <span style={{ color: "var(--text-faded)" }}>
+                    When a raid group is posted on any server, it'll show up
+                    here.
+                </span>
+            )}
             {props.data &&
                 props.data.map(
                     (server, i) =>
                         serverRaidCount(server) > 0 && (
                             <Link
-                                to={`/grouping/${server.Name}?highlight=raids`}
+                                to={`/grouping/${server.Name.toLowerCase()}?highlight=raids`}
                                 key={i}
                                 className="nav-box shrinkable no-padding-mobile"
                                 style={{
@@ -716,7 +740,12 @@ const RaidGroupCluster = (props) => {
                                     maxHeight: "unset",
                                     height: "unset",
                                 }}
-                                onClick={() => {}}
+                                onClick={() => {
+                                    Log(
+                                        "Clicked raid group link",
+                                        "Raid group cluster"
+                                    );
+                                }}
                             >
                                 <div className="nav-box-title">
                                     <h2 className="content-option-title">
@@ -728,6 +757,7 @@ const RaidGroupCluster = (props) => {
                                     ref={CANVAS_REFS[i]}
                                     style={{
                                         backgroundColor: "black",
+                                        maxWidth: PANEL_WIDTH * 1.3,
                                         width: "100%",
                                     }}
                                     width={PANEL_WIDTH}

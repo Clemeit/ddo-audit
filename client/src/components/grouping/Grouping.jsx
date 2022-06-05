@@ -286,7 +286,9 @@ const Grouping = () => {
                         {allGroupData ? (
                             <RaidGroupCluster data={allGroupData} />
                         ) : (
-                            <span>Loading groups...</span>
+                            <span className="content-cluster-description">
+                                Loading groups...
+                            </span>
                         )}
                     </div>
                 </ContentCluster>
