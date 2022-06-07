@@ -51,7 +51,7 @@ const FriendsPanel = (props) => {
     let refreshFriendsList;
     React.useEffect(() => {
         clearInterval(refreshFriendsList);
-        refreshFriendsList = setInterval(reloadData, 60000);
+        refreshFriendsList = setInterval(() => reloadData(true), 60000);
 
         // Load friends list from localstorage
         const list = localStorage.getItem("friends-list");
@@ -90,12 +90,12 @@ const FriendsPanel = (props) => {
         reloadData();
     }, [idList]);
 
-    function reloadData() {
+    function reloadData(soft = false) {
         if (idListRef.current == null || !idListRef.current.length) {
             setFriendsList([]);
             return;
         }
-        setIsLoading(true);
+        setIsLoading(soft ? false : true);
 
         // Filter out potentially bad ids
         let goodIds = idListRef.current.filter(
