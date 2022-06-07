@@ -197,12 +197,16 @@ const CanvasFriendsPanel = (props) => {
             else ctx.drawImage(sprite, 242, 289, 16, 16, 368, 116, 16, 16);
 
             ctx.fillStyle =
-                props.data && props.data.length >= 50 ? "#ff5353" : "#f6f1d3";
+                props.data && props.data.length >= props.maxListSize
+                    ? "#ff5353"
+                    : "#f6f1d3";
             ctx.font = 18 + "px 'Trebuchet MS'"; // 18px
             ctx.textAlign = "right";
             ctx.textBaseline = "middle";
             ctx.fillText(
-                `${props.data ? props.data.length : "0"} / 50 friends`,
+                `${props.data ? props.data.length : "0"} / ${
+                    props.maxListSize
+                } friends`,
                 660,
                 130
             );

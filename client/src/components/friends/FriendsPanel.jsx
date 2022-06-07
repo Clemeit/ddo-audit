@@ -1,7 +1,8 @@
 import React from "react";
 import CanvasFriendsPanel from "./CanvasFriendsPanel";
 import { Post } from "../../services/DataLoader";
-import SelectFriend from "./SelectFriend";
+import { Log } from "../../services/CommunicationService";
+// import SelectFriend from "./SelectFriend";
 
 const FriendsPanel = (props) => {
     const [idList, setIdList] = React.useState(null);
@@ -32,14 +33,20 @@ const FriendsPanel = (props) => {
     const showPlayerLocationsRef = React.useRef(showPlayerLocations);
     showPlayerLocationsRef.current = showPlayerLocations;
 
-    const [selectionScreenVisible, setSelectionScreenVisible] =
-        React.useState(false);
-    const [friendSelectList, setFriendSelectList] = React.useState([]);
+    const PLAYER_ID_LENGTH = 44;
+
+    // const [selectionScreenVisible, setSelectionScreenVisible] =
+    //     React.useState(false);
+    // const [friendSelectList, setFriendSelectList] = React.useState([]);
     const [selectedPlayers, setSelectedPlayers] = React.useState([]);
     const selectedPlayersRef = React.useRef(selectedPlayers);
     selectedPlayersRef.current = selectedPlayers;
     const [isLoading, setIsLoading] = React.useState(false);
     const MAX_LIST_SIZE = 50;
+
+    function throwError() {
+        props.onError();
+    }
 
     React.useEffect(() => {
         // Load friends list from localstorage
@@ -79,7 +86,7 @@ const FriendsPanel = (props) => {
         setIsLoading(true);
 
         // Filter out potentially bad ids
-        let goodIds = idList.filter((id) => id.length === 44);
+        let goodIds = idList.filter((id) => id.length === PLAYER_ID_LENGTH);
         if (goodIds.length !== idListRef.current.length) {
             localStorage.setItem("friends-list", JSON.stringify(goodIds));
             setIdList(goodIds);
@@ -108,7 +115,9 @@ const FriendsPanel = (props) => {
                     setFriendsList(sortedCharacters);
                 }
             })
-            .catch(() => {})
+            .catch(() => {
+                throwError();
+            })
             .finally(() => {
                 setIsLoading(false);
             });
@@ -176,29 +185,59 @@ const FriendsPanel = (props) => {
     function addName() {
         if (
             isLoading ||
-            selectionScreenVisible ||
             playerInputValueRef.current === "" ||
             playerInputValueRef.current.length === 0
-        )
+        ) {
             return;
+        }
+
+        if (idListRef.current.length >= MAX_LIST_SIZE) {
+            alert(
+                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+            );
+            return;
+        }
+
+        let trimmedString = playerInputValueRef.current.trim();
+        let validString = /^[a-zA-Z0-9\-]+$/;
+        if (!validString.test(trimmedString)) {
+            alert("Invalid name.");
+            return;
+        }
+
         setIsLoading(true);
         const body = {
-            name: playerInputValueRef.current,
+            name: trimmedString,
         };
         Post("https://api.ddoaudit.com/players/lookup", body, 10000)
             .then((res) => {
                 if (res.length > 1) {
-                    setMultiselectFriendsList(res);
-                    setIsLoading(false);
-                } else if (res.length === 1) {
+                    let goodLengths = true;
+                    res.forEach((player) => {
+                        if (player.PlayerId.length !== PLAYER_ID_LENGTH) {
+                            goodLengths = false;
+                        }
+                    });
+                    if (goodLengths) {
+                        setMultiselectFriendsList(res);
+                        setIsLoading(false);
+                    } else {
+                        Log("Error: Bad ID lengths", res);
+                    }
+                } else if (
+                    res.length === 1 &&
+                    res[0].PlayerId.length === PLAYER_ID_LENGTH
+                ) {
                     addCharacter(res[0]);
                     // } else if (res.guilds.length === 1) {
                     //     addGuild(res.guilds[0]);
                 } else {
+                    Log("Failed to find friend", trimmedString);
                     alert("Player not found or is anonymous.");
                 }
             })
             .catch(() => {
+                throwError();
                 setIsLoading(false);
             })
             .finally(() => {
@@ -206,9 +245,9 @@ const FriendsPanel = (props) => {
             });
     }
 
-    function closeSelectFriend() {
-        setSelectionScreenVisible(false);
-    }
+    // function closeSelectFriend() {
+    //     setSelectionScreenVisible(false);
+    // }
 
     function addCharacter(character) {
         const list = localStorage.getItem("friends-list");
@@ -219,7 +258,9 @@ const FriendsPanel = (props) => {
             parsed = [];
         }
         if (parsed.length >= MAX_LIST_SIZE) {
-            alert("You may only have 50 players on your friends list.");
+            alert(
+                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+            );
         } else {
             if (
                 idListRef.current !== null &&
@@ -228,71 +269,74 @@ const FriendsPanel = (props) => {
                 parsed.push(character.PlayerId);
                 setIdList(parsed);
                 localStorage.setItem("friends-list", JSON.stringify(parsed));
+                Log("Added friend", character.PlayerId);
             }
             setPlayerInputValue("");
         }
         setIsLoading(false);
     }
 
-    function addCharactersByIds(ids) {
-        const list = localStorage.getItem("friends-list");
-        let parsed = [];
-        try {
-            parsed = JSON.parse(list);
-            if (parsed && typeof parsed === "object") {
-            } else {
-                parsed = [];
-            }
-        } catch (e) {
-            parsed = [];
-        }
+    // function addCharactersByIds(ids) {
+    //     const list = localStorage.getItem("friends-list");
+    //     let parsed = [];
+    //     try {
+    //         parsed = JSON.parse(list);
+    //         if (parsed && typeof parsed === "object") {
+    //         } else {
+    //             parsed = [];
+    //         }
+    //     } catch (e) {
+    //         parsed = [];
+    //     }
 
-        if (parsed.length >= MAX_LIST_SIZE) {
-            alert(
-                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
-            );
-            return;
-        }
+    //     if (parsed.length >= MAX_LIST_SIZE) {
+    //         alert(
+    //             `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+    //         );
+    //         return;
+    //     }
 
-        if (parsed.length + ids.length > MAX_LIST_SIZE) {
-            alert(
-                `You may only have ${MAX_LIST_SIZE} players on your friends list. Adding the first ${
-                    MAX_LIST_SIZE - parsed.length
-                } players.`
-            );
-            ids.forEach((id) => {
-                if (!idList.includes(id)) {
-                    parsed.push(id);
-                }
-            });
-            setIdList(parsed.slice(0, MAX_LIST_SIZE - parsed.length));
-            localStorage.setItem("friends-list", JSON.stringify(parsed));
-            setPlayerInputValue("");
-        } else {
-            ids.forEach((id) => {
-                if (!idList.includes(id)) {
-                    parsed.push(id);
-                }
-            });
-            setIdList(parsed);
-            localStorage.setItem("friends-list", JSON.stringify(parsed));
-            setPlayerInputValue("");
-        }
-    }
+    //     if (parsed.length + ids.length > MAX_LIST_SIZE) {
+    //         alert(
+    //             `You may only have ${MAX_LIST_SIZE} players on your friends list. Adding the first ${
+    //                 MAX_LIST_SIZE - parsed.length
+    //             } players.`
+    //         );
+    //         ids.forEach((id) => {
+    //             if (!idList.includes(id)) {
+    //                 parsed.push(id);
+    //             }
+    //         });
+    //         setIdList(parsed.slice(0, MAX_LIST_SIZE - parsed.length));
+    //         localStorage.setItem("friends-list", JSON.stringify(parsed));
+    //         setPlayerInputValue("");
+    //     } else {
+    //         ids.forEach((id) => {
+    //             if (!idList.includes(id)) {
+    //                 parsed.push(id);
+    //             }
+    //         });
+    //         setIdList(parsed);
+    //         localStorage.setItem("friends-list", JSON.stringify(parsed));
+    //         setPlayerInputValue("");
+    //     }
+    // }
 
-    function addGuild(guild) {
-        const body = { guild: guild.name, server: guild.server };
-        Post("https://api.ddoaudit.com/guilds/lookup", body, 10000)
-            .then((res) => {
-                if (res.length) {
-                    addCharactersByIds(res);
-                }
-            })
-            .catch(() => {})
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }
+    // function addGuild(guild) {
+    //     const body = { guild: guild.name, server: guild.server };
+    //     Post("https://api.ddoaudit.com/guilds/lookup", body, 10000)
+    //         .then((res) => {
+    //             if (res.length) {
+    //                 addCharactersByIds(res);
+    //             }
+    //         })
+    //         .catch(() => {
+    //             throwError();
+    //         })
+    //         .finally(() => {
+    //             setIsLoading(false);
+    //         });
+    // }
 
     function removePlayer() {
         if (selectedPlayersRef.current.length === 0) {
@@ -309,7 +353,7 @@ const FriendsPanel = (props) => {
 
     return (
         <>
-            {selectionScreenVisible && (
+            {/* {selectionScreenVisible && (
                 <SelectFriend
                     handleClose={() => closeSelectFriend()}
                     data={friendSelectList}
@@ -324,7 +368,7 @@ const FriendsPanel = (props) => {
                         setFriendSelectList([]);
                     }}
                 />
-            )}
+            )} */}
             <div
                 className={
                     "content-container" +
@@ -342,6 +386,7 @@ const FriendsPanel = (props) => {
                     }}
                 >
                     <CanvasFriendsPanel
+                        maxListSize={MAX_LIST_SIZE}
                         data={filteredFriendsList}
                         multiselect={multiselectFriendsList}
                         handlePlayerSelect={(character) => {
