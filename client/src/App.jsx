@@ -120,18 +120,18 @@ export default () => {
                         <Route exact path="/suggestions">
                             <Suggestions />
                         </Route>
-                        <Route exact path="/community">
+                        {/* <Route exact path="/community">
                             <Community />
-                        </Route>
+                        </Route> */}
                         <Route exact path="/api">
                             <Api />
                         </Route>
                         <Route exact path="/timeline">
                             <Timeline />
                         </Route>
-                        <Route exact path="/steps">
+                        {/* <Route exact path="/steps">
                             <Steps />
-                        </Route>
+                        </Route> */}
                         {/* <Route exact path="/dev">
                             <ActivityTesting />
                         </Route> */}
