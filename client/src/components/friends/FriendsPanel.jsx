@@ -9,6 +9,8 @@ const FriendsPanel = (props) => {
     idListRef.current = idList;
     const [friendsList, setFriendsList] = React.useState([]);
     const [filteredFriendsList, setFilteredFriendsList] = React.useState([]);
+    const [multiselectFriendsList, setMultiselectFriendsList] =
+        React.useState(null);
     const filteredFriendsListRef = React.useRef(filteredFriendsList);
     filteredFriendsListRef.current = filteredFriendsList;
     const [playerInputValue, setPlayerInputValue] = React.useState("");
@@ -17,9 +19,19 @@ const FriendsPanel = (props) => {
     const [sortMethod, setSortMethod] = React.useState("online");
     const sortMethodRef = React.useRef(sortMethod);
     const [sortDirection, setSortDirection] = React.useState("ascending");
+
     const [hideOfflineFriends, setHideOfflineFriends] = React.useState(false);
-    const [hideServerNames, setHideServerNames] = React.useState(false);
-    const [hidePlayerLocations, setHidePlayerLocations] = React.useState(false);
+    const hideOfflineFriendsRef = React.useRef(hideOfflineFriends);
+    hideOfflineFriendsRef.current = hideOfflineFriends;
+
+    const [showServerNames, setShowServerNames] = React.useState(true);
+    const showServerNamesRef = React.useRef(showServerNames);
+    showServerNamesRef.current = showServerNames;
+
+    const [showPlayerLocations, setShowPlayerLocations] = React.useState(false);
+    const showPlayerLocationsRef = React.useRef(showPlayerLocations);
+    showPlayerLocationsRef.current = showPlayerLocations;
+
     const [selectionScreenVisible, setSelectionScreenVisible] =
         React.useState(false);
     const [friendSelectList, setFriendSelectList] = React.useState([]);
@@ -42,6 +54,21 @@ const FriendsPanel = (props) => {
         } catch (e) {
             setIdList([]);
         }
+
+        const hideofflinefriends = localStorage.getItem("friends-hide-offline");
+        setHideOfflineFriends(
+            hideofflinefriends !== null ? hideofflinefriends === "true" : false
+        );
+
+        const showservers = localStorage.getItem("friends-show-servers");
+        setShowServerNames(
+            showservers !== null ? showservers === "true" : true
+        );
+
+        const showlocations = localStorage.getItem("friends-show-locations");
+        setShowPlayerLocations(
+            showlocations !== null ? showlocations === "true" : false
+        );
     }, []);
 
     React.useEffect(() => {
@@ -50,6 +77,13 @@ const FriendsPanel = (props) => {
             return;
         }
         setIsLoading(true);
+
+        // Filter out potentially bad ids
+        let goodIds = idList.filter((id) => id.length === 44);
+        if (goodIds.length !== idListRef.current.length) {
+            localStorage.setItem("friends-list", JSON.stringify(goodIds));
+            setIdList(goodIds);
+        }
 
         Post(
             "https://api.ddoaudit.com/players/lookup",
@@ -86,7 +120,7 @@ const FriendsPanel = (props) => {
             return;
         }
         let finaldata = friendsList.filter(
-            (friend) => friend.Online || !hideOfflineFriends
+            (friend) => friend != null && (friend.Online || !hideOfflineFriends)
         );
 
         let sortmod = sortDirection === "ascending" ? 1 : -1;
@@ -140,24 +174,28 @@ const FriendsPanel = (props) => {
     }
 
     function addName() {
-        if (isLoading || selectionScreenVisible) return;
+        if (
+            isLoading ||
+            selectionScreenVisible ||
+            playerInputValueRef.current === "" ||
+            playerInputValueRef.current.length === 0
+        )
+            return;
         setIsLoading(true);
         const body = {
             name: playerInputValueRef.current,
-            guild: playerInputValueRef.current,
         };
         Post("https://api.ddoaudit.com/players/lookup", body, 10000)
             .then((res) => {
-                if (res.players.length + res.guilds.length > 1) {
-                    setFriendSelectList(res);
-                    setSelectionScreenVisible(true);
+                if (res.length > 1) {
+                    setMultiselectFriendsList(res);
                     setIsLoading(false);
-                } else if (res.players.length === 1) {
-                    addCharacter(res.players[0]);
-                } else if (res.guilds.length === 1) {
-                    addGuild(res.guilds[0]);
+                } else if (res.length === 1) {
+                    addCharacter(res[0]);
+                    // } else if (res.guilds.length === 1) {
+                    //     addGuild(res.guilds[0]);
                 } else {
-                    alert("Player or guild not found.");
+                    alert("Player not found or is anonymous.");
                 }
             })
             .catch(() => {
@@ -183,7 +221,10 @@ const FriendsPanel = (props) => {
         if (parsed.length >= MAX_LIST_SIZE) {
             alert("You may only have 50 players on your friends list.");
         } else {
-            if (!idList.includes(character.PlayerId)) {
+            if (
+                idListRef.current !== null &&
+                !idListRef.current.includes(character.PlayerId)
+            ) {
                 parsed.push(character.PlayerId);
                 setIdList(parsed);
                 localStorage.setItem("friends-list", JSON.stringify(parsed));
@@ -262,11 +303,12 @@ const FriendsPanel = (props) => {
             );
             setIdList(newIdList);
             localStorage.setItem("friends-list", JSON.stringify(newIdList));
+            setSelectedPlayers([]);
         }
     }
 
     return (
-        <div>
+        <>
             {selectionScreenVisible && (
                 <SelectFriend
                     handleClose={() => closeSelectFriend()}
@@ -301,25 +343,43 @@ const FriendsPanel = (props) => {
                 >
                     <CanvasFriendsPanel
                         data={filteredFriendsList}
-                        handleHideOfflineFriends={() =>
+                        multiselect={multiselectFriendsList}
+                        handlePlayerSelect={(character) => {
+                            if (character !== null) {
+                                addCharacter(character);
+                            }
+                            setMultiselectFriendsList(null);
+                        }}
+                        handleHideOfflineFriends={() => {
+                            localStorage.setItem(
+                                "friends-hide-offline",
+                                !hideOfflineFriendsRef.current
+                            );
                             setHideOfflineFriends(
                                 (hideOfflineFriends) => !hideOfflineFriends
-                            )
-                        }
-                        hideOfflineFriends={hideOfflineFriends}
-                        handleHideServerNames={() =>
-                            setHideServerNames(
-                                (hideServerNames) => !hideServerNames
-                            )
-                        }
-                        hidePlayerLocations={hidePlayerLocations}
-                        handleHidePlayerLocations={() => {
-                            setHidePlayerLocations(
-                                (playerLocations) => !playerLocations
                             );
                         }}
-                        hideLocation={false}
-                        hideServerNames={hideServerNames}
+                        hideOfflineFriends={hideOfflineFriends}
+                        handleShowServerNames={(showServerNames) => {
+                            localStorage.setItem(
+                                "friends-show-servers",
+                                !showServerNamesRef.current
+                            );
+                            setShowServerNames(
+                                (showServerNames) => !showServerNames
+                            );
+                        }}
+                        showServerNames={showServerNames}
+                        handleShowPlayerLocations={() => {
+                            localStorage.setItem(
+                                "friends-show-locations",
+                                !showPlayerLocationsRef.current
+                            );
+                            setShowPlayerLocations(
+                                (showPlayerLocations) => !showPlayerLocations
+                            );
+                        }}
+                        showPlayerLocations={showPlayerLocations}
                         handleSort={(value) => handleSort(value)}
                         playerInput={playerInputValue}
                         handlePlayerInput={(value) => {
@@ -365,15 +425,13 @@ const FriendsPanel = (props) => {
                                         .PlayerId,
                                 ]);
                             }
-                            // setSelectedPlayers(index);
-                            // selectedPlayersRef.current = index;
                         }}
                         removePlayer={() => removePlayer()}
                         isLoading={isLoading}
                     />
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

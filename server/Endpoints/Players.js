@@ -648,11 +648,18 @@ module.exports = function (api) {
                 res.setHeader("Content-Type", "application/json");
                 let decryptedPlayerIds = [];
                 if (id) {
-                    decryptedPlayerIds.push(decryptId(id));
+                    if (id.length === 44) {
+                        decryptedPlayerIds.push(decryptId(id));
+                    } else {
+                        res.send({ error: "Bad id length" });
+                        return;
+                    }
                 } else if (ids) {
-                    ids.forEach((encryptedId) =>
-                        decryptedPlayerIds.push(decryptId(encryptedId))
-                    );
+                    ids.forEach((encryptedId) => {
+                        if (encryptedId.length === 44) {
+                            decryptedPlayerIds.push(decryptId(encryptedId));
+                        }
+                    });
                 }
                 if (!decryptedPlayerIds || decryptedPlayerIds.length === 0) {
                     res.send({ error: "No playerids found" });
