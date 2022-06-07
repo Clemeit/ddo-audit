@@ -368,7 +368,11 @@ const CanvasFriendsPanel = (props) => {
                 );
 
                 // Draw group status:
-                if (player.GroupId != 0 && player.Online) {
+                if (
+                    player.GroupId != 0 &&
+                    player.Online &&
+                    player.Anonymous === 0
+                ) {
                     ctx.drawImage(
                         sprite,
                         211,
@@ -426,9 +430,15 @@ const CanvasFriendsPanel = (props) => {
 
                 // Draw location
                 if (props.showPlayerLocations) {
-                    ctx.fillStyle = "#f6f1d3";
-                    ctx.font = 15 + "px 'Trebuchet MS'"; // 18px
-                    ctx.fillText(player.Location?.Name, x + 45, y + 45);
+                    if (player.Anonymous === 1) {
+                        ctx.fillStyle = "#a6a183";
+                        ctx.font = "italic 15px 'Trebuchet MS'"; // 18px
+                        ctx.fillText("Somewhere in the aether", x + 45, y + 45);
+                    } else {
+                        ctx.fillStyle = "#f6f1d3";
+                        ctx.font = "15px 'Trebuchet MS'"; // 18px
+                        ctx.fillText(player.Location?.Name, x + 45, y + 45);
+                    }
                 }
 
                 // Draw classes:
@@ -482,10 +492,16 @@ const CanvasFriendsPanel = (props) => {
                 );
 
                 // Guild name:
-                ctx.font = "15px 'Trebuchet MS'";
-                if (player.Name == "Anonymous") {
-                    ctx.fillText("Noneya Business", x + 542, y + 22);
+                if (player.Anonymous === 1) {
+                    ctx.font = "italic 15px 'Trebuchet MS'";
+                    ctx.fillStyle = "#a6a183";
+                    ctx.fillText(
+                        "Noneya Business",
+                        x + 542,
+                        y + 22 + (props.showPlayerLocations ? 11 : 0)
+                    );
                 } else {
+                    ctx.font = "15px 'Trebuchet MS'";
                     let guildname = wrapText(player.Guild, 230);
                     if (guildname.length > 1) {
                         ctx.fillText(
