@@ -48,7 +48,11 @@ const FriendsPanel = (props) => {
         props.onError();
     }
 
+    let refreshFriendsList;
     React.useEffect(() => {
+        clearInterval(refreshFriendsList);
+        refreshFriendsList = setInterval(reloadData, 60000);
+
         // Load friends list from localstorage
         const list = localStorage.getItem("friends-list");
         try {
@@ -76,17 +80,27 @@ const FriendsPanel = (props) => {
         setShowPlayerLocations(
             showlocations !== null ? showlocations === "true" : false
         );
+
+        return function cleanup() {
+            clearInterval(refreshFriendsList);
+        };
     }, []);
 
     React.useEffect(() => {
-        if (idList == null || !idList.length) {
+        reloadData();
+    }, [idList]);
+
+    function reloadData() {
+        if (idListRef.current == null || !idListRef.current.length) {
             setFriendsList([]);
             return;
         }
         setIsLoading(true);
 
         // Filter out potentially bad ids
-        let goodIds = idList.filter((id) => id.length === PLAYER_ID_LENGTH);
+        let goodIds = idListRef.current.filter(
+            (id) => id.length === PLAYER_ID_LENGTH
+        );
         if (goodIds.length !== idListRef.current.length) {
             localStorage.setItem("friends-list", JSON.stringify(goodIds));
             setIdList(goodIds);
@@ -94,7 +108,7 @@ const FriendsPanel = (props) => {
 
         Post(
             "https://api.ddoaudit.com/players/lookup",
-            { playerids: idList },
+            { playerids: idListRef.current },
             10000
         )
             .then((response) => {
@@ -102,8 +116,11 @@ const FriendsPanel = (props) => {
                     setFriendsList([]);
                 } else {
                     let sortedCharacters = [];
-                    if (idList !== null && idList.length > 0) {
-                        idList.forEach((characterId) => {
+                    if (
+                        idListRef.current !== null &&
+                        idListRef.current.length > 0
+                    ) {
+                        idListRef.current.forEach((characterId) => {
                             sortedCharacters.push(
                                 response.filter(
                                     (character) =>
@@ -121,7 +138,7 @@ const FriendsPanel = (props) => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, [idList]);
+    }
 
     React.useEffect(() => {
         if (!friendsList || !friendsList.length) {
