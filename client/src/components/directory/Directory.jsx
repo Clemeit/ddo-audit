@@ -93,16 +93,16 @@ const Directory = (props) => {
                         "Explore a list of online players with a live Who panel.",
                     to: "/who",
                 },
-                // {
-                //     icon: (
-                //         <FriendsSVG className="nav-icon-large should-invert" />
-                //     ),
-                //     title: "Friends List",
-                //     description:
-                //         "Build your own friends list to quickly see who's online.",
-                //     to: "/friends",
-                //     new: true,
-                // },
+                {
+                    icon: (
+                        <FriendsSVG className="nav-icon-large should-invert" />
+                    ),
+                    title: "Friends List",
+                    description:
+                        "See what your friends are up to with your own Friends List.",
+                    to: "/friends",
+                    new: true,
+                },
                 {
                     icon: (
                         <RegisterSVG className="nav-icon-large should-invert" />

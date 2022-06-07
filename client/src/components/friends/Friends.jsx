@@ -1,6 +1,5 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link, useLocation } from "react-router-dom";
 import Banner from "../global/Banner";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
@@ -8,7 +7,7 @@ import FriendsPanel from "./FriendsPanel";
 import PageMessage from "../global/PageMessage";
 import { Log } from "../../services/CommunicationService";
 
-const Friends = (props) => {
+const Friends = () => {
     // TODO: If this server is currently offline, don't bother checking for players
     const TITLE = "Friends List";
 
@@ -42,7 +41,7 @@ const Friends = (props) => {
                 <title>{TITLE}</title>
                 <meta
                     name="description"
-                    content="Build your own friends list to quickly check who's online!"
+                    content="What are your friends up to? Build your own friends list to quickly check who's online!"
                 />
                 <meta property="og:image" content="/icons/friends-512px.png" />
                 <meta property="og:site_name" content="DDO Audit" />
