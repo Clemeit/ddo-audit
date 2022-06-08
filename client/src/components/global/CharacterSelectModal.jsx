@@ -57,7 +57,7 @@ const CharacterSelectModal = (props) => {
                         "Character registration failed",
                         `Not found: ${name.trim()}, ${server}`
                     );
-                    setErrorTitle("Character not found");
+                    setErrorTitle("Character not found or is anonymous");
                     setErrorMessage(
                         "Check that the name and server are correct, and ensure that the character is not marked as anonymous."
                     );
