@@ -174,6 +174,7 @@ const Panel = (props) => {
                                 b.RaidActivity?.length - a.RaidActivity?.length
                         );
                         setMyCharactersWithRaidActivity(returnedCharacters);
+                        resolve();
                     });
                 }
             } else {
@@ -405,17 +406,19 @@ const Panel = (props) => {
             group.Quest != null
         ) {
             myCharactersWithRaidActivity.forEach((character) => {
-                character.RaidActivity.forEach((raid) => {
-                    if (
-                        group.Quest.Name.toLowerCase().includes(
-                            raid.name.toLowerCase()
-                        ) &&
-                        raid.remaining &&
-                        character.Server === props.server
-                    ) {
-                        characters.push(character);
-                    }
-                });
+                if (character.RaidActivity) {
+                    character.RaidActivity.forEach((raid) => {
+                        if (
+                            group.Quest.Name.toLowerCase().includes(
+                                raid.name.toLowerCase()
+                            ) &&
+                            raid.remaining &&
+                            character.Server === props.server
+                        ) {
+                            characters.push(character);
+                        }
+                    });
+                }
             });
         }
         return characters;
