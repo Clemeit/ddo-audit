@@ -21,7 +21,7 @@ const CharacterSelectModal = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     const [name, setName] = React.useState("");

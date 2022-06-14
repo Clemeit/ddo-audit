@@ -18,7 +18,7 @@ const PanelSelectPopup = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     const [voteMessage, setVoteMessage] = React.useState(null);

@@ -29,7 +29,7 @@ const Directory = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     function GetSVG(world) {

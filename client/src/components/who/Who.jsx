@@ -22,7 +22,7 @@ const Who = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     var [overviewData, setOverviewData] = React.useState(null);

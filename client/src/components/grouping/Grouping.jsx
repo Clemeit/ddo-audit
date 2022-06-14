@@ -23,7 +23,7 @@ const Grouping = () => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
