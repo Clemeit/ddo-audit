@@ -6,6 +6,8 @@ import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import { ReactComponent as RegisterSVG } from "../../assets/global/register.svg";
+import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
@@ -365,6 +367,49 @@ const Grouping = () => {
                     }
                     noFade={true}
                 />
+                <ContentCluster title="See Also...">
+                    <div className="content-cluster-options">
+                        <Link
+                            to="/registration"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <RegisterSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">
+                                    Register Characters
+                                    <div className="new-tag">NEW</div>
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                Add your characters for automatic LFM filtering
+                                and raid timer tracking.
+                            </p>
+                        </Link>
+                        <Link
+                            to="/timers"
+                            className="nav-box"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <TimerSVG className="nav-icon-large should-invert" />
+                                <h2 className="content-option-title">
+                                    Raid Timers
+                                    <div className="new-tag">NEW</div>
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                View and manage your current raid timers.
+                            </p>
+                        </Link>
+                    </div>
+                </ContentCluster>
             </div>
         </div>
     );
