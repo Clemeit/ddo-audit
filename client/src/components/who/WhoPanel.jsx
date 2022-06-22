@@ -491,6 +491,7 @@ const WhoPanel = (props) => {
 
     // Let's get some data
     let recheck; // TODO: Clearing this timeout doesn't work
+    let refreshdata;
     React.useEffect(() => {
         clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
         setFilteredPlayerData(null);
@@ -498,7 +499,7 @@ const WhoPanel = (props) => {
 
         FetchPlayerData();
 
-        const refreshdata = setInterval(() => {
+        refreshdata = setInterval(() => {
             FetchPlayerData();
         }, 120000);
         return () => {
@@ -508,6 +509,9 @@ const WhoPanel = (props) => {
     }, [props.server]);
 
     function FetchPlayerData(timeout = 5000) {
+        if (failedAttemptRef.current > 6) {
+            return;
+        }
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 let serverstatus = false;
@@ -582,6 +586,8 @@ const WhoPanel = (props) => {
                                                 ? "Player data returned null"
                                                 : "Player data verification failed",
                                     });
+                                    clearTimeout(recheck);
+                                    clearInterval(refreshdata);
                                 } else {
                                     recheck = setTimeout(() => {
                                         FetchPlayerData(10000);
