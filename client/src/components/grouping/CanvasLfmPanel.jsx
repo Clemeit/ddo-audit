@@ -24,7 +24,7 @@ const CanvasLfmPanel = (props) => {
 
     const panelWidth = 848;
     const lfmHeight = 90;
-    const classCount = 15;
+    const CLASS_COUNT = 16;
     let lastclickRef = React.useRef(0);
 
     function HandleMouseOnCanvas(e) {
@@ -740,7 +740,11 @@ const CanvasLfmPanel = (props) => {
                         60
                     );
                 } else {
-                    if (group.AcceptedCount === classCount) {
+                    if (
+                        group.AcceptedCount === CLASS_COUNT ||
+                        group.AcceptedClasses == null ||
+                        group.AcceptedClasses.length === 0
+                    ) {
                         ctx.drawImage(
                             sprite,
                             group.Eligible ? 287 : 390,
@@ -1099,8 +1103,9 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                member.Classes[c].Name !== "Epic" ||
-                                props.showEpicClass
+                                (member.Classes[c].Name !== "Epic" ||
+                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Legendary"
                             ) {
                                 // First pass for icons
                                 let xp = cursorPosition[0] + 166 + 21 * c;
@@ -1133,8 +1138,9 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                member.Classes[c].Name !== "Epic" ||
-                                props.showEpicClass
+                                (member.Classes[c].Name !== "Epic" ||
+                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Legendary"
                             ) {
                                 // Second pass for levels
                                 let xp = cursorPosition[0] + 166 + 21 * c;
@@ -1807,6 +1813,7 @@ const CanvasLfmPanel = (props) => {
                     ysrc = 21;
                     break;
                 case "Epic": // 7001B1A3
+                case "Legendary":
                     xsrc = 423 - (eligible ? 0 : 103);
                     ysrc = 0;
                     break;

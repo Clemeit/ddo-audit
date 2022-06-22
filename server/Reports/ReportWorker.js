@@ -144,6 +144,10 @@ con.connect((err) => {
                             JSON_OBJECT(
                                 'Name', c4.name,
                                 'Level', p.level4
+                            ),
+                            JSON_OBJECT(
+                                'Name', c5.name,
+                                'Level', p.level5
                             )
                         )
                     )
@@ -154,6 +158,7 @@ con.connect((err) => {
                 LEFT JOIN classes c2 ON p.class2 = c2.id 
                 LEFT JOIN classes c3 ON p.class3 = c3.id 
                 LEFT JOIN classes c4 ON p.class4 = c4.id 
+                LEFT JOIN classes c5 ON p.class5 = c5.id 
                 WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -${seconds} SECOND)`;
 
             con.query(query, (err, result, fields) => {

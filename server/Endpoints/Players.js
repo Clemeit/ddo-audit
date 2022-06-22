@@ -147,6 +147,10 @@ module.exports = function (api) {
                         JSON_OBJECT(
                             'Name', c4.name,
                             'Level', p.level4
+                        ),
+                        JSON_OBJECT(
+                            'Name', c5.name,
+                            'Level', p.level5
                         )
                     ),
                     'Online', p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND),
@@ -156,7 +160,8 @@ module.exports = function (api) {
                 LEFT JOIN classes c1 ON p.class1 = c1.id 
                 LEFT JOIN classes c2 ON p.class2 = c2.id 
                 LEFT JOIN classes c3 ON p.class3 = c3.id 
-                LEFT JOIN classes c4 ON p.class4 = c4.id
+                LEFT JOIN classes c4 ON p.class4 = c4.id 
+                LEFT JOIN classes c5 ON p.class5 = c5.id
                 WHERE p.name LIKE ${con.escape(
                     name
                 )} AND p.anonymous = 0 ORDER BY p.lastseen DESC LIMIT 10`;
@@ -268,6 +273,10 @@ module.exports = function (api) {
                         JSON_OBJECT(
                             'Name', c4.name,
                             'Level', p.level4
+                        ),
+                        JSON_OBJECT(
+                            'Name', c5.name,
+                            'Level', p.level5
                         )
                     ),
                     'Online', p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND),
@@ -277,7 +286,8 @@ module.exports = function (api) {
                 LEFT JOIN classes c1 ON p.class1 = c1.id 
                 LEFT JOIN classes c2 ON p.class2 = c2.id 
                 LEFT JOIN classes c3 ON p.class3 = c3.id 
-                LEFT JOIN classes c4 ON p.class4 = c4.id
+                LEFT JOIN classes c4 ON p.class4 = c4.id 
+                LEFT JOIN classes c5 ON p.class5 = c5.id
                 WHERE playerid = ${escapedIds.join(" OR playerid = ")}`;
 
                 con.query(query, (err, result, fields) => {
@@ -422,6 +432,10 @@ module.exports = function (api) {
                                     JSON_OBJECT(
                                         'Name', c4.name,
                                         'Level', p.level4
+                                    ),
+                                    JSON_OBJECT(
+                                        'Name', c5.name,
+                                        'Level', p.level5
                                     )
                                 )
                             )
@@ -433,6 +447,7 @@ module.exports = function (api) {
                     LEFT JOIN classes c2 ON p.class2 = c2.id 
                     LEFT JOIN classes c3 ON p.class3 = c3.id 
                     LEFT JOIN classes c4 ON p.class4 = c4.id 
+                    LEFT JOIN classes c5 ON p.class5 = c5.id 
                     WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -90 SECOND) AND p.server LIKE '${server}';`;
 
                 con.query(query, (err, result, fields) => {
