@@ -1240,6 +1240,9 @@ const Panel = (props) => {
                         >
                             This server might be offline.
                             <br />
+                            You may check server status on the{" "}
+                            <Link to="/live">Live page</Link>.
+                            <br />
                             If you believe this to be an error,
                         </p>
                     </span>
