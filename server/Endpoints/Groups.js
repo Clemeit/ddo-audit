@@ -74,15 +74,51 @@ module.exports = function (api) {
                         } else {
                             if (server == "all") {
                                 resolve([
-                                    JSON.parse(result[0]["argonnessen"]),
-                                    JSON.parse(result[0]["cannith"]),
-                                    JSON.parse(result[0]["ghallanda"]),
-                                    JSON.parse(result[0]["khyber"]),
-                                    JSON.parse(result[0]["orien"]),
-                                    JSON.parse(result[0]["sarlona"]),
-                                    JSON.parse(result[0]["thelanis"]),
-                                    JSON.parse(result[0]["wayfinder"]),
-                                    JSON.parse(result[0]["hardcore"]),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["argonnessen"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["cannith"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["ghallanda"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["khyber"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["orien"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["sarlona"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["thelanis"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["wayfinder"]
+                                            : {}
+                                    ),
+                                    JSON.parse(
+                                        result[0] != null
+                                            ? result[0]["hardcore"]
+                                            : {}
+                                    ),
                                 ]);
                             } else {
                                 if (
