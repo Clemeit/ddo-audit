@@ -742,8 +742,7 @@ const CanvasLfmPanel = (props) => {
                 } else {
                     if (
                         group.AcceptedCount === CLASS_COUNT ||
-                        group.AcceptedClasses == null ||
-                        group.AcceptedClasses.length === 0
+                        group.AcceptedClasses == null
                     ) {
                         ctx.drawImage(
                             sprite,
