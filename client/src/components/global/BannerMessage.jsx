@@ -13,7 +13,7 @@ const BannerMessage = (props) => {
         recheck = setInterval(() => {
             setUpdate(new Date());
         }, 3600000);
-        shiftBanner = setInterval(() => {
+        shiftBanner = setTimeout(() => {
             if (window.innerWidth < 900) {
                 $(".banner-message-container").css(
                     "transform",
@@ -28,7 +28,7 @@ const BannerMessage = (props) => {
 
         return function cleanup() {
             clearInterval(recheck);
-            clearInterval(shiftBanner);
+            clearTimeout(shiftBanner);
         };
     }, []);
 
@@ -84,12 +84,15 @@ const BannerMessage = (props) => {
 
     function ignoreThisMessage(id) {
         if (id == null) return;
-        let before = localStorage.getItem("ignored-messages");
-        localStorage.setItem(
-            "ignored-messages",
-            before ? before + "," + id : id
-        );
-        setUpdate(new Date());
+        $(".banner-message-container").css("transform", `translateY(-100%)`);
+        setTimeout(() => {
+            let before = localStorage.getItem("ignored-messages");
+            localStorage.setItem(
+                "ignored-messages",
+                before ? before + "," + id : id
+            );
+            setUpdate(new Date());
+        }, 1000);
     }
 
     function mayDismiss(message) {
