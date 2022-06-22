@@ -388,7 +388,7 @@ const Directory = (props) => {
                 }}
             />
             <div className="content-container">
-                <BannerMessage /*className="push-on-mobile">*/ page="servers" />
+                <BannerMessage page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">

@@ -1172,7 +1172,7 @@ input[type="radio"] {
     user-select: none;
     transition: filter 250ms;
     padding: 0px 10px;
-    z-index: 1;
+    z-index: 5;
 }
 
 .banner-message {
@@ -1792,10 +1792,6 @@ th {
         max-width: unset !important;
         position: fixed !important;
         top: 0px;
-    }
-
-    .banner-message-container.push-on-mobile {
-        transform: translateY(36px);
     }
 
     .banner-message {

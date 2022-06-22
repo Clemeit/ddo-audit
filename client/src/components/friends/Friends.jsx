@@ -70,7 +70,7 @@ const Friends = () => {
                 className="content-container"
                 style={{ minHeight: "700px", width: "100%" }}
             >
-                <BannerMessage className="push-on-mobile" page="friends" />
+                <BannerMessage page="friends" />
                 <div
                     id="top-content-padding"
                     className="top-content-padding hide-on-mobile"

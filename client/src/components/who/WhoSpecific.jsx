@@ -224,7 +224,7 @@ const WhoSpecific = (props) => {
                     className="content-container"
                     style={{ minHeight: "700px", width: "100%" }}
                 >
-                    <BannerMessage className="push-on-mobile" page="who" />
+                    <BannerMessage page="who" />
                     <div
                         id="top-content-padding"
                         className="top-content-padding hide-on-mobile"

@@ -92,6 +92,19 @@ const BannerMessage = (props) => {
         setUpdate(new Date());
     }
 
+    function mayDismiss(message) {
+        // If on mobile, always allow dismissal
+        if (window.innerWidth <= 900) {
+            return true;
+        }
+
+        if (message.nodismiss === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     return (
         <div
             style={{ display: "flex", flexDirection: "column", width: "100%" }}
@@ -107,22 +120,22 @@ const BannerMessage = (props) => {
                         backgroundColor: message.color,
                     }}
                     onClick={() => {
-                        message.nodismiss == 1
-                            ? ignoreThisMessage()
-                            : ignoreThisMessage(message.id);
+                        mayDismiss(message)
+                            ? ignoreThisMessage(message.id)
+                            : ignoreThisMessage();
                     }}
                 >
                     <p
                         className="banner-message"
                         style={{
-                            cursor: message.nodismiss == 1 && "default",
+                            cursor: !mayDismiss(message) && "default",
                         }}
                     >
                         {message.message
                             .replace("{0}", message.start)
                             .replace("{1}", message.end)}
                     </p>
-                    {message.nodismiss == 0 && <CloseSVG />}
+                    {mayDismiss(message) && <CloseSVG />}
                 </div>
             ))}
         </div>
