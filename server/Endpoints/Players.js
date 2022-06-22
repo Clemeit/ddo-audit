@@ -379,7 +379,7 @@ module.exports = function (api) {
                                 .catch((err) => reject(err));
                         }
                     } else {
-                        if (result == null) {
+                        if (result == null || result[0] == null) {
                             reject("null data");
                         } else {
                             resolve(result[0]["data"]);
@@ -562,7 +562,7 @@ module.exports = function (api) {
                     })
                     .catch((err) => {
                         console.log(err);
-                        return {};
+                        res.send({});
                     });
             });
         });
@@ -576,7 +576,7 @@ module.exports = function (api) {
                     })
                     .catch((err) => {
                         console.log(err);
-                        return {};
+                        res.send({});
                     });
             });
         });
