@@ -5,6 +5,7 @@ import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
+import { Link } from "react-router-dom";
 
 const WhoPanel = (props) => {
     const MAX_LEVEL = 32;
