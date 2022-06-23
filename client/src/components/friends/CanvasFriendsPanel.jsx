@@ -433,11 +433,15 @@ const CanvasFriendsPanel = (props) => {
                     if (player.Anonymous === 1) {
                         ctx.fillStyle = "#a6a183";
                         ctx.font = "italic 15px 'Trebuchet MS'"; // 18px
-                        ctx.fillText("Somewhere in the aether", x + 45, y + 45);
+                        ctx.fillText("Somewhere in the Aether", x + 45, y + 45);
                     } else {
                         ctx.fillStyle = "#f6f1d3";
                         ctx.font = "15px 'Trebuchet MS'"; // 18px
-                        ctx.fillText(player.Location?.Name, x + 45, y + 45);
+                        ctx.fillText(
+                            player.Location?.Name || "Somewhere in the Aether",
+                            x + 45,
+                            y + 45
+                        );
                     }
                 }
 
@@ -447,7 +451,8 @@ const CanvasFriendsPanel = (props) => {
                 for (var j = 0; j < player.Classes.length; j++) {
                     if (
                         player.Classes[j].Name == null ||
-                        player.Classes[j].Name === "Epic"
+                        player.Classes[j].Name === "Epic" ||
+                        player.Classes[j].Name === "Legendary"
                     )
                         continue;
 

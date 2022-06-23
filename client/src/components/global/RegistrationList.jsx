@@ -123,7 +123,11 @@ const RegistrationList = (props) => {
     function getClassString(character) {
         let classes = [];
         character?.Classes?.forEach((cls) => {
-            if (cls.Name != null && cls.Name != "Epic") {
+            if (
+                cls.Name != null &&
+                cls.Name != "Epic" &&
+                cls.Name != "Legendary"
+            ) {
                 classes.push(`${cls.Name} ${cls.Level}`);
             }
         });
@@ -318,7 +322,8 @@ const RegistrationList = (props) => {
                                                         verticalAlign: "top",
                                                     }}
                                                 >
-                                                    {character.Location?.Name}
+                                                    {character.Location?.Name ||
+                                                        "Somewhere in the Aether"}
                                                 </td>
                                             </tr>
                                         </tbody>
