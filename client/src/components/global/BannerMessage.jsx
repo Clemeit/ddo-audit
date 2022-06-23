@@ -84,15 +84,27 @@ const BannerMessage = (props) => {
 
     function ignoreThisMessage(id) {
         if (id == null) return;
-        $(".banner-message-container").css("transform", `translateY(-100%)`);
-        setTimeout(() => {
+        if (window.innerWidth < 900) {
+            $(".banner-message-container").css(
+                "transform",
+                `translateY(-100%)`
+            );
+            setTimeout(() => {
+                let before = localStorage.getItem("ignored-messages");
+                localStorage.setItem(
+                    "ignored-messages",
+                    before ? before + "," + id : id
+                );
+                setUpdate(new Date());
+            }, 1000);
+        } else {
             let before = localStorage.getItem("ignored-messages");
             localStorage.setItem(
                 "ignored-messages",
                 before ? before + "," + id : id
             );
             setUpdate(new Date());
-        }, 1000);
+        }
     }
 
     function mayDismiss(message) {

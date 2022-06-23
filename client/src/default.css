@@ -1172,7 +1172,6 @@ input[type="radio"] {
     user-select: none;
     transition: filter 250ms;
     padding: 0px 10px;
-    z-index: 5;
 }
 
 .banner-message {
@@ -1703,6 +1702,7 @@ th {
         position: fixed;
         transition: transform 200ms;
         transform: translateY(-100%);
+        z-index: 5;
     }
 
     #content-push-top {
