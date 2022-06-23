@@ -24,7 +24,7 @@ const CanvasLfmPanel = (props) => {
 
     const panelWidth = 848;
     const lfmHeight = 90;
-    const CLASS_COUNT = 16;
+    const CLASS_COUNT = 15;
     let lastclickRef = React.useRef(0);
 
     function HandleMouseOnCanvas(e) {

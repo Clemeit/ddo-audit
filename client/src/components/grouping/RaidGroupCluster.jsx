@@ -18,7 +18,7 @@ const RaidGroupCluster = (props) => {
     const spriteRef = React.useRef(null);
     const PANEL_WIDTH = 848;
     const LFM_HEIGHT = 90;
-    const CLASS_COUNT = 16;
+    const CLASS_COUNT = 15;
 
     let canvas;
     let ctx;
