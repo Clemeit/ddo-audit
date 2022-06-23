@@ -452,8 +452,8 @@ const Panel = (props) => {
                     (group.MinimumLevel <= minimumLevel &&
                         group.MaximumLevel >= maximumLevel);
             }
-            group.Eligible = levelpass;
-            if (levelpass || showNotEligible) {
+            group.Eligible = levelpass || group.Leader?.Name === "DDO Audit";
+            if (group.Eligible || showNotEligible) {
                 filteredgroups.push(group);
             }
 
