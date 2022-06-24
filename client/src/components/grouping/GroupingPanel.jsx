@@ -52,6 +52,7 @@ const Panel = (props) => {
     const [sortAscending, setSortAscending] = React.useState();
     const [showEligibleCharacters, setShowEligibleCharacters] =
         React.useState(false);
+    const [showGuildNames, setShowGuildNames] = React.useState(false);
     const [showCompletionPercentage, setShowCompletionPercentage] =
         React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
@@ -535,6 +536,11 @@ const Panel = (props) => {
             showeligiblecharacters !== null
                 ? showeligiblecharacters === "true"
                 : false
+        );
+
+        let showguildnames = localStorage.getItem("show-guild-names");
+        setShowGuildNames(
+            showguildnames !== null ? showguildnames === "true" : false
         );
 
         let shownoteligible = localStorage.getItem("show-not-eligible");
@@ -1136,6 +1142,30 @@ const Panel = (props) => {
                                     />
                                     Show Quest Guesses
                                 </label>
+                                <label className="filter-panel-group-option">
+                                    <input
+                                        className="input-radio"
+                                        name="guildnames"
+                                        type="checkbox"
+                                        checked={showGuildNames}
+                                        onChange={() => {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "show-guild-names",
+                                                    !showGuildNames
+                                                );
+                                            }
+                                            setShowGuildNames(!showGuildNames);
+                                        }}
+                                    />
+                                    Show Character Guild Names{" "}
+                                    <span
+                                        className="new-tag small"
+                                        style={{ marginLeft: "7px" }}
+                                    >
+                                        NEW
+                                    </span>
+                                </label>
                             </div>
                         </ContentCluster>
                     </div>
@@ -1160,6 +1190,7 @@ const Panel = (props) => {
                         showEpicClass={showEpicClass}
                         sortAscending={sortAscending}
                         showEligibleCharacters={showEligibleCharacters}
+                        showGuildNames={showGuildNames}
                     />
                 ) : (
                     <div className="social-container">
