@@ -79,9 +79,9 @@ module.exports = function (api) {
 
         function lookupPlayerByNameAndServer(name, server, final) {
             return new Promise(async (resolve, reject) => {
-                let query = `SELECT CAST(p.playerid as char) as playerid, p.lastseen FROM players p WHERE p.name LIKE ${con.escape(
+                let query = `SELECT CAST(p.playerid as char) as playerid, p.lastseen, p.anonymous FROM players p WHERE p.name LIKE ${con.escape(
                     name
-                )} AND p.server LIKE ${con.escape(server)} AND p.anonymous = 0`;
+                )} AND p.server LIKE ${con.escape(server)}`;
 
                 con.query(query, (err, result, fields) => {
                     if (err) {
@@ -738,16 +738,24 @@ module.exports = function (api) {
                 } else {
                     lookupPlayerByNameAndServer(name, server).then((result) => {
                         if (result.length === 1) {
-                            const playerId = encryptId(result[0].playerid);
                             res.setHeader("Content-Type", "application/json");
-                            res.send({ playerid: playerId });
+                            if (result[0].anonymous === 1) {
+                                res.send({ error: "Anonymous" });
+                            } else {
+                                const playerId = encryptId(result[0].playerid);
+                                res.send({ playerid: playerId });
+                            }
                         } else if (result.length > 1) {
+                            res.setHeader("Content-Type", "application/json");
                             const sorted = result.sort(
                                 (a, b) => b.lastseen - a.lastseen
                             );
-                            const playerId = encryptId(sorted[0].playerid);
-                            res.setHeader("Content-Type", "application/json");
-                            res.send({ playerid: playerId });
+                            if (sorted[0].anonymous === 1) {
+                                res.send({ error: "Anonymous" });
+                            } else {
+                                const playerId = encryptId(sorted[0].playerid);
+                                res.send({ playerid: playerId });
+                            }
                         } else {
                             res.send({ error: "Bad result length" });
                         }

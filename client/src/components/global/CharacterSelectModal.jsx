@@ -52,6 +52,16 @@ const CharacterSelectModal = (props) => {
                 if (res.playerid) {
                     Log("Registered character", `${name.trim()}, ${server}`);
                     props.submit(res.playerid, server);
+                } else if (res.error === "Anonymous") {
+                    Log(
+                        "Character registration failed",
+                        `Anonymous: ${name.trim()}, ${server}`
+                    );
+                    setErrorTitle("Character is anonymous");
+                    setErrorMessage(
+                        "That character is anonymous. Turn off anonymous for at least 1 minute and then try again."
+                    );
+                    setLookupError(true);
                 } else {
                     Log(
                         "Character registration failed",
