@@ -21,7 +21,7 @@ const CharacterSelectModal = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     const [name, setName] = React.useState("");
@@ -52,12 +52,22 @@ const CharacterSelectModal = (props) => {
                 if (res.playerid) {
                     Log("Registered character", `${name.trim()}, ${server}`);
                     props.submit(res.playerid, server);
+                } else if (res.error === "Anonymous") {
+                    Log(
+                        "Character registration failed",
+                        `Anonymous: ${name.trim()}, ${server}`
+                    );
+                    setErrorTitle("Character is anonymous");
+                    setErrorMessage(
+                        "That character is anonymous. Turn off anonymous for at least 1 minute and then try again."
+                    );
+                    setLookupError(true);
                 } else {
                     Log(
                         "Character registration failed",
                         `Not found: ${name.trim()}, ${server}`
                     );
-                    setErrorTitle("Character not found");
+                    setErrorTitle("Character not found or is anonymous");
                     setErrorMessage(
                         "Check that the name and server are correct, and ensure that the character is not marked as anonymous."
                     );

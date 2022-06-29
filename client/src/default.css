@@ -845,6 +845,24 @@ body {
     width: max-content;
 }
 
+.danger-button {
+    padding: 10px 20px;
+    text-decoration: none !important;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid red;
+    background-color: var(--gray8);
+    color: red !important;
+    transition: box-shadow 250ms;
+    font-size: larger;
+    user-select: none;
+    width: max-content;
+}
+
+.danger-button:hover {
+    box-shadow: 0px 0px 10px 0px var(--red);
+}
+
 .secondary-button.expandable {
     transition: padding 200ms, box-shadow 250ms;
 }
@@ -1154,7 +1172,6 @@ input[type="radio"] {
     user-select: none;
     transition: filter 250ms;
     padding: 0px 10px;
-    z-index: 1;
 }
 
 .banner-message {
@@ -1667,6 +1684,9 @@ th {
 }
 
 @media (max-width: 900px) {
+    .nav-box.shrinkable.no-padding-mobile {
+        padding: 0px;
+    }
     .filter-panel {
         position: fixed;
         top: 0px;
@@ -1682,6 +1702,7 @@ th {
         position: fixed;
         transition: transform 200ms;
         transform: translateY(-100%);
+        z-index: 5;
     }
 
     #content-push-top {
@@ -1771,10 +1792,6 @@ th {
         max-width: unset !important;
         position: fixed !important;
         top: 0px;
-    }
-
-    .banner-message-container.push-on-mobile {
-        transform: translateY(36px);
     }
 
     .banner-message {

@@ -13,7 +13,7 @@ const BannerMessage = (props) => {
         recheck = setInterval(() => {
             setUpdate(new Date());
         }, 3600000);
-        shiftBanner = setInterval(() => {
+        shiftBanner = setTimeout(() => {
             if (window.innerWidth < 900) {
                 $(".banner-message-container").css(
                     "transform",
@@ -28,7 +28,7 @@ const BannerMessage = (props) => {
 
         return function cleanup() {
             clearInterval(recheck);
-            clearInterval(shiftBanner);
+            clearTimeout(shiftBanner);
         };
     }, []);
 
@@ -84,12 +84,40 @@ const BannerMessage = (props) => {
 
     function ignoreThisMessage(id) {
         if (id == null) return;
-        let before = localStorage.getItem("ignored-messages");
-        localStorage.setItem(
-            "ignored-messages",
-            before ? before + "," + id : id
-        );
-        setUpdate(new Date());
+        if (window.innerWidth < 900) {
+            $(".banner-message-container").css(
+                "transform",
+                `translateY(-100%)`
+            );
+            setTimeout(() => {
+                let before = localStorage.getItem("ignored-messages");
+                localStorage.setItem(
+                    "ignored-messages",
+                    before ? before + "," + id : id
+                );
+                setUpdate(new Date());
+            }, 1000);
+        } else {
+            let before = localStorage.getItem("ignored-messages");
+            localStorage.setItem(
+                "ignored-messages",
+                before ? before + "," + id : id
+            );
+            setUpdate(new Date());
+        }
+    }
+
+    function mayDismiss(message) {
+        // If on mobile, always allow dismissal
+        if (window.innerWidth <= 900) {
+            return true;
+        }
+
+        if (message.nodismiss === 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     return (
@@ -107,22 +135,22 @@ const BannerMessage = (props) => {
                         backgroundColor: message.color,
                     }}
                     onClick={() => {
-                        message.nodismiss == 1
-                            ? ignoreThisMessage()
-                            : ignoreThisMessage(message.id);
+                        mayDismiss(message)
+                            ? ignoreThisMessage(message.id)
+                            : ignoreThisMessage();
                     }}
                 >
                     <p
                         className="banner-message"
                         style={{
-                            cursor: message.nodismiss == 1 && "default",
+                            cursor: !mayDismiss(message) && "default",
                         }}
                     >
                         {message.message
                             .replace("{0}", message.start)
                             .replace("{1}", message.end)}
                     </p>
-                    {message.nodismiss == 0 && <CloseSVG />}
+                    {mayDismiss(message) && <CloseSVG />}
                 </div>
             ))}
         </div>

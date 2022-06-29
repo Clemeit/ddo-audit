@@ -15,9 +15,16 @@ const CanvasLfmPanel = (props) => {
         cursorPosition: [0, 0],
     });
 
+    const [highlightRaids, setHighlightRaids] = React.useState(false);
+    React.useEffect(() => {
+        if (window.location.search === "?highlight=raids") {
+            setHighlightRaids(true);
+        }
+    }, [window.location.pathname]);
+
     const panelWidth = 848;
     const lfmHeight = 90;
-    const classCount = 15;
+    const CLASS_COUNT = 15;
     let lastclickRef = React.useRef(0);
 
     function HandleMouseOnCanvas(e) {
@@ -337,6 +344,51 @@ const CanvasLfmPanel = (props) => {
                     );
 
                     ctx.fillStyle = gradient;
+                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                } else if (
+                    group.Quest?.GroupSize === "Raid" &&
+                    highlightRaids
+                ) {
+                    let gradient = ctx.createLinearGradient(
+                        0,
+                        top,
+                        panelWidth,
+                        top + lfmheight
+                    );
+                    gradient.addColorStop(0, "#1da1a1");
+                    gradient.addColorStop(1, "#1d6ca1");
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(26, top, 802, lfmheight);
+
+                    if (group.Eligible) {
+                        gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            0,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(
+                            0,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        gradient.addColorStop(
+                            0.25,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            0.75,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            1,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        ctx.fillStyle = gradient;
+                    } else {
+                        ctx.fillStyle = "#150a06";
+                    }
+
                     ctx.fillRect(31, top + 5, 792, lfmheight - 10);
                 } else if (group.Eligible) {
                     let gradient = ctx.createLinearGradient(
@@ -688,7 +740,10 @@ const CanvasLfmPanel = (props) => {
                         60
                     );
                 } else {
-                    if (group.AcceptedCount === classCount) {
+                    if (
+                        group.AcceptedCount === CLASS_COUNT ||
+                        group.AcceptedClasses == null
+                    ) {
                         ctx.drawImage(
                             sprite,
                             group.Eligible ? 287 : 390,
@@ -918,10 +973,17 @@ const CanvasLfmPanel = (props) => {
         }
 
         function DrawPlayerOverlay(group, cursorPosition) {
+            const SHOW_GUILD_NAME = props.showGuildNames;
+            const GUILD_NAME_HEIGHT = 15;
+
             if (group === null) return;
 
             let estimatedBottom =
-                cursorPosition[1] + 3 + (group.Members.length + 1) * 41 + 26;
+                cursorPosition[1] +
+                3 +
+                (group.Members.length + 1) *
+                    (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) +
+                26;
             if (estimatedBottom > canvas.height) {
                 cursorPosition[1] -= estimatedBottom - canvas.height;
             }
@@ -940,7 +1002,7 @@ const CanvasLfmPanel = (props) => {
                 2
             );
 
-            // Each player in the party is 41px in height
+            // Each player in the party is 41px in height (+15 for guild name)
             let memberList = [group.Leader, ...group.Members];
             if (memberList !== null) {
                 memberList.forEach((member, i) => {
@@ -949,17 +1011,26 @@ const CanvasLfmPanel = (props) => {
                         0,
                         191,
                         287,
-                        41,
+                        41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0),
                         cursorPosition[0],
-                        cursorPosition[1] + 2 + 41 * i,
+                        cursorPosition[1] +
+                            2 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i,
                         287,
-                        41
+                        41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)
                     );
                     let grad = ctx.createLinearGradient(
                         0,
-                        cursorPosition[1] + 2 + 41 * i,
+                        cursorPosition[1] +
+                            2 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i,
                         0,
-                        cursorPosition[1] + 2 + 41 * (i + 1)
+                        cursorPosition[1] +
+                            2 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                (i + 1)
                     );
                     grad.addColorStop(0, "#404947");
                     grad.addColorStop(0.25, "#4d5955");
@@ -968,9 +1039,12 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = grad;
                     ctx.fillRect(
                         cursorPosition[0] + 4,
-                        cursorPosition[1] + 3 + 41 * i,
+                        cursorPosition[1] +
+                            3 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i,
                         269,
-                        39
+                        39 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)
                     );
 
                     // Race
@@ -986,7 +1060,10 @@ const CanvasLfmPanel = (props) => {
                         18,
                         18,
                         cursorPosition[0] + 4,
-                        cursorPosition[1] + 2 + 41 * i,
+                        cursorPosition[1] +
+                            2 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i,
                         18,
                         18
                     );
@@ -999,7 +1076,11 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillText(
                         member.Name,
                         cursorPosition[0] + 26,
-                        cursorPosition[1] + 3 + 41 * i + 10
+                        cursorPosition[1] +
+                            3 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i +
+                            10
                     );
                     let memberWidth = ctx.measureText(member.Name).width;
                     if (member.Name.startsWith("Clemei")) {
@@ -1011,10 +1092,38 @@ const CanvasLfmPanel = (props) => {
                             17,
                             18,
                             cursorPosition[0] + 8 + memberWidth,
-                            cursorPosition[1] + 3 + 41 * i,
+                            cursorPosition[1] +
+                                3 +
+                                (41 +
+                                    (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                    i,
                             17,
                             18
                         );
+                    }
+
+                    // Guild name
+                    if (SHOW_GUILD_NAME) {
+                        ctx.fillStyle = "#b6b193";
+                        ctx.font = `${
+                            member.Guild === "" ? "italic " : ""
+                        }15px 'Trebuchet MS'`;
+                        ctx.textAlign = "left";
+                        let wrappedguildname = wrapText(member.Guild, 200);
+                        const truncatedGuildName =
+                            wrappedguildname[0] +
+                            (wrappedguildname.length > 1 ? "..." : "");
+                        ctx.fillText(
+                            truncatedGuildName || "No guild",
+                            cursorPosition[0] + 26,
+                            cursorPosition[1] +
+                                3 +
+                                (41 +
+                                    (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                    i +
+                                28
+                        );
+                        ctx.fillStyle = "#f6f1d3";
                     }
 
                     // Location
@@ -1024,7 +1133,13 @@ const CanvasLfmPanel = (props) => {
                         ctx.fillText(
                             member.Location.Name,
                             cursorPosition[0] + 102,
-                            cursorPosition[1] + 3 + 41 * i + 30
+                            cursorPosition[1] +
+                                3 +
+                                (41 +
+                                    (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                    i +
+                                30 +
+                                (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)
                         );
                     }
 
@@ -1034,7 +1149,11 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillText(
                         member.TotalLevel,
                         cursorPosition[0] + 4 + 256,
-                        cursorPosition[1] + 3 + 41 * i + 11
+                        cursorPosition[1] +
+                            3 +
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) *
+                                i +
+                            11
                     );
 
                     // Classes
@@ -1047,12 +1166,20 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                member.Classes[c].Name !== "Epic" ||
-                                props.showEpicClass
+                                (member.Classes[c].Name !== "Epic" ||
+                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Legendary"
                             ) {
                                 // First pass for icons
                                 let xp = cursorPosition[0] + 166 + 21 * c;
-                                let yp = cursorPosition[1] + 4 + 41 * i;
+                                let yp =
+                                    cursorPosition[1] +
+                                    4 +
+                                    (41 +
+                                        (SHOW_GUILD_NAME
+                                            ? GUILD_NAME_HEIGHT
+                                            : 0)) *
+                                        i;
 
                                 ctx.fillStyle = "#3e4641";
                                 ctx.fillRect(xp - 1, yp - 1, 20, 20);
@@ -1081,12 +1208,20 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                member.Classes[c].Name !== "Epic" ||
-                                props.showEpicClass
+                                (member.Classes[c].Name !== "Epic" ||
+                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Legendary"
                             ) {
                                 // Second pass for levels
                                 let xp = cursorPosition[0] + 166 + 21 * c;
-                                let yp = cursorPosition[1] + 4 + 41 * i;
+                                let yp =
+                                    cursorPosition[1] +
+                                    4 +
+                                    (41 +
+                                        (SHOW_GUILD_NAME
+                                            ? GUILD_NAME_HEIGHT
+                                            : 0)) *
+                                        i;
 
                                 ctx.fillStyle = "black";
                                 ctx.fillText(
@@ -1113,7 +1248,10 @@ const CanvasLfmPanel = (props) => {
                 287,
                 26,
                 cursorPosition[0],
-                cursorPosition[1] + 2 + memberList.length * 41,
+                cursorPosition[1] +
+                    2 +
+                    memberList.length *
+                        (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)),
                 287,
                 26
             );
@@ -1135,7 +1273,8 @@ const CanvasLfmPanel = (props) => {
                     cursorPosition[0],
                     cursorPosition[1] +
                         2 +
-                        memberList.length * 41 +
+                        memberList.length *
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) +
                         i * (19 + (fontModifier < 0 ? -3 : 0)),
                     287,
                     23
@@ -1144,7 +1283,8 @@ const CanvasLfmPanel = (props) => {
                     textLines[i],
                     cursorPosition[0] + 4,
                     cursorPosition[1] +
-                        memberList.length * 41 +
+                        memberList.length *
+                            (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) +
                         13 +
                         i * (19 + (fontModifier < 0 ? -3 : 0))
                 );
@@ -1159,7 +1299,8 @@ const CanvasLfmPanel = (props) => {
                 cursorPosition[0],
                 cursorPosition[1] +
                     2 +
-                    memberList.length * 41 +
+                    memberList.length *
+                        (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) +
                     textLines.length * (19 + (fontModifier < 0 ? -3 : 0)) +
                     (fontModifier < 0 ? 4 : 3),
                 287,
@@ -1539,7 +1680,9 @@ const CanvasLfmPanel = (props) => {
         function isFeytwisted(group) {
             if (
                 group.Comment.toLowerCase().includes("feytwisted") &&
-                group.Quest?.RequiredAdventurePack === "The Feywild"
+                group.Quest?.RequiredAdventurePack.toLowerCase().includes(
+                    "feywild"
+                )
             )
                 return true;
             return false;
@@ -1753,6 +1896,7 @@ const CanvasLfmPanel = (props) => {
                     ysrc = 21;
                     break;
                 case "Epic": // 7001B1A3
+                case "Legendary":
                     xsrc = 423 - (eligible ? 0 : 103);
                     ysrc = 0;
                     break;

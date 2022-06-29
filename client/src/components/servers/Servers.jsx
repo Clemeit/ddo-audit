@@ -29,7 +29,7 @@ const Directory = (props) => {
         "Sarlona",
         "Thelanis",
         "Wayfinder",
-        // "Hardcore",
+        "Hardcore",
     ];
 
     function GetSVG(world) {
@@ -388,7 +388,7 @@ const Directory = (props) => {
                 }}
             />
             <div className="content-container">
-                <BannerMessage /*className="push-on-mobile">*/ page="servers" />
+                <BannerMessage page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
@@ -753,7 +753,7 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster title="See Also...">
                     <div className="content-cluster-options">
-                        <Link
+                        {/* <Link
                             to="/live"
                             className="nav-box"
                             style={{
@@ -771,7 +771,7 @@ const Directory = (props) => {
                                 Server status, most populated server, and
                                 default server.
                             </p>
-                        </Link>
+                        </Link> */}
                         <Link
                             to="/trends"
                             className="nav-box"

@@ -5,6 +5,7 @@ exports.isPlayerActive = (
     lastlevelup,
     totallevel
 ) => {
+    const MAX_LEVEL = 32;
     let MOVEMENT_DAY_THRESHOLD = 2;
     let QUESTING_DAY_THRESHOLD = 7;
     let LEVELUP_DAY_THRESHOLD = 20;
@@ -23,10 +24,10 @@ exports.isPlayerActive = (
     if (seen - active > 1000 * 60 * 60 * 24 * QUESTING_DAY_THRESHOLD)
         isactive = false; // No questing
     if (
-        totallevel < 30 &&
+        totallevel < MAX_LEVEL &&
         seen - levelup > 1000 * 60 * 60 * 24 * LEVELUP_DAY_THRESHOLD
     )
-        isactive = false; // No level-ups (level 30s excluded)
+        isactive = false; // No level-ups (max-level characters excluded)
 
     return isactive;
 };

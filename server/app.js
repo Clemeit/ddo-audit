@@ -27,6 +27,7 @@ require("./Endpoints/Players")(api);
 require("./Endpoints/MessageService")(api);
 require("./Endpoints/GameStatus")(api);
 require("./Endpoints/Activity")(api);
+require("./Endpoints/Friends")(api);
 require("./Endpoints/IOT")(api);
 
 // Firebase

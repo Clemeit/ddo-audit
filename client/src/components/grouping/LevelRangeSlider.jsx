@@ -8,6 +8,8 @@ const sliderStyle = {
     height: 50,
 };
 
+const MAX_LEVEL = 32;
+
 export function Handle({ handle: { id, value, percent }, getHandleProps }) {
     return (
         <div
@@ -41,7 +43,7 @@ const LevelRangeSlider = (props) => {
     return (
         <Slider
             rootStyle={sliderStyle}
-            domain={[1, 30]}
+            domain={[1, MAX_LEVEL]}
             step={1}
             mode={1}
             values={[props.minimumLevel, props.maximumLevel]}

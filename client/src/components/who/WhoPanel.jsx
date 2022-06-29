@@ -5,19 +5,10 @@ import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
 import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
+import { Link } from "react-router-dom";
 
 const WhoPanel = (props) => {
-    const serverNames = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
+    const MAX_LEVEL = 32;
 
     const serverNamesLowercase = [
         "argonnessen",
@@ -140,7 +131,8 @@ const WhoPanel = (props) => {
 
     const [globalFilter, setGlobalFilter] = React.useState("");
     const [minimumLevelFilter, setMinimumLevelFilter] = React.useState(1);
-    const [maximumLevelFilter, setMaximumLevelFilter] = React.useState(30);
+    const [maximumLevelFilter, setMaximumLevelFilter] =
+        React.useState(MAX_LEVEL);
 
     function getLink() {
         let params = "";
@@ -160,7 +152,7 @@ const WhoPanel = (props) => {
             }
             params += "minlevel=" + minimumLevelFilter;
         }
-        if (maximumLevelFilter != 30) {
+        if (maximumLevelFilter != MAX_LEVEL) {
             if (!params) {
                 params += "?";
             } else {
@@ -500,6 +492,7 @@ const WhoPanel = (props) => {
 
     // Let's get some data
     let recheck; // TODO: Clearing this timeout doesn't work
+    let refreshdata;
     React.useEffect(() => {
         clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
         setFilteredPlayerData(null);
@@ -507,7 +500,7 @@ const WhoPanel = (props) => {
 
         FetchPlayerData();
 
-        const refreshdata = setInterval(() => {
+        refreshdata = setInterval(() => {
             FetchPlayerData();
         }, 120000);
         return () => {
@@ -517,6 +510,9 @@ const WhoPanel = (props) => {
     }, [props.server]);
 
     function FetchPlayerData(timeout = 5000) {
+        if (failedAttemptRef.current > 6) {
+            return;
+        }
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 let serverstatus = false;
@@ -591,6 +587,8 @@ const WhoPanel = (props) => {
                                                 ? "Player data returned null"
                                                 : "Player data verification failed",
                                     });
+                                    clearTimeout(recheck);
+                                    clearInterval(refreshdata);
                                 } else {
                                     recheck = setTimeout(() => {
                                         FetchPlayerData(10000);
@@ -865,6 +863,9 @@ const WhoPanel = (props) => {
                             }}
                         >
                             This server might be offline.
+                            <br />
+                            You may check server status on the{" "}
+                            <Link to="/live">Live page</Link>.
                             <br />
                             If you believe this to be an error,
                         </p>

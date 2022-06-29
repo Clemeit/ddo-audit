@@ -53,7 +53,6 @@ const CanvasWhoPanel = (props) => {
 
     const PANEL_WIDTH = 706;
     const playerHeight = 42;
-    const classCount = 15;
     const MAXIMUM_RESULTS = props.minimal ? 100 : 200;
 
     function HandleMouseOnCanvas(e) {
@@ -393,6 +392,8 @@ const CanvasWhoPanel = (props) => {
                 ctx.textAlign = "right";
                 for (var j = 0; j < player.Classes.length; j++) {
                     if (player.Classes[j].Name == null) continue;
+                    if (player.Classes[j].Name === "Epic") continue;
+                    if (player.Classes[j].Name === "Legendary") continue;
 
                     let classIconPosition = getClassIconPosition(
                         player.Classes[j].Name,
@@ -773,6 +774,7 @@ const CanvasWhoPanel = (props) => {
                     ysrc = 21;
                     break;
                 case "Epic": // 7001B1A3
+                case "Legendary":
                     xsrc = 0;
                     ysrc = 60;
                     break;

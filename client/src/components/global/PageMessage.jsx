@@ -32,6 +32,7 @@ const PageMessage = (props) => {
         <div
             style={{
                 width: "100%",
+                color: "var(--text)",
             }}
         >
             <div

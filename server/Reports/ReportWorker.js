@@ -144,6 +144,10 @@ con.connect((err) => {
                             JSON_OBJECT(
                                 'Name', c4.name,
                                 'Level', p.level4
+                            ),
+                            JSON_OBJECT(
+                                'Name', c5.name,
+                                'Level', p.level5
                             )
                         )
                     )
@@ -154,18 +158,19 @@ con.connect((err) => {
                 LEFT JOIN classes c2 ON p.class2 = c2.id 
                 LEFT JOIN classes c3 ON p.class3 = c3.id 
                 LEFT JOIN classes c4 ON p.class4 = c4.id 
+                LEFT JOIN classes c5 ON p.class5 = c5.id 
                 WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -${seconds} SECOND)`;
 
             con.query(query, (err, result, fields) => {
                 if (err) throw reject(err);
 
-                if (result && result.length) {
+                if (result && result.length && result[0]["data"]) {
                     cacheablePlayers = result[0]["data"];
                 } else {
                     cacheablePlayers = [];
                 }
 
-                console.log(`Retrieved ${result[0]["data"].length} players`);
+                console.log(`Retrieved ${cacheablePlayers.length} players`);
                 resolve();
             });
         });
@@ -276,12 +281,17 @@ con.connect((err) => {
         console.log(`Caching player data`);
         getCacheablePlayerData(90)
             .then(() => {
-                cachePlayers(cacheablePlayers).then((servers) =>
-                    cachePlayerData(servers).then(() => {
-                        var t1 = new Date();
-                        console.log(`-> Finished in ${t1 - t0}ms`);
-                    })
-                );
+                if (cacheablePlayers == null || cacheablePlayers.length === 0) {
+                    var t1 = new Date();
+                    console.log(`-> Finished in ${t1 - t0}ms`);
+                } else {
+                    cachePlayers(cacheablePlayers).then((servers) =>
+                        cachePlayerData(servers).then(() => {
+                            var t1 = new Date();
+                            console.log(`-> Finished in ${t1 - t0}ms`);
+                        })
+                    );
+                }
             })
             .catch((err) => console.log(err));
     });

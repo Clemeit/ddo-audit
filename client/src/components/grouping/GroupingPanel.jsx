@@ -14,6 +14,7 @@ import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
     const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
+    const MAX_LEVEL = 32;
     // Download canvas
     var download = function () {
         // Redraw panel without names
@@ -47,10 +48,11 @@ const Panel = (props) => {
     const [highVisibility, setHighVisibility] = React.useState();
     const [alternativeLook, setAlternativeLook] = React.useState();
     const [minimumLevel, setMinimumLevel] = React.useState(1);
-    const [maximumLevel, setMaximumLevel] = React.useState(30);
+    const [maximumLevel, setMaximumLevel] = React.useState(MAX_LEVEL);
     const [sortAscending, setSortAscending] = React.useState();
     const [showEligibleCharacters, setShowEligibleCharacters] =
         React.useState(false);
+    const [showGuildNames, setShowGuildNames] = React.useState(false);
     const [showCompletionPercentage, setShowCompletionPercentage] =
         React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
@@ -173,6 +175,7 @@ const Panel = (props) => {
                                 b.RaidActivity?.length - a.RaidActivity?.length
                         );
                         setMyCharactersWithRaidActivity(returnedCharacters);
+                        resolve();
                     });
                 }
             } else {
@@ -404,17 +407,19 @@ const Panel = (props) => {
             group.Quest != null
         ) {
             myCharactersWithRaidActivity.forEach((character) => {
-                character.RaidActivity.forEach((raid) => {
-                    if (
-                        group.Quest.Name.toLowerCase().includes(
-                            raid.name.toLowerCase()
-                        ) &&
-                        raid.remaining &&
-                        character.Server === props.server
-                    ) {
-                        characters.push(character);
-                    }
-                });
+                if (character.RaidActivity) {
+                    character.RaidActivity.forEach((raid) => {
+                        if (
+                            group.Quest.Name.toLowerCase().includes(
+                                raid.name.toLowerCase()
+                            ) &&
+                            raid.remaining &&
+                            character.Server === props.server
+                        ) {
+                            characters.push(character);
+                        }
+                    });
+                }
             });
         }
         return characters;
@@ -448,8 +453,8 @@ const Panel = (props) => {
                     (group.MinimumLevel <= minimumLevel &&
                         group.MaximumLevel >= maximumLevel);
             }
-            group.Eligible = levelpass;
-            if (levelpass || showNotEligible) {
+            group.Eligible = levelpass || group.Leader?.Name === "DDO Audit";
+            if (group.Eligible || showNotEligible) {
                 filteredgroups.push(group);
             }
 
@@ -513,7 +518,7 @@ const Panel = (props) => {
         setMinimumLevel(minlevel || 1);
 
         let maxlevel = localStorage.getItem("maximum-level");
-        setMaximumLevel(maxlevel || 30);
+        setMaximumLevel(maxlevel || MAX_LEVEL);
 
         let filterbymylevel = localStorage.getItem("filter-by-my-level");
         setFilterBasedOnMyLevel(
@@ -531,6 +536,11 @@ const Panel = (props) => {
             showeligiblecharacters !== null
                 ? showeligiblecharacters === "true"
                 : false
+        );
+
+        let showguildnames = localStorage.getItem("show-guild-names");
+        setShowGuildNames(
+            showguildnames !== null ? showguildnames === "true" : false
         );
 
         let shownoteligible = localStorage.getItem("show-not-eligible");
@@ -1132,6 +1142,30 @@ const Panel = (props) => {
                                     />
                                     Show Quest Guesses
                                 </label>
+                                <label className="filter-panel-group-option">
+                                    <input
+                                        className="input-radio"
+                                        name="guildnames"
+                                        type="checkbox"
+                                        checked={showGuildNames}
+                                        onChange={() => {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "show-guild-names",
+                                                    !showGuildNames
+                                                );
+                                            }
+                                            setShowGuildNames(!showGuildNames);
+                                        }}
+                                    />
+                                    Show Character Guild Names{" "}
+                                    <span
+                                        className="new-tag small"
+                                        style={{ marginLeft: "7px" }}
+                                    >
+                                        NEW
+                                    </span>
+                                </label>
                             </div>
                         </ContentCluster>
                     </div>
@@ -1156,6 +1190,7 @@ const Panel = (props) => {
                         showEpicClass={showEpicClass}
                         sortAscending={sortAscending}
                         showEligibleCharacters={showEligibleCharacters}
+                        showGuildNames={showGuildNames}
                     />
                 ) : (
                     <div className="social-container">
@@ -1235,6 +1270,9 @@ const Panel = (props) => {
                             }}
                         >
                             This server might be offline.
+                            <br />
+                            You may check server status on the{" "}
+                            <Link to="/live">Live page</Link>.
                             <br />
                             If you believe this to be an error,
                         </p>
