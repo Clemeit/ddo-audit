@@ -591,7 +591,19 @@ const Quests = (props) => {
                     data-react-helmet="true"
                 />
             </Helmet>
-            {isLoading && <LoadingOverlay />}
+            {isLoading && (
+                <LoadingOverlay
+                    message={
+                        <span>
+                            <center>
+                                Loading data. Please wait...
+                                <br />
+                                Scroll down.
+                            </center>
+                        </span>
+                    }
+                />
+            )}
             <ReportQuest
                 visible={reportFormVisible}
                 hideForm={() => setReportFormVisible(false)}
@@ -711,7 +723,11 @@ const Quests = (props) => {
                         className="content-cluster"
                         style={{ margin: "0px", padding: "0px" }}
                     >
-                        <ContentCluster title="Audit Results">
+                        <ContentCluster
+                            title="Audit Results"
+                            description="Click on a quest and scroll down for more details."
+                            noFade={true}
+                        >
                             <div
                                 className="player-filter-input column-on-mobile small-gap-on-mobile"
                                 style={{
