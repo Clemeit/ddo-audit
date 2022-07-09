@@ -105,7 +105,9 @@ const Banner = (props) => {
             "transform",
             `translateY(${scrollTop / 2}px)`
         );
-        // $("#banner-image").css("top", `${-scrollTop / 6}px`);
+
+        $("#banner-image").css("top", `${-scrollTop / 6}px`);
+
         if (scrollTop > (props.small ? 40 : 180)) {
             if (isNavbarSolid === false) {
                 isNavbarSolid = true;
