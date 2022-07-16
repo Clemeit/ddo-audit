@@ -476,8 +476,8 @@ const Panel = (props) => {
             ...unfilteredServerData,
             Groups: filteredgroups.sort((a, b) =>
                 sortAscending
-                    ? a.MinimumLevel - b.MinimumLevel
-                    : b.MinimumLevel - a.MinimumLevel
+                    ? a.MaximumLevel - b.MaximumLevel
+                    : b.MaximumLevel - a.MaximumLevel
             ),
         });
     }, [
