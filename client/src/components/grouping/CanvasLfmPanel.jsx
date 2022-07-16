@@ -7,13 +7,27 @@ const CanvasLfmPanel = (props) => {
     const spriteRef = React.useRef(null);
     const MINIMUM_LFM_COUNT = 6;
 
-    let [isImageLoaded, set_isImageLoaded] = React.useState(false);
+    const JOIN_REQUEST_MESSAGES = [
+        "You'll have to log in to join {0}",
+        "This is not the group you are looking for",
+        "This isn't the real LFM panel - it's better",
+        "Log in to DDO to join this fabulous group",
+        "Nice try. So close.",
+        "Declined!",
+        "Click me again, I dare you",
+        "Well this is awkward",
+    ];
+
+    let [isImageLoaded, setIsImageLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
     // let [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
-    let [groupSelection, set_groupSelection] = React.useState({
+    let [groupSelection, setGroupSelection] = React.useState({
         groupIndex: -1,
         cursorPosition: [0, 0],
     });
+    const [attemptedJoin, setAttemptedJoin] = React.useState(null);
+    const attemptedJoinRef = React.useRef(attemptedJoin);
+    attemptedJoinRef.current = attemptedJoin;
 
     const [highlightRaids, setHighlightRaids] = React.useState(false);
     React.useEffect(() => {
@@ -40,12 +54,12 @@ const CanvasLfmPanel = (props) => {
 
         if (x > 605) {
             // 375 border between group and quest
-            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+            setGroupSelection({ ...groupSelection, groupIndex: -1 });
             // drawPanel();
             return;
         }
         if (x < 30) {
-            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+            setGroupSelection({ ...groupSelection, groupIndex: -1 });
             // drawPanel();
             return;
         }
@@ -56,12 +70,13 @@ const CanvasLfmPanel = (props) => {
         //     else if (x > 375 && lastSide === "right") return;
         // }
 
+        // Double click the quest
         if (e.type === "click" && x > 375 && x < 605) {
             if (
                 e.timeStamp - lastclickRef.current.timeStamp < 500 &&
                 Math.abs(e.clientY - lastclickRef.current.clientY) < 10
             ) {
-                set_groupSelection({
+                setGroupSelection({
                     groupIndex: index,
                     cursorPosition: [x, y],
                     side,
@@ -72,11 +87,35 @@ const CanvasLfmPanel = (props) => {
             lastclickRef.current = e;
         }
 
+        // Double click a group
+        if (e.type === "click" && x > 30 && x < 375) {
+            if (
+                e.timeStamp - lastclickRef.current.timeStamp < 500 &&
+                Math.abs(e.clientY - lastclickRef.current.clientY) < 10
+            ) {
+                setAttemptedJoin({
+                    groupIndex: index,
+                    cursorPosition: [x, y],
+                    timeStamp: e.timeStamp,
+                });
+                return;
+            }
+            lastclickRef.current = e;
+        }
+
+        // Clear attempted join
+        if (
+            attemptedJoinRef.current !== null &&
+            attemptedJoinRef.current.groupIndex !== index
+        ) {
+            setAttemptedJoin(null);
+        }
+
         let side = "";
         if (x < 375) side = "left";
         else if (x > 375) side = "right";
 
-        set_groupSelection({
+        setGroupSelection({
             groupIndex: index,
             cursorPosition: [x, y],
             side,
@@ -97,7 +136,8 @@ const CanvasLfmPanel = (props) => {
         });
         canvasRef.current.addEventListener("mouseleave", () => {
             clearTimeout(overlayTimeout);
-            set_groupSelection({ ...groupSelection, groupIndex: -1 });
+            setGroupSelection({ ...groupSelection, groupIndex: -1 });
+            setAttemptedJoin(null);
         });
     }, [canvasRef]);
 
@@ -969,6 +1009,12 @@ const CanvasLfmPanel = (props) => {
                         groupSelection.cursorPosition
                     );
                 }
+                if (attemptedJoin !== null) {
+                    DrawJoinRequestOverlay(
+                        props.data.Groups[groupSelection.groupIndex],
+                        attemptedJoin.cursorPosition
+                    );
+                }
             }
         }
 
@@ -1590,6 +1636,37 @@ const CanvasLfmPanel = (props) => {
             }
         }
 
+        function DrawJoinRequestOverlay(group, cursorPosition) {
+            ctx.font = `${18 + props.fontModifier}px 'Trebuchet MS'`;
+            let displayText = JOIN_REQUEST_MESSAGES[
+                Math.floor(Math.random() * JOIN_REQUEST_MESSAGES.length)
+            ].replace("{0}", group.Leader?.Name);
+            let textWidth = ctx.measureText(displayText).width;
+            let bounds = {
+                x: Math.max(30, cursorPosition[0] - textWidth / 2),
+                y: cursorPosition[1] - 20,
+                w: textWidth + 20,
+                h: 40,
+            };
+            ctx.globalAlpha = 0.8;
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(bounds.x, bounds.y, bounds.w, bounds.h);
+            ctx.fillStyle = "#ffffff";
+            ctx.lineWidth = "2";
+            ctx.beginPath();
+            ctx.rect(bounds.x, bounds.y, bounds.w, bounds.h);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+
+            ctx.fillStyle = "#f9f3d7";
+            ctx.textAlign = "center";
+            ctx.fillText(
+                displayText,
+                bounds.x + bounds.w / 2,
+                bounds.y + bounds.h / 2
+            );
+        }
+
         // Helper function for wrapping text
         function wrapText(text, maxWidth) {
             if (text === null) return "";
@@ -1914,6 +1991,7 @@ const CanvasLfmPanel = (props) => {
         props.showCompletionPercentage,
         props.showMemberCount,
         props.showQuestGuesses,
+        attemptedJoin,
     ]);
 
     return (
@@ -1927,7 +2005,7 @@ const CanvasLfmPanel = (props) => {
             <img
                 ref={spriteRef}
                 src={PanelSprite}
-                onLoad={() => set_isImageLoaded(true)}
+                onLoad={() => setIsImageLoaded(true)}
                 style={{ display: "none" }}
             />
             {props.children}
