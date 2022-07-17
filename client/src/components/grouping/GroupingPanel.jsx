@@ -57,6 +57,7 @@ const Panel = (props) => {
         React.useState(false);
     const [showMemberCount, setShowMemberCount] = React.useState(true);
     const [showQuestGuesses, setShowQuestGuesses] = React.useState(true);
+    const [showQuestTips, setShowQuestTips] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
     const [showEpicClass, setShowEpicClass] = React.useState(false);
@@ -583,6 +584,11 @@ const Panel = (props) => {
         let showquestguesses = localStorage.getItem("quest-guess");
         setShowQuestGuesses(
             showquestguesses !== null ? showquestguesses === "true" : true
+        );
+
+        let showquesttips = localStorage.getItem("quest-tips");
+        setShowQuestTips(
+            showquesttips !== null ? showquesttips === "true" : true
         );
 
         let showraidtimerindicator = localStorage.getItem(
@@ -1145,6 +1151,30 @@ const Panel = (props) => {
                                 <label className="filter-panel-group-option">
                                     <input
                                         className="input-radio"
+                                        name="questtips"
+                                        type="checkbox"
+                                        checked={showQuestTips}
+                                        onChange={() => {
+                                            if (!props.minimal) {
+                                                localStorage.setItem(
+                                                    "quest-tips",
+                                                    !showQuestTips
+                                                );
+                                            }
+                                            setShowQuestTips(!showQuestTips);
+                                        }}
+                                    />
+                                    Show Quest Tips{" "}
+                                    <span
+                                        className="new-tag small"
+                                        style={{ marginLeft: "7px" }}
+                                    >
+                                        NEW
+                                    </span>
+                                </label>
+                                <label className="filter-panel-group-option">
+                                    <input
+                                        className="input-radio"
                                         name="guildnames"
                                         type="checkbox"
                                         checked={showGuildNames}
@@ -1187,6 +1217,7 @@ const Panel = (props) => {
                         showCompletionPercentage={showCompletionPercentage}
                         showMemberCount={showMemberCount}
                         showQuestGuesses={showQuestGuesses}
+                        showQuestTips={showQuestTips}
                         showEpicClass={showEpicClass}
                         sortAscending={sortAscending}
                         showEligibleCharacters={showEligibleCharacters}

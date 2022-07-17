@@ -12,10 +12,10 @@ const CanvasLfmPanel = (props) => {
         "This is not the group you are looking for",
         "This isn't the real LFM panel - it's better",
         "Log in to DDO to join this fabulous group",
-        "Nice try. So close.",
         "Declined!",
         "Click me again, I dare you",
         "Well this is awkward",
+        "nope.",
     ];
 
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
@@ -638,6 +638,9 @@ const CanvasLfmPanel = (props) => {
                     group.Quest != null &&
                     (!group.Guess || props.showQuestGuesses)
                 ) {
+                    const SHOW_QUEST_TIP =
+                        group.Quest.Tip !== null &&
+                        props.showQuestTips !== false;
                     ctx.fillStyle = props.highVisibility
                         ? "white"
                         : group.Eligible
@@ -650,10 +653,15 @@ const CanvasLfmPanel = (props) => {
                     }px Arial`;
                     ctx.textAlign = "center";
                     let textLines = wrapText(group.Quest.Name, 220);
-                    if (textLines.length > 2 && props.fontModifier > 0) {
+
+                    if (textLines.length > 1 && SHOW_QUEST_TIP) {
+                        textLines = [textLines[0]];
+                        textLines[0] = textLines[0] + "...";
+                    } else if (textLines.length > 2 && props.fontModifier > 0) {
                         textLines = textLines.slice(0, 2);
                         textLines[1] = textLines[1] + "...";
                     }
+
                     for (let i = 0; i < textLines.length; i++) {
                         ctx.fillText(
                             textLines[i],
@@ -666,7 +674,29 @@ const CanvasLfmPanel = (props) => {
                                     (group.Difficulty.length > 3 ? 1 : 0) -
                                     1) *
                                     9 +
-                                i * (19 + props.fontModifier)
+                                i * (19 + props.fontModifier) -
+                                (SHOW_QUEST_TIP ? 8 : 0)
+                        );
+                    }
+
+                    // Draw quest tip
+                    if (SHOW_QUEST_TIP) {
+                        const QUEST_TIP = wrapText(group.Quest.Tip, 220)[0];
+                        ctx.fillStyle = props.highVisibility
+                            ? "white"
+                            : group.Eligible
+                            ? "#d3f6f6"
+                            : "#988f80";
+                        ctx.font = `italic ${14 + props.fontModifier}px Arial`;
+                        ctx.fillText(
+                            QUEST_TIP,
+                            489,
+                            top -
+                                7 +
+                                lfmheight / 2 -
+                                (SHOW_QUEST_TIP ? 8 : 0) +
+                                20 +
+                                props.fontModifier / 2
                         );
                     }
 
@@ -705,7 +735,8 @@ const CanvasLfmPanel = (props) => {
                                 1) *
                                 9 +
                             textLines.length * 19 +
-                            props.fontModifier
+                            props.fontModifier +
+                            (SHOW_QUEST_TIP ? 10 : 0)
                     );
                 }
 
@@ -1991,6 +2022,7 @@ const CanvasLfmPanel = (props) => {
         props.showCompletionPercentage,
         props.showMemberCount,
         props.showQuestGuesses,
+        props.showQuestTips,
         attemptedJoin,
     ]);
 
