@@ -681,7 +681,10 @@ const CanvasLfmPanel = (props) => {
 
                     // Draw quest tip
                     if (SHOW_QUEST_TIP) {
-                        const QUEST_TIP = wrapText(group.Quest.Tip, 220)[0];
+                        const questTipLines = wrapText(group.Quest.Tip, 220);
+                        if (questTipLines.length > 1) {
+                            questTipLines[0] += "...";
+                        }
                         ctx.fillStyle = props.highVisibility
                             ? "white"
                             : group.Eligible
@@ -689,7 +692,7 @@ const CanvasLfmPanel = (props) => {
                             : "#988f80";
                         ctx.font = `italic ${14 + props.fontModifier}px Arial`;
                         ctx.fillText(
-                            QUEST_TIP,
+                            questTipLines[0],
                             489,
                             top -
                                 7 +
