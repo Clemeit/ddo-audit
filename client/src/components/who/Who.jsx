@@ -169,7 +169,7 @@ const Who = (props) => {
                             <Link
                                 to={"/who/" + name.toLowerCase()}
                                 key={i}
-                                className="nav-box shrinkable"
+                                className="nav-box shrinkable server"
                             >
                                 <div className="nav-box-title">
                                     {serverStatusData
@@ -193,7 +193,7 @@ const Who = (props) => {
                     <div className="content-cluster-options">
                         <Link
                             to="/friends"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

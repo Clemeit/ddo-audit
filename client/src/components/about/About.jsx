@@ -252,7 +252,7 @@ const About = (props) => {
                     <div className="content-cluster-options">
                         <Link
                             to="/api"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",
@@ -269,7 +269,7 @@ const About = (props) => {
                         </Link>
                         <Link
                             to="/timeline"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

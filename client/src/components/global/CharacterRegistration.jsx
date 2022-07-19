@@ -200,7 +200,7 @@ const CharacterRegistration = () => {
                     <div className="content-cluster-options">
                         <Link
                             to="/timers"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

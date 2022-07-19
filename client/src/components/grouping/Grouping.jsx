@@ -263,7 +263,7 @@ const Grouping = () => {
                             <Link
                                 to={"/grouping/" + name.toLowerCase()}
                                 key={i}
-                                className="nav-box shrinkable"
+                                className="nav-box shrinkable server"
                             >
                                 <div className="nav-box-title">
                                     {serverStatusData
@@ -371,7 +371,7 @@ const Grouping = () => {
                     <div className="content-cluster-options">
                         <Link
                             to="/registration"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",
@@ -391,7 +391,7 @@ const Grouping = () => {
                         </Link>
                         <Link
                             to="/timers"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

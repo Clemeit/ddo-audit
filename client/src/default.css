@@ -393,22 +393,22 @@ body {
     color: inherit;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
     html {
-        font-size: 16px;
+        font-size: 12px;
+    }
+    .nav-icon {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    .nav-icon-large {
+        width: 24px !important;
+        height: 24px !important;
     }
 }
 
 .show-on-mobile {
     display: none !important;
-}
-
-@media (max-width: 1800px) {
-    .nav-box.shrinkable {
-        /* max-width: 250px;
-        max-height: 125px; */
-        padding: 7px 20px;
-    }
 }
 
 .top-content-padding {
@@ -609,12 +609,17 @@ body {
     gap: 10px;
 }
 
-.content-option-title {
+.content-option-title,
+.raid-server-title {
     color: var(--text);
     margin: 0px;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.raid-server-title {
+    font-size: 1.4rem;
 }
 
 .paginationPage {
@@ -706,6 +711,10 @@ body {
     height: min-content;
 }
 
+.nav-box.shrinkable {
+    padding: 0.5rem 1.2rem;
+}
+
 .no-interact {
     cursor: default;
     pointer-events: none;
@@ -780,7 +789,8 @@ body {
     background-color: var(--highlighted-1);
 }
 
-.content-option-title {
+.content-option-title,
+.raid-server-title {
     color: var(--text);
     margin: 0px;
 }
@@ -932,7 +942,6 @@ body {
     flex-direction: column;
     justify-content: left;
     width: 100%;
-    height: 36px;
     background-color: var(--filter-bar);
     max-width: 848px;
     color: var(--text);
@@ -1684,8 +1693,22 @@ th {
 }
 
 @media (max-width: 900px) {
+    /* .content-cluster-title {
+        font-size: 1.4rem;
+    }
+    .content-option-title {
+        font-size: 1.4rem;
+    } */
+    /* p,
+    ul {
+        font-size: 1.3rem !important;
+    } */
     .nav-box.shrinkable.no-padding-mobile {
-        padding: 0px;
+        padding: 0rem;
+    }
+    .nav-box.shrinkable:not(.server) {
+        padding: 1rem 1rem;
+        min-height: 0rem !important;
     }
     .filter-panel {
         position: fixed;
@@ -1840,5 +1863,11 @@ th {
     }
     .social-member-entry.name {
         font-weight: bold;
+    }
+}
+
+@media (max-width: 310px) {
+    .hide-on-small-screen {
+        display: none;
     }
 }

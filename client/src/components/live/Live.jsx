@@ -265,7 +265,7 @@ const Live = (props) => {
                     <div className="content-cluster-options">
                         <Link
                             to="/servers"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",
@@ -284,7 +284,7 @@ const Live = (props) => {
                         </Link>
                         <Link
                             to="/trends"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

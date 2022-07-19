@@ -59,6 +59,7 @@ const NavMenu = (props) => {
                             <span className="nav-text">Servers</span>
                         </div>
                     }
+                    className="hide-on-small-screen"
                 >
                     <NavSubItem to={"/servers"}>Overview</NavSubItem>
                     <NavDivider />

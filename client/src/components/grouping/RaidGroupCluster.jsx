@@ -751,7 +751,7 @@ const RaidGroupCluster = (props) => {
                                 }}
                             >
                                 <div className="nav-box-title">
-                                    <h2 className="content-option-title">
+                                    <h2 className="raid-server-title">
                                         {server.Name}
                                     </h2>
                                 </div>

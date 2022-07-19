@@ -396,7 +396,7 @@ const Directory = (props) => {
                             <Link
                                 to={"/servers/" + name.toLowerCase()}
                                 key={i}
-                                className="nav-box shrinkable"
+                                className="nav-box shrinkable server"
                             >
                                 <div className="nav-box-title">
                                     {serverStatusData
@@ -755,7 +755,7 @@ const Directory = (props) => {
                     <div className="content-cluster-options">
                         {/* <Link
                             to="/live"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",
@@ -774,7 +774,7 @@ const Directory = (props) => {
                         </Link> */}
                         <Link
                             to="/trends"
-                            className="nav-box"
+                            className="nav-box shrinkable"
                             style={{
                                 height: "auto",
                                 minHeight: "150px",

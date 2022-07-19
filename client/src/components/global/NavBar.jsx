@@ -60,7 +60,7 @@ const NavDropdown = (props) => {
     return (
         <div
             id={`nav-item-to-${props.to.slice(1)}`}
-            className="nav-item"
+            className={`nav-item ${props.className ?? ""}`}
             style={{ padding: "0px" }}
         >
             <Link
