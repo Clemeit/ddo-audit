@@ -149,6 +149,7 @@
 }
 
 html {
+    font-size: 15px;
     scroll-behavior: smooth;
     scroll-padding-top: 70px;
     overflow-y: scroll !important;
@@ -412,7 +413,7 @@ body {
 }
 
 .top-content-padding {
-    height: 50px;
+    height: 3rem;
 }
 
 .link-icon.pin {
@@ -586,8 +587,8 @@ body {
 }
 
 .content-cluster {
-    margin: 0px 0px 50px 0px;
-    padding: 0px 20px;
+    margin: 0px 0px 3.5rem 0px;
+    padding: 0px 1.6rem;
     max-width: 1920px;
     width: 100%;
     color: var(--text);
@@ -619,7 +620,7 @@ body {
 }
 
 .raid-server-title {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
 }
 
 .paginationPage {
@@ -1415,9 +1416,9 @@ input[type="radio"] {
     display: none;
     cursor: pointer;
     opacity: 0.6;
-    width: 30px;
-    height: 30px;
-    margin-left: 5px;
+    width: 24px;
+    height: 24px;
+    margin-left: 10px !important;
 }
 
 .anchor-link:hover {
@@ -1693,16 +1694,13 @@ th {
 }
 
 @media (max-width: 900px) {
-    /* .content-cluster-title {
-        font-size: 1.4rem;
+    .anchor-link {
+        display: none !important;
     }
-    .content-option-title {
-        font-size: 1.4rem;
-    } */
-    /* p,
-    ul {
-        font-size: 1.3rem !important;
-    } */
+    .content-cluster {
+        margin: 0px 0px 3rem 0px;
+        padding: 0px 1rem;
+    }
     .nav-box.shrinkable.no-padding-mobile {
         padding: 0rem;
     }
@@ -1733,7 +1731,7 @@ th {
     }
 
     .banner {
-        max-height: 200px;
+        max-height: 150px;
     }
 
     .full-width-mobile {

@@ -690,6 +690,10 @@ const Panel = (props) => {
                             className="nav-icon should-invert"
                             onClick={() => setFilterPanelVisible(false)}
                         />
+                        <div
+                            className="hide-on-mobile"
+                            style={{ width: "100%", height: "20px" }}
+                        />
                         <ContentCluster
                             title="Filter Groups"
                             smallBottomMargin
