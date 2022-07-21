@@ -218,16 +218,16 @@ con.connect((err) => {
 	}
 
 	// Every week
-	// cron.schedule("0 * * * 0", () => {
-	getPopulationData(365 * 2).then(() => {
-		runAnnualReport(population);
-		runQuarterReport(population);
-		runWeekReport(population);
-		runDailyDistribution(population);
-		runHourlyDistribution(population);
-		runServerDistribution(population);
+	cron.schedule("0 * * * 0", () => {
+		getPopulationData(365 * 2).then(() => {
+			runAnnualReport(population);
+			runQuarterReport(population);
+			runWeekReport(population);
+			runDailyDistribution(population);
+			runHourlyDistribution(population);
+			runServerDistribution(population);
+		});
 	});
-	// });
 
 	// Every day
 	cron.schedule("0 0 * * 1-6", () => {
