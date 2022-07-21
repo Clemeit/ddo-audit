@@ -337,10 +337,7 @@ const ServersSpecific = () => {
                             />
                         </>
                     }
-                >
-                    * This data is still new and these numbers will likely
-                    change in the future.
-                </ContentCluster>
+                />
                 <ContentCluster
                     title="Hourly LFM Activity"
                     description="Average LFM count for each hour of the day. Data is from the last quarter."

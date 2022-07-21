@@ -7,6 +7,7 @@ import NoMobileOptimization from "../global/NoMobileOptimization";
 import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import PopupMessage from "../global/PopupMessage";
 
 const Trends = (props) => {
     const TITLE = "DDO Population Data Trends";
@@ -98,6 +99,39 @@ const Trends = (props) => {
         );
     }, []);
 
+    function readAbout(r, callback) {
+        switch (r) {
+            case "ignoring downtimes":
+                Log("Read about downtimes", "Trends");
+                setPopupMessage({
+                    title: "Dowtimes",
+                    message: (
+                        <span>
+                            We attempt to filter out downtimes from this report
+                            by doing the following:
+                            <ul>
+                                <li>Ignoring times with zero population</li>
+                                <li>
+                                    Ignoring data for one hour after a known
+                                    downtime
+                                </li>
+                            </ul>
+                            <p>
+                                It's not a science. There's still obviously a
+                                lot of volatility in the data and this may be
+                                improved upon in the future.
+                            </p>
+                        </span>
+                    ),
+                    icon: "info",
+                    fullscreen: true,
+                });
+                break;
+        }
+    }
+
+    var [popupMessage, setPopupMessage] = React.useState(null);
+
     return (
         <div>
             <Helmet>
@@ -125,6 +159,13 @@ const Trends = (props) => {
                 hideOnMobile={true}
                 title="Trends"
                 subtitle="Long-term Population Trends"
+            />
+            <PopupMessage
+                page="trends"
+                message={popupMessage}
+                popMessage={() => {
+                    setPopupMessage(null);
+                }}
             />
             <div className="content-container">
                 <BannerMessage page="trends" />
@@ -170,7 +211,20 @@ const Trends = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Weekly Minimum and Maximum Population"
-                    description="The last two years of trend data displayed as weekly minimums, maximums, and averages."
+                    description={
+                        <span>
+                            The last two years of trend data displayed as weekly
+                            minimums, maximums, and averages. Downtimes are
+                            mostly ignored{" "}
+                            <span
+                                className="faux-link"
+                                onClick={() => readAbout("ignoring downtimes")}
+                            >
+                                (read more)
+                            </span>
+                            .
+                        </span>
+                    }
                 >
                     <ChartLine
                         data={minsAndMaxes1Year}

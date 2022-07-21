@@ -76,6 +76,7 @@ exports.runAnnualReport = (population) => {
 	let totalsThisWeek = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	let maximumThisWeek = -1;
 	let minimumThisWeek = -1;
+	let lastDowntime = new Date();
 
 	population.forEach(
 		({
@@ -101,87 +102,99 @@ exports.runAnnualReport = (population) => {
 				if (
 					dayofweek === 0 &&
 					(lastSunday === -1 ||
-						dt.getTime() - lastSunday.getTime() > 1000 * 60 * 60 * 24 * 5)
+						dt.getTime() - lastSunday.getTime() >
+							1000 * 60 * 60 * 24 * 5)
 				) {
 					if (lastSunday === -1) {
-						// first week - discard the imcomplete data
+						// first week - discard the incomplete data
 					} else {
 						// every other week, consolidate
 						Argonnessen.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[0] / entriesThisWeek[0]) * 100
+									(totalsThisWeek[0] / entriesThisWeek[0]) *
+										100
 								) / 100 || 0,
 						});
 						Cannith.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[1] / entriesThisWeek[1]) * 100
+									(totalsThisWeek[1] / entriesThisWeek[1]) *
+										100
 								) / 100 || 0,
 						});
 						Ghallanda.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[2] / entriesThisWeek[2]) * 100
+									(totalsThisWeek[2] / entriesThisWeek[2]) *
+										100
 								) / 100 || 0,
 						});
 						Khyber.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[3] / entriesThisWeek[3]) * 100
+									(totalsThisWeek[3] / entriesThisWeek[3]) *
+										100
 								) / 100 || 0,
 						});
 						Orien.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[4] / entriesThisWeek[4]) * 100
+									(totalsThisWeek[4] / entriesThisWeek[4]) *
+										100
 								) / 100 || 0,
 						});
 						Sarlona.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[5] / entriesThisWeek[5]) * 100
+									(totalsThisWeek[5] / entriesThisWeek[5]) *
+										100
 								) / 100 || 0,
 						});
 						Thelanis.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[6] / entriesThisWeek[6]) * 100
+									(totalsThisWeek[6] / entriesThisWeek[6]) *
+										100
 								) / 100 || 0,
 						});
 						Wayfinder.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[7] / entriesThisWeek[7]) * 100
+									(totalsThisWeek[7] / entriesThisWeek[7]) *
+										100
 								) / 100 || 0,
 						});
 						Hardcore.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[8] / entriesThisWeek[8]) * 100
+									(totalsThisWeek[8] / entriesThisWeek[8]) *
+										100
 								) / 100 || 0,
 						});
 						Total.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[9] / entriesThisWeek[9]) * 100
+									(totalsThisWeek[9] / entriesThisWeek[9]) *
+										100
 								) / 100 || 0,
 						});
 						Permanent.data.push({
 							x: lastSunday,
 							y:
 								Math.round(
-									(totalsThisWeek[10] / entriesThisWeek[10]) * 100
+									(totalsThisWeek[10] / entriesThisWeek[10]) *
+										100
 								) / 100 || 0,
 						});
 						Maximum.data.push({
@@ -264,6 +277,9 @@ exports.runAnnualReport = (population) => {
 					totalsThisWeek[9] += totalnow;
 					entriesThisWeek[9]++;
 				}
+				if (totalnow === 0) {
+					lastDowntime = dt;
+				}
 
 				if (
 					argonnessen_playercount ||
@@ -290,7 +306,11 @@ exports.runAnnualReport = (population) => {
 				if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
 					maximumThisWeek = totalnow;
 				}
-				if (totalnow < minimumThisWeek || minimumThisWeek === -1) {
+				if (
+					(totalnow < minimumThisWeek || minimumThisWeek === -1) &&
+					totalnow !== 0 &&
+					dt - lastDowntime > 1000 * 60 * 60
+				) {
 					minimumThisWeek = totalnow;
 				}
 			}
