@@ -309,6 +309,7 @@ exports.runAnnualReport = (population) => {
 				if (
 					(totalnow < minimumThisWeek || minimumThisWeek === -1) &&
 					totalnow !== 0 &&
+					dayofweek !== 3 &&
 					dt - lastDowntime > 1000 * 60 * 60
 				) {
 					minimumThisWeek = totalnow;
