@@ -42,11 +42,13 @@ const LfmFilterBar = (props) => {
         }
         document
             .getElementById("filter-bar")
-            .addEventListener("mouseleave", startCollapseTimeout);
+            ?.addEventListener("mouseleave", startCollapseTimeout);
         document
             .getElementById("filter-bar")
-            .addEventListener("mouseenter", stopCollapseTimeout);
+            ?.addEventListener("mouseenter", stopCollapseTimeout);
         collapseTimeout = setTimeout(() => collapseFilterButtons(), 2000);
+
+        return () => clearTimeout(collapseTimeout);
     }, []);
 
     function startCollapseTimeout() {
@@ -64,10 +66,10 @@ const LfmFilterBar = (props) => {
         $(".filter-bar-item.collapsible span").css({ opacity: 0 });
         document
             .getElementById("filter-bar")
-            .removeEventListener("mouseleave", startCollapseTimeout);
+            ?.removeEventListener("mouseleave", startCollapseTimeout);
         document
             .getElementById("filter-bar")
-            .removeEventListener("mouseenter", stopCollapseTimeout);
+            ?.removeEventListener("mouseenter", stopCollapseTimeout);
     }
 
     return (
