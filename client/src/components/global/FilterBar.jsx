@@ -39,7 +39,36 @@ const LfmFilterBar = (props) => {
         if (!prmlnk) {
             setTimeout(() => setShowNewPermalink(true), 3000);
         }
+        document
+            .getElementById("filter-bar")
+            .addEventListener("mouseleave", startCollapseTimeout);
+        document
+            .getElementById("filter-bar")
+            .addEventListener("mouseenter", stopCollapseTimeout);
+        collapseTimeout = setTimeout(() => collapseFilterButtons(), 2000);
     }, []);
+
+    function startCollapseTimeout() {
+        clearTimeout(collapseTimeout);
+        collapseTimeout = setTimeout(() => collapseFilterButtons(), 2000);
+    }
+
+    function stopCollapseTimeout() {
+        clearTimeout(collapseTimeout);
+    }
+
+    let collapseTimeout;
+    function collapseFilterButtons() {
+        $(".filter-bar-item.collapsible").css({ maxWidth: `44px` });
+        $(".filter-bar-item.collapsible span").css({ opacity: 0 });
+        document
+            .getElementById("filter-bar")
+            .removeEventListener("mouseleave", startCollapseTimeout);
+        document
+            .getElementById("filter-bar")
+            .removeEventListener("mouseenter", stopCollapseTimeout);
+        console.log("boom");
+    }
 
     return (
         <div
@@ -57,6 +86,7 @@ const LfmFilterBar = (props) => {
             />
             <div
                 className="filter-bar"
+                id="filter-bar"
                 style={{
                     top: "0px",
                     maxWidth: props.maxWidth + "px",
@@ -124,8 +154,10 @@ const LfmFilterBar = (props) => {
                     )}
                     {props.showSave && !props.minimal && (
                         <div
-                            className="filter-bar-item"
-                            style={{ marginLeft: "auto" }}
+                            className="filter-bar-item collapsible"
+                            style={{
+                                marginLeft: "auto",
+                            }}
                             onClick={() => {
                                 Log(
                                     "Took LFM screenshot",
@@ -141,7 +173,7 @@ const LfmFilterBar = (props) => {
                         </div>
                     )}
                     <div
-                        className="filter-bar-item"
+                        className="filter-bar-item collapsible"
                         style={{
                             marginLeft: props.minimal
                                 ? "auto"
@@ -173,7 +205,7 @@ const LfmFilterBar = (props) => {
                     )}
                     {!props.minimal && (
                         <div
-                            className="filter-bar-item hide-on-mobile"
+                            className="filter-bar-item hide-on-mobile collapsible"
                             onClick={() => {
                                 if (!fullscreen) {
                                     Log(

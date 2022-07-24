@@ -398,10 +398,6 @@ body {
     html {
         font-size: 12px;
     }
-    .nav-icon {
-        width: 24px !important;
-        height: 24px !important;
-    }
     .nav-icon-large {
         width: 24px !important;
         height: 24px !important;
@@ -961,6 +957,22 @@ body {
     transition-duration: 250ms;
     font-size: larger;
     color: var(--text);
+}
+
+.filter-bar-item.collapsible {
+    max-width: 150px;
+    transition: max-width 500ms;
+    overflow: hidden;
+    justify-content: left;
+}
+
+.filter-bar-item.collapsible > span {
+    opacity: 1;
+    transition: opacity 500ms;
+}
+
+.filter-bar-item.collapsible > .nav-icon {
+    flex-shrink: 0;
 }
 
 .filter-bar-item.no-link-decoration {
@@ -1778,8 +1790,6 @@ th {
     }
     .nav-icon {
         margin: 0px;
-        width: 30px;
-        height: 30px;
     }
     .nav-item {
         overflow: hidden;
