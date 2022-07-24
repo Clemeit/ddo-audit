@@ -5,43 +5,126 @@ const CurrentCountsSubtitle = (props) => {
         return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    function GetPlayerCount(noformat) {
-        let playercount = 0;
+    function getLfmCount(noformat) {
+        let lfmcount = 0;
         props.data.forEach((server) => {
             if (server.ServerName === props.server) {
-                playercount = server.PlayerCount;
+                lfmcount = server.LfmCount;
             }
         });
-        if (noformat) return playercount;
-        return FormatWithCommas(playercount.toString());
+        if (noformat) return lfmcount;
+        return FormatWithCommas(lfmcount.toString());
     }
 
-    function GetLfmCount(noformat) {
-        let playercount = 0;
-        props.data.forEach((server) => {
-            if (server.ServerName === props.server) {
-                playercount = server.LfmCount;
+    function getPopulation() {
+        return props.serverData?.Players?.length || "...";
+    }
+
+    function getPlayersInGroupCount() {
+        return (
+            props.serverData?.Players?.filter((player) => player.InParty === 1)
+                ?.length || "..."
+        );
+    }
+
+    function getPlayersInQuestsCount() {
+        return props.serverData?.Players?.filter(
+            (player) => player?.Location?.IsPublicSpace === 0
+        )?.length;
+    }
+
+    function getAnonymousPlayersCount() {
+        return props.serverData?.Players?.filter(
+            (player) => player?.Name === "Anonymous"
+        )?.length;
+    }
+
+    function getUniqueGroupCount() {
+        let groupIds = [];
+        props.serverData?.Players?.forEach((player) => {
+            if (!groupIds.includes(player.GroupId)) {
+                groupIds.push(player.GroupId);
             }
         });
-        if (noformat) return playercount;
-        return FormatWithCommas(playercount.toString());
+        return groupIds.length;
+    }
+
+    function getRelativeGroupCount() {
+        let data = props.hourlyLfmDistribution?.filter(
+            (series) => series.id === props.server
+        )?.[0]?.data;
+        let currentHour = (((new Date().getUTCHours() - 5) % 24) + 24) % 24;
+        let averageForThisHour = data[currentHour]?.y;
+        let current = getLfmCount();
+
+        // Much fewer than average:
+        if (current < 0.8 * averageForThisHour) {
+            return "much fewer than average";
+        } else if (current < 0.9 * averageForThisHour) {
+            return "fewer than average";
+        } else if (current > 1.1 * averageForThisHour) {
+            return "more than average";
+        } else if (current > 1.2 * averageForThisHour) {
+            return "much more than average";
+        } else {
+            return "about average";
+        }
     }
 
     return (
         <div>
-            {props.data ? (
-                <p>
-                    There are currently{" "}
+            There are currently{" "}
+            <span className="population-number">{getPopulation()}</span> players
+            online:
+            <ul>
+                <li>
                     <span className="population-number">
-                        {GetPlayerCount()}
+                        {getPlayersInGroupCount()} (
+                        {Math.round(
+                            (100 * getPlayersInGroupCount()) / getPopulation()
+                        )}
+                        %)
                     </span>{" "}
-                    players online and{" "}
-                    <span className="lfm-number">{GetLfmCount()}</span> LFMs
-                    posted on {props.server}. Fancy joining us?
-                </p>
-            ) : (
-                "Loading current population data..."
-            )}
+                    are in groups
+                </li>
+                <li>
+                    <span className="population-number">
+                        {getPlayersInQuestsCount()} (
+                        {Math.round(
+                            (100 * getPlayersInQuestsCount()) / getPopulation()
+                        )}
+                        %)
+                    </span>{" "}
+                    are in quests
+                </li>
+                <li>
+                    <span className="population-number">
+                        {getAnonymousPlayersCount()} (
+                        {Math.round(
+                            (100 * getAnonymousPlayersCount()) / getPopulation()
+                        )}
+                        %)
+                    </span>{" "}
+                    {getAnonymousPlayersCount() === 1 ? "is" : "are"} anonymous
+                </li>
+            </ul>
+            There {getLfmCount() == 1 ? "is" : "are"} currently{" "}
+            <span className="lfm-number">{getLfmCount()}</span> LFM
+            {getLfmCount() == 1 ? "" : "s"} posted:
+            <ul>
+                <li>
+                    That's{" "}
+                    <span className="lfm-number">
+                        {getRelativeGroupCount()}
+                    </span>{" "}
+                    for this time of day
+                </li>
+                <li>
+                    There are{" "}
+                    <span className="lfm-number">{getUniqueGroupCount()}</span>{" "}
+                    total groups (including groups not posted in the LFM panel)
+                </li>
+            </ul>
         </div>
     );
 };

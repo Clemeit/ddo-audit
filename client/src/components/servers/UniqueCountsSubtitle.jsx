@@ -27,45 +27,43 @@ const UniqueCountsSubtitle = (props) => {
         return FormatWithCommas(playercount.toString());
     }
 
-    // function GetUniqueGuilds() {
-    //     let guildcount = 0;
-    //     props.data.forEach((server) => {
-    //         if (server.ServerName === props.server) {
-    //             guildcount = server.UniqueGuilds;
-    //         }
-    //     });
-    //     return FormatWithCommas(guildcount.toString());
-    // }
+    function GetUniqueGuilds() {
+        let guildcount = 0;
+        props.data.forEach((server) => {
+            if (server.Name === props.server) {
+                guildcount = server.TotalGuilds;
+            }
+        });
+        return FormatWithCommas(guildcount.toString());
+    }
 
     return (
         <div>
-            {props.data ? (
-                <p>
-                    We've seen{" "}
-                    <span className="population-number">
-                        {GetUniquePlayers()}
-                    </span>{" "}
-                    unique characters in the last quarter,{" "}
-                    <span className="lfm-number">
-                        {Math.round(
-                            (GetUniqueActivePlayers(true) /
-                                GetUniquePlayers(true)) *
-                                100
-                        )}
-                        % ({GetUniqueActivePlayers()})*
-                    </span>{" "}
-                    of whom we consider active{" "}
-                    <span
-                        className="faux-link"
-                        onClick={() => props.readAbout("active characters")}
-                    >
-                        (read more)
-                    </span>
-                    .
-                </p>
-            ) : (
-                "Loading unique population data..."
-            )}
+            <p>
+                We've seen{" "}
+                <span className="population-number">{GetUniquePlayers()}</span>{" "}
+                unique characters and{" "}
+                <span className="lfm-number">{GetUniqueGuilds()}</span> guilds
+                in the last quarter on {props.server}. Of those players, we
+                consider{" "}
+                <span className="population-number">
+                    {GetUniqueActivePlayers()} (
+                    {Math.round(
+                        (GetUniqueActivePlayers(true) /
+                            GetUniquePlayers(true)) *
+                            100
+                    )}
+                    %)
+                </span>{" "}
+                to be active{" "}
+                <span
+                    className="faux-link"
+                    onClick={() => props.readAbout("active characters")}
+                >
+                    (read more)
+                </span>
+                .
+            </p>
         </div>
     );
 };

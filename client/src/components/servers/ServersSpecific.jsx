@@ -187,14 +187,31 @@ const ServersSpecific = () => {
         ]);
     }, []);
 
-    const [serverStatusData, setServerStatusData] = React.useState(null);
+    const [serverStatus, setServerStatus] = React.useState(null);
+    const [serverData, setServerData] = React.useState(null);
     const [uniqueData, setUniqueData] = React.useState(null);
     const [currentData, setCurrentData] = React.useState(null);
     function refreshServerStatus() {
+        if (currentServer === null) return;
         Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
             .then((val) => {
                 setPopupMessage(null);
-                setServerStatusData(val);
+                if (
+                    val?.Worlds?.filter(
+                        (world) => world.Name === currentServer
+                    )?.[0]?.Status === 1
+                ) {
+                    setServerStatus(true);
+                    Fetch(
+                        `https://api.ddoaudit.com/players/${currentServer.toLowerCase()}`,
+                        5000
+                    ).then((serverVal) => {
+                        setServerData(serverVal);
+                    });
+                } else {
+                    setServerStatus(false);
+                    setServerData(null);
+                }
             })
             .catch(() => {
                 setPopupMessage({
@@ -269,13 +286,15 @@ const ServersSpecific = () => {
     }
 
     React.useEffect(() => {
-        refreshServerStatus();
-        fetchUniqueData();
-        fetchCurrentData();
-        fetchPopulationData();
         const interval = setInterval(() => refreshServerStatus, 60000);
+        if (currentServer !== null) {
+            refreshServerStatus();
+            fetchUniqueData();
+            fetchCurrentData();
+            fetchPopulationData();
+        }
         return () => clearInterval(interval);
-    }, []);
+    }, [currentServer]);
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
@@ -322,20 +341,36 @@ const ServersSpecific = () => {
                 <BannerMessage page={"servers"} />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster
-                    title={`${currentServer} Population Trends`}
+                    title={`${currentServer} Population`}
                     altTitle="Population"
                     description={
-                        <>
-                            <CurrentCountsSubtitle
-                                server={currentServer}
-                                data={currentData}
-                            />
-                            <UniqueCountsSubtitle
-                                server={currentServer}
-                                data={uniqueData}
-                                readAbout={(m) => readAbout(m)}
-                            />
-                        </>
+                        serverData &&
+                        currentServer &&
+                        currentData &&
+                        hourlyLfmDistribution &&
+                        uniqueData ? (
+                            <>
+                                <CurrentCountsSubtitle
+                                    serverData={serverData}
+                                    server={currentServer}
+                                    data={currentData}
+                                    hourlyLfmDistribution={
+                                        hourlyLfmDistribution
+                                    }
+                                />
+                                <UniqueCountsSubtitle
+                                    server={currentServer}
+                                    data={uniqueData}
+                                    readAbout={(m) => readAbout(m)}
+                                />
+                            </>
+                        ) : serverStatus !== false ? (
+                            <span>Loading all sorts of fun data...</span>
+                        ) : (
+                            <span>
+                                This server is offline. Check back later.
+                            </span>
+                        )
                     }
                 />
                 <ContentCluster
