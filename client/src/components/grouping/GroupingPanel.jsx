@@ -80,6 +80,8 @@ const Panel = (props) => {
     const usingCachedCharacterDataRef = React.useRef(usingCachedCharacterData);
     usingCachedCharacterDataRef.current = usingCachedCharacterData;
     const [hiddenTimerIds, setHiddenTimerIds] = React.useState([]);
+    const [failedToFetchRaidActivity, setFailedToFetchRaidActivity] =
+        React.useState(false);
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -109,15 +111,23 @@ const Panel = (props) => {
                         Post(
                             "https://api.ddoaudit.com/players/raidactivity",
                             { playerid: character.PlayerId },
-                            5000
+                            10000
                         )
                             .then((res) => {
                                 returnedCharacters.push({
                                     ...character,
                                     RaidActivity: res,
                                 });
+                                setTimeout(
+                                    () => setFailedToFetchRaidActivity(false),
+                                    1000
+                                );
                             })
                             .catch(() => {
+                                setTimeout(
+                                    () => setFailedToFetchRaidActivity(true),
+                                    1000
+                                );
                                 setMyCharactersWithRaidActivity(myCharacters);
                                 Log(
                                     "Failed to fetch raid timers for LFM",
@@ -654,6 +664,7 @@ const Panel = (props) => {
                 handleRefreshButton={() => refreshButtonHandler()}
                 closePanel={() => props.closePanel()}
                 permalink={props.permalink}
+                failedToFetchRaidActivity={failedToFetchRaidActivity}
             />
             {filterPanelVisible && (
                 <div

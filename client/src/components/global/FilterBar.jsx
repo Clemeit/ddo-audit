@@ -8,6 +8,7 @@ import { ReactComponent as FullscreenSVG } from "../../assets/global/fullscreen.
 import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscreen-exit.svg";
 import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
+import { ReactComponent as UpdateSVG } from "../../assets/global/update.svg";
 import { Link, useHistory } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
@@ -67,7 +68,6 @@ const LfmFilterBar = (props) => {
         document
             .getElementById("filter-bar")
             .removeEventListener("mouseenter", stopCollapseTimeout);
-        console.log("boom");
     }
 
     return (
@@ -231,10 +231,25 @@ const LfmFilterBar = (props) => {
                             className="filter-bar-item"
                             onClick={props.handleRefreshButton}
                         >
-                            <RefreshSVG
-                                className="nav-icon should-invert"
-                                id="lfm-refresh-button"
-                            />
+                            {props.failedToFetchRaidActivity ? (
+                                <>
+                                    <UpdateSVG
+                                        className="nav-icon should-invert"
+                                        id="lfm-refresh-button"
+                                    />
+                                    <span
+                                        className="filter-bar-text"
+                                        style={{ marginLeft: "5px" }}
+                                    >
+                                        Refresh raid timers
+                                    </span>
+                                </>
+                            ) : (
+                                <RefreshSVG
+                                    className="nav-icon should-invert"
+                                    id="lfm-refresh-button"
+                                />
+                            )}
                         </div>
                     )}
                 </div>
