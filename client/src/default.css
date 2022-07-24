@@ -953,15 +953,14 @@ body {
     align-items: center;
     padding: 3px 10px 3px 10px;
     cursor: pointer;
-    transition-property: background-color;
-    transition-duration: 250ms;
+    transition: background-color 250ms;
     font-size: larger;
     color: var(--text);
 }
 
 .filter-bar-item.collapsible {
     max-width: 150px;
-    transition: max-width 500ms;
+    transition: background-color 250ms, max-width 500ms;
     overflow: hidden;
     justify-content: left;
 }
