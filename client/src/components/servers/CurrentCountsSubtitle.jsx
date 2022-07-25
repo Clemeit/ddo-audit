@@ -58,13 +58,13 @@ const CurrentCountsSubtitle = (props) => {
         let current = getLfmCount();
 
         // Much fewer than average:
-        if (current < 0.8 * averageForThisHour) {
+        if (current < 0.6 * averageForThisHour) {
             return "much fewer than average";
-        } else if (current < 0.9 * averageForThisHour) {
+        } else if (current < 0.85 * averageForThisHour) {
             return "fewer than average";
-        } else if (current > 1.1 * averageForThisHour) {
+        } else if (current > 1.15 * averageForThisHour) {
             return "more than average";
-        } else if (current > 1.2 * averageForThisHour) {
+        } else if (current > 1.4 * averageForThisHour) {
             return "much more than average";
         } else {
             return "about average";
@@ -120,9 +120,9 @@ const CurrentCountsSubtitle = (props) => {
                     for this time of day
                 </li>
                 <li>
-                    There are{" "}
+                    There are a total of{" "}
                     <span className="lfm-number">{getUniqueGroupCount()}</span>{" "}
-                    total groups (including groups not posted in the LFM panel)
+                    groups (including groups not posted in the LFM panel)
                 </li>
             </ul>
         </div>
