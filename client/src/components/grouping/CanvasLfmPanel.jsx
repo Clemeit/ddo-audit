@@ -688,7 +688,7 @@ const CanvasLfmPanel = (props) => {
                         ctx.fillStyle = props.highVisibility
                             ? "white"
                             : group.Eligible
-                            ? "#d3f6f6"
+                            ? "#f6f1d3"
                             : "#988f80";
                         ctx.font = `italic ${14 + props.fontModifier}px Arial`;
                         ctx.fillText(
@@ -727,7 +727,7 @@ const CanvasLfmPanel = (props) => {
                             : "#b6b193"
                         : "#95927e";
                     ctx.fillText(
-                        "(" + getGroupDifficulty(group) + ")",
+                        getGroupDifficulty(group),
                         489,
                         top -
                             4 +
