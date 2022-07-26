@@ -223,7 +223,10 @@ const LfmFilterBar = (props) => {
                             ) : (
                                 <FullscreenSVG className="nav-icon should-invert" />
                             )}
-                            <span className="filter-bar-text">
+                            <span
+                                className="filter-bar-text"
+                                style={{ whiteSpace: "nowrap" }}
+                            >
                                 {fullscreen ? "Go back" : "Fullscreen"}
                             </span>
                         </div>
