@@ -238,7 +238,7 @@ const WhoSpecific = (props) => {
                                 }}
                             >
                                 <span>
-                                    <AddSVG className="add-panel-icon" />
+                                    <AddSVG className="add-panel-icon should-invert" />
                                     Add a panel
                                 </span>
                             </div>
