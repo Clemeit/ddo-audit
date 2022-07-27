@@ -397,6 +397,7 @@ const ServersSpecific = () => {
                         noArea={false}
                         straightLegend={true}
                         tooltipPrefix="Hour"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -419,6 +420,7 @@ const ServersSpecific = () => {
                         legendOffset={40}
                         dataIncludesColors={true}
                         paddingBottom={60}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -440,6 +442,7 @@ const ServersSpecific = () => {
                         showArea={true}
                         marginBottom={120}
                         height="460px"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -461,6 +464,7 @@ const ServersSpecific = () => {
                         showArea={true}
                         marginBottom={120}
                         height="460px"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster

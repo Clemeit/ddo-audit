@@ -256,6 +256,7 @@ const Live = (props) => {
                         showActions={false}
                         showLastUpdated={true}
                         reportReference={null}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster

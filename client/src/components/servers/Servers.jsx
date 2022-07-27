@@ -478,6 +478,7 @@ const Directory = (props) => {
                         noAnim={true}
                         useDataColors={true}
                         alwaysShow={true}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -544,6 +545,7 @@ const Directory = (props) => {
                         noArea={true}
                         straightLegend={true}
                         tooltipPrefix="Hour"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -607,6 +609,7 @@ const Directory = (props) => {
                         legendOffset={40}
                         dataIncludesColors={true}
                         paddingBottom={60}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -654,6 +657,7 @@ const Directory = (props) => {
                         curve="linear"
                         straightLegend={true}
                         tooltipPrefix="Level"
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -711,6 +715,7 @@ const Directory = (props) => {
                         legendOffset={40}
                         dataIncludesColors={true}
                         paddingBottom={60}
+                        forceHardcore={true}
                     />
                 </ContentCluster>
                 <ContentCluster
