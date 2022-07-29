@@ -163,11 +163,11 @@ const PanelSelectPopup = (props) => {
                                     "Thanks!"
                                 ) : voteMessage === "negative" ? (
                                     <span>
-                                        I welcome your{" "}
+                                        Your{" "}
                                         <Link to="/suggestions">
                                             suggestions
-                                        </Link>
-                                        !
+                                        </Link>{" "}
+                                        are welcome!
                                     </span>
                                 ) : (
                                     ""

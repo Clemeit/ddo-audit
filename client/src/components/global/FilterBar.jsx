@@ -46,14 +46,14 @@ const LfmFilterBar = (props) => {
         document
             .getElementById("filter-bar")
             ?.addEventListener("mouseenter", stopCollapseTimeout);
-        collapseTimeout = setTimeout(() => collapseFilterButtons(), 2000);
+        startCollapseTimeout();
 
         return () => clearTimeout(collapseTimeout);
     }, []);
 
     function startCollapseTimeout() {
         clearTimeout(collapseTimeout);
-        collapseTimeout = setTimeout(() => collapseFilterButtons(), 2000);
+        collapseTimeout = setTimeout(() => collapseFilterButtons(), 5000);
     }
 
     function stopCollapseTimeout() {

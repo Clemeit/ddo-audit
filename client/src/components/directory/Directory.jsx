@@ -156,7 +156,7 @@ const Directory = (props) => {
                     ),
                     title: "Give Feedback",
                     description:
-                        "I welcome your feedback! Let me know what you think.",
+                        "Your feedback is welcome! Let me know what you think of my project.",
                     to: "/suggestions",
                 },
             ],
@@ -187,7 +187,7 @@ const Directory = (props) => {
         } else {
             set_voteMessage(
                 <span>
-                    I welcome your <Link to="/suggestions">suggestions</Link>!
+                    Your <Link to="/suggestions">suggestions</Link> are welcome!
                 </span>
             );
         }
