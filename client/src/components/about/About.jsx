@@ -42,13 +42,7 @@ const About = (props) => {
             <div className="content-container">
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Our Mission">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         We want to provide the community with the most accurate
                         and up-to-date information on DDO's population as
                         possible, foster player interactions by hosting a Live
@@ -62,15 +56,9 @@ const About = (props) => {
                         </span>
                     </p>
                 </ContentCluster>
-                <ContentCluster title="Our Methodology">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
-                        Data is collected from the game client every 15 seconds.
+                <ContentCluster title="Methodology">
+                    <p>
+                        Data is collected from the game client every 10 seconds.
                         This data contains no personally-identifying
                         information; the information that this data contains is
                         visible in the in-game "Who" panel (name, gender, race,
@@ -87,34 +75,27 @@ const About = (props) => {
                         but their names are replaced with "Anonymous" and their
                         guilds and locations are redacted).
                     </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         The player data that we collect includes name, gender,
                         race, class, level, location, and guild name. This
                         information is used to generate the various demographic
-                        reports on the website. When a player posts a public
-                        LFM, the collected data also includes public comment,
-                        quest selection, difficulty selection, level range,
-                        accepted classes, and the "adventure active" length.
-                        Each player in a group is also assigned a Group ID which
-                        allows us to reconstruct groups of players. The group
-                        data is then used to generate the LFM panel (that's not
-                        a screenshot - it's being drawn in your browser).
+                        reports on the website. Additionally, player location
+                        data is recorded, analyzed, and used to track quest
+                        popularity and raid timers.
+                    </p>
+                    <p>
+                        When a player posts a public LFM, the collected data
+                        also includes public comment, quest selection,
+                        difficulty selection, level range, accepted classes, and
+                        the "adventure active" length. Each player in a group is
+                        also assigned a Group ID which allows us to reconstruct
+                        groups of players. The group data is then used to
+                        generate the LFM panel (that's not a screenshot - it's
+                        being drawn in your browser).
                     </p>
                 </ContentCluster>
                 <ContentCluster title="Contributions">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         A special thanks to the incredibly talented and generous
                         developers over at Vault of Kundarak. Their support
                         played an integral role in the development of this
@@ -153,13 +134,7 @@ const About = (props) => {
                         </a>{" "}
                         to stay up-to-date on their development.
                     </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         And thank <i>you</i> for your continued support.{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
                             This project simply would not exist without DDO's
@@ -198,6 +173,43 @@ const About = (props) => {
                             Visit my GitHub
                         </a>
                     </div>
+                </ContentCluster>
+                <ContentCluster title="Development">
+                    <p>
+                        This website is the culmination of over two years of
+                        hard work and many sleepless nights. When I started DDO
+                        Audit I knew little to nothing about web development,
+                        server infrastructure, or databases. I learned as I
+                        went, browsing countless forum posts, watching YouTube
+                        tutorial videos, reading books, and iterating on my
+                        designs.
+                    </p>
+                    <p>
+                        The original website was written in HTML, JavaScript,
+                        and CSS using the famous IDE known as Notepad (no joke -
+                        I have like 20,000 lines of frontend work done using
+                        Notepad). The data aggregation and interpretation work
+                        was painfully done using C (I'm never using that
+                        terrible language again), and the data collection
+                        portion was written in Visual Basic (using Visual
+                        Studio). The current version of the website is a little
+                        less haphazardly thrown together. It's written using JSX
+                        and the React framework in an <i>actual</i> IDE - Visual
+                        Studio Code. All of the server infrastructure work is
+                        done using NodeJS. Data aggregation and interpretation
+                        work is now done using JavaScript, and the data
+                        collection side was recreated using C#.
+                    </p>
+                    <p>
+                        It honestly has been a lot of fun to work on, and I'm
+                        sure I'll continue development well into the future.
+                        Thanks for stopping by!
+                    </p>
+                    <p>
+                        See you in game,
+                        <br />
+                        <i>Clemeit of Thelanis</i>
+                    </p>
                 </ContentCluster>
                 <ContentCluster
                     title="Contact Information"
@@ -288,13 +300,7 @@ const About = (props) => {
                     </div>
                 </ContentCluster>
                 <ContentCluster title="Disclaimer">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         All screenshots were taken from{" "}
                         <a
                             href="https://www.ddo.com"
