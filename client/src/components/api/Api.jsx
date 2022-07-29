@@ -41,13 +41,7 @@ const Api = (props) => {
                 <BannerMessage page="api" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="About the DDO Audit API">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         We offer our data for the community to use through a
                         free, public API. By using our API, you agree to the
                         following stipulations<sup>&#8224;</sup>:
@@ -86,13 +80,7 @@ const Api = (props) => {
                             ".
                         </li>
                     </ul>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         <span style={{ color: "var(--text-lfm-number)" }}>
                             We are providing this data as-is and in good faith
                             that it will be used to the benefit of the
@@ -107,13 +95,7 @@ const Api = (props) => {
                     </p>
                 </ContentCluster>
                 <ContentCluster title="How to Use the API">
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         DDO Audit's API is available on the "api" subdomain (
                         <a
                             href="https://api.ddoaudit.com/"
@@ -137,13 +119,7 @@ const Api = (props) => {
                         any of the endpoints. The content-type is always
                         application/json.
                     </p>
-                    <p
-                        style={{
-                            fontSize: "1.5rem",
-                            lineHeight: "normal",
-                            color: "var(--text)",
-                        }}
-                    >
+                    <p>
                         When possible, please limit the number of API requests
                         you make to one (1) every 15 seconds.
                     </p>

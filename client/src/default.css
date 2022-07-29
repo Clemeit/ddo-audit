@@ -606,6 +606,12 @@ body {
     gap: 10px;
 }
 
+.content-cluster-children > p {
+    font-size: 1.5rem;
+    line-height: normal;
+    color: var(--text);
+}
+
 .content-option-title,
 .raid-server-title {
     color: var(--text);

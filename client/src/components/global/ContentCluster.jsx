@@ -68,7 +68,7 @@ const ContentCluster = (props) => {
                     {props.description}
                 </div>
             )}
-            {props.children}
+            <div className="content-cluster-children">{props.children}</div>
         </section>
     );
 };
