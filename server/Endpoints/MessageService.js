@@ -144,7 +144,7 @@ module.exports = function (api) {
 					reject();
 				}
 				let messageQuery = `SELECT \`datetime\`, \`title\`, \`comment\`, \`resolved\`, \`response\` FROM \`feedback\` WHERE \`ip\` LIKE ${con.escape(
-					ipaddress || ""
+					ipaddress || "BAD_IP"
 				)} AND \`resolved\` = 1 AND \`response\` IS NOT NULL ORDER BY \`feedback\`.\`datetime\` DESC LIMIT 1;`;
 				con.query(messageQuery, (err, result, fields) => {
 					if (err) {
