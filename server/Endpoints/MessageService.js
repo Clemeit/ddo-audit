@@ -117,16 +117,23 @@ module.exports = function (api) {
 			});
 		}
 
-		function submitMessage(message, ipaddress) {
+		function submitMessage(message, ipaddress, ticket) {
 			return new Promise(async (resolve, reject) => {
-				if (message == null) {
-					reject();
+				if (
+					message == null ||
+					message.title == null ||
+					message.comment == null ||
+					ticket == null
+				) {
+					reject("Bad request");
 				} else {
-					let classquery = `INSERT INTO \`feedback\` (\`datetime\`, \`ip\`, \`browser\`, \`title\`, \`comment\`, \`resolved\`) VALUES (CURRENT_TIMESTAMP, ${con.escape(
+					let classquery = `INSERT INTO \`feedback\` (\`datetime\`, \`ip\`, \`ticket\`, \`browser\`, \`title\`, \`comment\`, \`resolved\`) VALUES (CURRENT_TIMESTAMP, ${con.escape(
 						ipaddress || ""
-					)}, ${con.escape(message.browser) || ""}, ${
-						con.escape(message.title) || ""
-					}, ${con.escape(message.comment) || ""}, '0');`;
+					)}, ${con.escape(ticket || "")}, ${
+						con.escape(message.browser) || ""
+					}, ${con.escape(message.title) || ""}, ${
+						con.escape(message.comment) || ""
+					}, '0');`;
 					con.query(classquery, (err, result, fields) => {
 						if (err) {
 							reject(err);
@@ -138,13 +145,21 @@ module.exports = function (api) {
 			});
 		}
 
-		function getPrivateMessages(ipaddress) {
+		function getPrivateMessages(requestBody) {
 			return new Promise(async (resolve, reject) => {
-				if (ipaddress == "" || ipaddress == "192.168.0.1") {
-					reject();
+				if (
+					requestBody == null ||
+					requestBody.tickets == null ||
+					requestBody.tickets.length === 0
+				) {
+					reject("Bad ticket");
 				}
-				let messageQuery = `SELECT \`datetime\`, \`title\`, \`comment\`, \`resolved\`, \`response\` FROM \`feedback\` WHERE \`ip\` LIKE ${con.escape(
-					ipaddress || "BAD_IP"
+				let escapedTickets = [];
+				requestBody.tickets.forEach((ticket) => {
+					escapedTickets.push(con.escape(ticket));
+				});
+				let messageQuery = `SELECT \`datetime\`, \`ticket\`, \`comment\`, \`response\` FROM \`feedback\` WHERE ticket = ${escapedTickets.join(
+					" OR ticket = "
 				)} AND \`resolved\` = 1 AND \`response\` IS NOT NULL ORDER BY \`feedback\`.\`datetime\` DESC LIMIT 1;`;
 				con.query(messageQuery, (err, result, fields) => {
 					if (err) {
@@ -219,10 +234,11 @@ module.exports = function (api) {
 
 		api.post(`/submitmessage`, (req, res) => {
 			var clientIp = requestIp.getClientIp(req);
+			var ticket = Date.now();
 			res.setHeader("Content-Type", "application/json");
-			submitMessage(req.body, clientIp)
-				.then((result) => {
-					res.send({ state: "Success" });
+			submitMessage(req.body, clientIp, ticket)
+				.then(() => {
+					res.send({ state: "Success", ticket });
 				})
 				.catch((err) => {
 					console.log("Failed to post message:", err);
@@ -230,14 +246,14 @@ module.exports = function (api) {
 				});
 		});
 
-		api.get(`/retrieveresponse`, (req, res) => {
-			var clientIp = requestIp.getClientIp(req);
+		api.post(`/retrieveresponse`, (req, res) => {
 			res.setHeader("Content-Type", "application/json");
-			getPrivateMessages(clientIp)
+			getPrivateMessages(req.body)
 				.then((result) => {
 					res.send(result);
 				})
 				.catch((err) => {
+					console.log("Failed to read message:", err);
 					res.send([]);
 				});
 		});

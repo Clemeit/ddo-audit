@@ -14,6 +14,7 @@ const Suggestions = (props) => {
     const [contact, setContact] = React.useState("");
 
     const [isSubmitted, setIsSubmitted] = React.useState(false);
+    const [ticketNumber, setTicketNumber] = React.useState(null);
     const [acknowledge, setAcknowledge] = React.useState(true);
     const [disabled, setDisabled] = React.useState(true);
 
@@ -37,10 +38,32 @@ const Suggestions = (props) => {
         if (isSubmitted) return;
         if (message) {
             Submit(
-                "Suggestion (ENH)",
+                "Suggestion (ENH2)",
                 message + (contact && ` (Contact: '${contact}')`)
-            );
-            setIsSubmitted(true);
+            )
+                .then((response) => {
+                    if (response && response.ticket) {
+                        let myTickets = JSON.parse(
+                            localStorage.getItem("my-tickets") || "[]"
+                        );
+                        myTickets.push(response.ticket);
+                        localStorage.setItem(
+                            "my-tickets",
+                            JSON.stringify(myTickets)
+                        );
+                        console.log("New ticket:", response.ticket);
+                        setTicketNumber(response.ticket);
+                        setIsSubmitted(true);
+                    } else {
+                        console.log(response);
+                        alert(
+                            "Failed to submit feedback. Please try again later."
+                        );
+                    }
+                })
+                .catch(() => {
+                    alert("Failed to submit feedback. Please try again later.");
+                });
         } else {
             alert("Did you forget to add a message?");
         }
@@ -107,10 +130,7 @@ const Suggestions = (props) => {
                             }}
                         >
                             If you have a suggestion, request, or comment, I'd
-                            love to hear it!{" "}
-                            <span className="lfm-number">
-                                But please keep it civil.
-                            </span>
+                            love to hear it! But please be civil.
                         </p>
                         <div
                             className={`primary-button should-invert full-width-mobile ${
@@ -184,11 +204,21 @@ const Suggestions = (props) => {
                                             color: "var(--text)",
                                         }}
                                     >
-                                        I got your message, thanks! When I
-                                        implement new features or bug fixes,
-                                        I'll mention it on the{" "}
-                                        <Link to="/timeline">Timeline</Link>{" "}
-                                        page.
+                                        I got your message, thanks! I may
+                                        respond to you directly through DDO
+                                        Audit's mail system. Responses will
+                                        appear in a popup on the website.
+                                        <br />
+                                        <br />
+                                        <span
+                                            style={{
+                                                color: "var(--text-faded)",
+                                            }}
+                                        >
+                                            Ticket #
+                                            {ticketNumber ||
+                                                " (not applicable)"}
+                                        </span>
                                     </span>
                                 ) : (
                                     "Community feedback has made this project possible."

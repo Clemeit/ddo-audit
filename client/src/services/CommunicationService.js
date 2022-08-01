@@ -17,7 +17,7 @@ const isChrome =
 
 const LOG_USER_EVENTS = true;
 
-export function Submit(title, comment) {
+export async function Submit(title, comment) {
     // event.preventDefault();
     let browser;
     if (isChrome) browser = "chrome";
@@ -34,16 +34,13 @@ export function Submit(title, comment) {
         body: JSON.stringify({ browser, title, comment }),
     };
     console.log(JSON.stringify({ browser, title, comment }));
-    fetch(url, requestOptions)
-        .then((res) => res.json())
-        .then((response) => {
-            if (response && response.state === "Success") {
-                console.log("Submitted successfully");
-            } else {
-                console.log("Failed:", response);
-            }
-        })
-        .catch((error) => console.log("Submission error", error));
+    try {
+        const res = await fetch(url, requestOptions);
+        const response = await res.json();
+        return response;
+    } catch (error) {
+        console.log("Submission error", error);
+    }
 }
 
 export function Log(event, meta) {

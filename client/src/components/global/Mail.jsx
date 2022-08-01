@@ -2,47 +2,64 @@ import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { ReactComponent as MailSVG } from "../../assets/global/mail.svg";
 import { Log } from "../../services/CommunicationService";
-import { Fetch } from "../../services/DataLoader";
+import { Post } from "../../services/DataLoader";
 
-const Mail = (props) => {
+const Mail = () => {
     const [mail, setMail] = React.useState(null);
     const [dismissed, setDismissed] = React.useState(false);
     const [dismissEnabled, setDismissEnabled] = React.useState(false);
     const mailRef = React.useRef(mail);
     mailRef.current = mail;
 
-    function newMail(title, subtitle, body, datetime) {
+    function newMail(title, subtitle, ticket, body, datetime) {
         setMail({
             title,
             subtitle,
+            ticket,
             body,
             datetime,
         });
     }
 
     function dismissMail() {
-        let ignoredList = JSON.parse(
-            localStorage.getItem("dismissed-mail") || "[]"
+        let myTickets = JSON.parse(localStorage.getItem("my-tickets") || "[]");
+        let originalLength = myTickets.length;
+        myTickets = myTickets.filter(
+            (ticket) => ticket != mailRef.current.ticket
         );
-        ignoredList.push(mailRef.current.datetime);
-        localStorage.setItem("dismissed-mail", JSON.stringify(ignoredList));
-        Log("Dismissed mail", mailRef.current.subtitle);
+        let finalLength = myTickets.length;
+        if (finalLength === originalLength) {
+            localStorage.setItem("my-tickets", JSON.stringify([]));
+            Log("Dismissed mail HARD", mailRef.current.ticket);
+        } else {
+            localStorage.setItem("my-tickets", JSON.stringify(myTickets));
+            Log("Dismissed mail", mailRef.current.ticket);
+        }
+
         setDismissed(true);
     }
 
     React.useEffect(() => {
         const checkForMail = setTimeout(() => {
-            let ignoredList = JSON.parse(
-                localStorage.getItem("dismissed-mail") || "[]"
+            let myTickets = JSON.parse(
+                localStorage.getItem("my-tickets") || "[]"
             );
+            if (myTickets && myTickets.length) {
+                let ignoredList = JSON.parse(
+                    localStorage.getItem("dismissed-mail") || "[]"
+                );
 
-            Fetch("https://api.ddoaudit.com/retrieveresponse", 10000).then(
-                (response) => {
+                Post(
+                    "https://api.ddoaudit.com/retrieveresponse",
+                    { tickets: myTickets },
+                    10000
+                ).then((response) => {
                     if (response.length) {
                         if (!ignoredList.includes(response[0].datetime)) {
                             newMail(
                                 "Feedback Response",
                                 `re: ${response[0].comment}`,
+                                response[0].ticket,
                                 response[0].response,
                                 response[0].datetime
                             );
@@ -51,8 +68,8 @@ const Mail = (props) => {
                             }, 1500);
                         }
                     }
-                }
-            );
+                });
+            }
         }, 1500);
 
         return () => clearTimeout(checkForMail);
@@ -89,7 +106,10 @@ const Mail = (props) => {
                     />
                     {mail?.title}
                 </h3>
-                <h4 className="mail-subtitle">{mail?.subtitle}</h4>
+                <h4 className="mail-subtitle" style={{ marginBottom: "0px" }}>
+                    {mail?.subtitle}
+                </h4>
+                <h4 className="mail-subtitle">Ticket #{mail?.ticket}</h4>
                 <hr
                     style={{
                         backgroundColor: "var(--text)",
