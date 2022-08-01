@@ -1670,6 +1670,33 @@ th {
     opacity: 1;
 }
 
+.mail-container {
+    z-index: 1;
+    position: fixed;
+    max-width: 500px;
+    min-width: 500px;
+    background-color: var(--highlighted-0);
+    color: var(--text);
+    filter: drop-shadow(0px 0px 7px rgba(0, 0, 0, 0.835));
+    border-radius: 10px;
+    right: 10px;
+    bottom: 10px;
+    transition: transform 500ms cubic-bezier(0.51, 0.72, 0, 1.25);
+    padding: 10px 15px;
+}
+
+.mail-subtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 13px;
+    color: var(--text-faded);
+}
+
+.mail-body {
+    font-size: 1.3rem;
+}
+
 @media (max-width: 1800px) {
     .content-cluster {
         max-width: 1400px;
@@ -1711,6 +1738,16 @@ th {
 }
 
 @media (max-width: 900px) {
+    .mail-container {
+        max-width: unset;
+        min-width: unset;
+        right: 0px;
+        bottom: 0px;
+        z-index: 5;
+        transition: transform 500ms ease-in-out;
+        width: 100%;
+        border-radius: 0px;
+    }
     .anchor-link {
         display: none !important;
     }

@@ -37,6 +37,7 @@ import WhoSpecific from "./components/who/WhoSpecific";
 import Live from "./components/live/Live";
 import About from "./components/about/About";
 import NotFound from "./components/directory/NotFound";
+import Mail from "./components/global/Mail";
 // import ActivityTesting from "./components/dev/ActivityTesting";
 
 // Lazy loads (uncommon pages)
@@ -67,6 +68,7 @@ export default () => {
         <Suspense fallback={<div></div>}>
             <Router history={history}>
                 <Layout>
+                    <Mail />
                     <ScrollToTop />
                     <Switch>
                         <Route exact path="/">

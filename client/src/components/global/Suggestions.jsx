@@ -37,7 +37,7 @@ const Suggestions = (props) => {
         if (isSubmitted) return;
         if (message) {
             Submit(
-                "Suggestion",
+                "Suggestion (ENH)",
                 message + (contact && ` (Contact: '${contact}')`)
             );
             setIsSubmitted(true);
