@@ -1024,6 +1024,7 @@ const Quests = (props) => {
                                 loadingMessage="Click on a quest to view data"
                                 noAnim={true}
                                 useDataColors={true}
+                                forceHardcore={true}
                             />
                         </ContentCluster>
                     </div>
