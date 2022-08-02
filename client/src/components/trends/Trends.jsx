@@ -173,7 +173,7 @@ const Trends = (props) => {
                 <NoMobileOptimization />
                 <ContentCluster
                     title="Server Population Trends"
-                    description="The last two years of trend data for each server displayed as weekly averages. All server downtimes are ignored."
+                    description="Data for each server displayed as weekly averages. All server downtimes are ignored."
                 >
                     <ChartLine
                         data={population1Year}
@@ -191,7 +191,7 @@ const Trends = (props) => {
                 </ContentCluster>
                 <ContentCluster
                     title="Permanent Servers vs. Hardcore League"
-                    description="The last two years of trend data displayed as a total of all servers, total of the permanent servers, and Hardcore League server only. All server downtimes are ignored."
+                    description="Data displayed as a total of all servers, total of the permanent servers, and Hardcore League server only. All server downtimes are ignored."
                 >
                     <ChartLine
                         data={permanentVsHardcore1Year}
@@ -213,9 +213,8 @@ const Trends = (props) => {
                     title="Weekly Minimum and Maximum Population"
                     description={
                         <span>
-                            The last two years of trend data displayed as weekly
-                            minimums, maximums, and averages. Downtimes are
-                            mostly ignored{" "}
+                            Data displayed as weekly minimums, maximums, and
+                            averages. Downtimes are mostly ignored{" "}
                             <span
                                 className="faux-link"
                                 onClick={() => readAbout("ignoring downtimes")}

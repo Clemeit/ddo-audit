@@ -93,7 +93,7 @@ exports.runAnnualReport = (population) => {
 		}) => {
 			if (
 				new Date().getTime() - datetime.getTime() <=
-				1000 * 60 * 60 * 24 * 364 * 2
+				1000 * 60 * 60 * 24 * 365 * 5
 			) {
 				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				let dt = new Date(datetime + "Z");

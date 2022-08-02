@@ -216,10 +216,9 @@ con.connect((err) => {
 			});
 		});
 	}
-
 	// Every week
 	cron.schedule("0 * * * 0", () => {
-		getPopulationData(365 * 2).then(() => {
+		getPopulationData(365 * 5).then(() => {
 			runAnnualReport(population);
 			runQuarterReport(population);
 			runWeekReport(population);
