@@ -225,7 +225,11 @@ const Suggestions = (props) => {
                                 )
                             }
                         >
-                            <form>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                }}
+                            >
                                 <div
                                     style={{
                                         display: isSubmitted ? "none" : "flex",
