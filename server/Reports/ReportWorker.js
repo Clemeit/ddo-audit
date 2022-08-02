@@ -48,7 +48,7 @@ con.connect((err) => {
 			if (err) throw err;
 
 			result.forEach(({ id, name }) => {
-				if (name !== "Epic")
+				if (name !== "Epic" && name !== "Legendary")
 					classes.push({
 						id,
 						name,
@@ -216,6 +216,7 @@ con.connect((err) => {
 			});
 		});
 	}
+
 	// Every week
 	cron.schedule("0 * * * 0", () => {
 		getPopulationData(365 * 5).then(() => {
