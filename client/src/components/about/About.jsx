@@ -59,10 +59,9 @@ const About = (props) => {
                 <ContentCluster title="Methodology">
                     <p>
                         Data is collected from the game client every 10 seconds.
-                        This data contains no personally-identifying
-                        information; the information that this data contains is
-                        visible in the in-game "Who" panel (name, gender, race,
-                        etc.).{" "}
+                        This data contains no personal information; the
+                        information that this data contains is visible in the
+                        in-game "Who" panel (name, gender, race, etc.).{" "}
                         <span style={{ color: "var(--text-lfm-number)" }}>
                             We do not collect, store, or publish personal
                             information.
@@ -260,6 +259,138 @@ const About = (props) => {
                         </li>
                     </ul>
                 </ContentCluster>
+                <ContentCluster title="Privacy">
+                    <p>
+                        I wish websites were more open about the data they
+                        collect on users. Here's a list of privacy-related
+                        topics that pertain to this website specifically. Feel
+                        free to send me a message if you'd like more
+                        information.
+                    </p>
+                    <h3
+                        style={{
+                            marginTop: "30px",
+                            color: "var(--text-lfm-number)",
+                        }}
+                    >
+                        Google Analytics
+                    </h3>
+                    <p>
+                        This website uses Google Analytics to monitor user
+                        traffic, engagement, page popularity, and more. This
+                        data is used to determine which pages are performing
+                        adequately, which pages are ranking well in Google
+                        search results, and which pages may need more work. I
+                        have no access to the personal information of any of the
+                        website's users. I do not run advertisements on the
+                        website or profit from the information in any way. If
+                        you would prefer to not be tracked by Google Analytics
+                        (on this website or on the millions of others that use
+                        it), I encourage you to install an ad blocker extension
+                        for your browser.
+                    </p>
+                    <h3
+                        style={{
+                            marginTop: "30px",
+                            color: "var(--text-lfm-number)",
+                        }}
+                    >
+                        Google Firebase
+                    </h3>
+                    <p>
+                        This website uses Google Firebase to send push
+                        notifications to users who set up LFM notifications.
+                        This feature is still in development but will be
+                        released on an opt-in only basis.
+                    </p>
+                    <h3
+                        style={{
+                            marginTop: "30px",
+                            color: "var(--text-lfm-number)",
+                        }}
+                    >
+                        Cookies
+                    </h3>
+                    <p>
+                        This website uses local storage cookies to enhance the
+                        user experience. Clearing your browser's cookies will
+                        delete the following preferences:
+                    </p>
+                    <ul
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        <li>LFM filters, accessibility options, and ad-ons</li>
+                        <li>Your registered characters</li>
+                        <li>Feature votes (like/dislike)</li>
+                        <li>Page message dismissals</li>
+                        <li>Disclaimer acknowledgements</li>
+                    </ul>
+                    <p></p>
+                    <h3
+                        style={{
+                            marginTop: "30px",
+                            color: "var(--text-lfm-number)",
+                        }}
+                    >
+                        Logging
+                    </h3>
+                    <p>
+                        This website collects data on certain user actions to
+                        improve features that are underperforming,
+                        uninteresting, or unknown, and to improve website
+                        accessibility. Logging is anonymous except when you opt
+                        to send me contact information. Examples of events that
+                        may be logged include:
+                    </p>
+                    <ul
+                        style={{
+                            fontSize: "1.5rem",
+                            lineHeight: "normal",
+                            color: "var(--text)",
+                        }}
+                    >
+                        <li>Submitting a request/suggestion</li>
+                        <li>Reporting an error</li>
+                        <li>
+                            Errors encountered while fetching character data
+                        </li>
+                        <li>Errors encountered while fetching LFM data</li>
+                        <li>
+                            Clicking on certain buttons or using certain
+                            features
+                        </li>
+                    </ul>
+                </ContentCluster>
+                <ContentCluster title="Disclaimer">
+                    <p>
+                        All screenshots were taken from{" "}
+                        <a
+                            href="https://www.ddo.com"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            Dungeons and Dragons Online
+                        </a>
+                        . This website is in no way affiliated with, or endorsed
+                        by, Standing Stone Games or{" "}
+                        <a
+                            href="https://www.daybreakgames.com/home"
+                            rel="noreferrer"
+                            target="_blank"
+                        >
+                            Daybreak Game Company
+                        </a>
+                        . Dungeons and Dragons Online is a registered trademark
+                        of Wizards of the Coast LLC. This website generates no
+                        revenue and is not used for commercial purposes. I do
+                        not host ads nor accept donations. You can support this
+                        project by supporting Dungeons and Dragons Online.
+                    </p>
+                </ContentCluster>
                 <ContentCluster title="More Information">
                     <div className="content-cluster-options">
                         <Link
@@ -298,32 +429,6 @@ const About = (props) => {
                             </p>
                         </Link>
                     </div>
-                </ContentCluster>
-                <ContentCluster title="Disclaimer">
-                    <p>
-                        All screenshots were taken from{" "}
-                        <a
-                            href="https://www.ddo.com"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            Dungeons and Dragons Online
-                        </a>
-                        . This website is in no way affiliated with, or endorsed
-                        by, Standing Stone Games or{" "}
-                        <a
-                            href="https://www.daybreakgames.com/home"
-                            rel="noreferrer"
-                            target="_blank"
-                        >
-                            Daybreak Game Company
-                        </a>
-                        . Dungeons and Dragons Online is a registered trademark
-                        of Wizards of the Coast LLC. This website generates no
-                        revenue and is not used for commercial purposes. I do
-                        not host ads nor accept donations. You can support this
-                        project by supporting Dungeons and Dragons Online.
-                    </p>
                 </ContentCluster>
             </div>
         </div>
