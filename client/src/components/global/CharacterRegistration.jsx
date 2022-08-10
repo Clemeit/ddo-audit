@@ -162,10 +162,10 @@ const CharacterRegistration = () => {
                         description={
                             <span>
                                 <p>
-                                    Anonymous players must turn off 'Anonymous'
-                                    for at least 1 minute before being
-                                    registered, but may return to being
-                                    anonymous afterwards. Players marked as
+                                    Anonymous characters must turn off
+                                    'Anonymous' for at least 1 minute before
+                                    being registered, but may return to being
+                                    anonymous afterwards. Characters marked as
                                     anonymous will not show online/offline
                                     status and will have their guild name and
                                     location redacted.

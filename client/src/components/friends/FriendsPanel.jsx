@@ -210,7 +210,7 @@ const FriendsPanel = (props) => {
 
         if (idListRef.current.length >= MAX_LIST_SIZE) {
             alert(
-                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+                `You may only have ${MAX_LIST_SIZE} characters on your friends list.`
             );
             return;
         }
@@ -250,7 +250,7 @@ const FriendsPanel = (props) => {
                     //     addGuild(res.guilds[0]);
                 } else {
                     Log("Failed to find friend", trimmedString);
-                    alert("Player not found or is anonymous.");
+                    alert("Character not found or is anonymous.");
                 }
             })
             .catch(() => {
@@ -276,7 +276,7 @@ const FriendsPanel = (props) => {
         }
         if (parsed.length >= MAX_LIST_SIZE) {
             alert(
-                `You may only have ${MAX_LIST_SIZE} players on your friends list.`
+                `You may only have ${MAX_LIST_SIZE} characters on your friends list.`
             );
         } else {
             if (

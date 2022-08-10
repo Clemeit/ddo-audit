@@ -8,7 +8,7 @@ import PageMessage from "../global/PageMessage";
 import { Log } from "../../services/CommunicationService";
 
 const Friends = () => {
-    // TODO: If this server is currently offline, don't bother checking for players
+    // TODO: If this server is currently offline, don't bother checking for characters
     const TITLE = "Friends List";
 
     const [openPanels] = React.useState([

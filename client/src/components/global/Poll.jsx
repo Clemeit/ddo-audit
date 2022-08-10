@@ -15,7 +15,7 @@ const Poll = (props) => {
         },
         {
             id: 2,
-            title: "Player lookup ('Who' page)",
+            title: "Character lookup ('Who' page)",
         },
         {
             id: 3,

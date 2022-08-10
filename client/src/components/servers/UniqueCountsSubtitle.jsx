@@ -44,7 +44,7 @@ const UniqueCountsSubtitle = (props) => {
                 <span className="population-number">{GetUniquePlayers()}</span>{" "}
                 unique characters and{" "}
                 <span className="lfm-number">{GetUniqueGuilds()}</span> guilds
-                in the last quarter on {props.server}. Of those players, we
+                in the last quarter on {props.server}. Of those characters, we
                 consider{" "}
                 <span className="population-number">
                     {GetUniqueActivePlayers()} (

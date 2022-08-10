@@ -129,7 +129,7 @@ const Directory = (props) => {
                         style={{
                             color: "var(--text-player-number)",
                         }}
-                    >{`${server.TotalCharacters} unique players`}</span>
+                    >{`${server.TotalCharacters} unique characters`}</span>
                     <br />
                     <span
                         style={{
@@ -424,7 +424,7 @@ const Directory = (props) => {
                             marginBottom: "0px",
                         }}
                     >
-                        Unique player counts are based on the last quarter.
+                        Unique character counts are based on the last quarter.
                     </p>
                 </ContentCluster>
                 <ContentCluster

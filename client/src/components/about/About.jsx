@@ -67,30 +67,31 @@ const About = (props) => {
                             information.
                         </span>{" "}
                         We do, however, collect information on anonymous
-                        players. Anonymous players <u>are</u> counted in the
-                        population reports. Anonymous players <u>are not</u>{" "}
-                        counted in any demographic reports and will never show
-                        up in our Who panel (our API includes anonymous players,
-                        but their names are replaced with "Anonymous" and their
-                        guilds and locations are redacted).
+                        characters. Anonymous characters <u>are</u> counted in
+                        the population reports. Anonymous characters{" "}
+                        <u>are not</u> counted in any demographic reports and
+                        will never show up in our Who panel (our API includes
+                        anonymous characters, but their names are replaced with
+                        "Anonymous" and their guilds and locations are
+                        redacted).
                     </p>
                     <p>
-                        The player data that we collect includes name, gender,
-                        race, class, level, location, and guild name. This
-                        information is used to generate the various demographic
-                        reports on the website. Additionally, player location
-                        data is recorded, analyzed, and used to track quest
-                        popularity and raid timers.
+                        The character data that we collect includes name,
+                        gender, race, class, level, location, and guild name.
+                        This information is used to generate the various
+                        demographic reports on the website. Additionally,
+                        character location data is recorded, analyzed, and used
+                        to track quest popularity and raid timers.
                     </p>
                     <p>
-                        When a player posts a public LFM, the collected data
+                        When a character posts a public LFM, the collected data
                         also includes public comment, quest selection,
                         difficulty selection, level range, accepted classes, and
-                        the "adventure active" length. Each player in a group is
-                        also assigned a Group ID which allows us to reconstruct
-                        groups of players. The group data is then used to
-                        generate the LFM panel (that's not a screenshot - it's
-                        being drawn in your browser).
+                        the "adventure active" length. Each character in a group
+                        is also assigned a Group ID which allows us to
+                        reconstruct groups of characters. The group data is then
+                        used to generate the LFM panel (that's not a screenshot
+                        - it's being drawn in your browser).
                     </p>
                 </ContentCluster>
                 <ContentCluster title="Contributions">

@@ -153,7 +153,7 @@ const Timeline = (props) => {
                         title="January 15, 2021 - Filters"
                         events={[
                             "Added: Content popularity can now be filtered by quests or raids",
-                            "Added: Server demographics can now be filtered by Active/Inactive Players or End-game Players",
+                            "Added: Server demographics can now be filtered by Active/Inactive characters or End-game characters",
                         ]}
                     />
                     <DevEvent
@@ -171,8 +171,8 @@ const Timeline = (props) => {
                         events={["Added: Content popularity by server"]}
                     />
                     <DevEvent
-                        title="August 14, 2020 - Player API"
-                        events={["Added: API for public player data"]}
+                        title="August 14, 2020 - Character API"
+                        events={["Added: API for public character data"]}
                     />
                     <DevEvent
                         title="August 8, 2020 - API Updates"
@@ -215,7 +215,7 @@ const Timeline = (props) => {
                     />
                     <DevEvent
                         title="March 26, 2020 - We See You Too"
-                        events={["Added: Now tracking anonymous players"]}
+                        events={["Added: Now tracking anonymous characters"]}
                     />
                     <DevEvent
                         title="March 20, 2020 - Going Public"
@@ -259,7 +259,7 @@ const Timeline = (props) => {
                     <DevEvent
                         title="November 18, 2019 - Project Inception"
                         events={[
-                            "Designed the original method of collecting player data",
+                            "Designed the original method of collecting character data",
                             "Manual samples were taken randomly throughout the day",
                         ]}
                     />

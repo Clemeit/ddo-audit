@@ -52,7 +52,7 @@ const Endpoints = (props) => {
                 A guild name, <span className="api-field">Guild [string]</span>
             </li>
             <li>
-                Whether or not the player is in a party,{" "}
+                Whether or not the character is in a party,{" "}
                 <span className="api-field">InParty [boolean]</span>
             </li>
             <li>
@@ -71,7 +71,7 @@ const Endpoints = (props) => {
                 The class name, <span className="api-field">Name [string]</span>
             </li>
             <li>
-                The number of levels the player has in that class,{" "}
+                The number of levels the character has in that class,{" "}
                 <span className="api-field">Level [int]</span>
             </li>
         </ul>
@@ -267,7 +267,7 @@ const Endpoints = (props) => {
                         <span className="api-field">Patron [string]</span>
                     </li>
                 </ul>
-                All players (leader and party members) are{" "}
+                All characters (leader and party members) are{" "}
                 <span style={{ color: "var(--green-text)" }}>Player</span>{" "}
                 objects, and have the following properties:
                 {PlayerObject}
@@ -561,10 +561,10 @@ const Endpoints = (props) => {
             ],
         },
         {
-            name: "Player Demographics",
+            name: "Character Demographics",
             path: "demographics/",
             description:
-                "Information about player demographics, including level, class, and race distribution.",
+                "Information about character demographics, including level, class, and race distribution.",
             sub: [
                 {
                     endpoint: "leveldistribution",
