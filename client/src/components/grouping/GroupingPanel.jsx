@@ -82,6 +82,8 @@ const Panel = (props) => {
     const [hiddenTimerIds, setHiddenTimerIds] = React.useState([]);
     const [failedToFetchRaidActivity, setFailedToFetchRaidActivity] =
         React.useState(false);
+    const [failedToFetchCharacters, setFailedToFetchCharacters] =
+        React.useState(false);
 
     async function getGroupTableCount() {
         return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
@@ -224,6 +226,7 @@ const Panel = (props) => {
                         .then((response) => {
                             if (!response.error) {
                                 setUsingCachedCharacterData(false);
+                                setFailedToFetchCharacters(false);
                                 setMyCharacters(response);
                                 localStorage.setItem(
                                     "last-successful-character-response",
@@ -232,14 +235,22 @@ const Panel = (props) => {
                             }
                         })
                         .catch(() => {
-                            console.log("fallback on cached data");
+                            const localstore = localStorage.getItem(
+                                "last-successful-character-response"
+                            );
                             setUsingCachedCharacterData(true);
-                            setMyCharacters(
-                                JSON.parse(
-                                    localStorage.getItem(
-                                        "last-successful-character-response"
-                                    ) || "[]"
-                                )
+                            setMyCharacters(JSON.parse(localstore || "[]"));
+                            setTimeout(
+                                () => setFailedToFetchCharacters(true),
+                                1000
+                            );
+                            Log(
+                                "Failed to fetch character data for LFM",
+                                `${
+                                    localstore
+                                        ? "Fallback: " + localstore
+                                        : "No fallback data"
+                                }`
                             );
                         })
                         .finally(() => resolve());
@@ -399,14 +410,25 @@ const Panel = (props) => {
         };
     }, [props.server]);
 
+    const lastManualLookupTimeRef = React.useRef(0);
     const refreshButtonAngleRef = React.useRef(null);
     function refreshButtonHandler() {
-        setLastCharacterLookupTime(0);
-        RefreshLfms();
-        refreshButtonAngleRef.current += 360;
-        $("#lfm-refresh-button").css({
-            transform: `rotate(${refreshButtonAngleRef.current}deg)`,
-        });
+        if (Date.now() - lastManualLookupTimeRef.current > 1000) {
+            setLastCharacterLookupTime(0);
+            RefreshLfms();
+            refreshButtonAngleRef.current += 360;
+            $("#lfm-refresh-button").css({
+                transform: `rotate(${refreshButtonAngleRef.current}deg)`,
+            });
+            if (failedToFetchRaidActivity) {
+                Log("Manual LFM refresh", "After raid activity lookup failure");
+            } else if (failedToFetchCharacters) {
+                Log("Manual LFM refresh", "After character lookup failure");
+            } else {
+                Log("Manual LFM refresh", "");
+            }
+            lastManualLookupTimeRef.current = Date.now();
+        }
     }
 
     // Helper function returns the character on timer for a raid
@@ -665,6 +687,7 @@ const Panel = (props) => {
                 closePanel={() => props.closePanel()}
                 permalink={props.permalink}
                 failedToFetchRaidActivity={failedToFetchRaidActivity}
+                failedToFetchCharacters={failedToFetchCharacters}
             />
             {filterPanelVisible && (
                 <div

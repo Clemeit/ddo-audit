@@ -236,7 +236,20 @@ const LfmFilterBar = (props) => {
                             className="filter-bar-item"
                             onClick={props.handleRefreshButton}
                         >
-                            {props.failedToFetchRaidActivity ? (
+                            {props.failedToFetchCharacters ? (
+                                <>
+                                    <UpdateSVG
+                                        className="nav-icon should-invert"
+                                        id="lfm-refresh-button"
+                                    />
+                                    <span
+                                        className="filter-bar-text"
+                                        style={{ marginLeft: "5px" }}
+                                    >
+                                        Refresh characters
+                                    </span>
+                                </>
+                            ) : props.failedToFetchRaidActivity ? (
                                 <>
                                     <UpdateSVG
                                         className="nav-icon should-invert"
