@@ -126,6 +126,7 @@ con.connect((err) => {
                         'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
                         'TotalLevel', totallevel,
                         'Server', server,
+						'HomeServer', homeserver,
                         'GroupId', groupid,
                         'InParty', IF(groupid = 0, 0, 1),
                         'Classes', JSON_ARRAY(
