@@ -39,6 +39,31 @@ const CurrentCountsSubtitle = (props) => {
         )?.length;
     }
 
+    function getTransferPlayersCount() {
+        return props.serverData?.Players?.filter(
+            (player) => player?.HomeServer !== props.server
+        )?.length;
+    }
+
+    // function getTransferList() {
+    //     let val = [];
+    //     props.serverData?.Players?.forEach((player) => {
+    //         if (player.HomeServer !== props.server) {
+    //             let found = false;
+    //             val.forEach((v) => {
+    //                 if (v.server === player.HomeServer) {
+    //                     v.count++;
+    //                     found = true;
+    //                 }
+    //             });
+    //             if (!found) {
+    //                 val.push({ server: player.HomeServer, count: 1 });
+    //             }
+    //         }
+    //     });
+    //     return val;
+    // }
+
     function getUniqueGroupCount() {
         let groupIds = [];
         props.serverData?.Players?.forEach((player) => {
@@ -106,6 +131,23 @@ const CurrentCountsSubtitle = (props) => {
                         %)
                     </span>{" "}
                     {getAnonymousPlayersCount() === 1 ? "is" : "are"} anonymous
+                </li>
+                <li>
+                    <span className="population-number">
+                        {getTransferPlayersCount()} (
+                        {Math.round(
+                            (100 * getTransferPlayersCount()) / getPopulation()
+                        )}
+                        %)
+                    </span>{" "}
+                    transferred from another server
+                    {/* <ul>
+                        {getTransferList().map((item) => (
+                            <li>
+                                {item.count} from {item.server}
+                            </li>
+                        ))}
+                    </ul> */}
                 </li>
             </ul>
             There {getLfmCount() == 1 ? "is" : "are"} currently{" "}
