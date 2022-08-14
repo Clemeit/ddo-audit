@@ -30,10 +30,16 @@ const Mail = () => {
         let finalLength = myTickets.length;
         if (finalLength === originalLength) {
             localStorage.setItem("my-tickets", JSON.stringify([]));
-            Log("Dismissed mail HARD", mailRef.current.ticket);
+            Log(
+                "Dismissed mail HARD",
+                `(${mailRef.current?.ticket}) ${mailRef.current?.subtitle}`
+            );
         } else {
             localStorage.setItem("my-tickets", JSON.stringify(myTickets));
-            Log("Dismissed mail", mailRef.current.ticket);
+            Log(
+                "Dismissed mail",
+                `(${mailRef.current?.ticket}) ${mailRef.current?.subtitle}`
+            );
         }
 
         setDismissed(true);
