@@ -158,9 +158,9 @@ module.exports = function (api) {
 				requestBody.tickets.forEach((ticket) => {
 					escapedTickets.push(con.escape(ticket));
 				});
-				let messageQuery = `SELECT \`datetime\`, \`ticket\`, \`comment\`, \`response\` FROM \`feedback\` WHERE ticket = ${escapedTickets.join(
+				let messageQuery = `SELECT \`datetime\`, \`ticket\`, \`comment\`, \`response\` FROM \`feedback\` WHERE (ticket = ${escapedTickets.join(
 					" OR ticket = "
-				)} AND \`resolved\` = 1 AND \`response\` IS NOT NULL ORDER BY \`feedback\`.\`datetime\` DESC LIMIT 1;`;
+				)}) AND \`resolved\` = 1 AND \`response\` IS NOT NULL ORDER BY \`feedback\`.\`datetime\` DESC LIMIT 1;`;
 				con.query(messageQuery, (err, result, fields) => {
 					if (err) {
 						reject(err);
