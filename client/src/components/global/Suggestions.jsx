@@ -22,7 +22,7 @@ const Suggestions = (props) => {
     React.useEffect(() => {
         t = setTimeout(() => {
             setDisabled(false);
-        }, 4000);
+        }, 3000);
 
         let ack = localStorage.getItem("suggestions-acknowledgement");
         if (ack) {
@@ -152,49 +152,7 @@ const Suggestions = (props) => {
                     </ContentCluster>
                 )}
                 {acknowledge && (
-                    <div>
-                        <ContentCluster
-                            title={
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        lineHeight: "30px",
-                                    }}
-                                >
-                                    <WarningSVG
-                                        style={{
-                                            width: "30px",
-                                            height: "30px",
-                                            marginRight: "10px",
-                                        }}
-                                    />
-                                    Please Note
-                                </div>
-                            }
-                            altTitle="Please Note"
-                            noLink={true}
-                            description={
-                                <span>
-                                    <p>
-                                        As a result of work and real life,{" "}
-                                        <span className="lfm-number">
-                                            I've had to significantly reduce the
-                                            amount of development time I spend
-                                            on the website.
-                                        </span>{" "}
-                                        I still take note of all the feature
-                                        requests that are being submitted, and
-                                        I'll do my best to get around to each of
-                                        them eventually! I'm currently
-                                        prioritizing bug reports. Thank you for
-                                        your understanding.
-                                    </p>
-                                    <p>Clemeit of Thelanis</p>
-                                </span>
-                            }
-                            noFade={true}
-                        />
+                    <>
                         <ContentCluster
                             title="Suggestions and Feedback"
                             description={
@@ -316,37 +274,84 @@ const Suggestions = (props) => {
                                 )}
                             </form>
                         </ContentCluster>
-                        {isSubmitted && <Poll />}
-                        <ContentCluster
-                            title="Disclaimer"
-                            description={
-                                <p
-                                    style={{
-                                        fontSize: "1.5rem",
-                                        lineHeight: "normal",
-                                        color: "var(--text)",
-                                        marginTop: "30px",
-                                    }}
-                                >
-                                    This website is in no way affiliated with,
-                                    or endorsed by, Standing Stone Games or{" "}
-                                    <a
-                                        href="https://www.daybreakgames.com/home"
-                                        rel="noreferrer"
-                                        target="_blank"
+                        {!isSubmitted && (
+                            <ContentCluster
+                                title={
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            lineHeight: "30px",
+                                        }}
                                     >
-                                        Daybreak Game Company
-                                    </a>
-                                    .{" "}
-                                    <span className="lfm-number">
-                                        Please do not submit personal
-                                        information, login details, or bug
-                                        reports related to the game.
+                                        <WarningSVG
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                marginRight: "10px",
+                                            }}
+                                        />
+                                        Please Note
+                                    </div>
+                                }
+                                altTitle="Please Note"
+                                noLink={true}
+                                description={
+                                    <span>
+                                        <p>
+                                            As a result of work and real life,{" "}
+                                            <span className="lfm-number">
+                                                I've had to significantly reduce
+                                                the amount of development time I
+                                                spend on the website.
+                                            </span>{" "}
+                                            I still take note of all the feature
+                                            requests that are being submitted,
+                                            and I'll do my best to get around to
+                                            each of them eventually! I'm
+                                            currently prioritizing bug reports.
+                                            Thank you for your understanding.
+                                        </p>
+                                        <p>Clemeit of Thelanis</p>
                                     </span>
-                                </p>
-                            }
-                        />
-                    </div>
+                                }
+                                noFade={true}
+                            />
+                        )}
+                        {isSubmitted && <Poll />}
+                        {!isSubmitted && (
+                            <ContentCluster
+                                title="Disclaimer"
+                                description={
+                                    <p
+                                        style={{
+                                            fontSize: "1.5rem",
+                                            lineHeight: "normal",
+                                            color: "var(--text)",
+                                            marginTop: "30px",
+                                        }}
+                                    >
+                                        This website is in no way affiliated
+                                        with, or endorsed by, Standing Stone
+                                        Games or{" "}
+                                        <a
+                                            href="https://www.daybreakgames.com/home"
+                                            rel="noreferrer"
+                                            target="_blank"
+                                        >
+                                            Daybreak Game Company
+                                        </a>
+                                        .{" "}
+                                        <span className="lfm-number">
+                                            Please do not submit personal
+                                            information, login details, or bug
+                                            reports related to the game.
+                                        </span>
+                                    </p>
+                                }
+                            />
+                        )}
+                    </>
                 )}
             </div>
         </div>
