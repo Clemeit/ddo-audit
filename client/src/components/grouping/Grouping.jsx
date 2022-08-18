@@ -327,46 +327,6 @@ const Grouping = () => {
                     }
                     noFade={true}
                 />
-                <ContentCluster
-                    title="Contributions"
-                    description={
-                        <>
-                            <p>
-                                A special thanks to the amazing developers over
-                                at Vault of Kundarak. Their contributions to
-                                this project made the Live LFM Viewer possible.
-                                Visit their website at{" "}
-                                <a
-                                    href="https://vaultofkundarak.com/"
-                                    rel="noreferrer"
-                                    target="_blank"
-                                >
-                                    vaultofkundarak.com
-                                </a>{" "}
-                                or drop by their{" "}
-                                <a
-                                    href="https://discord.com/invite/bfMZnbz"
-                                    rel="noreferrer"
-                                    target="_blank"
-                                >
-                                    Discord server
-                                </a>{" "}
-                                for news and updates on their projects!
-                            </p>
-                            <p
-                                style={{
-                                    fontSize: "1.5rem",
-                                    lineHeight: "normal",
-                                }}
-                            >
-                                And thank <i>you</i> for your continued support.
-                                This project is made possible by your feedback
-                                and suggestions!
-                            </p>
-                        </>
-                    }
-                    noFade={true}
-                />
                 <ContentCluster title="See Also...">
                     <div className="content-cluster-options">
                         <Link
