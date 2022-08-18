@@ -1,7 +1,6 @@
 import React from "react";
 import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
-import { ReactComponent as TimeSVG } from "../../assets/global/time.svg";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { Link } from "react-router-dom";
@@ -250,24 +249,8 @@ const Banner = (props) => {
                             Theme
                         </span>
                     </div>
-                    {/* <div
-                        className="theme-container"
-                        onClick={() => toggleTimeZone()}
-                    >
-                        <TimeSVG />
-                        <span
-                            className="hide-on-mobile"
-                            style={{ paddingLeft: "5px" }}
-                        >
-                            {getTimeZone()}
-                        </span>
-                    </div> */}
                 </div>
             </div>
-            {/* <div
-                id="content-push-top"
-                style={{ height: props.small ? "220px" : "" }}
-            /> */}
         </div>
     );
 };

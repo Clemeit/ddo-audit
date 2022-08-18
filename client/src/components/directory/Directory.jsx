@@ -15,6 +15,7 @@ import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg
 import { ReactComponent as FeedbackSVG } from "../../assets/global/feedback.svg";
 import { ReactComponent as RegisterSVG } from "../../assets/global/register.svg";
 import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
+import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
 import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
@@ -178,6 +179,21 @@ const Directory = (props) => {
     //     }
     // }, []);
 
+    function toggleTheme() {
+        let theme = localStorage.getItem("theme");
+        if (theme === "light-theme") {
+            theme = "dark";
+
+            document.body.classList.replace("light-theme", "dark-theme");
+            localStorage.setItem("theme", "dark-theme");
+        } else {
+            theme = "light";
+
+            document.body.classList.replace("dark-theme", "light-theme");
+            localStorage.setItem("theme", "light-theme");
+        }
+    }
+
     function vote(response) {
         Submit("Voted from Directory", response);
         localStorage.setItem("last-major-vote", new Date());
@@ -217,11 +233,25 @@ const Directory = (props) => {
                 showTitle={true}
                 showSubtitle={true}
                 showButtons={true}
+                hideOnMobile={true}
                 hideVote={true}
                 title="DDO Audit"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />
             <div className="content-container">
+                <div className="options-container show-on-mobile">
+                    <div
+                        className="theme-container"
+                        onClick={() => toggleTheme()}
+                    >
+                        <DarkThemeSVG className="theme-icon should-invert" />
+                        <span
+                            style={{ paddingLeft: "5px", color: "var(--text)" }}
+                        >
+                            Theme
+                        </span>
+                    </div>
+                </div>
                 <BannerMessage page="home" />
                 <div className="top-content-padding" />
                 {mayVote && (
