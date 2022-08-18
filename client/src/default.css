@@ -1738,6 +1738,11 @@ th {
 }
 
 @media (max-width: 900px) {
+    .server-status-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .mail-container {
         max-width: unset;
         min-width: unset;
