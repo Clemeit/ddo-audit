@@ -271,7 +271,6 @@ const About = (props) => {
                     <h3
                         style={{
                             marginTop: "30px",
-                            color: "var(--text-lfm-number)",
                         }}
                     >
                         Google Analytics
@@ -293,7 +292,6 @@ const About = (props) => {
                     <h3
                         style={{
                             marginTop: "30px",
-                            color: "var(--text-lfm-number)",
                         }}
                     >
                         Google Firebase
@@ -307,7 +305,6 @@ const About = (props) => {
                     <h3
                         style={{
                             marginTop: "30px",
-                            color: "var(--text-lfm-number)",
                         }}
                     >
                         Cookies
@@ -334,7 +331,6 @@ const About = (props) => {
                     <h3
                         style={{
                             marginTop: "30px",
-                            color: "var(--text-lfm-number)",
                         }}
                     >
                         Logging
