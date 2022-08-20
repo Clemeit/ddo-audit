@@ -338,7 +338,7 @@ const Grouping = () => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <RegisterSVG className="nav-icon-large should-invert" />
+                                <RegisterSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Register Characters
                                     <div className="new-tag">NEW</div>
@@ -358,7 +358,7 @@ const Grouping = () => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <TimerSVG className="nav-icon-large should-invert" />
+                                <TimerSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Raid Timers
                                     <div className="new-tag">NEW</div>

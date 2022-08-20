@@ -399,7 +399,7 @@ const About = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <ApiSVG className="nav-icon-large should-invert" />
+                                <ApiSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">API</h2>
                             </div>
                             <p className="content-option-description">
@@ -416,7 +416,7 @@ const About = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <TimelineSVG className="nav-icon-large should-invert" />
+                                <TimelineSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Timeline
                                 </h2>

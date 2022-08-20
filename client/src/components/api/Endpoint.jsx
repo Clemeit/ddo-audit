@@ -87,7 +87,7 @@ const Endpoint = (props) => {
             >
                 {!props.expanded && (
                     <ExpandSVG
-                        className="nav-icon-large should-invert"
+                        className="nav-icon should-invert"
                         style={{
                             transition: "transform 200ms",
                             flexBasis: "30px",

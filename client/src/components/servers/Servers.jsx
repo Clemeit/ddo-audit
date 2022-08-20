@@ -758,25 +758,6 @@ const Directory = (props) => {
                 </ContentCluster>
                 <ContentCluster title="See Also...">
                     <div className="content-cluster-options">
-                        {/* <Link
-                            to="/live"
-                            className="nav-box shrinkable"
-                            style={{
-                                height: "auto",
-                                minHeight: "150px",
-                            }}
-                        >
-                            <div className="nav-box-title">
-                                <LiveSVG className="nav-icon-large should-invert" />
-                                <h2 className="content-option-title">
-                                    Quick Info
-                                </h2>
-                            </div>
-                            <p className="content-option-description">
-                                Server status, most populated server, and
-                                default server.
-                            </p>
-                        </Link> */}
                         <Link
                             to="/trends"
                             className="nav-box shrinkable"
@@ -786,7 +767,7 @@ const Directory = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <TrendsSVG className="nav-icon-large should-invert" />
+                                <TrendsSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">Trends</h2>
                             </div>
                             <p className="content-option-description">

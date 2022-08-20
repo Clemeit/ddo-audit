@@ -93,7 +93,7 @@ const Community = (props) => {
                                 </p>
                                 <div className="community-box-link">
                                     <LinkSVG
-                                        className="nav-icon-large should-invert"
+                                        className="nav-icon should-invert"
                                         style={{ marginRight: "10px" }}
                                     />
                                     <span>Visit this project</span>

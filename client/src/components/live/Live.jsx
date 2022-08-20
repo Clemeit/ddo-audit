@@ -273,7 +273,7 @@ const Live = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <ServersSVG className="nav-icon-large should-invert" />
+                                <ServersSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Server Statistics
                                 </h2>
@@ -292,7 +292,7 @@ const Live = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <TrendsSVG className="nav-icon-large should-invert" />
+                                <TrendsSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">Trends</h2>
                             </div>
                             <p className="content-option-description">

@@ -35,14 +35,14 @@ const PanelSelectPopup = (props) => {
 
     const PANEL_TYPES = [
         {
-            icon: <GroupingSVG className="nav-icon-large should-invert" />,
+            icon: <GroupingSVG className="nav-icon should-invert" />,
             title: "Live LFM Viewer",
             description:
                 "Easily find groups with a live LFM panel for every server.",
             onClick: () => setPanelType("lfm"),
         },
         {
-            icon: <WhoSVG className="nav-icon-large should-invert" />,
+            icon: <WhoSVG className="nav-icon should-invert" />,
             title: "Live Who List",
             description:
                 "Explore a list of online players with a live Who panel.",

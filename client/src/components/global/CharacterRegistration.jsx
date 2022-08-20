@@ -207,7 +207,7 @@ const CharacterRegistration = () => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <TimerSVG className="nav-icon-large should-invert" />
+                                <TimerSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Raid Timers
                                 </h2>

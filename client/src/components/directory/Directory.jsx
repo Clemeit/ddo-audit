@@ -31,25 +31,21 @@ const Directory = (props) => {
             title: "Population and Activity",
             tiles: [
                 {
-                    icon: <LiveSVG className="nav-icon-large should-invert" />,
+                    icon: <LiveSVG className="nav-icon should-invert" />,
                     title: "Quick Info",
                     description:
                         "Server status, most populated server, and default server.",
                     to: "/live",
                 },
                 {
-                    icon: (
-                        <ServersSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <ServersSVG className="nav-icon should-invert" />,
                     title: "Server Statistics",
                     description:
                         "Server population, character demographics, and activity trends.",
                     to: "/servers",
                 },
                 {
-                    icon: (
-                        <QuestsSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <QuestsSVG className="nav-icon should-invert" />,
                     title: "Quest Activity",
                     description:
                         "Content popularity, average duration, and XP/minute.",
@@ -57,7 +53,7 @@ const Directory = (props) => {
                 },
                 // {
                 //     icon: (
-                //         <QuestsSVG className="nav-icon-large should-invert" />
+                //         <QuestsSVG className="nav-icon should-invert" />
                 //     ),
                 //     title: "Guild Activity",
                 //     description: "Guild size and activity.",
@@ -65,9 +61,7 @@ const Directory = (props) => {
                 //     soon: true,
                 // },
                 {
-                    icon: (
-                        <TrendsSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <TrendsSVG className="nav-icon should-invert" />,
                     title: "Population Trends",
                     description:
                         "Long-term trends, daily minimum and maximum population, and important game events.",
@@ -79,25 +73,21 @@ const Directory = (props) => {
             title: "Social Tools",
             tiles: [
                 {
-                    icon: (
-                        <GroupingSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <GroupingSVG className="nav-icon should-invert" />,
                     title: "Live LFM Viewer",
                     description:
                         "Easily find groups with a live LFM panel for every server.",
                     to: "/grouping",
                 },
                 {
-                    icon: <WhoSVG className="nav-icon-large should-invert" />,
+                    icon: <WhoSVG className="nav-icon should-invert" />,
                     title: "Live Who List",
                     description:
                         "Explore a list of online players with a live Who panel.",
                     to: "/who",
                 },
                 {
-                    icon: (
-                        <FriendsSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <FriendsSVG className="nav-icon should-invert" />,
                     title: "Friends List",
                     description:
                         "See what your friends are up to with your own Friends List.",
@@ -105,9 +95,7 @@ const Directory = (props) => {
                     new: true,
                 },
                 {
-                    icon: (
-                        <RegisterSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <RegisterSVG className="nav-icon should-invert" />,
                     title: "Register Characters",
                     description:
                         "Add your characters for automatic LFM filtering and raid timer tracking.",
@@ -115,7 +103,7 @@ const Directory = (props) => {
                     new: true,
                 },
                 {
-                    icon: <TimerSVG className="nav-icon-large should-invert" />,
+                    icon: <TimerSVG className="nav-icon should-invert" />,
                     title: "Raid Timers",
                     description: "View and manage your current raid timers.",
                     to: "/timers",
@@ -127,16 +115,14 @@ const Directory = (props) => {
             title: "Additional Resources",
             tiles: [
                 {
-                    icon: <AboutSVG className="nav-icon-large should-invert" />,
+                    icon: <AboutSVG className="nav-icon should-invert" />,
                     title: "About This Project",
                     description:
                         "Everything you wanted to know about this project, and plenty of things you didn't.",
                     to: "/about",
                 },
                 {
-                    icon: (
-                        <CommunitySVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <CommunitySVG className="nav-icon should-invert" />,
                     title: "Community Tools",
                     description:
                         "Tools developed by the community, for the community.",
@@ -144,7 +130,7 @@ const Directory = (props) => {
                     unavailable: true,
                 },
                 {
-                    icon: <ApiSVG className="nav-icon-large should-invert" />,
+                    icon: <ApiSVG className="nav-icon should-invert" />,
                     title: "API",
                     description:
                         "Look behind the curtain. Get the data for your own projects.",
@@ -152,9 +138,7 @@ const Directory = (props) => {
                     beta: true,
                 },
                 {
-                    icon: (
-                        <FeedbackSVG className="nav-icon-large should-invert" />
-                    ),
+                    icon: <FeedbackSVG className="nav-icon should-invert" />,
                     title: "Give Feedback",
                     description:
                         "Your feedback is welcome! Let me know what you think of my project.",

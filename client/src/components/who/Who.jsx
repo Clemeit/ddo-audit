@@ -200,7 +200,7 @@ const Who = (props) => {
                             }}
                         >
                             <div className="nav-box-title">
-                                <FriendsSVG className="nav-icon-large should-invert" />
+                                <FriendsSVG className="nav-icon should-invert" />
                                 <h2 className="content-option-title">
                                     Friends List
                                     <div className="new-tag">NEW</div>
