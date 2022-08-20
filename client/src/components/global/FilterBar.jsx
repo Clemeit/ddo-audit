@@ -159,6 +159,7 @@ const LfmFilterBar = (props) => {
                             className="filter-bar-item collapsible"
                             style={{
                                 marginLeft: "auto",
+                                padding: "3px 7px",
                             }}
                             onClick={() => {
                                 Log(
@@ -182,6 +183,7 @@ const LfmFilterBar = (props) => {
                                 : props.showSave
                                 ? ""
                                 : "auto",
+                            padding: "3px 7px",
                         }}
                         onClick={props.handleFilterButton}
                     >
@@ -193,10 +195,11 @@ const LfmFilterBar = (props) => {
                     {props.showNotifications && !props.minimal && (
                         <Link
                             to="/notifications"
-                            className="filter-bar-item"
+                            className="filter-bar-item collapsible"
                             style={{
                                 color: "var(--text)",
                                 textDecoration: "none",
+                                padding: "3px 7px",
                             }}
                         >
                             <NotificationSVG className="nav-icon should-invert" />
@@ -208,6 +211,11 @@ const LfmFilterBar = (props) => {
                     {!props.minimal && (
                         <div
                             className="filter-bar-item hide-on-mobile collapsible"
+                            style={{
+                                color: "var(--text)",
+                                textDecoration: "none",
+                                padding: "3px 7px",
+                            }}
                             onClick={() => {
                                 if (!fullscreen) {
                                     Log(
