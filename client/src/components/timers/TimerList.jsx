@@ -1,8 +1,6 @@
 import React from "react";
 import { Post } from "../../services/DataLoader";
-import { ReactComponent as InfoSVG } from "../../assets/global/info.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
-import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import PageMessage from "../global/PageMessage";
 import { Link } from "react-router-dom";
@@ -205,6 +203,14 @@ const TimerList = () => {
             localStorage.getItem("hidden-raid-timer-ids") || "[]"
         );
         setHiddenTimerIds(hiddenTimerIds);
+
+        $(document).on("keydown.handleEscape", function (e) {
+            if (e.key === "Escape") {
+                setShowYesNoModal(false);
+            }
+        });
+
+        return () => $(document).unbind("keydown.handleEscape");
     }, []);
 
     return (
@@ -347,7 +353,9 @@ const TimerList = () => {
                                                             style={{
                                                                 width: "5%",
                                                             }}
-                                                        ></th>
+                                                        >
+                                                            Remove
+                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

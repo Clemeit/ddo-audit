@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
-import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import Banner from "../global/Banner";
 import { Fetch } from "../../services/DataLoader";

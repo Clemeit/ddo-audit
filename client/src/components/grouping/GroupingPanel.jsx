@@ -641,6 +641,14 @@ const Panel = (props) => {
             localStorage.getItem("hidden-raid-timer-ids") || "[]"
         );
         setHiddenTimerIds(hiddenTimerIds);
+
+        $(document).on("keydown.handleEscape", function (e) {
+            if (e.key === "Escape") {
+                setFilterPanelVisible(false);
+            }
+        });
+
+        return () => $(document).unbind("keydown.handleEscape");
     }, []);
 
     // Filter bar

@@ -1,10 +1,9 @@
 import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
-import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
-import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { Log } from "../../services/CommunicationService";
-import { Fetch, Post } from "../../services/DataLoader";
+import { Post } from "../../services/DataLoader";
 import PageMessage from "./PageMessage";
+import $ from "jquery";
 
 const CharacterSelectModal = (props) => {
     const [lookupError, setLookupError] = React.useState(false);
@@ -90,6 +89,14 @@ const CharacterSelectModal = (props) => {
         if (props.lastServer) {
             setServer(props.lastServer);
         }
+
+        $(document).on("keydown.handleEscape", function (e) {
+            if (e.key === "Escape") {
+                props.close();
+            }
+        });
+
+        return () => $(document).unbind("keydown.handleEscape");
     }, []);
 
     return (
@@ -174,7 +181,9 @@ const CharacterSelectModal = (props) => {
                         }}
                     >
                         {SERVER_NAMES.map((server) => (
-                            <option value={server}>{server}</option>
+                            <option value={server} key={server}>
+                                {server}
+                            </option>
                         ))}
                     </select>
                 </label>

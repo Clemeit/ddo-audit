@@ -3,6 +3,7 @@ import { ReactComponent as InfoSVG } from "../../assets/global/info.svg";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { ReactComponent as ErrorSVG } from "../../assets/global/error.svg";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
+import $ from "jquery";
 import { Submit } from "../../services/CommunicationService";
 
 /*
@@ -26,6 +27,17 @@ const PopupMessage = (props) => {
             setVisible(false);
         }
     }, [props.message]);
+
+    React.useEffect(() => {
+        $(document).on("keydown.handleEscape", function (e) {
+            if (e.key === "Escape") {
+                props.popMessage();
+                set_userClosed(true);
+            }
+        });
+
+        return () => $(document).unbind("keydown.handleEscape");
+    }, []);
 
     function displayIcon() {
         if (!props.message) return;
