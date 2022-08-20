@@ -691,6 +691,16 @@ const Panel = (props) => {
             />
             {filterPanelVisible && (
                 <div
+                    className="clip-wrapper show-on-mobile"
+                    onClick={() => setFilterPanelVisible(false)}
+                >
+                    <div className="mobile-corner-close">
+                        <CloseSVG className="nav-icon-large should-invert" />
+                    </div>
+                </div>
+            )}
+            {filterPanelVisible && (
+                <div
                     style={{
                         position: "fixed",
                         top: "0px",
@@ -721,7 +731,7 @@ const Panel = (props) => {
                                 right: "5px",
                                 cursor: "pointer",
                             }}
-                            className="nav-icon should-invert"
+                            className="nav-icon should-invert hide-on-mobile"
                             onClick={() => setFilterPanelVisible(false)}
                         />
                         <div
