@@ -7,6 +7,7 @@ import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { Submit } from "../../services/CommunicationService";
 import { Link } from "react-router-dom";
+import $ from "jquery";
 
 const PanelSelectPopup = (props) => {
     const SERVER_NAMES = [
@@ -31,6 +32,14 @@ const PanelSelectPopup = (props) => {
         } else {
             setMayVote(false);
         }
+
+        $(document).on("keydown.handleEscape", function (e) {
+            if (e.key === "Escape") {
+                close();
+            }
+        });
+
+        return () => $(document).unbind("keydown.handleEscape");
     }, []);
 
     const PANEL_TYPES = [
