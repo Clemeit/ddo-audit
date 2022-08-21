@@ -60,6 +60,8 @@ const WhoSpecific = (props) => {
     const [panelSelectPopupVisibility, setPanelSelectPopupVisibility] =
         React.useState(false);
 
+    const [primaryFilter, setPrimaryFilter] = React.useState("");
+
     const location = useLocation().pathname.substring(
         useLocation().pathname.lastIndexOf("/") + 1
     );
@@ -78,6 +80,7 @@ const WhoSpecific = (props) => {
                     key={1}
                     triggerPopup={(message) => setPopupMessage(message)}
                     permalink={() => permalink()}
+                    bubbleFilter={(value) => setPrimaryFilter(value)}
                 />,
             ]);
         } else {
@@ -97,7 +100,9 @@ const WhoSpecific = (props) => {
                     minimal={true}
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
-                    permalink={`https://www.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}`}
+                    permalink={`https://www.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=lfm&secondaryserver=${obj.server.toLowerCase()}${
+                        primaryFilter ? "&filter=" + primaryFilter : ""
+                    }`}
                 />,
             ]);
         } else if (obj.type === "who") {
@@ -111,6 +116,7 @@ const WhoSpecific = (props) => {
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
                     permalink={`https://www.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
+                    bubbleFilter={() => {}}
                 />,
             ]);
         }

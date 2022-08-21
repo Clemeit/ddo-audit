@@ -130,6 +130,7 @@ const GroupingSpecific = (props) => {
                     closePanel={() => setOpenPanels(openPanels)}
                     triggerPopup={(message) => setPopupMessage(message)}
                     permalink={`https://www.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
+                    bubbleFilter={() => {}}
                 />,
             ]);
         }

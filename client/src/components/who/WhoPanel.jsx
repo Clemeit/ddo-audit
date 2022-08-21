@@ -134,6 +134,13 @@ const WhoPanel = (props) => {
     const [maximumLevelFilter, setMaximumLevelFilter] =
         React.useState(MAX_LEVEL);
 
+    const globalFilterRef = React.useRef(globalFilter);
+    globalFilterRef.current = globalFilter;
+
+    React.useEffect(() => {
+        props.bubbleFilter(globalFilter);
+    }, [globalFilter]);
+
     function getLink() {
         let params = "";
         if (globalFilter) {
@@ -686,7 +693,12 @@ const WhoPanel = (props) => {
                 }
                 handleSaveButton={() => download()}
                 closePanel={() => props.closePanel()}
-                permalink={props.permalink}
+                permalink={
+                    props.permalink +
+                    (globalFilterRef.current
+                        ? "&filter=" + globalFilterRef.current
+                        : "")
+                }
             />
             {filterPanelVisible && (
                 <div>
