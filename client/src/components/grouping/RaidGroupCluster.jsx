@@ -737,7 +737,7 @@ const RaidGroupCluster = (props) => {
                             <Link
                                 to={`/grouping/${server.Name.toLowerCase()}?highlight=raids`}
                                 key={i}
-                                className="nav-box shrinkable no-padding-mobile"
+                                className="nav-box shrinkable raid-box"
                                 style={{
                                     width: "100%",
                                     maxHeight: "unset",
