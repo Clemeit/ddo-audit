@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whosprite_v2.jpg";
+import PanelSprite from "../../assets/global/whosprite_v3.jpg";
 
 const CanvasWhoPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -699,6 +699,13 @@ const CanvasWhoPanel = (props) => {
                 case "Male Bladeforged":
                     xsrc = 54;
                     ysrc = 72;
+                    break;
+                case "Male Tabaxi":
+                case "Female Tabaxi":
+                case "Male Tabaxi Trailblazer":
+                case "Female Tabaxi Trailblazer":
+                    xsrc = 90;
+                    ysrc = 36;
                     break;
                 default:
                     xsrc = 72;
