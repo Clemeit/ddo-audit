@@ -1248,8 +1248,7 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                (member.Classes[c].Name !== "Epic" ||
-                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Epic" &&
                                 member.Classes[c].Name !== "Legendary"
                             ) {
                                 // First pass for icons
@@ -1290,8 +1289,7 @@ const CanvasLfmPanel = (props) => {
                     ) {
                         for (let c = 0; c < member.Classes.length; c++) {
                             if (
-                                (member.Classes[c].Name !== "Epic" ||
-                                    props.showEpicClass) &&
+                                member.Classes[c].Name !== "Epic" &&
                                 member.Classes[c].Name !== "Legendary"
                             ) {
                                 // Second pass for levels

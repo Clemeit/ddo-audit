@@ -60,7 +60,6 @@ const Panel = (props) => {
     const [showQuestTips, setShowQuestTips] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
-    const [showEpicClass, setShowEpicClass] = React.useState(false);
     const [showRaidTimerIndicator, setShowRaidTimerIndicator] =
         React.useState(false);
     const [filterBasedOnMyLevel, setFilterBasedOnMyLevel] =
@@ -632,11 +631,6 @@ const Panel = (props) => {
                 : false
         );
 
-        let showepicclass = localStorage.getItem("show-epic-class");
-        setShowEpicClass(
-            showepicclass !== null ? showepicclass === "true" : false
-        );
-
         const hiddenTimerIds = JSON.parse(
             localStorage.getItem("hidden-raid-timer-ids") || "[]"
         );
@@ -1117,30 +1111,6 @@ const Panel = (props) => {
                                 <label className="filter-panel-group-option">
                                     <input
                                         className="input-radio"
-                                        name="showepicclass"
-                                        type="checkbox"
-                                        checked={showEpicClass}
-                                        onChange={() => {
-                                            if (!props.minimal) {
-                                                localStorage.setItem(
-                                                    "show-epic-class",
-                                                    !showEpicClass
-                                                );
-                                            }
-                                            Log(
-                                                "Clicked Show Epic Class",
-                                                !showEpicClass
-                                                    ? "true"
-                                                    : "false"
-                                            );
-                                            setShowEpicClass(!showEpicClass);
-                                        }}
-                                    />
-                                    Show Epic Class
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
                                         name="completionpercentage"
                                         type="checkbox"
                                         checked={showCompletionPercentage}
@@ -1274,7 +1244,6 @@ const Panel = (props) => {
                         showMemberCount={showMemberCount}
                         showQuestGuesses={showQuestGuesses}
                         showQuestTips={showQuestTips}
-                        showEpicClass={showEpicClass}
                         sortAscending={sortAscending}
                         showEligibleCharacters={showEligibleCharacters}
                         showGuildNames={showGuildNames}
