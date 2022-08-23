@@ -360,31 +360,36 @@ const CanvasLfmPanel = (props) => {
                     ctx.fillStyle = gradient;
                     ctx.fillRect(26, top, 802, lfmheight);
 
-                    gradient = ctx.createLinearGradient(
-                        0,
-                        top,
-                        0,
-                        top + lfmheight
-                    );
-                    gradient.addColorStop(
-                        0,
-                        props.highVisibility ? "#30301e" : "#3b3b25"
-                    );
-                    gradient.addColorStop(
-                        0.25,
-                        props.highVisibility ? "#42402a" : "#4c4a31"
-                    );
-                    gradient.addColorStop(
-                        0.75,
-                        props.highVisibility ? "#42402a" : "#4c4a31"
-                    );
-                    gradient.addColorStop(
-                        1,
-                        props.highVisibility ? "#30301e" : "#3b3b25"
-                    );
+                    if (group.Eligible) {
+                        gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            0,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(
+                            0,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        gradient.addColorStop(
+                            0.25,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            0.75,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            1,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
 
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                    } else {
+                        ctx.fillStyle = "#150a06";
+                        ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                    }
                 } else if (
                     group.Quest?.GroupSize === "Raid" &&
                     highlightRaids
