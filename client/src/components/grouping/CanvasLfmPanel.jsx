@@ -1584,7 +1584,7 @@ const CanvasLfmPanel = (props) => {
             ctx.textAlign = "center";
             ctx.font = "italic 15px Arial";
             ctx.fillText(
-                "Double-Click to open the Wiki page",
+                "Double-click to open the Wiki page",
                 cursorPosition[0] + 175,
                 cursorPosition[1] + 3 + 20 * row - 10
             );

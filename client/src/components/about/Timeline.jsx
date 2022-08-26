@@ -103,7 +103,7 @@ const Timeline = (props) => {
                     <DevEvent
                         title="February 9, 2022 - Addressing User Feedback"
                         events={[
-                            "Added the 'Double-Click to open the Wiki page' feature to the LFM panel",
+                            "Added the 'Double-click to open the Wiki page' feature to the LFM panel",
                         ]}
                         color="var(--text-lfm-number)"
                     />
