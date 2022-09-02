@@ -3,7 +3,9 @@ require("dotenv").config();
 const { isPlayerActive } = require("../ActivePredicate");
 
 exports.runClassDistribution = (players, classes, reporttype) => {
+	const PURE_CLASS_REPORT = false;
 	const IGNORE_DOWNTIME = true;
+	const NORMALIZED = true;
 	const SERVER_NAMES = [
 		"Argonnessen",
 		"Cannith",
@@ -63,6 +65,20 @@ exports.runClassDistribution = (players, classes, reporttype) => {
 			HardcoreColor: "hsl(60, 70%, 44%)",
 		});
 	});
+
+	function isPure(classes) {
+		let pure = true;
+		for (let i = 1; i < classes.length; i++) {
+			if (classes[i] == null) {
+				continue;
+			} else {
+				if (classes[i] !== "Epic" && classes[i] !== "Legendary") {
+					pure = false;
+				}
+			}
+		}
+		return pure;
+	}
 
 	players.forEach(
 		({
@@ -126,21 +142,28 @@ exports.runClassDistribution = (players, classes, reporttype) => {
 					if (level4 > level3) primaryclass = class4_n;
 				}
 
-				output.forEach((c) => {
-					if (c.Class == primaryclass) {
-						c[server]++;
-					}
-				});
-				counts[server]++;
+				if (
+					!PURE_CLASS_REPORT ||
+					isPure([class1_n, class2_n, class3_n, class4_n])
+				) {
+					output.forEach((c) => {
+						if (c.Class == primaryclass) {
+							c[server]++;
+						}
+					});
+					counts[server]++;
+				}
 			}
 		}
 	);
 
-	output.forEach((c) => {
-		SERVER_NAMES.forEach((s) => {
-			c[s] = Math.round((c[s] / counts[s]) * 10000) / 100;
+	if (NORMALIZED) {
+		output.forEach((c) => {
+			SERVER_NAMES.forEach((s) => {
+				c[s] = Math.round((c[s] / counts[s]) * 10000) / 100;
+			});
 		});
-	});
+	}
 
 	fs.writeFile(
 		`../api_v1/demographics/classdistributionquarter${
