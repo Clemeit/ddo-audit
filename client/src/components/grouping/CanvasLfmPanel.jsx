@@ -1215,10 +1215,15 @@ const CanvasLfmPanel = (props) => {
 
                     // Location
                     if (member.Location != null) {
+                        let wrappedlocation = wrapText(
+                            member.Location.Name,
+                            240
+                        );
                         ctx.font = 12 + "px 'Trebuchet MS'";
                         ctx.textAlign = "center";
                         ctx.fillText(
-                            member.Location.Name,
+                            wrappedlocation[0] +
+                                (wrappedlocation.length > 1 ? "..." : ""),
                             cursorPosition[0] + 102,
                             cursorPosition[1] +
                                 3 +
