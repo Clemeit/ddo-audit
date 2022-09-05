@@ -895,7 +895,7 @@ body {
 
 .primary-button:hover,
 .secondary-button:hover {
-    box-shadow: 0px 0px 10px 0px var(--white);
+    box-shadow: 0px 0px 10px 0px var(--primary-button-background);
 }
 
 .primary-button.should-invert:hover,
@@ -904,16 +904,25 @@ body {
 }
 
 .primary-button.disabled {
-    color: var(--text-faded);
+    color: var(--text-faded) !important;
+    border-color: var(--text-faded) !important;
     box-shadow: none !important;
     cursor: default;
     opacity: 0.6;
 }
 
 .secondary-button.disabled {
-    color: var(--text-faded);
+    color: var(--text-faded) !important;
+    border-color: var(--text-faded) !important;
     box-shadow: none !important;
     cursor: default;
+}
+
+.secondary-button.selected {
+    background-color: var(--primary-button-background);
+    color: var(--text-inverted) !important;
+    cursor: default !important;
+    box-shadow: none !important;
 }
 
 @media (max-width: 350px) {

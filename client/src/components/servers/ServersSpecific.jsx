@@ -415,7 +415,7 @@ const ServersSpecific = () => {
                         legendLeft="LFM Count"
                         data={dailyLfmDistribution}
                         noAnim={true}
-                        display="Grouped"
+                        display="grouped"
                         straightLegend={true}
                         legendOffset={40}
                         dataIncludesColors={true}

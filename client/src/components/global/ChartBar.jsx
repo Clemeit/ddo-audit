@@ -146,7 +146,7 @@ const ChartBar = (props) => {
                         groupMode={
                             isMobile
                                 ? ""
-                                : props.display === "Grouped"
+                                : props.display === "grouped"
                                 ? "grouped"
                                 : ""
                         }

@@ -14,6 +14,7 @@ import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 import ChartBar from "../global/ChartBar";
 import { Log } from "../../services/CommunicationService";
+import ToggleButton from "../global/ToggleButton";
 
 // no-change
 
@@ -160,6 +161,11 @@ const Directory = (props) => {
         React.useState(false);
     const [raceDistributionDataBanks, setRaceDistributionDataBanks] =
         React.useState(false);
+
+    const [dailyDistributionDisplay, setDailyDistributionDisplay] =
+        React.useState("grouped");
+    const [classDistributionDisplay, setClassDistributionDisplay] =
+        React.useState("grouped");
 
     const [timeNowEvent, setTimeNowEvent] = React.useState([]);
 
@@ -448,30 +454,33 @@ const Directory = (props) => {
                                     : "LFM"
                             } distribution across the servers over the
                             last 90 days.`}
-                            <br />
-                            <span
-                                className="faux-link"
-                                onClick={() => {
-                                    setServerDistributionType(
-                                        serverDistributionType === "population"
-                                            ? "groups"
-                                            : "population"
-                                    );
-                                    Log(
-                                        "Switched between population/LFMs",
-                                        "Server pie chart"
-                                    );
-                                }}
-                            >
-                                Click here to switch to{" "}
-                                {serverDistributionType === "population"
-                                    ? "LFM"
-                                    : "population"}{" "}
-                                data
-                            </span>
                         </span>
                     }
                 >
+                    <ToggleButton
+                        textA="Population data"
+                        textB="LFM data"
+                        isA={serverDistributionType === "population"}
+                        isB={serverDistributionType === "groups"}
+                        doA={() => {
+                            if (serverDistributionType === "groups") {
+                                setServerDistributionType("population");
+                                Log(
+                                    "Switched between population/LFMs",
+                                    "Server pie chart"
+                                );
+                            }
+                        }}
+                        doB={() => {
+                            if (serverDistributionType === "population") {
+                                setServerDistributionType("groups");
+                                Log(
+                                    "Switched between population/LFMs",
+                                    "Server pie chart"
+                                );
+                            }
+                        }}
+                    />
                     <ChartPie
                         data={serverDistributionData}
                         noAnim={true}
@@ -501,30 +510,33 @@ const Directory = (props) => {
                                     ? "Population"
                                     : "LFM count"
                             } for each hour of the day.`}
-                            <br />
-                            <span
-                                className="faux-link"
-                                onClick={() => {
-                                    setHourlyDistributionType(
-                                        hourlyDistributionType === "population"
-                                            ? "groups"
-                                            : "population"
-                                    );
-                                    Log(
-                                        "Switched between population/LFMs",
-                                        "Server hourly distribution"
-                                    );
-                                }}
-                            >
-                                Click here to switch to{" "}
-                                {hourlyDistributionType === "population"
-                                    ? "LFM"
-                                    : "population"}{" "}
-                                data
-                            </span>
                         </span>
                     }
                 >
+                    <ToggleButton
+                        textA="Population data"
+                        textB="LFM data"
+                        isA={hourlyDistributionType === "population"}
+                        isB={hourlyDistributionType === "groups"}
+                        doA={() => {
+                            if (hourlyDistributionType === "groups") {
+                                setHourlyDistributionType("population");
+                                Log(
+                                    "Switched between population/LFMs",
+                                    "Server hourly distribution"
+                                );
+                            }
+                        }}
+                        doB={() => {
+                            if (hourlyDistributionType === "population") {
+                                setHourlyDistributionType("groups");
+                                Log(
+                                    "Switched between population/LFMs",
+                                    "Server hourly distribution"
+                                );
+                            }
+                        }}
+                    />
                     <ChartLine
                         keys={null}
                         indexBy={null}
@@ -568,30 +580,54 @@ const Directory = (props) => {
                                     ? "Population"
                                     : "LFM count"
                             } for each day of the week.`}
-                            <br />
-                            <span
-                                className="faux-link"
-                                onClick={() => {
-                                    setDailyDistributionType(
-                                        dailyDistributionType === "population"
-                                            ? "groups"
-                                            : "population"
-                                    );
+                        </span>
+                    }
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "10px",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        <ToggleButton
+                            textA="Population data"
+                            textB="LFM data"
+                            isA={dailyDistributionType === "population"}
+                            isB={dailyDistributionType === "groups"}
+                            doA={() => {
+                                if (dailyDistributionType === "groups") {
+                                    setDailyDistributionType("population");
                                     Log(
                                         "Switched between population/LFMs",
                                         "Server daily distribution"
                                     );
-                                }}
-                            >
-                                Click here to switch to{" "}
-                                {dailyDistributionType === "population"
-                                    ? "LFM"
-                                    : "population"}{" "}
-                                data
-                            </span>
-                        </span>
-                    }
-                >
+                                }
+                            }}
+                            doB={() => {
+                                if (dailyDistributionType === "population") {
+                                    setDailyDistributionType("groups");
+                                    Log(
+                                        "Switched between population/LFMs",
+                                        "Server daily distribution"
+                                    );
+                                }
+                            }}
+                        />
+                        <ToggleButton
+                            className="hide-on-mobile"
+                            textA="Grouped"
+                            textB="Stacked"
+                            isA={dailyDistributionDisplay === "grouped"}
+                            isB={dailyDistributionDisplay === "stacked"}
+                            doA={() => {
+                                setDailyDistributionDisplay("grouped");
+                            }}
+                            doB={() => {
+                                setDailyDistributionDisplay("stacked");
+                            }}
+                        />
+                    </div>
                     <ChartBar
                         keys={[...SERVER_NAMES]}
                         indexBy="Day"
@@ -603,7 +639,7 @@ const Directory = (props) => {
                         }
                         data={dailyDistributionData}
                         noAnim={true}
-                        display="Grouped"
+                        display={dailyDistributionDisplay}
                         straightLegend={true}
                         legendOffset={40}
                         dataIncludesColors={true}
@@ -702,6 +738,19 @@ const Directory = (props) => {
                         </>
                     }
                 >
+                    <ToggleButton
+                        className="hide-on-mobile"
+                        textA="Grouped"
+                        textB="Stacked"
+                        isA={classDistributionDisplay === "grouped"}
+                        isB={classDistributionDisplay === "stacked"}
+                        doA={() => {
+                            setClassDistributionDisplay("grouped");
+                        }}
+                        doB={() => {
+                            setClassDistributionDisplay("stacked");
+                        }}
+                    />
                     <ChartBar
                         keys={[...SERVER_NAMES]}
                         indexBy="Class"
@@ -709,7 +758,7 @@ const Directory = (props) => {
                         legendLeft="Population Percentage"
                         data={classDistributionData}
                         noAnim={true}
-                        display="Grouped"
+                        display={classDistributionDisplay}
                         straightLegend={true}
                         legendOffset={40}
                         dataIncludesColors={true}
