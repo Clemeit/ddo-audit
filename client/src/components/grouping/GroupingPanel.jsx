@@ -442,9 +442,8 @@ const Panel = (props) => {
                 if (character.RaidActivity) {
                     character.RaidActivity.forEach((raid) => {
                         if (
-                            group.Quest.Name.toLowerCase().includes(
-                                raid.name.toLowerCase()
-                            ) &&
+                            (raid.questid === group.Quest.Id ||
+                                raid.questid === group.Quest.AltId) &&
                             raid.remaining &&
                             character.Server === props.server
                         ) {
