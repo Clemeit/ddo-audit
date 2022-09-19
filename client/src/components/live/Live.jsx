@@ -13,6 +13,7 @@ import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import ToggleButton from "../global/ToggleButton";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
@@ -226,29 +227,21 @@ const Live = (props) => {
                             <PlayerAndLfmSubtitle
                                 data={playerAndLFMCountData}
                             />
-                            <span
-                                className="faux-link"
-                                onClick={() => {
-                                    setPopulation24HoursType(
-                                        population24HoursType === "population"
-                                            ? "groups"
-                                            : "population"
-                                    );
-                                    Log(
-                                        "Switched between population/LFMs",
-                                        "Live"
-                                    );
-                                }}
-                            >
-                                Click here to switch to{" "}
-                                {population24HoursType === "population"
-                                    ? "LFM"
-                                    : "population"}{" "}
-                                data
-                            </span>
                         </span>
                     }
                 >
+                    <ToggleButton
+                        textA="Population data"
+                        textB="LFM data"
+                        isA={population24HoursType === "population"}
+                        isB={population24HoursType === "groups"}
+                        doA={() => {
+                            setPopulation24HoursType("population");
+                        }}
+                        doB={() => {
+                            setPopulation24HoursType("groups");
+                        }}
+                    />
                     <ChartLine
                         data={population24HoursData}
                         trendType="day"
