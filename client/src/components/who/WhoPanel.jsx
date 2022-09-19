@@ -64,6 +64,8 @@ const WhoPanel = (props) => {
         true,
         true,
     ]);
+    const classFilterStatesRef = React.useRef(classFilterStates);
+    classFilterStatesRef.current = classFilterStates;
     const CLASS_NAMES = [
         "fighter",
         "paladin",
@@ -181,32 +183,18 @@ const WhoPanel = (props) => {
 
     function isEveryClassChecked() {
         let result = true;
-        classFilterStates.forEach((state) => {
+        classFilterStatesRef.current.forEach((state) => {
             if (!state) result = false;
         });
-        // console.log(result);
         return result;
     }
 
     function handleAnyClass() {
-        setClassFilterStates([
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-        ]);
-        // }
+        if (isEveryClassChecked()) {
+            setClassFilterStates(Array(15).fill(false));
+        } else {
+            setClassFilterStates(Array(15).fill(true));
+        }
     }
 
     function handleIncludeRegion() {
