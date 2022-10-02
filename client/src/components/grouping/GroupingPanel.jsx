@@ -883,13 +883,7 @@ const Panel = (props) => {
                                             );
                                         }}
                                     />
-                                    Filter groups based on my current level{" "}
-                                    <span
-                                        className="new-tag small"
-                                        style={{ marginLeft: "7px" }}
-                                    >
-                                        NEW
-                                    </span>
+                                    Filter groups based on my current level
                                 </label>
                                 {filterBasedOnMyLevel && (
                                     <label
@@ -1082,13 +1076,7 @@ const Panel = (props) => {
                                             );
                                         }}
                                     />
-                                    Show Raid Timer Indicator{" "}
-                                    <span
-                                        className="new-tag small"
-                                        style={{ marginLeft: "7px" }}
-                                    >
-                                        NEW
-                                    </span>
+                                    Show Raid Timer Indicator
                                 </label>
                                 {showRaidTimerIndicator &&
                                     myCharacters.length === 0 && (
@@ -1213,13 +1201,7 @@ const Panel = (props) => {
                                             setShowGuildNames(!showGuildNames);
                                         }}
                                     />
-                                    Show Character Guild Names{" "}
-                                    <span
-                                        className="new-tag small"
-                                        style={{ marginLeft: "7px" }}
-                                    >
-                                        NEW
-                                    </span>
+                                    Show Character Guild Names
                                 </label>
                             </div>
                         </ContentCluster>
