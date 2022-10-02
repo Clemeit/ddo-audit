@@ -1756,10 +1756,10 @@ const CanvasLfmPanel = (props) => {
                 }
             }
 
-            let skullpattern1 = /r(\d+\+?)/;
+            let skullpattern1 = /\br(\d+\+?)[\b]?/;
             let skullpattern2 = /reaper (\d+\+?)/;
             let skullpattern3 = /(\d+\+?) skull/;
-            let skullpattern4 = /(r\+)/;
+            let skullpattern4 = /\b(r\+)[\b]?/;
 
             let skullcount = 0;
             if (skullpattern1.test(sanitized)) {
@@ -1778,7 +1778,6 @@ const CanvasLfmPanel = (props) => {
             }
 
             if (skullpattern4.test(sanitized)) {
-                let num = skullpattern4.exec(sanitized);
                 skullcount = "1+";
             }
 
