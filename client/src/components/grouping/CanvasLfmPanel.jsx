@@ -1,6 +1,7 @@
 import React from "react";
 import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
 import PumpkinSprite from "../../assets/global/pumpkins.png";
+import CobwebSprite from "../../assets/global/cobweb.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
 import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
 
@@ -12,6 +13,7 @@ const CanvasLfmPanel = (props) => {
 
     const EVENT_THEME = isSpookyTime();
     const pumpkinRef = React.useRef(null);
+    const cobwebRef = React.useRef(null);
     const wallRef = React.useRef(null);
     const wallDarkRef = React.useRef(null);
 
@@ -30,6 +32,7 @@ const CanvasLfmPanel = (props) => {
 
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
     const [isPumpkinLoaded, setIsPumpkinLoaded] = React.useState(false);
+    const [isCobwebLoaded, setIsCobwebLoaded] = React.useState(false);
     const [isWallLoaded, setIsWallLoaded] = React.useState(false);
     const [isWallDarkLoaded, setIsWallDarkLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
@@ -227,7 +230,10 @@ const CanvasLfmPanel = (props) => {
 
         if (
             EVENT_THEME === "revels" &&
-            (!isPumpkinLoaded || !isWallLoaded || !isWallDarkLoaded)
+            (!isPumpkinLoaded ||
+                !isWallLoaded ||
+                !isWallDarkLoaded ||
+                !isCobwebLoaded)
         ) {
             return;
         }
@@ -238,6 +244,7 @@ const CanvasLfmPanel = (props) => {
 
         const sprite = spriteRef.current;
         const pumpkins = pumpkinRef.current;
+        const cobweb = cobwebRef.current;
         const wall = wallRef.current;
         const wallDark = wallDarkRef.current;
 
@@ -381,6 +388,7 @@ const CanvasLfmPanel = (props) => {
                         ctx.drawImage(wallDark, 26, top, 802, lfmheight);
                     }
 
+                    ctx.globalAlpha = group.Eligible ? 1 : 0.5;
                     if (
                         SPOOKY_WORDS.filter((word) =>
                             group.Comment.toLowerCase().includes(word)
@@ -444,6 +452,44 @@ const CanvasLfmPanel = (props) => {
                             );
                         }
                     }
+
+                    const COBWEB_VALUE =
+                        group.Leader.Name.length + group.Quest?.Name?.length;
+
+                    if (COBWEB_VALUE % 6 === 0) {
+                        // Draw cobweb
+                        ctx.globalAlpha = group.Eligible ? 0.4 : 0.2;
+                        if (COBWEB_VALUE % 4 === 0) {
+                            ctx.drawImage(
+                                cobweb,
+                                0,
+                                0,
+                                80,
+                                88,
+                                525,
+                                45 + lfmHeight * index + 28,
+                                80,
+                                88
+                            );
+                        } else {
+                            ctx.translate(525, 45 + lfmHeight * index + 28);
+                            ctx.rotate(-(90 * Math.PI) / 180);
+                            ctx.drawImage(
+                                cobweb,
+                                0,
+                                0,
+                                80,
+                                88,
+                                -78,
+                                -149,
+                                80,
+                                88
+                            );
+                            ctx.rotate((90 * Math.PI) / 180);
+                            ctx.translate(-525, -(45 + lfmHeight * index + 28));
+                        }
+                    }
+                    ctx.globalAlpha = 1;
                 } else {
                     if (isFeytwisted(group)) {
                         let gradient = ctx.createLinearGradient(
@@ -2160,6 +2206,14 @@ const CanvasLfmPanel = (props) => {
                     ref={pumpkinRef}
                     src={PumpkinSprite}
                     onLoad={() => setIsPumpkinLoaded(true)}
+                    style={{ display: "none" }}
+                />
+            )}
+            {EVENT_THEME === "revels" && (
+                <img
+                    ref={cobwebRef}
+                    src={CobwebSprite}
+                    onLoad={() => setIsCobwebLoaded(true)}
                     style={{ display: "none" }}
                 />
             )}
