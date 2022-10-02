@@ -1,11 +1,19 @@
 import React from "react";
 import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
+import PumpkinSprite from "../../assets/global/pumpkins.png";
+import WallSprite from "../../assets/global/stone_wall.jpg";
+import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
     const canvasRef = React.useRef(null);
     const spriteRef = React.useRef(null);
     const MINIMUM_LFM_COUNT = 6;
+
+    const EVENT_THEME = isSpookyTime();
+    const pumpkinRef = React.useRef(null);
+    const wallRef = React.useRef(null);
+    const wallDarkRef = React.useRef(null);
 
     const JOIN_REQUEST_MESSAGES = [
         "You'll have to log in to join {0}",
@@ -18,7 +26,12 @@ const CanvasLfmPanel = (props) => {
         "nope.",
     ];
 
+    const SPOOKY_WORDS = ["night", "revel", "mabar", "key", "delera", "spooky"];
+
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
+    const [isPumpkinLoaded, setIsPumpkinLoaded] = React.useState(false);
+    const [isWallLoaded, setIsWallLoaded] = React.useState(false);
+    const [isWallDarkLoaded, setIsWallDarkLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
     // let [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
     let [groupSelection, setGroupSelection] = React.useState({
@@ -40,6 +53,14 @@ const CanvasLfmPanel = (props) => {
     const lfmHeight = 90;
     const CLASS_COUNT = 15;
     let lastclickRef = React.useRef(0);
+
+    function isSpookyTime() {
+        let dt = new Date();
+        if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+            return "revels";
+        }
+        return "";
+    }
 
     function HandleMouseOnCanvas(e) {
         let rect = e.target.getBoundingClientRect();
@@ -204,11 +225,21 @@ const CanvasLfmPanel = (props) => {
             return;
         }
 
+        if (
+            EVENT_THEME === "revels" &&
+            (!isPumpkinLoaded || !isWallLoaded || !isWallDarkLoaded)
+        ) {
+            return;
+        }
+
         // Render canvas
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d", { alpha: false });
 
         const sprite = spriteRef.current;
+        const pumpkins = pumpkinRef.current;
+        const wall = wallRef.current;
+        const wallDark = wallDarkRef.current;
 
         if (groupSelection.doubleClick) {
             if (
@@ -343,127 +374,199 @@ const CanvasLfmPanel = (props) => {
                     lfmheight = lfmHeight;
                 }
 
-                if (isFeytwisted(group)) {
-                    let gradient = ctx.createLinearGradient(
-                        0,
-                        top,
-                        panelWidth,
-                        top + lfmheight
-                    );
-                    gradient.addColorStop(0, "#a11d1d");
-                    gradient.addColorStop(0.2, "#a1a11d");
-                    gradient.addColorStop(0.4, "#1da11f");
-                    gradient.addColorStop(0.6, "#1d9aa1");
-                    gradient.addColorStop(0.8, "#1d1da1");
-                    gradient.addColorStop(1, "#8f1da1");
-
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(26, top, 802, lfmheight);
-
+                if (EVENT_THEME === "revels") {
                     if (group.Eligible) {
-                        gradient = ctx.createLinearGradient(
-                            0,
-                            top,
-                            0,
-                            top + lfmheight
-                        );
-                        gradient.addColorStop(
-                            0,
-                            props.highVisibility ? "#30301e" : "#3b3b25"
-                        );
-                        gradient.addColorStop(
-                            0.25,
-                            props.highVisibility ? "#42402a" : "#4c4a31"
-                        );
-                        gradient.addColorStop(
-                            0.75,
-                            props.highVisibility ? "#42402a" : "#4c4a31"
-                        );
-                        gradient.addColorStop(
-                            1,
-                            props.highVisibility ? "#30301e" : "#3b3b25"
-                        );
-
-                        ctx.fillStyle = gradient;
-                        ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                        ctx.drawImage(wall, 26, top, 802, lfmheight);
                     } else {
-                        ctx.fillStyle = "#150a06";
-                        ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-                    }
-                } else if (
-                    group.Quest?.GroupSize === "Raid" &&
-                    highlightRaids
-                ) {
-                    let gradient = ctx.createLinearGradient(
-                        0,
-                        top,
-                        panelWidth,
-                        top + lfmheight
-                    );
-                    gradient.addColorStop(0, "#1da1a1");
-                    gradient.addColorStop(1, "#1d6ca1");
-
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(26, top, 802, lfmheight);
-
-                    if (group.Eligible) {
-                        gradient = ctx.createLinearGradient(
-                            0,
-                            top,
-                            0,
-                            top + lfmheight
-                        );
-                        gradient.addColorStop(
-                            0,
-                            props.highVisibility ? "#30301e" : "#3b3b25"
-                        );
-                        gradient.addColorStop(
-                            0.25,
-                            props.highVisibility ? "#42402a" : "#4c4a31"
-                        );
-                        gradient.addColorStop(
-                            0.75,
-                            props.highVisibility ? "#42402a" : "#4c4a31"
-                        );
-                        gradient.addColorStop(
-                            1,
-                            props.highVisibility ? "#30301e" : "#3b3b25"
-                        );
-                        ctx.fillStyle = gradient;
-                    } else {
-                        ctx.fillStyle = "#150a06";
+                        ctx.drawImage(wallDark, 26, top, 802, lfmheight);
                     }
 
-                    ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-                } else if (group.Eligible) {
-                    let gradient = ctx.createLinearGradient(
-                        0,
-                        top,
-                        0,
-                        top + lfmheight
-                    );
-                    gradient.addColorStop(
-                        0,
-                        props.highVisibility ? "#30301e" : "#3b3b25"
-                    );
-                    gradient.addColorStop(
-                        0.25,
-                        props.highVisibility ? "#42402a" : "#4c4a31"
-                    );
-                    gradient.addColorStop(
-                        0.75,
-                        props.highVisibility ? "#42402a" : "#4c4a31"
-                    );
-                    gradient.addColorStop(
-                        1,
-                        props.highVisibility ? "#30301e" : "#3b3b25"
-                    );
-
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(26, top, 802, lfmheight);
+                    if (
+                        SPOOKY_WORDS.filter((word) =>
+                            group.Comment.toLowerCase().includes(word)
+                        ).length ||
+                        group.Leader.Location?.Name?.toLowerCase().includes(
+                            "revels"
+                        )
+                    ) {
+                        if (group.Leader.Name.length % 2 === 0) {
+                            ctx.drawImage(
+                                pumpkins,
+                                0,
+                                0,
+                                93,
+                                60,
+                                280,
+                                73 + lfmHeight * index + 28,
+                                93,
+                                60
+                            );
+                        } else {
+                            ctx.drawImage(
+                                pumpkins,
+                                93,
+                                0,
+                                54,
+                                60,
+                                315,
+                                73 + lfmHeight * index + 28,
+                                54,
+                                60
+                            );
+                        }
+                    } else if (
+                        group.Comment.length > 0 &&
+                        group.Comment.length % 4 === 0
+                    ) {
+                        if (group.Leader.Name.length % 4 === 0) {
+                            ctx.drawImage(
+                                pumpkins,
+                                0,
+                                0,
+                                93,
+                                60,
+                                280,
+                                73 + lfmHeight * index + 28,
+                                93,
+                                60
+                            );
+                        } else {
+                            ctx.drawImage(
+                                pumpkins,
+                                93,
+                                0,
+                                54,
+                                60,
+                                315,
+                                73 + lfmHeight * index + 28,
+                                54,
+                                60
+                            );
+                        }
+                    }
                 } else {
-                    ctx.fillStyle = "#150a06";
-                    ctx.fillRect(26, top, 802, lfmheight);
+                    if (isFeytwisted(group)) {
+                        let gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            panelWidth,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(0, "#a11d1d");
+                        gradient.addColorStop(0.2, "#a1a11d");
+                        gradient.addColorStop(0.4, "#1da11f");
+                        gradient.addColorStop(0.6, "#1d9aa1");
+                        gradient.addColorStop(0.8, "#1d1da1");
+                        gradient.addColorStop(1, "#8f1da1");
+
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(26, top, 802, lfmheight);
+
+                        if (group.Eligible) {
+                            gradient = ctx.createLinearGradient(
+                                0,
+                                top,
+                                0,
+                                top + lfmheight
+                            );
+                            gradient.addColorStop(
+                                0,
+                                props.highVisibility ? "#30301e" : "#3b3b25"
+                            );
+                            gradient.addColorStop(
+                                0.25,
+                                props.highVisibility ? "#42402a" : "#4c4a31"
+                            );
+                            gradient.addColorStop(
+                                0.75,
+                                props.highVisibility ? "#42402a" : "#4c4a31"
+                            );
+                            gradient.addColorStop(
+                                1,
+                                props.highVisibility ? "#30301e" : "#3b3b25"
+                            );
+
+                            ctx.fillStyle = gradient;
+                            ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                        } else {
+                            ctx.fillStyle = "#150a06";
+                            ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                        }
+                    } else if (
+                        group.Quest?.GroupSize === "Raid" &&
+                        highlightRaids
+                    ) {
+                        let gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            panelWidth,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(0, "#1da1a1");
+                        gradient.addColorStop(1, "#1d6ca1");
+
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(26, top, 802, lfmheight);
+
+                        if (group.Eligible) {
+                            gradient = ctx.createLinearGradient(
+                                0,
+                                top,
+                                0,
+                                top + lfmheight
+                            );
+                            gradient.addColorStop(
+                                0,
+                                props.highVisibility ? "#30301e" : "#3b3b25"
+                            );
+                            gradient.addColorStop(
+                                0.25,
+                                props.highVisibility ? "#42402a" : "#4c4a31"
+                            );
+                            gradient.addColorStop(
+                                0.75,
+                                props.highVisibility ? "#42402a" : "#4c4a31"
+                            );
+                            gradient.addColorStop(
+                                1,
+                                props.highVisibility ? "#30301e" : "#3b3b25"
+                            );
+                            ctx.fillStyle = gradient;
+                        } else {
+                            ctx.fillStyle = "#150a06";
+                        }
+
+                        ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+                    } else if (group.Eligible) {
+                        let gradient = ctx.createLinearGradient(
+                            0,
+                            top,
+                            0,
+                            top + lfmheight
+                        );
+                        gradient.addColorStop(
+                            0,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+                        gradient.addColorStop(
+                            0.25,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            0.75,
+                            props.highVisibility ? "#42402a" : "#4c4a31"
+                        );
+                        gradient.addColorStop(
+                            1,
+                            props.highVisibility ? "#30301e" : "#3b3b25"
+                        );
+
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(26, top, 802, lfmheight);
+                    } else {
+                        ctx.fillStyle = "#150a06";
+                        ctx.fillRect(26, top, 802, lfmheight);
+                    }
                 }
 
                 ctx.beginPath();
@@ -2052,6 +2155,30 @@ const CanvasLfmPanel = (props) => {
                 onLoad={() => setIsImageLoaded(true)}
                 style={{ display: "none" }}
             />
+            {EVENT_THEME === "revels" && (
+                <img
+                    ref={pumpkinRef}
+                    src={PumpkinSprite}
+                    onLoad={() => setIsPumpkinLoaded(true)}
+                    style={{ display: "none" }}
+                />
+            )}
+            {EVENT_THEME === "revels" && (
+                <img
+                    ref={wallRef}
+                    src={WallSprite}
+                    onLoad={() => setIsWallLoaded(true)}
+                    style={{ display: "none" }}
+                />
+            )}
+            {EVENT_THEME === "revels" && (
+                <img
+                    ref={wallDarkRef}
+                    src={WallDarkSprite}
+                    onLoad={() => setIsWallDarkLoaded(true)}
+                    style={{ display: "none" }}
+                />
+            )}
             {props.children}
             <canvas
                 className="lfm-canvas"

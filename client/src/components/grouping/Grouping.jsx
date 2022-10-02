@@ -6,6 +6,9 @@ import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import { ReactComponent as PumpkinOnlineSVG } from "../../assets/global/pumpkin_green.svg";
+import { ReactComponent as PumpkinOfflineSVG } from "../../assets/global/pumpkin_red.svg";
+import { ReactComponent as PumpkinPendingSVG } from "../../assets/global/pumpkin_blue.svg";
 import { ReactComponent as RegisterSVG } from "../../assets/global/register.svg";
 import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
 import BannerMessage from "../global/BannerMessage";
@@ -35,16 +38,47 @@ const Grouping = () => {
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
 
+    const EVENT_THEME = isSpookyTime();
+
+    function isSpookyTime() {
+        let dt = new Date();
+        if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+            return "revels";
+        }
+        return "";
+    }
+
+    const PENDING =
+        EVENT_THEME === "revels" ? (
+            <PumpkinPendingSVG width="24px" height="24px" alt="unknown" />
+        ) : (
+            <PendingSVG alt="unknown" />
+        );
+
+    const ONLINE =
+        EVENT_THEME === "revels" ? (
+            <PumpkinOnlineSVG width="24px" height="24px" alt="online" />
+        ) : (
+            <OnlineSVG alt="online" />
+        );
+
+    const OFFLINE =
+        EVENT_THEME === "revels" ? (
+            <PumpkinOfflineSVG width="24px" height="24px" alt="offline" />
+        ) : (
+            <OfflineSVG alt="offline" />
+        );
+
     function GetSVG(world) {
-        if (world === undefined || world === null) return <PendingSVG />;
-        if (!world.hasOwnProperty("Status")) return <PendingSVG />;
+        if (world === undefined || world === null) return PENDING;
+        if (!world.hasOwnProperty("Status")) return PENDING;
         switch (world.Status) {
             case 0:
-                return <OfflineSVG />;
+                return OFFLINE;
             case 1:
-                return <OnlineSVG />;
+                return ONLINE;
             default:
-                return <PendingSVG />;
+                return PENDING;
         }
     }
 

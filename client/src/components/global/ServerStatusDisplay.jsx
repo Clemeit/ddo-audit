@@ -2,6 +2,9 @@ import React from "react";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
+import { ReactComponent as PumpkinOnlineSVG } from "../../assets/global/pumpkin_green.svg";
+import { ReactComponent as PumpkinOfflineSVG } from "../../assets/global/pumpkin_red.svg";
+import { ReactComponent as PumpkinPendingSVG } from "../../assets/global/pumpkin_blue.svg";
 import ContentCluster from "./ContentCluster";
 
 const ServerNames = [
@@ -16,34 +19,80 @@ const ServerNames = [
     "Hardcore",
 ];
 
-function GetSVG(world) {
-    if (!world.hasOwnProperty("Status")) return <PendingSVG />;
-    switch (world.Status) {
-        case 0:
-            return (
-                <>
-                    <OfflineSVG style={{ marginRight: "5px" }} alt="offline" />
-                    <span className="sr-only">{world.Name} is offline</span>
-                </>
-            );
-        case 1:
-            return (
-                <>
-                    <OnlineSVG style={{ marginRight: "5px" }} alt="online" />
-                    <span className="sr-only">{world.Name} is online</span>
-                </>
-            );
-        default:
-            return (
-                <>
-                    <PendingSVG style={{ marginRight: "5px" }} alt="unknown" />
-                    <span className="sr-only">{world.Name} is loading</span>
-                </>
-            );
-    }
-}
-
 const ServerStatusDisplay = (props) => {
+    const EVENT_THEME = isSpookyTime();
+
+    function isSpookyTime() {
+        let dt = new Date();
+        if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+            return "revels";
+        }
+        return "";
+    }
+
+    const PENDING =
+        EVENT_THEME === "revels" ? (
+            <PumpkinPendingSVG
+                style={{ marginRight: "5px" }}
+                width="24px"
+                height="24px"
+                alt="unknown"
+            />
+        ) : (
+            <PendingSVG style={{ marginRight: "5px" }} alt="unknown" />
+        );
+
+    const ONLINE =
+        EVENT_THEME === "revels" ? (
+            <PumpkinOnlineSVG
+                style={{ marginRight: "5px" }}
+                width="24px"
+                height="24px"
+                alt="online"
+            />
+        ) : (
+            <OnlineSVG style={{ marginRight: "5px" }} alt="online" />
+        );
+
+    const OFFLINE =
+        EVENT_THEME === "revels" ? (
+            <PumpkinOfflineSVG
+                style={{ marginRight: "5px" }}
+                width="24px"
+                height="24px"
+                alt="offline"
+            />
+        ) : (
+            <OfflineSVG style={{ marginRight: "5px" }} alt="offline" />
+        );
+
+    function GetSVG(world) {
+        if (!world.hasOwnProperty("Status")) return PENDING;
+        switch (world.Status) {
+            case 0:
+                return (
+                    <>
+                        {OFFLINE}
+                        <span className="sr-only">{world.Name} is offline</span>
+                    </>
+                );
+            case 1:
+                return (
+                    <>
+                        {ONLINE}
+                        <span className="sr-only">{world.Name} is online</span>
+                    </>
+                );
+            default:
+                return (
+                    <>
+                        {PENDING}
+                        <span className="sr-only">{world.Name} is loading</span>
+                    </>
+                );
+        }
+    }
+
     function PrettyTime(dt) {
         return new Date(dt).toLocaleTimeString();
     }
@@ -69,13 +118,7 @@ const ServerStatusDisplay = (props) => {
                       ))
                     : ServerNames.map((world, i) => (
                           <div key={i} className="server-status-indicator">
-                              <div style={{ paddingRight: "5px" }}>
-                                  {props.data ? (
-                                      <OfflineSVG alt="offline" />
-                                  ) : (
-                                      <PendingSVG alt="unknown" />
-                                  )}
-                              </div>
+                              <div>{props.data ? OFFLINE : PENDING}</div>
                               {world}
                           </div>
                       ))}
