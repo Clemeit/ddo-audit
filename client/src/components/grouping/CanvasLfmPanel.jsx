@@ -2,6 +2,7 @@ import React from "react";
 import PanelSprite from "../../assets/global/lfmsprite_v3.jpg";
 import PumpkinSprite from "../../assets/global/pumpkins.png";
 import CobwebSprite from "../../assets/global/cobweb.png";
+import GhostSprite from "../../assets/global/ghosts.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
 import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
 
@@ -14,6 +15,7 @@ const CanvasLfmPanel = (props) => {
     const EVENT_THEME = isSpookyTime();
     const pumpkinRef = React.useRef(null);
     const cobwebRef = React.useRef(null);
+    const ghostRef = React.useRef(null);
     const wallRef = React.useRef(null);
     const wallDarkRef = React.useRef(null);
 
@@ -33,6 +35,7 @@ const CanvasLfmPanel = (props) => {
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
     const [isPumpkinLoaded, setIsPumpkinLoaded] = React.useState(false);
     const [isCobwebLoaded, setIsCobwebLoaded] = React.useState(false);
+    const [isGhostLoaded, setIsGhostLoaded] = React.useState(false);
     const [isWallLoaded, setIsWallLoaded] = React.useState(false);
     const [isWallDarkLoaded, setIsWallDarkLoaded] = React.useState(false);
     // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
@@ -233,7 +236,8 @@ const CanvasLfmPanel = (props) => {
             (!isPumpkinLoaded ||
                 !isWallLoaded ||
                 !isWallDarkLoaded ||
-                !isCobwebLoaded)
+                !isCobwebLoaded ||
+                !isGhostLoaded)
         ) {
             return;
         }
@@ -245,6 +249,7 @@ const CanvasLfmPanel = (props) => {
         const sprite = spriteRef.current;
         const pumpkins = pumpkinRef.current;
         const cobweb = cobwebRef.current;
+        const ghost = ghostRef.current;
         const wall = wallRef.current;
         const wallDark = wallDarkRef.current;
 
@@ -489,6 +494,30 @@ const CanvasLfmPanel = (props) => {
                             ctx.translate(-525, -(45 + lfmHeight * index + 28));
                         }
                     }
+
+                    const GHOST_MOD = stringToInt(
+                        group.Leader.Name + group.Comment
+                    );
+                    const GHOST_TYPE = stringToInt(
+                        group.Quest?.Name || "undef"
+                    );
+
+                    // Draw ghost
+                    if (GHOST_MOD % 7 === 0) {
+                        ctx.globalAlpha = group.Eligible ? 0.5 : 0.3;
+                        ctx.drawImage(
+                            ghost,
+                            GHOST_TYPE % 2 === 0 ? 90 : 0,
+                            0,
+                            90,
+                            90,
+                            (GHOST_MOD % 3) * 330 + 50,
+                            45 + lfmHeight * index + 28,
+                            90,
+                            90
+                        );
+                    }
+
                     ctx.globalAlpha = 1;
                 } else {
                     if (isFeytwisted(group)) {
@@ -1860,6 +1889,15 @@ const CanvasLfmPanel = (props) => {
             );
         }
 
+        function stringToInt(string, mod = 1) {
+            if (string == null) return 0;
+            let total = 0;
+            for (let i = 0; i < string.length; i++) {
+                total += string.charCodeAt(i) * (i * mod);
+            }
+            return total;
+        }
+
         // Helper function for wrapping text
         function wrapText(text, maxWidth) {
             if (text === null) return "";
@@ -2214,6 +2252,14 @@ const CanvasLfmPanel = (props) => {
                     ref={cobwebRef}
                     src={CobwebSprite}
                     onLoad={() => setIsCobwebLoaded(true)}
+                    style={{ display: "none" }}
+                />
+            )}
+            {EVENT_THEME === "revels" && (
+                <img
+                    ref={ghostRef}
+                    src={GhostSprite}
+                    onLoad={() => setIsGhostLoaded(true)}
                     style={{ display: "none" }}
                 />
             )}
