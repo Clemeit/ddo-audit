@@ -30,7 +30,7 @@ const CanvasLfmPanel = (props) => {
         "nope.",
     ];
 
-    const SPOOKY_WORDS = ["night", "revel", "mabar", "key", "delera", "spooky"];
+    const SPOOKY_WORDS = ["night", "revel", "mabar", "key", "delera", "spook"];
 
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
     const [isPumpkinLoaded, setIsPumpkinLoaded] = React.useState(false);
@@ -429,33 +429,33 @@ const CanvasLfmPanel = (props) => {
                         }
                     } else if (
                         group.Comment.length > 0 &&
-                        group.Comment.length % 4 === 0
+                        group.Comment.length % 9 === 0
                     ) {
-                        if (group.Leader.Name.length % 4 === 0) {
-                            ctx.drawImage(
-                                pumpkins,
-                                0,
-                                0,
-                                93,
-                                60,
-                                280,
-                                73 + lfmHeight * index + 28,
-                                93,
-                                60
-                            );
-                        } else {
-                            ctx.drawImage(
-                                pumpkins,
-                                93,
-                                0,
-                                54,
-                                60,
-                                315,
-                                73 + lfmHeight * index + 28,
-                                54,
-                                60
-                            );
-                        }
+                        // if (group.Leader.Name.length % 2 === 0) {
+                        //     ctx.drawImage(
+                        //         pumpkins,
+                        //         0,
+                        //         0,
+                        //         93,
+                        //         60,
+                        //         280,
+                        //         73 + lfmHeight * index + 28,
+                        //         93,
+                        //         60
+                        //     );
+                        // } else {
+                        //     ctx.drawImage(
+                        //         pumpkins,
+                        //         93,
+                        //         0,
+                        //         54,
+                        //         60,
+                        //         315,
+                        //         73 + lfmHeight * index + 28,
+                        //         54,
+                        //         60
+                        //     );
+                        // }
                     }
 
                     const COBWEB_VALUE =
