@@ -398,6 +398,11 @@ const CanvasLfmPanel = (props) => {
                         SPOOKY_WORDS.filter((word) =>
                             group.Comment.toLowerCase().includes(word)
                         ).length ||
+                        SPOOKY_WORDS.filter((word) =>
+                            group.Quest?.AdventureArea?.toLowerCase().includes(
+                                word
+                            )
+                        ).length ||
                         group.Leader.Location?.Name?.toLowerCase().includes(
                             "revels"
                         )
