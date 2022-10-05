@@ -461,9 +461,13 @@ const CanvasLfmPanel = (props) => {
                     const COBWEB_VALUE =
                         group.Leader.Name.length + group.Quest?.Name?.length;
 
-                    if (COBWEB_VALUE % 6 === 0) {
+                    if (COBWEB_VALUE % 7 === 0) {
                         // Draw cobweb
-                        ctx.globalAlpha = group.Eligible ? 0.4 : 0.2;
+                        ctx.globalAlpha = group.Eligible
+                            ? COBWEB_VALUE % 5 === 0
+                                ? 0.4
+                                : 0.3
+                            : 0.2;
                         if (COBWEB_VALUE % 4 === 0) {
                             ctx.drawImage(
                                 cobweb,
@@ -504,7 +508,7 @@ const CanvasLfmPanel = (props) => {
 
                     // Draw ghost
                     if (GHOST_MOD % 7 === 0) {
-                        ctx.globalAlpha = group.Eligible ? 0.5 : 0.3;
+                        ctx.globalAlpha = group.Eligible ? 0.7 : 0.5;
                         ctx.drawImage(
                             ghost,
                             GHOST_TYPE % 2 === 0 ? 90 : 0,
