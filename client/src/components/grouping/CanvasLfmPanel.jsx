@@ -30,7 +30,17 @@ const CanvasLfmPanel = (props) => {
         "nope.",
     ];
 
-    const SPOOKY_WORDS = ["night", "revel", "mabar", "key", "delera", "spook"];
+    const SPOOKY_WORDS = [
+        "night",
+        "revel",
+        "mabar",
+        "key",
+        "delera",
+        "spook",
+        "grave",
+    ];
+
+    const SPOOKY_AREAS = ["graveyard", "spectral dragon", "the night revels"];
 
     let [isImageLoaded, setIsImageLoaded] = React.useState(false);
     const [isPumpkinLoaded, setIsPumpkinLoaded] = React.useState(false);
@@ -393,20 +403,22 @@ const CanvasLfmPanel = (props) => {
                         ctx.drawImage(wallDark, 26, top, 802, lfmheight);
                     }
 
-                    ctx.globalAlpha = group.Eligible ? 1 : 0.5;
                     if (
                         SPOOKY_WORDS.filter((word) =>
                             group.Comment.toLowerCase().includes(word)
                         ).length ||
-                        SPOOKY_WORDS.filter((word) =>
+                        SPOOKY_AREAS.filter((word) =>
                             group.Quest?.AdventureArea?.toLowerCase().includes(
                                 word
                             )
                         ).length ||
-                        group.Leader.Location?.Name?.toLowerCase().includes(
-                            "revels"
-                        )
+                        SPOOKY_AREAS.filter((word) =>
+                            group.Leader.Location?.Name?.toLowerCase().includes(
+                                word
+                            )
+                        ).length
                     ) {
+                        ctx.globalAlpha = group.Eligible ? 1 : 0.5;
                         if (group.Leader.Name.length % 2 === 0) {
                             ctx.drawImage(
                                 pumpkins,
@@ -432,35 +444,6 @@ const CanvasLfmPanel = (props) => {
                                 60
                             );
                         }
-                    } else if (
-                        group.Comment.length > 0 &&
-                        group.Comment.length % 9 === 0
-                    ) {
-                        // if (group.Leader.Name.length % 2 === 0) {
-                        //     ctx.drawImage(
-                        //         pumpkins,
-                        //         0,
-                        //         0,
-                        //         93,
-                        //         60,
-                        //         280,
-                        //         73 + lfmHeight * index + 28,
-                        //         93,
-                        //         60
-                        //     );
-                        // } else {
-                        //     ctx.drawImage(
-                        //         pumpkins,
-                        //         93,
-                        //         0,
-                        //         54,
-                        //         60,
-                        //         315,
-                        //         73 + lfmHeight * index + 28,
-                        //         54,
-                        //         60
-                        //     );
-                        // }
                     }
 
                     const COBWEB_VALUE =
