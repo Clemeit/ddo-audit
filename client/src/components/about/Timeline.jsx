@@ -31,6 +31,7 @@ const Timeline = (props) => {
                 showSubtitle={true}
                 showButtons={true}
                 hideOnMobile={true}
+                hideVote={true}
                 title="DDO Audit Dev Log"
                 subtitle="Real-time Player Concurrency Data and LFM Viewer"
             />

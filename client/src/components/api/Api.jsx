@@ -34,6 +34,7 @@ const Api = (props) => {
                 showSubtitle={true}
                 showButtons={true}
                 hideOnMobile={false}
+                hideVote={true}
                 title="DDO Audit API"
                 subtitle="Use our data for your projects"
             />
