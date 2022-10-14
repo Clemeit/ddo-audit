@@ -12,7 +12,7 @@ const CanvasLfmPanel = (props) => {
     const spriteRef = React.useRef(null);
     const MINIMUM_LFM_COUNT = 6;
 
-    const [eventTheme, setEventTheme] = React.useState(null);
+    const EVENT_THEME = isSpookyTime();
     const pumpkinRef = React.useRef(null);
     const cobwebRef = React.useRef(null);
     const ghostRef = React.useRef(null);
@@ -69,6 +69,14 @@ const CanvasLfmPanel = (props) => {
     const lfmHeight = 90;
     const CLASS_COUNT = 15;
     let lastclickRef = React.useRef(0);
+
+    function isSpookyTime() {
+        let dt = new Date();
+        if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+            return "revels";
+        }
+        return "";
+    }
 
     function HandleMouseOnCanvas(e) {
         let rect = e.target.getBoundingClientRect();
@@ -228,43 +236,13 @@ const CanvasLfmPanel = (props) => {
         return top;
     }
 
-    const [defer] = React.useState(true);
-    const deferRef = React.useRef(defer);
     React.useEffect(() => {
-        if (deferRef.current) {
-            deferRef.current = false;
-            return;
-        }
-        if (props.showEventThemes) {
-            if (
-                !isPumpkinLoaded ||
-                !isWallLoaded ||
-                !isWallDarkLoaded ||
-                !isCobwebLoaded ||
-                !isGhostLoaded
-            ) {
-                // Refresh page
-                window.location.reload();
-            }
-        }
-    }, [props.showEventThemes]);
-
-    React.useEffect(() => {
-        let localEventTheme = "";
-        if (props.showEventThemes) {
-            let dt = new Date();
-            if (dt.getMonth() === 9 && dt.getDate() >= 5) {
-                setEventTheme("revels");
-                localEventTheme = "revels";
-            }
-        }
-
         if (!isImageLoaded) {
             return;
         }
 
         if (
-            localEventTheme === "revels" &&
+            EVENT_THEME === "revels" &&
             (!isPumpkinLoaded ||
                 !isWallLoaded ||
                 !isWallDarkLoaded ||
@@ -418,7 +396,7 @@ const CanvasLfmPanel = (props) => {
                     lfmheight = lfmHeight;
                 }
 
-                if (localEventTheme === "revels") {
+                if (EVENT_THEME === "revels") {
                     if (group.Eligible) {
                         ctx.drawImage(wall, 26, top, 802, lfmheight);
                     } else {
@@ -2236,7 +2214,6 @@ const CanvasLfmPanel = (props) => {
         props.showMemberCount,
         props.showQuestGuesses,
         props.showQuestTips,
-        props.showEventThemes,
         attemptedJoin,
     ]);
 
@@ -2254,7 +2231,7 @@ const CanvasLfmPanel = (props) => {
                 onLoad={() => setIsImageLoaded(true)}
                 style={{ display: "none" }}
             />
-            {eventTheme === "revels" && (
+            {EVENT_THEME === "revels" && (
                 <img
                     ref={pumpkinRef}
                     src={PumpkinSprite}
@@ -2262,7 +2239,7 @@ const CanvasLfmPanel = (props) => {
                     style={{ display: "none" }}
                 />
             )}
-            {eventTheme === "revels" && (
+            {EVENT_THEME === "revels" && (
                 <img
                     ref={cobwebRef}
                     src={CobwebSprite}
@@ -2270,7 +2247,7 @@ const CanvasLfmPanel = (props) => {
                     style={{ display: "none" }}
                 />
             )}
-            {eventTheme === "revels" && (
+            {EVENT_THEME === "revels" && (
                 <img
                     ref={ghostRef}
                     src={GhostSprite}
@@ -2278,7 +2255,7 @@ const CanvasLfmPanel = (props) => {
                     style={{ display: "none" }}
                 />
             )}
-            {eventTheme === "revels" && (
+            {EVENT_THEME === "revels" && (
                 <img
                     ref={wallRef}
                     src={WallSprite}
@@ -2286,7 +2263,7 @@ const CanvasLfmPanel = (props) => {
                     style={{ display: "none" }}
                 />
             )}
-            {eventTheme === "revels" && (
+            {EVENT_THEME === "revels" && (
                 <img
                     ref={wallDarkRef}
                     src={WallDarkSprite}

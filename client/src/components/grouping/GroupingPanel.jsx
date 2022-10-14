@@ -60,7 +60,6 @@ const Panel = (props) => {
     const [showQuestTips, setShowQuestTips] = React.useState(true);
     const sortAscendingRef = React.useRef(sortAscending);
     sortAscendingRef.current = sortAscending;
-    const [showEventThemes, setShowEventThemes] = React.useState(true);
     const [showRaidTimerIndicator, setShowRaidTimerIndicator] =
         React.useState(false);
     const [filterBasedOnMyLevel, setFilterBasedOnMyLevel] =
@@ -622,11 +621,6 @@ const Panel = (props) => {
             showquesttips !== null ? showquesttips === "true" : true
         );
 
-        let showeventthemes = localStorage.getItem("show-event-themes");
-        setShowEventThemes(
-            showeventthemes !== null ? showeventthemes === "true" : true
-        );
-
         let showraidtimerindicator = localStorage.getItem(
             "show-raid-timer-indicator"
         );
@@ -1061,38 +1055,6 @@ const Panel = (props) => {
                                 <label className="filter-panel-group-option">
                                     <input
                                         className="input-radio"
-                                        name="showeventthemes"
-                                        type="checkbox"
-                                        checked={showEventThemes}
-                                        onChange={() => {
-                                            if (!props.minimal) {
-                                                localStorage.setItem(
-                                                    "show-event-themes",
-                                                    !showEventThemes
-                                                );
-                                            }
-                                            Log(
-                                                "Clicked Show Event Themes",
-                                                !showEventThemes
-                                                    ? "true"
-                                                    : "false"
-                                            );
-                                            setShowEventThemes(
-                                                !showEventThemes
-                                            );
-                                        }}
-                                    />
-                                    Reskin the UI for Special Events{" "}
-                                    <span
-                                        className="new-tag small"
-                                        style={{ marginLeft: "7px" }}
-                                    >
-                                        NEW
-                                    </span>
-                                </label>
-                                <label className="filter-panel-group-option">
-                                    <input
-                                        className="input-radio"
                                         name="showraidtimerindicator"
                                         type="checkbox"
                                         checked={showRaidTimerIndicator}
@@ -1260,7 +1222,6 @@ const Panel = (props) => {
                         sortAscending={sortAscending}
                         showEligibleCharacters={showEligibleCharacters}
                         showGuildNames={showGuildNames}
-                        showEventThemes={showEventThemes}
                     />
                 ) : (
                     <div className="social-container">
