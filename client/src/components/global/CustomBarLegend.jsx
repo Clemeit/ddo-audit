@@ -1,17 +1,7 @@
 import React from "react";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const CustomBarLegend = (props) => {
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
     const COLORS = [
         "hsl(205, 70%, 41%)",
         "hsl(28, 100%, 53%)",
@@ -32,7 +22,7 @@ const CustomBarLegend = (props) => {
             }
         >
             {props.data &&
-                SERVER_NAMES.map((server, i) => (
+                SERVER_LIST.map((server, i) => (
                     <div
                         key={i}
                         className={

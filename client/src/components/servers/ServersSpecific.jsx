@@ -11,21 +11,10 @@ import ChartLine from "../global/ChartLine";
 import ChartBar from "../global/ChartBar";
 import CurrentCountsSubtitle from "./CurrentCountsSubtitle";
 import { Log } from "../../services/CommunicationService";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const ServersSpecific = () => {
     const TITLE = "Population and Character Demographics";
-
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
 
     function getBreadcrumbs(servername) {
         // prettier-ignore
@@ -163,12 +152,12 @@ const ServersSpecific = () => {
     React.useEffect(() => {
         let serverName =
             location.substring(0, 1).toUpperCase() + location.substring(1);
-        if (SERVER_NAMES.includes(serverName)) {
+        if (SERVER_LIST.includes(serverName)) {
             // Good server
             setCurrentServer(serverName);
         } else {
             // Bad server
-            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+            setCurrentServer(SERVER_LIST[0]); // Just default to the first server in the good list
         }
     }, [window.location.pathname]);
 
@@ -406,7 +395,7 @@ const ServersSpecific = () => {
                 >
                     <ChartBar
                         keys={[
-                            ...SERVER_NAMES.filter(
+                            ...SERVER_LIST.filter(
                                 (server) => server === currentServer
                             ),
                         ]}

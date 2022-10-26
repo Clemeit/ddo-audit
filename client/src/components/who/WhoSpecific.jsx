@@ -1,39 +1,19 @@
 import React from "react";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
-// import ReportIssueForm from "./ReportIssueForm";
-// import PopupMessage from "./global/PopupMessage";
-import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
-import Player from "./Player";
-import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import Banner from "../global/Banner";
-import FilterBar from "../global/FilterBar";
-import CanvasWhoPanel from "./CanvasWhoPanel";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
-import { Submit } from "../../services/CommunicationService";
 import { ReactComponent as AddSVG } from "../../assets/global/add.svg";
-import ContentCluster from "../global/ContentCluster";
 import WhoPanel from "./WhoPanel";
 import LfmPanel from "../grouping/GroupingPanel";
 import PanelSelectPopup from "../grouping/PanelSelectPopup";
 import { Log } from "../../services/CommunicationService";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const WhoSpecific = (props) => {
     // TODO: If this server is currently offline, don't bother checking for players
     const TITLE = "DDO Live Who Panel";
-
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
 
     function getBreadcrumbs(servername) {
         // prettier-ignore
@@ -70,7 +50,7 @@ const WhoSpecific = (props) => {
     React.useEffect(() => {
         let serverName =
             location.substring(0, 1).toUpperCase() + location.substring(1);
-        if (SERVER_NAMES.includes(serverName)) {
+        if (SERVER_LIST.includes(serverName)) {
             // Good server
             setCurrentServer(serverName);
             currentServerRef.current = serverName;
@@ -85,7 +65,7 @@ const WhoSpecific = (props) => {
             ]);
         } else {
             // Bad server
-            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+            setCurrentServer(SERVER_LIST[0]); // Just default to the first server in the good list
         }
     }, [window.location.pathname]);
 
@@ -136,7 +116,7 @@ const WhoSpecific = (props) => {
             let sspc = toProperCase(secondaryserver);
             if (
                 (secondarytype == "lfm" || secondarytype == "who") &&
-                SERVER_NAMES.includes(sspc)
+                SERVER_LIST.includes(sspc)
             ) {
                 addPanel({
                     type: secondarytype,

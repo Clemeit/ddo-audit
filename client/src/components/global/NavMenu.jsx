@@ -5,42 +5,20 @@ import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
-import { ReactComponent as QuestsSVG } from "../../assets/global/quests.svg";
-//import { ReactComponent as GeographySVG } from "../assets/global/geography.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
-
-let serverNames = [
-    "Argonnessen",
-    "Cannith",
-    "Ghallanda",
-    "Khyber",
-    "Orien",
-    "Sarlona",
-    "Thelanis",
-    "Wayfinder",
-    "Hardcore",
-];
+import ServerHook from "../../hooks/ServerHook";
 
 const NavMenu = (props) => {
+    const SERVERS = ServerHook();
+
     return (
         <div id="main-nav" className="main-nav-menu">
             <NavBar>
                 <div className="nav-pull">
                     <MenuSVG className="nav-icon" />
                 </div>
-                {/* <NavItem className="show-on-mobile" to="/">
-                    <center
-                        style={{
-                            fontSize: "x-large",
-                            fontWeight: "bold",
-                            textDecoration: "none",
-                        }}
-                    >
-                        <span>DDO Audit</span>
-                    </center>
-                </NavItem> */}
                 <NavItem to="/">
                     <div className="nav-icon-container">
                         <HomeSVG className="nav-icon" />
@@ -63,7 +41,7 @@ const NavMenu = (props) => {
                 >
                     <NavSubItem to={"/servers"}>Overview</NavSubItem>
                     <NavDivider />
-                    {serverNames.map((server) => (
+                    {SERVERS.map((server) => (
                         <NavSubItem
                             key={server}
                             to={"/servers/" + server.toLowerCase()}
@@ -83,7 +61,7 @@ const NavMenu = (props) => {
                 >
                     <NavSubItem to={"/grouping"}>Overview</NavSubItem>
                     <NavDivider />
-                    {serverNames.map((server) => (
+                    {SERVERS.map((server) => (
                         <NavSubItem
                             key={server}
                             to={"/grouping/" + server.toLowerCase()}
@@ -103,7 +81,7 @@ const NavMenu = (props) => {
                 >
                     <NavSubItem to={"/who"}>Overview</NavSubItem>
                     <NavDivider />
-                    {serverNames.map((server) => (
+                    {SERVERS.map((server) => (
                         <NavSubItem
                             key={server}
                             to={"/who/" + server.toLowerCase()}

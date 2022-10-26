@@ -6,18 +6,7 @@ import { ReactComponent as PumpkinOnlineSVG } from "../../assets/global/pumpkin_
 import { ReactComponent as PumpkinOfflineSVG } from "../../assets/global/pumpkin_red.svg";
 import { ReactComponent as PumpkinPendingSVG } from "../../assets/global/pumpkin_blue.svg";
 import ContentCluster from "./ContentCluster";
-
-const ServerNames = [
-    "Argonnessen",
-    "Cannith",
-    "Ghallanda",
-    "Khyber",
-    "Orien",
-    "Sarlona",
-    "Thelanis",
-    "Wayfinder",
-    "Hardcore",
-];
+import { SERVER_LIST } from "../../constants/Servers";
 
 const ServerStatusDisplay = (props) => {
     const EVENT_THEME = isSpookyTime();
@@ -116,7 +105,7 @@ const ServerStatusDisplay = (props) => {
                               {world.Name}
                           </div>
                       ))
-                    : ServerNames.map((world, i) => (
+                    : SERVER_LIST.map((world, i) => (
                           <div key={i} className="server-status-indicator">
                               <div>{props.data ? OFFLINE : PENDING}</div>
                               {world}

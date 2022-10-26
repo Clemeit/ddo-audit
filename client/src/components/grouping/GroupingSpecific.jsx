@@ -9,22 +9,10 @@ import LfmPanel from "./GroupingPanel";
 import PanelSelectPopup from "./PanelSelectPopup";
 import WhoPanel from "../who/WhoPanel";
 import { Log } from "../../services/CommunicationService";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const GroupingSpecific = (props) => {
     const TITLE = "DDO Live LFM Viewer";
-
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-        "Megaserver",
-    ];
 
     function getBreadcrumbs(servername) {
         // prettier-ignore
@@ -59,7 +47,7 @@ const GroupingSpecific = (props) => {
     React.useEffect(() => {
         let serverName =
             location.substring(0, 1).toUpperCase() + location.substring(1);
-        if (SERVER_NAMES.includes(serverName)) {
+        if (SERVER_LIST.includes(serverName)) {
             // Good server
             setCurrentServer(serverName);
             currentServerRef.current = serverName;
@@ -73,7 +61,7 @@ const GroupingSpecific = (props) => {
             ]);
         } else {
             // Bad server
-            setCurrentServer(SERVER_NAMES[0]); // Just default to the first server in the good list
+            setCurrentServer(SERVER_LIST[0]); // Just default to the first server in the good list
         }
     }, [window.location.pathname]);
 
@@ -91,7 +79,7 @@ const GroupingSpecific = (props) => {
             let sspc = toProperCase(secondaryserver);
             if (
                 (secondarytype == "lfm" || secondarytype == "who") &&
-                SERVER_NAMES.includes(sspc)
+                SERVER_LIST.includes(sspc)
             ) {
                 addPanel({
                     type: secondarytype,

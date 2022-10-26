@@ -6,21 +6,10 @@ import CanvasWhoPanel from "./CanvasWhoPanel";
 import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
 import { Link } from "react-router-dom";
+import { SERVER_LIST_LOWERCASE } from "../../constants/Servers";
 
 const WhoPanel = (props) => {
     const MAX_LEVEL = 32;
-
-    const serverNamesLowercase = [
-        "argonnessen",
-        "cannith",
-        "ghallanda",
-        "khyber",
-        "orien",
-        "sarlona",
-        "thelanis",
-        "wayfinder",
-        "hardcore",
-    ];
     const PAGE_SIZE = 10;
 
     // Download canvas
@@ -543,7 +532,7 @@ const WhoPanel = (props) => {
                     });
                     Fetch(
                         "https://api.ddoaudit.com/players/" +
-                            (serverNamesLowercase.includes(
+                            (SERVER_LIST_LOWERCASE.includes(
                                 props.server.toLowerCase()
                             )
                                 ? props.server

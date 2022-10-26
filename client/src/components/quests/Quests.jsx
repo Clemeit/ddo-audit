@@ -20,21 +20,10 @@ import NoMobileOptimization from "../global/NoMobileOptimization";
 import BannerMessage from "../global/BannerMessage";
 import LoadingOverlay from "./LoadingOverlay";
 import ContentCluster from "../global/ContentCluster";
+import { SERVER_LIST } from "../../constants/Servers";
 const math = require("mathjs");
 
 const TITLE = "DDO Quest Activity";
-
-const serverNames = [
-    "Argonnessen",
-    "Cannith",
-    "Ghallanda",
-    "Khyber",
-    "Orien",
-    "Sarlona",
-    "Thelanis",
-    "Wayfinder",
-    "Hardcore",
-];
 
 const Quests = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
@@ -356,7 +345,7 @@ const Quests = (props) => {
                     if (entry.duration > max) max = entry.duration;
                     values.push(entry.duration);
                     total += entry.duration;
-                    servercounts[serverNames.indexOf(entry.server)]++;
+                    servercounts[SERVER_LIST.indexOf(entry.server)]++;
                 }
             });
             setEarliestEntryDate(firstentrydate);
@@ -416,10 +405,10 @@ const Quests = (props) => {
                 "hsl(0, 0%, 50%)",
                 "hsl(60, 70%, 44%)",
             ];
-            for (let i = 0; i < serverNames.length; i++) {
+            for (let i = 0; i < SERVER_LIST.length; i++) {
                 serverdistrdata.push({
-                    id: serverNames[i],
-                    label: serverNames[i],
+                    id: SERVER_LIST[i],
+                    label: SERVER_LIST[i],
                     color: COLORS[i],
                     value: servercounts[i],
                 });

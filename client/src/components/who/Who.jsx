@@ -13,20 +13,11 @@ import { ReactComponent as FriendsSVG } from "../../assets/global/friends.svg";
 import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
+import ServerHook from "../../hooks/ServerHook";
 
 const Who = (props) => {
     const TITLE = "DDO Live Who Panel";
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
+    const SERVERS = ServerHook();
 
     var [overviewData, setOverviewData] = React.useState(null);
     var [serverStatusData, setServerStatusData] = React.useState(null);
@@ -199,7 +190,7 @@ const Who = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
-                        {SERVER_NAMES.map((name, i) => (
+                        {SERVERS.map((name, i) => (
                             <Link
                                 to={"/who/" + name.toLowerCase()}
                                 key={i}

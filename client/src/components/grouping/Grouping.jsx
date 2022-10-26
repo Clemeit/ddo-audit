@@ -16,20 +16,11 @@ import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
 import RaidGroupCluster from "./RaidGroupCluster";
+import ServerHook from "../../hooks/ServerHook";
 
 const Grouping = () => {
     const TITLE = "DDO Live LFM Viewer";
-    let SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
+    const SERVERS = ServerHook();
 
     const [serverStatusData, setServerStatusData] = React.useState(null);
     const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
@@ -293,7 +284,7 @@ const Grouping = () => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
-                        {SERVER_NAMES.map((name, i) => (
+                        {SERVERS.map((name, i) => (
                             <Link
                                 to={"/grouping/" + name.toLowerCase()}
                                 key={i}

@@ -8,19 +8,10 @@ import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg
 import { Submit } from "../../services/CommunicationService";
 import { Link } from "react-router-dom";
 import $ from "jquery";
+import ServerHook from "../../hooks/ServerHook";
 
 const PanelSelectPopup = (props) => {
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
+    const SERVERS = ServerHook();
 
     const [voteMessage, setVoteMessage] = React.useState(null);
     const [mayVote, setMayVote] = React.useState(false);
@@ -149,7 +140,7 @@ const PanelSelectPopup = (props) => {
                                 </div>
                             ))}
                         {panelType !== null &&
-                            SERVER_NAMES.map((name, i) => (
+                            SERVERS.map((name, i) => (
                                 <div
                                     key={i}
                                     className="nav-box small"

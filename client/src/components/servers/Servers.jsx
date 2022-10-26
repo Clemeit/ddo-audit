@@ -18,22 +18,12 @@ import ContentCluster from "../global/ContentCluster";
 import ChartBar from "../global/ChartBar";
 import { Log } from "../../services/CommunicationService";
 import ToggleButton from "../global/ToggleButton";
+import { SERVER_LIST } from "../../constants/Servers";
 
 // no-change
 
 const Directory = (props) => {
     const TITLE = "DDO Server Population and Demographics";
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
 
     const EVENT_THEME = isSpookyTime();
 
@@ -431,7 +421,7 @@ const Directory = (props) => {
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
-                        {SERVER_NAMES.map((name, i) => (
+                        {SERVER_LIST.map((name, i) => (
                             <Link
                                 to={"/servers/" + name.toLowerCase()}
                                 key={i}
@@ -663,7 +653,7 @@ const Directory = (props) => {
                         />
                     </div>
                     <ChartBar
-                        keys={[...SERVER_NAMES]}
+                        keys={[...SERVER_LIST]}
                         indexBy="Day"
                         legendBottom="Day of Week"
                         legendLeft={
@@ -786,7 +776,7 @@ const Directory = (props) => {
                         }}
                     />
                     <ChartBar
-                        keys={[...SERVER_NAMES]}
+                        keys={[...SERVER_LIST]}
                         indexBy="Class"
                         legendBottom="Class"
                         legendLeft="Population Percentage"

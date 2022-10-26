@@ -4,24 +4,13 @@ import { Log } from "../../services/CommunicationService";
 import { Post } from "../../services/DataLoader";
 import PageMessage from "./PageMessage";
 import $ from "jquery";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const CharacterSelectModal = (props) => {
     const [lookupError, setLookupError] = React.useState(false);
     const [errorTitle, setErrorTitle] = React.useState("");
     const [errorMessage, setErrorMessage] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
-
-    const SERVER_NAMES = [
-        "Argonnessen",
-        "Cannith",
-        "Ghallanda",
-        "Khyber",
-        "Orien",
-        "Sarlona",
-        "Thelanis",
-        "Wayfinder",
-        "Hardcore",
-    ];
 
     const [name, setName] = React.useState("");
     const [server, setServer] = React.useState("Argonnessen");
@@ -180,7 +169,7 @@ const CharacterSelectModal = (props) => {
                             }
                         }}
                     >
-                        {SERVER_NAMES.map((server) => (
+                        {SERVER_LIST.map((server) => (
                             <option value={server} key={server}>
                                 {server}
                             </option>
