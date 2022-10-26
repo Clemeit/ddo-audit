@@ -260,7 +260,7 @@ const About = (props) => {
                         </li>
                     </ul>
                 </ContentCluster>
-                <ContentCluster title="Privacy">
+                <ContentCluster title="Privacy" hidden={true}>
                     <p>
                         I wish websites were more open about the data they
                         collect on users. Here's a list of privacy-related
