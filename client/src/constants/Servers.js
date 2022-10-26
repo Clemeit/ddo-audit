@@ -14,20 +14,12 @@ const SERVER_LIST = [
 
 const SERVER_LIST_LOWERCASE = SERVER_LIST.map((server) => server.toLowerCase());
 
-function showHardcoreLeague() {
-    try {
-        const response = Fetch(
-            "https://api.ddoaudit.com/caas?label=hardcore",
-            2000
-        );
-        return response?.value === "true";
-    } catch (err) {
-        return true;
-    }
-}
-
 async function getServers() {
-    if (showHardcoreLeague()) {
+    const response = await Fetch(
+        "https://api.ddoaudit.com/caas?label=hardcore",
+        2000
+    );
+    if (response?.value === "true") {
         return SERVER_LIST;
     } else {
         return SERVER_LIST.filter((server) => server !== "Hardcore");
