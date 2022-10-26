@@ -29,12 +29,13 @@ require("./Endpoints/GameStatus")(api);
 require("./Endpoints/Activity")(api);
 require("./Endpoints/Friends")(api);
 require("./Endpoints/IOT")(api);
+require("./Endpoints/CaaS")(api);
 
 // Firebase
 initializeApp({
-    credential: applicationDefault(),
+	credential: applicationDefault(),
 });
 
 api.listen(API_PORT, () => {
-    console.log(`API listening on ${API_PORT}`);
+	console.log(`API listening on ${API_PORT}`);
 });
