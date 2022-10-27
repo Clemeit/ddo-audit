@@ -12,7 +12,9 @@ async function getConfig() {
         const cachedCaaS = localStorage.getItem("caas");
         const caas = JSON.parse(cachedCaaS);
         const caasExists = cachedCaaS != null;
-        const caasExpired = new Date().getTime() - caas.expires > CAAS_LIFETIME;
+        const caasExpired =
+            caas.fetched == null ||
+            new Date().getTime() - caas.fetched > CAAS_LIFETIME;
 
         if (caasExists && !caasExpired) {
             return caas.caas;
@@ -21,7 +23,7 @@ async function getConfig() {
     const caas = await Fetch("https://api.ddoaudit.com/caas", 2000);
     localStorage.setItem(
         "caas",
-        JSON.stringify({ caas, expires: new Date().getTime() })
+        JSON.stringify({ caas, fetched: new Date().getTime() })
     );
     return caas;
 }
