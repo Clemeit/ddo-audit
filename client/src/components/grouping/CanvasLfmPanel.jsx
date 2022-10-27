@@ -5,6 +5,13 @@ import CobwebSprite from "../../assets/global/cobweb.png";
 import GhostSprite from "../../assets/global/ghosts.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
 import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
+import {
+    init,
+    renderGroupingPanel,
+    renderPanelFiller,
+    renderPanelFooter,
+    renderPanelHeader,
+} from "./PanelRenderer";
 
 const CanvasLfmPanel = (props) => {
     // Assume that incoming props.data is already filtered according to user preferences
@@ -280,69 +287,17 @@ const CanvasLfmPanel = (props) => {
             }
         }
 
+        init(ctx, sprite);
+
         // Draw the header
-        OpenPanel();
+        renderPanelHeader();
 
         // Draw the chin
-        ClosePanel();
+        renderPanelFooter(props.data.Groups);
 
         // Draw lfms
-        DrawFiller();
-        if (props.data !== null) DrawLfms();
-
-        // Draws the header and the lastUpdateTime string
-        function OpenPanel() {
-            ctx.drawImage(sprite, 0, 0, 848, 72, 0, 0, 848, 72);
-            if (props.data) {
-                let lastUpdateTime = new Date(props.data.LastUpdateTime);
-                let hour = lastUpdateTime.getHours() % 12;
-                if (hour == 0) hour = 12;
-                let timeText =
-                    "Last updated " +
-                    hour +
-                    ":" +
-                    ("0" + lastUpdateTime.getMinutes()).slice(-2) +
-                    ":" +
-                    ("0" + lastUpdateTime.getSeconds()).slice(-2) +
-                    (Math.floor(lastUpdateTime.getHours() / 12) == 0
-                        ? " AM"
-                        : " PM");
-                ctx.font = "18px Arial";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillStyle = "white";
-                ctx.fillText(timeText, 212, 19);
-                ctx.textAlign = "left";
-                ctx.textBaseline = "alphabetic";
-            }
-            if (props.sortAscending) {
-                // 0, 259  |  30x10 DESC | 746, 55
-                ctx.drawImage(sprite, 30, 259, 30, 10, 746, 55, 30, 10);
-            } else {
-                ctx.drawImage(sprite, 0, 259, 30, 10, 746, 55, 30, 10);
-            }
-        }
-
-        // Draws the chin
-        function ClosePanel() {
-            ctx.drawImage(
-                sprite,
-                0,
-                162,
-                848,
-                27,
-                0,
-                72 +
-                    (props.data
-                        ? Math.max(
-                              computePanelHeight(props.data.Groups),
-                              MINIMUM_LFM_COUNT * lfmHeight
-                          )
-                        : MINIMUM_LFM_COUNT * lfmHeight),
-                848,
-                27
-            );
-        }
+        renderPanelFiller();
+        if (props.data !== null) renderGroupingPanel();
 
         // Draws filler
         function DrawFiller() {
