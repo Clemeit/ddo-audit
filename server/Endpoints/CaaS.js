@@ -62,16 +62,62 @@ module.exports = function (api) {
 			});
 		}
 
+		function fetchCaaS(final) {
+			return new Promise(async (resolve, reject) => {
+				let classquery = `SELECT * from \`caas\`;`;
+				con.query(classquery, (err, result, fields) => {
+					if (err) {
+						if (final) {
+							console.log("Failed to reconnect. Aborting!");
+							reject(err);
+						} else {
+							console.log("Attempting to reconnect...");
+							// Try to reconnect:
+							con = mysql.createConnection({
+								host: process.env.DB_HOST,
+								user: process.env.DB_USER,
+								password: process.env.DB_PASS,
+								database: process.env.DB_NAME,
+							});
+							fetchCaaS(true)
+								.then((result) => {
+									console.log("Reconnected!");
+									resolve(result);
+								})
+								.catch((err) => reject(err));
+						}
+					} else {
+						if (result == null) {
+							reject("null data");
+						} else {
+							resolve(result);
+						}
+					}
+				});
+			});
+		}
+
 		api.get(`/caas`, (req, res) => {
 			res.setHeader("Content-Type", "application/json");
-			getValueFromLabel(req.query?.label)
-				.then((result) => {
-					res.send(result);
-				})
-				.catch((err) => {
-					console.log("Failed to read CaaS:", err);
-					res.send([]);
-				});
+			if (req.query?.label) {
+				getValueFromLabel(req.query?.label)
+					.then((result) => {
+						res.send(result);
+					})
+					.catch((err) => {
+						console.log("Failed to read CaaS:", err);
+						res.send([]);
+					});
+			} else {
+				fetchCaaS()
+					.then((result) => {
+						res.send(result);
+					})
+					.catch((err) => {
+						console.log("Failed to read CaaS:", err);
+						res.send([]);
+					});
+			}
 		});
 	});
 };

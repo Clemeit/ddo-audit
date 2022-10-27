@@ -1,4 +1,4 @@
-import { Fetch } from "../services/DataLoader";
+import { getConfig, getValueFromLabel } from "../services/CaaS";
 
 const SERVER_LIST = [
     "Argonnessen",
@@ -14,12 +14,14 @@ const SERVER_LIST = [
 
 const SERVER_LIST_LOWERCASE = SERVER_LIST.map((server) => server.toLowerCase());
 
+/**
+ * This function returns a list of all DDO servers. The Hardcore
+ * server may be excluded depending on the current config.
+ * @returns Array of server names
+ */
 async function getServers() {
-    const response = await Fetch(
-        "https://api.ddoaudit.com/caas?label=hardcore",
-        2000
-    );
-    if (response?.value === "true") {
+    const caas = await getConfig();
+    if (getValueFromLabel(caas, "hardcore") === "true") {
         return SERVER_LIST;
     } else {
         return SERVER_LIST.filter((server) => server !== "Hardcore");
