@@ -1,6 +1,6 @@
 import { Fetch } from "./DataLoader";
 
-const CAAS_LIFETIME = 1000 * 60 * 60 * 2; // Cache for 2 hours
+const CAAS_LIFETIME = 1000 * 60 * 60 * 24; // Cache for 1 day
 
 /**
  * Returns cached config or, if the cached config has expired,
