@@ -38,6 +38,21 @@ export async function Fetch(url, timeout) {
     return ret;
 }
 
+/*
+export async function Fetch(url, timeout) {
+    let ret = new Promise(async (resolve, reject) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeout);
+
+        const response = fetch(url, { signal: controller.signal })
+        clearTimeout(timer);
+        
+        return response
+    });
+    return ret;
+}
+*/
+
 export async function Post(url, body, timeout) {
     let ret = new Promise(async (resolve, reject) => {
         setTimeout(() => {
