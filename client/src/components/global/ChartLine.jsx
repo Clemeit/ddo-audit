@@ -194,7 +194,7 @@ const ChartLine = (props) => {
             tickPadding: 5,
             tickRotation: 0,
             legend: props.legendLeft,
-            legendOffset: -50,
+            legendOffset: props.padLeft ? -70 : -50,
             legendPosition: "middle",
         };
     }
@@ -210,6 +210,16 @@ const ChartLine = (props) => {
             let temp = [...excludedSeries, series.id];
             setExcludedSeries([...temp]);
         }
+    }
+
+    function getLeftPadding() {
+        if (isMobile) {
+            return 40;
+        }
+        if (props.padLeft) {
+            return 80;
+        }
+        return 60;
     }
 
     return (
@@ -244,7 +254,7 @@ const ChartLine = (props) => {
                             top: 20,
                             right: 10,
                             bottom: props.marginBottom || 60,
-                            left: isMobile ? 40 : 60,
+                            left: getLeftPadding(),
                         }}
                         markers={
                             props.markedEvents && [

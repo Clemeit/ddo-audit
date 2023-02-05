@@ -1,5 +1,6 @@
 import React from "react";
 import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
+import { ReactComponent as TransferSVG } from "../../assets/global/transfer.svg";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
@@ -22,9 +23,11 @@ import Banner from "../global/Banner";
 import Footer from "./Footer";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 
 const Directory = (props) => {
     const TITLE = "DDO Audit | Population Tracking and LFM Viewer";
+    const showTransferPage = FeatureFlagHook("transfers");
 
     const NAV_OPTIONS = [
         {
@@ -67,6 +70,15 @@ const Directory = (props) => {
                         "Long-term trends, daily minimum and maximum population, and important game events.",
                     to: "/trends",
                 },
+                {
+                    icon: <TransferSVG className="nav-icon should-invert" />,
+                    title: "Server Transfers",
+                    description:
+                        "Which servers are gaining characters and which servers are losing them.",
+                    to: "/transfers",
+                    new: true,
+                    hide: !showTransferPage,
+                },
             ],
         },
         {
@@ -92,7 +104,6 @@ const Directory = (props) => {
                     description:
                         "See what your friends are up to with your own Friends List.",
                     to: "/friends",
-                    new: true,
                 },
                 {
                     icon: <RegisterSVG className="nav-icon should-invert" />,
@@ -100,14 +111,12 @@ const Directory = (props) => {
                     description:
                         "Add your characters for automatic LFM filtering and raid timer tracking.",
                     to: "/registration",
-                    new: true,
                 },
                 {
                     icon: <TimerSVG className="nav-icon should-invert" />,
                     title: "Raid Timers",
                     description: "View and manage your current raid timers.",
                     to: "/timers",
-                    new: true,
                 },
             ],
         },
@@ -288,47 +297,52 @@ const Directory = (props) => {
                         <div className="content-cluster-options">
                             {option.tiles
                                 .filter((option) => !option.unavailable)
-                                .map((option, i) => (
-                                    <Link
-                                        to={option.to}
-                                        key={i}
-                                        className={
-                                            "nav-box shrinkable" +
-                                            (option.soon == true
-                                                ? " no-interact"
-                                                : "")
-                                        }
-                                        style={{
-                                            height: "auto",
-                                            minHeight: "150px",
-                                        }}
-                                    >
-                                        <div className="nav-box-title">
-                                            {option.icon}
-                                            <h2 className="content-option-title">
-                                                {option.title}
-                                                {option.new != null && (
-                                                    <div className="new-tag">
-                                                        NEW
-                                                    </div>
-                                                )}
-                                                {option.beta != null && (
-                                                    <div className="beta-tag">
-                                                        BETA
-                                                    </div>
-                                                )}
-                                                {option.soon != null && (
-                                                    <div className="soon-tag">
-                                                        COMING SOON
-                                                    </div>
-                                                )}
-                                            </h2>
-                                        </div>
-                                        <p className="content-option-description">
-                                            {option.description}
-                                        </p>
-                                    </Link>
-                                ))}
+                                .map(
+                                    (option, i) =>
+                                        !option.hide && (
+                                            <Link
+                                                to={option.to}
+                                                key={i}
+                                                className={
+                                                    "nav-box shrinkable" +
+                                                    (option.soon == true
+                                                        ? " no-interact"
+                                                        : "")
+                                                }
+                                                style={{
+                                                    height: "auto",
+                                                    minHeight: "150px",
+                                                }}
+                                            >
+                                                <div className="nav-box-title">
+                                                    {option.icon}
+                                                    <h2 className="content-option-title">
+                                                        {option.title}
+                                                        {option.new != null && (
+                                                            <div className="new-tag">
+                                                                NEW
+                                                            </div>
+                                                        )}
+                                                        {option.beta !=
+                                                            null && (
+                                                            <div className="beta-tag">
+                                                                BETA
+                                                            </div>
+                                                        )}
+                                                        {option.soon !=
+                                                            null && (
+                                                            <div className="soon-tag">
+                                                                COMING SOON
+                                                            </div>
+                                                        )}
+                                                    </h2>
+                                                </div>
+                                                <p className="content-option-description">
+                                                    {option.description}
+                                                </p>
+                                            </Link>
+                                        )
+                                )}
                         </div>
                     </ContentCluster>
                 ))}

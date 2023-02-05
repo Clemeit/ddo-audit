@@ -42,6 +42,7 @@ import Mail from "./components/global/Mail";
 
 // Lazy loads (uncommon pages)
 // const ServerSpecific = lazy(() => import("./components/ServerSpecific"));
+const Transfers = lazy(() => import("./components/transfers/Transfers"));
 const Quests = lazy(() => import("./components/quests/Quests"));
 const Trends = lazy(() => import("./components/trends/Trends"));
 const Suggestions = lazy(() => import("./components/global/Suggestions"));
@@ -76,6 +77,9 @@ export default () => {
                         </Route>
                         <Route exact path="/live">
                             <Live />
+                        </Route>
+                        <Route exact path="/transfers">
+                            <Transfers />
                         </Route>
                         <Route exact path="/servers">
                             <Servers />
