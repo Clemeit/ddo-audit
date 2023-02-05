@@ -45,6 +45,7 @@ const Quests = (props) => {
     const [outlierCount, set_outlierCount] = React.useState(null);
     const [questName, set_questName] = React.useState(null);
     const [questNameFilter, set_questNameFilter] = React.useState("");
+    const [adventurePackFilter, setAdventurePackFilter] = React.useState("");
     const [levelFilter, set_levelFilter] = React.useState("");
     const [sortStyle, set_sortStyle] = React.useState("instances");
     const [sortDirection, setSortDirection] = React.useState("descending");
@@ -55,6 +56,7 @@ const Quests = (props) => {
     const [reportFormVisible, setReportFormVisible] = React.useState(false);
     const [reportedQuest, setReportedQuest] = React.useState(null);
     const [earliestEntryDate, setEarliestEntryDate] = React.useState(null);
+    const [showRaidsOnly, setShowRaidsOnly] = React.useState(false);
 
     const PAGE_SIZE = 20;
 
@@ -213,9 +215,17 @@ const Quests = (props) => {
         set_filteredQuestList(
             questList
                 .filter((entry) =>
+                    showRaidsOnly ? entry.groupsize === "Raid" : true
+                )
+                .filter((entry) =>
                     entry.name
                         .toLowerCase()
                         .includes(questNameFilter.toLowerCase())
+                )
+                .filter((entry) =>
+                    entry.requiredadventurepack
+                        ?.toLowerCase()
+                        .includes(adventurePackFilter.toLowerCase())
                 )
                 .filter((entry) => {
                     if (levelFilter === "") return true;
@@ -270,7 +280,15 @@ const Quests = (props) => {
                 })
         );
         set_pageNumber(0);
-    }, [questList, questNameFilter, levelFilter, sortStyle, sortDirection]);
+    }, [
+        questList,
+        questNameFilter,
+        levelFilter,
+        sortStyle,
+        sortDirection,
+        showRaidsOnly,
+        adventurePackFilter,
+    ]);
 
     React.useEffect(() => {
         if (filteredQuestList === null) return;
@@ -307,7 +325,7 @@ const Quests = (props) => {
         setIsLoading(true);
 
         let low = quest.isepic ? 20 : 1;
-        let high = quest.isepic ? 30 : 20;
+        let high = quest.isepic ? 40 : 20;
 
         Post(
             "https://api.ddoaudit.com/activity",
@@ -533,6 +551,15 @@ const Quests = (props) => {
         }, 500);
     }
 
+    let adventurepackfiltertimeout;
+    function HandleAdventurePackFilter() {
+        clearTimeout(adventurepackfiltertimeout);
+        adventurepackfiltertimeout = setTimeout(() => {
+            let adventurepack = document.getElementById("adventurepack").value;
+            setAdventurePackFilter(adventurepack);
+        }, 500);
+    }
+
     let levelfiltertimeout;
     function HandleLevelFilter() {
         clearTimeout(levelfiltertimeout);
@@ -735,11 +762,11 @@ const Quests = (props) => {
                                         marginBottom: "0px",
                                     }}
                                 >
-                                    Filter by quest name
+                                    Quest name:
                                 </label>
                                 <input
                                     style={{
-                                        maxWidth: "250px",
+                                        maxWidth: "175px",
                                         width: "100%",
                                         height: "max-content",
                                     }}
@@ -750,13 +777,34 @@ const Quests = (props) => {
                                     onChange={() => HandleQuestNameFilter()}
                                 />
                                 <label
+                                    htmlFor="adventurepack"
+                                    style={{
+                                        fontSize: "1.2rem",
+                                        marginBottom: "0px",
+                                    }}
+                                >
+                                    Adventure pack:
+                                </label>
+                                <input
+                                    style={{
+                                        maxWidth: "175px",
+                                        width: "100%",
+                                        height: "max-content",
+                                    }}
+                                    type="text"
+                                    id="adventurepack"
+                                    name="adventurepack"
+                                    className="full-width-mobile"
+                                    onChange={() => HandleAdventurePackFilter()}
+                                />
+                                <label
                                     htmlFor="levelfilter"
                                     style={{
                                         fontSize: "1.2rem",
                                         marginBottom: "0px",
                                     }}
                                 >
-                                    or level (e.g. "1,3,5-9")
+                                    Level (e.g. "1,3,5-9"):
                                 </label>
                                 <input
                                     style={{
@@ -770,6 +818,23 @@ const Quests = (props) => {
                                     className="full-width-mobile"
                                     onChange={() => HandleLevelFilter()}
                                 />
+                                <label
+                                    style={{
+                                        fontSize: "1.2rem",
+                                        marginLeft: "10px",
+                                    }}
+                                >
+                                    <input
+                                        className="input-radio"
+                                        name="raidsonly"
+                                        type="checkbox"
+                                        checked={showRaidsOnly}
+                                        onChange={() => {
+                                            setShowRaidsOnly(!showRaidsOnly);
+                                        }}
+                                    />
+                                    Raids only
+                                </label>
                                 <div className="audit-report-time">
                                     <p style={{ fontSize: "medium" }}>
                                         Audit performed {startTime.toString()}{" "}
