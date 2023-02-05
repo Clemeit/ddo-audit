@@ -51,7 +51,9 @@ const Transfers = () => {
 
         Fetch("https://api.ddoaudit.com/population/transfersfrom", 5000)
             .then((val) => {
-                setTransfersFrom(val.reverse());
+                setTransfersFrom(
+                    val.filter((set) => set.id !== "Hardcore").reverse()
+                );
             })
             .catch((err) => {
                 dataFailedToLoad();
