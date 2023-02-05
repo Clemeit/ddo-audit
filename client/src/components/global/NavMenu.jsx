@@ -9,6 +9,7 @@ import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
 import ServerHook from "../../hooks/ServerHook";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const NavMenu = (props) => {
     const SERVERS = ServerHook();
@@ -41,7 +42,7 @@ const NavMenu = (props) => {
                 >
                     <NavSubItem to={"/servers"}>Overview</NavSubItem>
                     <NavDivider />
-                    {SERVERS.map((server) => (
+                    {SERVER_LIST.map((server) => (
                         <NavSubItem
                             key={server}
                             to={"/servers/" + server.toLowerCase()}
