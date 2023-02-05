@@ -2,6 +2,7 @@ const fs = require("fs");
 require("dotenv").config();
 
 exports.runServerDistribution = (population, reporttype) => {
+	const hardcoreSeasonStart = new Date(2022, 11, 7);
 	var t0 = new Date();
 	console.log("Running Server Distribution report");
 
@@ -138,7 +139,10 @@ exports.runServerDistribution = (population, reporttype) => {
 						Wayfinder.value += wayfinder_playercount;
 						w_count++;
 					}
-					if (hardcore_playercount || !IGNORE_DOWNTIME) {
+					if (
+						(hardcore_playercount || !IGNORE_DOWNTIME) &&
+						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
+					) {
 						Hardcore.value += hardcore_playercount;
 						h_count++;
 					}
@@ -168,7 +172,11 @@ exports.runServerDistribution = (population, reporttype) => {
 					w_count++;
 
 					Hardcore.value += hardcore_lfmcount;
-					if (hardcore_lfmcount) h_count++;
+					if (
+						hardcore_lfmcount &&
+						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
+					)
+						h_count++;
 				}
 			}
 		}
