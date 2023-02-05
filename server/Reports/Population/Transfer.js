@@ -1,6 +1,7 @@
 const fs = require("fs");
 const moment = require("moment");
 require("dotenv").config();
+import { cloneDeep } from "lodash-es";
 
 exports.runTransferReport = (players) => {
 	function writeAndRetry(path, data, count) {
@@ -27,7 +28,7 @@ exports.runTransferReport = (players) => {
 		"Hardcore",
 	];
 
-	let transferCountData = [
+	let templateSingleData = [
 		{
 			id: "Total",
 			color: "hsl(205, 70%, 41%)",
@@ -35,55 +36,7 @@ exports.runTransferReport = (players) => {
 		},
 	];
 
-	let transfersFromData = [
-		{
-			id: "Argonnessen",
-			color: "hsl(205, 70%, 41%)",
-			data: [],
-		},
-		{
-			id: "Cannith",
-			color: "hsl(28, 100%, 53%)",
-			data: [],
-		},
-		{
-			id: "Ghallanda",
-			color: "hsl(120, 57%, 40%)",
-			data: [],
-		},
-		{
-			id: "Khyber",
-			color: "hsl(360, 69%, 50%)",
-			data: [],
-		},
-		{
-			id: "Orien",
-			color: "hsl(271, 39%, 57%)",
-			data: [],
-		},
-		{
-			id: "Sarlona",
-			color: "hsl(10, 30%, 42%)",
-			data: [],
-		},
-		{
-			id: "Thelanis",
-			color: "hsl(318, 66%, 68%)",
-			data: [],
-		},
-		{
-			id: "Wayfinder",
-			color: "hsl(0, 0%, 50%)",
-			data: [],
-		},
-		{
-			id: "Hardcore",
-			color: "hsl(60, 70%, 44%)",
-			data: [],
-		},
-	];
-
-	let transfersToData = [
+	let templateMultiData = [
 		{
 			id: "Argonnessen",
 			color: "hsl(205, 70%, 41%)",
@@ -138,6 +91,10 @@ exports.runTransferReport = (players) => {
 	let transfersFromCount = [];
 	let transfersToCount = [];
 
+	let totalTransferCountIgnoreHCL = 0;
+	let transfersFromCountIgnoreHCL = [];
+	let transfersToCountIgnoreHCL = [];
+
 	SERVER_NAMES.forEach((server) => {
 		transfersFromCount.push(0);
 		transfersToCount.push(0);
@@ -153,6 +110,14 @@ exports.runTransferReport = (players) => {
 				if (homeServerIndex !== -1) {
 					transfersFromCount[homeServerIndex]++;
 				}
+
+				if (homeserver !== "Hardcore") {
+					totalTransferCountIgnoreHCL++;
+					transfersToCountIgnoreHCL[serverIndex]++;
+					if (homeServerIndex !== -1) {
+						transfersFromCountIgnoreHCL[homeServerIndex]++;
+					}
+				}
 			}
 		}
 	});
@@ -166,21 +131,56 @@ exports.runTransferReport = (players) => {
 			fs.readFileSync("../api_v1/population/transfercounts.json", "utf8")
 		);
 	} catch {
-		lastTransferCountData = transferCountData;
+		lastTransferCountData = cloneDeep(templateSingleData);
 	}
 	try {
 		lastTransferFromData = JSON.parse(
 			fs.readFileSync("../api_v1/population/transfersfrom.json", "utf8")
 		);
 	} catch {
-		lastTransferFromData = transfersFromData;
+		lastTransferFromData = cloneDeep(templateMultiData);
 	}
 	try {
 		lastTransferToData = JSON.parse(
 			fs.readFileSync("../api_v1/population/transfersto.json", "utf8")
 		);
 	} catch {
-		lastTransferToData = transfersToData;
+		lastTransferToData = cloneDeep(templateMultiData);
+	}
+
+	// load last data (ignore hcl)
+	let lastTransferCountDataIgnoreHCL;
+	let lastTransferFromDataIgnoreHCL;
+	let lastTransferToDataIgnoreHCL;
+	try {
+		lastTransferCountDataIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfercounts_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferCountDataIgnoreHCL = cloneDeep(templateSingleData);
+	}
+	try {
+		lastTransferFromDataIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfersfrom_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferFromDataIgnoreHCL = cloneDeep(templateMultiData);
+	}
+	try {
+		lastTransferToDataIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfersto_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferToDataIgnoreHCL = cloneDeep(templateMultiData);
 	}
 
 	lastTransferCountData[0].data.push({
@@ -200,9 +200,22 @@ exports.runTransferReport = (players) => {
 		});
 	});
 
-	console.log(lastTransferCountData);
-	console.log(lastTransferFromData);
-	console.log(lastTransferToData);
+	lastTransferCountDataIgnoreHCL[0].data.push({
+		x: moment().startOf("day").toISOString(),
+		y: totalTransferCountIgnoreHCL,
+	});
+	transfersFromCountIgnoreHCL.forEach((count, i) => {
+		lastTransferFromDataIgnoreHCL[i].data.push({
+			x: moment().startOf("day"),
+			y: count,
+		});
+	});
+	transfersToCountIgnoreHCL.forEach((count, i) => {
+		lastTransferToDataIgnoreHCL[i].data.push({
+			x: moment().startOf("day"),
+			y: count,
+		});
+	});
 
 	writeAndRetry(
 		"../api_v1/population/transfercounts.json",
@@ -217,6 +230,22 @@ exports.runTransferReport = (players) => {
 	writeAndRetry(
 		"../api_v1/population/transfersto.json",
 		lastTransferToData,
+		2
+	);
+
+	writeAndRetry(
+		"../api_v1/population/transfercounts_ignorehcl.json",
+		lastTransferCountDataIgnoreHCL,
+		2
+	);
+	writeAndRetry(
+		"../api_v1/population/transfersfrom_ignorehcl.json",
+		lastTransferFromDataIgnoreHCL,
+		2
+	);
+	writeAndRetry(
+		"../api_v1/population/transfersto_ignorehcl.json",
+		lastTransferToDataIgnoreHCL,
 		2
 	);
 

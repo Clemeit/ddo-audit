@@ -20,6 +20,9 @@ module.exports = function (api) {
 		["transfercounts", "transfercounts"],
 		["transfersfrom", "transfersfrom"],
 		["transfersto", "transfersto"],
+		["transfercounts_ignorehcl", "transfercounts_ignorehcl"],
+		["transfersfrom_ignorehcl", "transfersfrom_ignorehcl"],
+		["transfersto_ignorehcl", "transfersto_ignorehcl"],
 	];
 
 	population.forEach((entry) => {
