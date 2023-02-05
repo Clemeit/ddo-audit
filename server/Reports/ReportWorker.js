@@ -15,6 +15,7 @@ const { runDailyDistribution } = require("./Population/DailyDistribution");
 const { runHourlyDistribution } = require("./Population/HourlyDistribution");
 const { runServerDistribution } = require("./Population/ServerDistribution");
 const { runUniqueReport } = require("./Population/UniqueCounts");
+const { runTransferReport } = require("./Population/Transfer");
 
 const { cachePlayers } = require("./Players/Players");
 
@@ -259,6 +260,7 @@ con.connect((err) => {
 			runRaceDistribution(players, races, "banks");
 			runLevelDistribution(players, "banks");
 			runUniqueReport(players);
+			runTransferReport(players);
 		});
 	});
 
