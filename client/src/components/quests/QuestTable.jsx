@@ -172,6 +172,18 @@ const ContentTable = (props) => {
                                         >
                                             {quest.name}
                                         </div>
+                                        {quest.groupsize === "Raid" && (
+                                            <span
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    color: "red",
+                                                    marginLeft: "5px",
+                                                    opacity: 0.8,
+                                                }}
+                                            >
+                                                R
+                                            </span>
+                                        )}
                                         <div
                                             className="report-quest-button"
                                             onClick={(e) => {
