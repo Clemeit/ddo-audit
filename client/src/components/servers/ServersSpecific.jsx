@@ -155,6 +155,7 @@ const ServersSpecific = () => {
         if (SERVER_LIST.includes(serverName)) {
             // Good server
             setCurrentServer(serverName);
+            setUniqueData(null);
         } else {
             // Bad server
             setCurrentServer(SERVER_LIST[0]); // Just default to the first server in the good list
