@@ -21,7 +21,7 @@ import BannerMessage from "../global/BannerMessage";
 import LoadingOverlay from "./LoadingOverlay";
 import ContentCluster from "../global/ContentCluster";
 import { SERVER_LIST } from "../../constants/Servers";
-const math = require("mathjs");
+import { std as mathStd } from "mathjs";
 
 const TITLE = "DDO Quest Activity";
 
@@ -368,7 +368,7 @@ const Quests = (props) => {
             });
             setEarliestEntryDate(firstentrydate);
 
-            let std = Math.round(math.std(values) / 60);
+            let std = Math.round(mathStd(values) / 60);
             let ave = Math.round(total / values.length / 60);
 
             bincount = max / 60;

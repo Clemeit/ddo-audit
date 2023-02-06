@@ -3,7 +3,7 @@ import React from "react";
 const ToggleButton = (props) => {
     return (
         <div className={`toggle-button-container ${props.className}`}>
-            <div className="toggle-button-inner">
+            <div className={`toggle-button-inner ${props.className}`}>
                 <button
                     className={`toggle-button left${
                         props.isA ? " selected" : ""

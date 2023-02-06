@@ -953,6 +953,13 @@ body {
     max-width: 300px;
 }
 
+.toggle-button-container.wide {
+    max-width: 400px;
+}
+.toggle-button-inner.wide {
+    max-width: 400px;
+}
+
 .toggle-button {
     position: relative;
     transition: color 800ms;
