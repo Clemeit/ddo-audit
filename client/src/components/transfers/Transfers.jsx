@@ -112,7 +112,7 @@ const Transfers = () => {
                 <BannerMessage page="transfers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster
-                    title="Server Transfers"
+                    title="About Server Transfers"
                     description={
                         <span>
                             <p>
