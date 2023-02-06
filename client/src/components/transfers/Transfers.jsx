@@ -157,9 +157,7 @@ const Transfers = () => {
                             <p>
                                 The total number of transfer characters online
                                 on any given day. This is NOT the number of
-                                character transfers per day. That could be found
-                                by comparing the difference between two
-                                consecutive days.
+                                character transfers per day.
                             </p>
                         </span>
                     }
@@ -177,6 +175,7 @@ const Transfers = () => {
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
+                        yMin="auto"
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -202,6 +201,7 @@ const Transfers = () => {
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
+                        yMin="auto"
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -240,6 +240,7 @@ const Transfers = () => {
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
+                        yMin="auto"
                     />
                 </ContentCluster>
             </div>
