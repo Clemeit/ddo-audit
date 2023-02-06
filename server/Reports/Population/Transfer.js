@@ -1,9 +1,8 @@
-const fs = require("fs");
-const moment = require("moment");
-require("dotenv").config();
+import moment from "moment";
 import { cloneDeep } from "lodash-es";
+import fs from "fs";
 
-exports.runTransferReport = (players) => {
+const runTransferReport = (players) => {
 	function writeAndRetry(path, data, count) {
 		fs.writeFile(path, JSON.stringify(data), (err) => {
 			if (err) {
@@ -98,6 +97,8 @@ exports.runTransferReport = (players) => {
 	SERVER_NAMES.forEach((server) => {
 		transfersFromCount.push(0);
 		transfersToCount.push(0);
+		transfersFromCountIgnoreHCL.push(0);
+		transfersToCountIgnoreHCL.push(0);
 	});
 
 	players.forEach(({ server, homeserver }) => {
@@ -252,3 +253,5 @@ exports.runTransferReport = (players) => {
 	var t1 = new Date();
 	console.log(`-> Finished in ${t1 - t0}ms`);
 };
+
+export default runTransferReport;

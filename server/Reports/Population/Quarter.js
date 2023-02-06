@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runQuarterReport = (population, reporttype) => {
+const runQuarterReport = (population, reporttype) => {
 	// const hardcoreSeasonStart = new Date(2022, 11, 7);
 
 	return new Promise(async (resolve, reject) => {
@@ -541,3 +540,5 @@ exports.runQuarterReport = (population, reporttype) => {
 		resolve(Total.data);
 	});
 };
+
+export default runQuarterReport;

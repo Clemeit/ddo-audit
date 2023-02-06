@@ -1,5 +1,5 @@
-var mysql = require("mysql2");
-var requestIp = require("request-ip");
+import mysql from "mysql2";
+import requestIp from "request-ip";
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -7,7 +7,7 @@ var con = mysql.createConnection({
 	database: process.env.DB_NAME,
 });
 
-module.exports = function (api) {
+const messageServiceApi = (api) => {
 	con.connect((err) => {
 		if (err) throw err;
 		console.log("Message Service API connected to the database");
@@ -272,3 +272,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default messageServiceApi;

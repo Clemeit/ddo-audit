@@ -1,27 +1,28 @@
-const cron = require("node-cron");
+import cron from "node-cron";
 
 // Get data once, then run all of the reports using that data...
-const { runClassDistribution } = require("./Demographics/ClassDistribution");
-const { runRaceDistribution } = require("./Demographics/RaceDistribution");
-const { runLevelDistribution } = require("./Demographics/LevelDistribution");
+import runClassDistribution from "./Demographics/ClassDistribution.js";
+import runRaceDistribution from "./Demographics/RaceDistribution.js";
+import runLevelDistribution from "./Demographics/LevelDistribution.js";
 
-const { runAnnualReport } = require("./Population/Annual");
-const { runQuarterReport } = require("./Population/Quarter");
-const { runWeekReport } = require("./Population/Week");
-const { runDayReport } = require("./Population/Day");
-const { runDeltaReport } = require("./Population/DeltaReport");
+import runAnnualReport from "./Population/Annual.js";
+import runQuarterReport from "./Population/Quarter.js";
+import runWeekReport from "./Population/Week.js";
+import runDayReport from "./Population/Day.js";
+import runDeltaReport from "./Population/DeltaReport.js";
 
-const { runDailyDistribution } = require("./Population/DailyDistribution");
-const { runHourlyDistribution } = require("./Population/HourlyDistribution");
-const { runServerDistribution } = require("./Population/ServerDistribution");
-const { runUniqueReport } = require("./Population/UniqueCounts");
-const { runTransferReport } = require("./Population/Transfer");
+import runDailyDistribution from "./Population/DailyDistribution.js";
+import runHourlyDistribution from "./Population/HourlyDistribution.js";
+import runServerDistribution from "./Population/ServerDistribution.js";
+import runUniqueReport from "./Population/UniqueCounts.js";
+import runTransferReport from "./Population/Transfer.js";
+import cachePlayers from "./Players/Players.js";
+import runServerStatusReport from "./Game/ServerStatus.js";
+import mysql from "mysql2";
 
-const { cachePlayers } = require("./Players/Players");
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const { runServerStatusReport } = require("./Game/ServerStatus");
-
-var mysql = require("mysql2");
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -252,7 +253,7 @@ con.connect((err) => {
 
 		getClassData();
 		getRaceData();
-		getPlayerData((days = 91)).then(() => {
+		getPlayerData(91).then(() => {
 			runClassDistribution(players, classes, "normal");
 			runRaceDistribution(players, races, "normal");
 			runLevelDistribution(players, "normal");

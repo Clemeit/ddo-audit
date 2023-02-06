@@ -1,7 +1,6 @@
-const cron = require("node-cron");
-var path = require("path");
+import cron from "node-cron";
 
-var mysql = require("mysql2");
+import mysql from "mysql2";
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -9,7 +8,7 @@ var con = mysql.createConnection({
 	database: process.env.DB_NAME,
 });
 
-module.exports = function (api) {
+const iotApi = (api) => {
 	con.connect((err) => {
 		if (err) throw err;
 		console.log("IOT API connected to the database");
@@ -250,3 +249,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default iotApi;

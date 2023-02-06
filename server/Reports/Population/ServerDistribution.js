@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runServerDistribution = (population, reporttype) => {
+const runServerDistribution = (population, reporttype) => {
 	const hardcoreSeasonStart = new Date(2022, 11, 7);
 	var t0 = new Date();
 	console.log("Running Server Distribution report");
@@ -219,3 +218,5 @@ exports.runServerDistribution = (population, reporttype) => {
 	var t1 = new Date();
 	console.log(`Finished in ${t1 - t0}ms`);
 };
+
+export default runServerDistribution;

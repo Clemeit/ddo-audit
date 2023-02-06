@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runAnnualReport = (population) => {
+const runAnnualReport = (population) => {
 	var t0 = new Date();
 	console.log("Running Annual Population report");
 
@@ -347,3 +346,5 @@ exports.runAnnualReport = (population) => {
 	var t1 = new Date();
 	console.log(`Finished in ${t1 - t0}ms`);
 };
+
+export default runAnnualReport;

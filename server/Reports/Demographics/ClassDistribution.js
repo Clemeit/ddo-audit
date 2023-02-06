@@ -1,8 +1,7 @@
-const fs = require("fs");
-require("dotenv").config();
-const { isPlayerActive } = require("../ActivePredicate");
+import fs from "fs";
+import isPlayerActive from "../ActivePredicate.js";
 
-exports.runClassDistribution = (players, classes, reporttype) => {
+const runClassDistribution = (players, classes, reporttype) => {
 	const PURE_CLASS_REPORT = false;
 	const IGNORE_DOWNTIME = true;
 	const NORMALIZED = true;
@@ -178,3 +177,5 @@ exports.runClassDistribution = (players, classes, reporttype) => {
 	var t1 = new Date();
 	console.log(`-> Finished in ${t1 - t0}ms`);
 };
+
+export default runClassDistribution;

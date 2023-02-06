@@ -1,6 +1,6 @@
-var path = require("path");
+import path from "path";
 
-var mysql = require("mysql2");
+import mysql from "mysql2";
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -8,7 +8,7 @@ var con = mysql.createConnection({
 	database: process.env.DB_NAME,
 });
 
-module.exports = function (api) {
+const gameStatusApi = (api) => {
 	const servers = [
 		["Argonnessen", "argonnessen"],
 		["Cannith", "cannith"],
@@ -183,3 +183,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default gameStatusApi;

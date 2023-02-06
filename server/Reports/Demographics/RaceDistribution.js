@@ -1,8 +1,7 @@
-const fs = require("fs");
-require("dotenv").config();
-const { isPlayerActive } = require("../ActivePredicate");
+import fs from "fs";
+import isPlayerActive from "../ActivePredicate.js";
 
-exports.runRaceDistribution = (players, races, reporttype) => {
+const runRaceDistribution = (players, races, reporttype) => {
 	const IGNORE_DOWNTIME = true;
 
 	var t0 = new Date();
@@ -71,3 +70,5 @@ exports.runRaceDistribution = (players, races, reporttype) => {
 	var t1 = new Date();
 	console.log(`-> Finished in ${t1 - t0}ms`);
 };
+
+export default runRaceDistribution;

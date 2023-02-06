@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runHourlyDistribution = (population, reporttype) => {
+const runHourlyDistribution = (population, reporttype) => {
 	function mod(n, m) {
 		return ((n % m) + m) % m;
 	}
@@ -252,3 +251,5 @@ exports.runHourlyDistribution = (population, reporttype) => {
 	var t1 = new Date();
 	console.log(`Finished in ${t1 - t0}ms`);
 };
+
+export default runHourlyDistribution;

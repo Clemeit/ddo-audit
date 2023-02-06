@@ -1,13 +1,12 @@
-var mysql = require("mysql2");
+import mysql from "mysql2";
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
 	password: process.env.DB_PASS,
 	database: process.env.DB_NAME,
 });
-var CryptoJS = require("crypto-js");
 
-module.exports = function (api) {
+const friendsApi = (api) => {
 	con.connect((err) => {
 		if (err) throw err;
 		console.log("Friends API connected to the database");
@@ -323,3 +322,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default friendsApi;

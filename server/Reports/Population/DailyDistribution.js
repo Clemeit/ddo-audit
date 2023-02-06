@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runDailyDistribution = (population, reporttype) => {
+const runDailyDistribution = (population, reporttype) => {
 	var t0 = new Date();
 	console.log("Running Daily Distribution report");
 
@@ -930,3 +929,5 @@ exports.runDailyDistribution = (population, reporttype) => {
 	var t1 = new Date();
 	console.log(`Finished in ${t1 - t0}ms`);
 };
+
+export default runDailyDistribution;

@@ -1,13 +1,19 @@
-const compression = require("compression");
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-let admin = require("firebase-admin");
-let mysql = require("mysql2");
-var bodyParser = require("body-parser");
+import "./dotenvConfig.js";
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import populationApi from "./Endpoints/Population.js";
+import demographicsApi from "./Endpoints/Demographics.js";
+import groupsApi from "./Endpoints/Groups.js";
+import playersApi from "./Endpoints/Players.js";
+import messageServiceApi from "./Endpoints/MessageService.js";
+import gameStatusApi from "./Endpoints/GameStatus.js";
+import activityApi from "./Endpoints/Activity.js";
+import friendsApi from "./Endpoints/Friends.js";
+import iotApi from "./Endpoints/IOT.js";
+import caasApi from "./Endpoints/CaaS.js";
 
-const { initializeApp, applicationDefault } = require("firebase-admin/app");
-require("dotenv").config();
+// import { initializeApp, applicationDefault } from "firebase-admin/app";
 
 const api = express();
 const API_PORT = process.env.API_PORT;
@@ -20,21 +26,21 @@ api.use(bodyParser.json()); // support json encoded bodies
 api.use(bodyParser.urlencoded({ extended: true }));
 
 // Major endpoints
-require("./Endpoints/Population")(api);
-require("./Endpoints/Demographics")(api);
-require("./Endpoints/Groups")(api);
-require("./Endpoints/Players")(api);
-require("./Endpoints/MessageService")(api);
-require("./Endpoints/GameStatus")(api);
-require("./Endpoints/Activity")(api);
-require("./Endpoints/Friends")(api);
-require("./Endpoints/IOT")(api);
-require("./Endpoints/CaaS")(api);
+populationApi(api);
+demographicsApi(api);
+groupsApi(api);
+playersApi(api);
+messageServiceApi(api);
+gameStatusApi(api);
+activityApi(api);
+friendsApi(api);
+iotApi(api);
+caasApi(api);
 
 // Firebase
-initializeApp({
-	credential: applicationDefault(),
-});
+// initializeApp({
+// 	credential: applicationDefault(),
+// });
 
 api.listen(API_PORT, () => {
 	console.log(`API listening on ${API_PORT}`);

@@ -1,6 +1,6 @@
-var path = require("path");
+import path from "path";
 
-module.exports = function (api) {
+const populationApi = (api) => {
 	const population = [
 		["day", "day"],
 		["day_groups", "day_groups"],
@@ -32,3 +32,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default populationApi;

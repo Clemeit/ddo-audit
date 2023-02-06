@@ -1,5 +1,6 @@
-var mysql = require("mysql2");
-const CryptoJS = require("crypto-js");
+import mysql from "mysql2";
+import CryptoJS from "crypto-js";
+
 const SECRET = process.env.CRYPTO_PASS;
 var con = mysql.createConnection({
 	host: process.env.DB_HOST,
@@ -8,7 +9,7 @@ var con = mysql.createConnection({
 	database: process.env.DB_NAME,
 });
 
-module.exports = function (api) {
+const playersApi = (api) => {
 	const servers = [
 		["Argonnessen", "argonnessen"],
 		["Cannith", "cannith"],
@@ -768,3 +769,5 @@ module.exports = function (api) {
 		});
 	});
 };
+
+export default playersApi;

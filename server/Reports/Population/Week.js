@@ -1,7 +1,6 @@
-const fs = require("fs");
-require("dotenv").config();
+import fs from "fs";
 
-exports.runWeekReport = (population) => {
+const runWeekReport = (population) => {
 	var t0 = new Date();
 	console.log("Running Weekly Population report");
 
@@ -135,7 +134,8 @@ exports.runWeekReport = (population) => {
 
 						Argonnessen.data[Argonnessen.data.length - 1].y =
 							Math.round(
-								(Argonnessen.data[Argonnessen.data.length - 1].y /
+								(Argonnessen.data[Argonnessen.data.length - 1]
+									.y /
 									entriesThisHour[0]) *
 									100
 							) / 100;
@@ -273,7 +273,8 @@ exports.runWeekReport = (population) => {
 						}
 
 						if (orien_playercount) {
-							Orien.data[Orien.data.length - 1].y += orien_playercount;
+							Orien.data[Orien.data.length - 1].y +=
+								orien_playercount;
 							entriesThisHour[4]++;
 						}
 
@@ -372,7 +373,8 @@ exports.runWeekReport = (population) => {
 
 	Thelanis.data[Thelanis.data.length - 1].y =
 		Math.round(
-			(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) * 100
+			(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) *
+				100
 		) / 100;
 
 	Wayfinder.data[Wayfinder.data.length - 1].y =
@@ -383,7 +385,8 @@ exports.runWeekReport = (population) => {
 
 	Hardcore.data[Hardcore.data.length - 1].y =
 		Math.round(
-			(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) * 100
+			(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) *
+				100
 		) / 100;
 
 	Total.data[Total.data.length - 1].y =
@@ -417,3 +420,5 @@ exports.runWeekReport = (population) => {
 	var t1 = new Date();
 	console.log(`Finished in ${t1 - t0}ms`);
 };
+
+export default runWeekReport;
