@@ -8,14 +8,22 @@ import { Log } from "../../services/CommunicationService";
 import ChartLine from "../global/ChartLine";
 import { Fetch } from "../../services/DataLoader";
 import ToggleButton from "../global/ToggleButton";
+import { Link } from "react-router-dom";
 
 const Transfers = () => {
     const TITLE = "Server Transfers";
+    const DAY_ONLY = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
 
-    const [ignoreHCL, setIgnoreHCL] = React.useState(false);
+    const [ignoreHCLCounts, setIgnoreHCLCounts] = React.useState(false);
+    const [ignoreHCLTo, setIgnoreHCLTo] = React.useState(false);
 
     function dataFailedToLoad() {
         setPopupMessage({
@@ -34,9 +42,22 @@ const Transfers = () => {
 
     React.useEffect(() => {
         Log("Transfers page", "Page viewed");
+
+        Fetch("https://api.ddoaudit.com/population/transfersfrom", 5000)
+            .then((val) => {
+                setTransfersFrom(
+                    val.filter((set) => set.id !== "Hardcore").reverse()
+                );
+            })
+            .catch((err) => {
+                dataFailedToLoad();
+            });
+    }, []);
+
+    React.useEffect(() => {
         Fetch(
             `https://api.ddoaudit.com/population/transfercounts${
-                ignoreHCL ? "_ignorehcl" : ""
+                ignoreHCLCounts ? "_ignorehcl" : ""
             }`,
             5000
         )
@@ -46,10 +67,12 @@ const Transfers = () => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+    }, [ignoreHCLCounts]);
 
+    React.useEffect(() => {
         Fetch(
             `https://api.ddoaudit.com/population/transfersto${
-                ignoreHCL ? "_ignorehcl" : ""
+                ignoreHCLTo ? "_ignorehcl" : ""
             }`,
             5000
         )
@@ -61,17 +84,7 @@ const Transfers = () => {
             .catch((err) => {
                 dataFailedToLoad();
             });
-
-        Fetch("https://api.ddoaudit.com/population/transfersfrom", 5000)
-            .then((val) => {
-                setTransfersFrom(
-                    val.filter((set) => set.id !== "Hardcore").reverse()
-                );
-            })
-            .catch((err) => {
-                dataFailedToLoad();
-            });
-    }, [ignoreHCL]);
+    }, [ignoreHCLTo]);
 
     return (
         <div>
@@ -115,51 +128,75 @@ const Transfers = () => {
                     title="About Server Transfers"
                     description={
                         <span>
-                            <p>
-                                The following reports display server transfer
-                                information. Like most of the demographic
-                                reports on DDO Audit, the server transfer
-                                reports only count characters that have logged
-                                in within the last 90 days.
-                            </p>
-                            <p>
-                                Note: a "transfer character" is defined as a
-                                character that is currently playing on a
-                                different server than the one they were created
-                                on.
-                            </p>
-                            <p>
-                                A lot of transfers result from the existence
-                                Hardcore server. You can filter these transfers
-                                out of the report using the button below.
-                            </p>
+                            <ul>
+                                <li>
+                                    The following reports display server
+                                    transfer information. Like most of the
+                                    demographic reports on DDO Audit, the
+                                    reports shown here only count characters
+                                    that have logged in within the last 90 days.
+                                </li>
+                                <li>
+                                    A "transfer character" is defined as a
+                                    character that is currently playing on a
+                                    different server than the one they were
+                                    created on.
+                                </li>
+                                <li>
+                                    A lot of character transfers result from the
+                                    existence of the Hardcore server. You can
+                                    filter those transfers out of the reports
+                                    with the toggle buttons.
+                                </li>
+                                <li>
+                                    This is a new feature, and it deals with a
+                                    new set of data. There may be
+                                    inconsistencies. Numbers may not be exact,
+                                    but they will provide excellent insight into
+                                    overarching trends.
+                                </li>
+                            </ul>
+                            <div
+                                style={{
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    gap: "7px",
+                                }}
+                            >
+                                <span>Thanks, Clemeit</span>
+                                <Link to="/suggestions">Make a suggestion</Link>
+                            </div>
                         </span>
                     }
-                >
-                    <ToggleButton
-                        className="wide"
-                        textA="Include HCL Transfers"
-                        textB="Exclude HCL Transfers"
-                        isA={!ignoreHCL}
-                        isB={ignoreHCL}
-                        doA={() => {
-                            setIgnoreHCL(false);
-                        }}
-                        doB={() => {
-                            setIgnoreHCL(true);
-                        }}
-                    />
-                </ContentCluster>
+                    smallBottomMargin={true}
+                />
                 <ContentCluster
                     title="Total Transfer Characters"
                     description={
-                        <span>
+                        <>
                             <p>
                                 The total number of transfer characters online
-                                on any given day. This is NOT the number of
-                                character transfers per day.
+                                on any given day.{" "}
+                                <span className="lfm-number">
+                                    This is NOT the number of character
+                                    transfers per day.
+                                </span>
                             </p>
-                        </span>
+                            <ToggleButton
+                                className="wide"
+                                textA="Include HCL Transfers"
+                                textB="Exclude HCL Transfers"
+                                isA={!ignoreHCLCounts}
+                                isB={ignoreHCLCounts}
+                                doA={() => {
+                                    setIgnoreHCLCounts(false);
+                                }}
+                                doB={() => {
+                                    setIgnoreHCLCounts(true);
+                                }}
+                            />
+                        </>
                     }
                 >
                     <ChartLine
@@ -170,22 +207,39 @@ const Transfers = () => {
                         data={transferCounts}
                         title="Transfer Characters"
                         marginBottom={60}
-                        trendType="day"
+                        trendType="week"
                         noArea={true}
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
                         yMin="auto"
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
                     title={`Transfers "To"`}
                     description={
-                        <p>
-                            The total number of characters transferred <i>to</i>{" "}
-                            each server. Servers with a high transfer count are
-                            gaining players from other servers.
-                        </p>
+                        <>
+                            <p>
+                                The total number of characters transferred{" "}
+                                <i>to</i> each server. Servers with a high
+                                transfer count are gaining players from other
+                                servers.
+                            </p>
+                            <ToggleButton
+                                className="wide"
+                                textA="Include HCL Transfers"
+                                textB="Exclude HCL Transfers"
+                                isA={!ignoreHCLTo}
+                                isB={ignoreHCLTo}
+                                doA={() => {
+                                    setIgnoreHCLTo(false);
+                                }}
+                                doB={() => {
+                                    setIgnoreHCLTo(true);
+                                }}
+                            />
+                        </>
                     }
                 >
                     <ChartLine
@@ -196,12 +250,13 @@ const Transfers = () => {
                         data={transfersTo}
                         title="Transfer Characters To"
                         marginBottom={60}
-                        trendType="day"
+                        trendType="week"
                         noArea={true}
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
                         yMin="auto"
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
                 <ContentCluster
@@ -214,15 +269,6 @@ const Transfers = () => {
                                 transfer count are losing players to other
                                 servers.
                             </p>
-                            {ignoreHCL && (
-                                <p>
-                                    <span className="red-text">Note:</span>{" "}
-                                    Filtering out Hardcore League transfers
-                                    doesn't affect this report since you cannot
-                                    transfer from any server to the Hardcore
-                                    server.
-                                </p>
-                            )}
                         </span>
                     }
                 >
@@ -233,14 +279,15 @@ const Transfers = () => {
                         legendLeft="Total Transfer Characters"
                         data={transfersFrom}
                         title="Transfer Characters From"
-                        forceHardcore={true}
+                        x
                         marginBottom={60}
-                        trendType="day"
+                        trendType="week"
                         noArea={true}
                         straightLegend={true}
                         tooltipPrefix="Day"
                         padLeft={true}
                         yMin="auto"
+                        dateOptions={DAY_ONLY}
                     />
                 </ContentCluster>
             </div>
