@@ -7,12 +7,15 @@ import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
 import ChartLine from "../global/ChartLine";
 import { Fetch } from "../../services/DataLoader";
+import ToggleButton from "../global/ToggleButton";
 
 const Transfers = () => {
     const TITLE = "Server Transfers";
 
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
+
+    const [ignoreHCL, setIgnoreHCL] = React.useState(false);
 
     function dataFailedToLoad() {
         setPopupMessage({
@@ -31,7 +34,12 @@ const Transfers = () => {
 
     React.useEffect(() => {
         Log("Transfers page", "Page viewed");
-        Fetch("https://api.ddoaudit.com/population/transfercounts", 5000)
+        Fetch(
+            `https://api.ddoaudit.com/population/transfercounts${
+                ignoreHCL ? "_ignorehcl" : ""
+            }`,
+            5000
+        )
             .then((val) => {
                 setTransferCounts(val.reverse());
             })
@@ -39,7 +47,12 @@ const Transfers = () => {
                 dataFailedToLoad();
             });
 
-        Fetch("https://api.ddoaudit.com/population/transfersto", 5000)
+        Fetch(
+            `https://api.ddoaudit.com/population/transfersto${
+                ignoreHCL ? "_ignorehcl" : ""
+            }`,
+            5000
+        )
             .then((val) => {
                 setTransfersTo(
                     val.filter((set) => set.id !== "Hardcore").reverse()
@@ -58,7 +71,7 @@ const Transfers = () => {
             .catch((err) => {
                 dataFailedToLoad();
             });
-    }, []);
+    }, [ignoreHCL]);
 
     return (
         <div>
@@ -99,6 +112,45 @@ const Transfers = () => {
                 <BannerMessage page="transfers" />
                 <div className="top-content-padding shrink-on-mobile" />
                 <ContentCluster
+                    title="Server Transfers"
+                    description={
+                        <span>
+                            <p>
+                                The following reports display server transfer
+                                information. Like most of the demographic
+                                reports on DDO Audit, the server transfer
+                                reports only count characters that have logged
+                                in within the last 90 days.
+                            </p>
+                            <p>
+                                Note: a "transfer character" is defined as a
+                                character that is currently playing on a
+                                different server than the one they were created
+                                on.
+                            </p>
+                            <p>
+                                A lot of transfers result from the existence
+                                Hardcore server. You can filter these transfers
+                                out of the report using the button below.
+                            </p>
+                        </span>
+                    }
+                >
+                    <ToggleButton
+                        className="wide"
+                        textA="Include HCL Transfers"
+                        textB="Exclude HCL Transfers"
+                        isA={!ignoreHCL}
+                        isB={ignoreHCL}
+                        doA={() => {
+                            setIgnoreHCL(false);
+                        }}
+                        doB={() => {
+                            setIgnoreHCL(true);
+                        }}
+                    />
+                </ContentCluster>
+                <ContentCluster
                     title="Total Transfer Characters"
                     description={
                         <span>
@@ -108,12 +160,6 @@ const Transfers = () => {
                                 character transfers per day. That could be found
                                 by comparing the difference between two
                                 consecutive days.
-                            </p>
-                            <p>
-                                Note: a "transfer character" is defined as a
-                                character that is currently playing on a
-                                different server than the one they were created
-                                on.
                             </p>
                         </span>
                     }
@@ -161,11 +207,23 @@ const Transfers = () => {
                 <ContentCluster
                     title={`Transfers "From"`}
                     description={
-                        <p>
-                            The total number of characters transferred{" "}
-                            <i>from</i> each server. Servers with a high
-                            transfer count are losing players to other servers.
-                        </p>
+                        <span>
+                            <p>
+                                The total number of characters transferred{" "}
+                                <i>from</i> each server. Servers with a high
+                                transfer count are losing players to other
+                                servers.
+                            </p>
+                            {ignoreHCL && (
+                                <p>
+                                    <span className="red-text">Note:</span>{" "}
+                                    Filtering out Hardcore League transfers
+                                    doesn't affect this report since you cannot
+                                    transfer from any server to the Hardcore
+                                    server.
+                                </p>
+                            )}
+                        </span>
                     }
                 >
                     <ChartLine
