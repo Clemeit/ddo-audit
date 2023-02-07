@@ -30,6 +30,7 @@ const PageMessage = (props) => {
 
     return (
         <div
+            className={props.padded ? "page-message-padded" : ""}
             style={{
                 width: "100%",
                 color: "var(--text)",

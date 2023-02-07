@@ -576,6 +576,13 @@ body {
     }
 }
 
+.page-message-padded {
+    margin: 0px 0px 3.5rem 0px;
+    padding: 0px 1.6rem;
+    max-width: 1920px;
+    width: 100%;
+}
+
 .content-container {
     display: flex;
     align-items: center;
@@ -1807,10 +1814,16 @@ th {
         flex-direction: column;
         gap: 30px;
     }
+    .page-message-padded {
+        max-width: 1400px;
+    }
 }
 
 @media (max-width: 1500px) {
     .content-cluster {
+        max-width: 1100px;
+    }
+    .page-message-padded {
         max-width: 1100px;
     }
 }
