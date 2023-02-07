@@ -722,6 +722,52 @@ body {
     user-select: none;
 }
 
+.nav-box.golden {
+    position: relative;
+    background-color: var(--base);
+    z-index: 1;
+}
+
+@keyframes animateOpacity {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.5;
+    }
+}
+
+.nav-box.glowing:before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(-45deg, #60efff 40%, #ff00e6 60%);
+    transform: translate3d(0px, 0px, 0) scale(1);
+    filter: blur(10px);
+    border-radius: inherit;
+
+    animation-name: animateOpacity;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+}
+
+.nav-box.glowing::after {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: inherit;
+    border-radius: inherit;
+}
+
 .nav-box.small {
     height: min-content;
 }

@@ -17,7 +17,7 @@ import { ReactComponent as FeedbackSVG } from "../../assets/global/feedback.svg"
 import { ReactComponent as RegisterSVG } from "../../assets/global/register.svg";
 import { ReactComponent as TimerSVG } from "../../assets/global/timer.svg";
 import { ReactComponent as DarkThemeSVG } from "../../assets/global/dark_theme.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Banner from "../global/Banner";
 import Footer from "./Footer";
@@ -28,6 +28,7 @@ import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 const Directory = (props) => {
     const TITLE = "DDO Audit | Population Tracking and LFM Viewer";
     const showTransferPage = FeatureFlagHook("transfers");
+    const glowTransfersButton = FeatureFlagHook("glow-transfers-button");
 
     const NAV_OPTIONS = [
         {
@@ -77,6 +78,7 @@ const Directory = (props) => {
                         "Which servers are gaining characters and which servers are losing them.",
                     to: "/transfers",
                     new: true,
+                    glowing: glowTransfersButton,
                     hide: !showTransferPage,
                 },
             ],
@@ -305,8 +307,11 @@ const Directory = (props) => {
                                                 key={i}
                                                 className={
                                                     "nav-box shrinkable" +
-                                                    (option.soon == true
+                                                    (option.soon === true
                                                         ? " no-interact"
+                                                        : "") +
+                                                    (option.glowing === true
+                                                        ? " glowing"
                                                         : "")
                                                 }
                                                 style={{
