@@ -722,7 +722,7 @@ body {
     user-select: none;
 }
 
-.nav-box.golden {
+.nav-box.glowing {
     position: relative;
     background-color: var(--base);
     z-index: 1;
