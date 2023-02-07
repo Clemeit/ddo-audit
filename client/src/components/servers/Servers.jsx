@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
+import { ReactComponent as TransferSVG } from "../../assets/global/transfer.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
 import { ReactComponent as PumpkinOnlineSVG } from "../../assets/global/pumpkin_green.svg";
@@ -19,11 +20,15 @@ import ChartBar from "../global/ChartBar";
 import { Log } from "../../services/CommunicationService";
 import ToggleButton from "../global/ToggleButton";
 import { SERVER_LIST } from "../../constants/Servers";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
+import PageMessage from "../global/PageMessage";
 
 // no-change
 
 const Directory = (props) => {
     const TITLE = "DDO Server Population and Demographics";
+    const showTransfersNote = FeatureFlagHook("transfers-note");
+    const showTransferPage = FeatureFlagHook("transfers");
 
     const EVENT_THEME = isSpookyTime();
 
@@ -419,6 +424,21 @@ const Directory = (props) => {
             <div className="content-container">
                 <BannerMessage page="servers" />
                 <div className="top-content-padding shrink-on-mobile" />
+                {showTransfersNote && (
+                    <PageMessage
+                        type="info"
+                        title="Character Transfers - Special Report"
+                        message={
+                            <>
+                                We're now reporting data on character transfers.
+                                Check it out on the{" "}
+                                <Link to="/transfers">Transfers</Link> page.
+                            </>
+                        }
+                        fontSize={1.4}
+                        padded={true}
+                    />
+                )}
                 <ContentCluster title="Select a Server">
                     <div className="content-cluster-options">
                         {SERVER_LIST.map((name, i) => (
@@ -847,6 +867,27 @@ const Directory = (props) => {
                                 population, and important game events.
                             </p>
                         </Link>
+                        {showTransferPage && (
+                            <Link
+                                to="/transfers"
+                                className="nav-box shrinkable"
+                                style={{
+                                    height: "auto",
+                                    minHeight: "150px",
+                                }}
+                            >
+                                <div className="nav-box-title">
+                                    <TransferSVG className="nav-icon should-invert" />
+                                    <h2 className="content-option-title">
+                                        Server Transfers
+                                    </h2>
+                                </div>
+                                <p className="content-option-description">
+                                    Which servers are gaining characters and
+                                    which servers are losing them.
+                                </p>
+                            </Link>
+                        )}
                     </div>
                 </ContentCluster>
             </div>
