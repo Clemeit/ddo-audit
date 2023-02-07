@@ -33,12 +33,6 @@ const NavMenu = () => {
                     <LiveSVG className="nav-icon" />
                     <span className="nav-title">Live</span>
                 </NavItem>
-                {showTransferPage && (
-                    <NavItem to="/transfers" className="hide-on-mobile">
-                        <TransferSVG className="nav-icon" />
-                        <span className="nav-title">Transfers</span>
-                    </NavItem>
-                )}
                 <NavDropdown
                     to="/servers"
                     title={
@@ -104,6 +98,12 @@ const NavMenu = () => {
                     <QuestsSVG className="nav-icon" />
                     <span className="nav-title">Quests</span>
                 </NavItem> */}
+                {showTransferPage && (
+                    <NavItem to="/transfers" className="hide-on-mobile">
+                        <TransferSVG className="nav-icon" />
+                        <span className="nav-title">Transfers</span>
+                    </NavItem>
+                )}
                 <NavItem to="/trends" className="hide-on-mobile">
                     <TrendsSVG className="nav-icon" />
                     <span className="nav-title">Trends</span>
