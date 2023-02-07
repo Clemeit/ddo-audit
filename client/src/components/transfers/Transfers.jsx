@@ -4,11 +4,14 @@ import PopupMessage from "../global/PopupMessage";
 import Banner from "../global/Banner";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
-import { Log } from "../../services/CommunicationService";
+import { Log, Submit } from "../../services/CommunicationService";
 import ChartLine from "../global/ChartLine";
 import { Fetch } from "../../services/DataLoader";
 import ToggleButton from "../global/ToggleButton";
 import { Link } from "react-router-dom";
+import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
+import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 
 const Transfers = () => {
     const TITLE = "Server Transfers";
@@ -22,8 +25,35 @@ const Transfers = () => {
     // Popup message
     var [popupMessage, setPopupMessage] = React.useState(null);
 
-    const [ignoreHCLCounts, setIgnoreHCLCounts] = React.useState(false);
-    const [ignoreHCLTo, setIgnoreHCLTo] = React.useState(false);
+    const [voteMessage, setVoteMessage] = React.useState(null);
+    const [mayVote, setMayVote] = React.useState(false);
+    const [hasVoted, setHasVoted] = React.useState(false);
+    React.useEffect(() => {
+        let ls = localStorage.getItem("feature-vote-server-transfers");
+        if (ls == null) {
+            setMayVote(true);
+        } else {
+            setMayVote(false);
+        }
+    }, []);
+    function vote(response) {
+        if (response != null) {
+            Submit("Feature: Server Transfers", response);
+            if (response === "Like") {
+                setVoteMessage("positive");
+            } else {
+                setVoteMessage("negative");
+            }
+        } else {
+            setVoteMessage("close");
+            setMayVote(false);
+        }
+        setHasVoted(true);
+        localStorage.setItem("feature-vote-server-transfers", new Date());
+    }
+
+    const [ignoreHCLCounts, setIgnoreHCLCounts] = React.useState(true);
+    const [ignoreHCLTo, setIgnoreHCLTo] = React.useState(true);
 
     function dataFailedToLoad() {
         setPopupMessage({
@@ -86,6 +116,70 @@ const Transfers = () => {
             });
     }, [ignoreHCLTo]);
 
+    const VoteContainer = () => (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+            }}
+        >
+            {mayVote &&
+                (hasVoted ? (
+                    <div className="feature-vote-container">
+                        {voteMessage === "positive" ? (
+                            "Thanks!"
+                        ) : voteMessage === "negative" ? (
+                            <span>
+                                Your <Link to="/suggestions">suggestions</Link>{" "}
+                                are welcome!
+                            </span>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                ) : (
+                    <div
+                        className="feature-vote-container"
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                        }}
+                    >
+                        <span
+                            style={{
+                                cursor: "default",
+                            }}
+                        >
+                            New Feature
+                        </span>
+                        <ThumbsUpSVG
+                            className="nav-icon-small should-invert"
+                            style={{
+                                cursor: "pointer",
+                            }}
+                            onClick={() => vote("Like")}
+                        />
+                        <ThumbsDownSVG
+                            className="nav-icon-small should-invert"
+                            style={{
+                                cursor: "pointer",
+                            }}
+                            onClick={() => vote("Dislike")}
+                        />
+                        <CloseSVG
+                            className="nav-icon-small should-invert"
+                            style={{
+                                cursor: "pointer",
+                            }}
+                            onClick={() => vote(null)}
+                        />
+                    </div>
+                ))}
+        </div>
+    );
+
     return (
         <div>
             <Helmet>
@@ -130,11 +224,10 @@ const Transfers = () => {
                         <span>
                             <ul>
                                 <li>
-                                    The following reports display server
-                                    transfer information. Like most of the
-                                    demographic reports on DDO Audit, the
-                                    reports shown here only count characters
-                                    that have logged in within the last 90 days.
+                                    Like most of the demographic reports on DDO
+                                    Audit, the reports shown here only count
+                                    characters that have logged in within the
+                                    last 90 days.
                                 </li>
                                 <li>
                                     A "transfer character" is defined as a
@@ -144,28 +237,40 @@ const Transfers = () => {
                                 </li>
                                 <li>
                                     A lot of character transfers result from the
-                                    existence of the Hardcore server. You can
-                                    filter those transfers out of the reports
-                                    with the toggle buttons.
+                                    existence of the Hardcore server. These
+                                    transfers are filtered out by default, but
+                                    you can include them with the toggle
+                                    buttons.
                                 </li>
                                 <li>
                                     This is a new feature, and it deals with a
                                     new set of data. There may be
                                     inconsistencies. Numbers may not be exact,
-                                    but they will provide excellent insight into
-                                    overarching trends.
+                                    but they should provide excellent insight
+                                    into overarching trends.
                                 </li>
                             </ul>
                             <div
                                 style={{
-                                    width: "100%",
                                     display: "flex",
-                                    flexDirection: "column",
-                                    gap: "7px",
+                                    flexDirection: "row",
+                                    flexWrap: "wrap",
+                                    justifyContent: "space-between",
                                 }}
                             >
-                                <span>Thanks, Clemeit</span>
-                                <Link to="/suggestions">Make a suggestion</Link>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "7px",
+                                    }}
+                                >
+                                    <span>Thanks, Clemeit</span>
+                                    <Link to="/suggestions">
+                                        Make a suggestion
+                                    </Link>
+                                </div>
+                                <VoteContainer />
                             </div>
                         </span>
                     }
@@ -185,15 +290,15 @@ const Transfers = () => {
                             </p>
                             <ToggleButton
                                 className="wide"
-                                textA="Include HCL Transfers"
-                                textB="Exclude HCL Transfers"
-                                isA={!ignoreHCLCounts}
-                                isB={ignoreHCLCounts}
+                                textA="Exclude HCL Transfers"
+                                textB="Include HCL Transfers"
+                                isA={ignoreHCLCounts}
+                                isB={!ignoreHCLCounts}
                                 doA={() => {
-                                    setIgnoreHCLCounts(false);
+                                    setIgnoreHCLCounts(true);
                                 }}
                                 doB={() => {
-                                    setIgnoreHCLCounts(true);
+                                    setIgnoreHCLCounts(false);
                                 }}
                             />
                         </>
@@ -228,15 +333,15 @@ const Transfers = () => {
                             </p>
                             <ToggleButton
                                 className="wide"
-                                textA="Include HCL Transfers"
-                                textB="Exclude HCL Transfers"
-                                isA={!ignoreHCLTo}
-                                isB={ignoreHCLTo}
+                                textA="Exclude HCL Transfers"
+                                textB="Include HCL Transfers"
+                                isA={ignoreHCLTo}
+                                isB={!ignoreHCLTo}
                                 doA={() => {
-                                    setIgnoreHCLTo(false);
+                                    setIgnoreHCLTo(true);
                                 }}
                                 doB={() => {
-                                    setIgnoreHCLTo(true);
+                                    setIgnoreHCLTo(false);
                                 }}
                             />
                         </>

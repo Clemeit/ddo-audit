@@ -403,6 +403,11 @@ body {
     height: 32px !important;
 }
 
+.nav-icon-small {
+    width: 24px !important;
+    height: 24px !important;
+}
+
 @media (max-width: 768px) {
     html {
         font-size: 12px;
