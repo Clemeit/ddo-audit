@@ -38,7 +38,7 @@ const Transfers = () => {
   }, []);
   function vote(response) {
     if (response != null) {
-      Submit("Feature: Server Transfers", response);
+      Submit("Feature: Server Transfers (v2)", response);
       if (response === "Like") {
         setVoteMessage("positive");
       } else {
@@ -148,11 +148,6 @@ const Transfers = () => {
   }, [ignoreHCLTo, activeAndIgnoreHCLTo, performDerivation]);
 
   React.useEffect(() => {
-    const logView = setTimeout(
-      () => Log("Transfers page", "Page viewed (v2)"),
-      1000
-    );
-
     Fetch(
       `https://api.ddoaudit.com/population/transfersfrom${
         activeAndIgnoreHCLFrom ? "_active_ignorehcl" : ""
@@ -185,9 +180,15 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-
-    return () => clearTimeout(logView);
   }, [activeAndIgnoreHCLFrom, performDerivation]);
+
+  React.useEffect(() => {
+    const logView = setTimeout(
+      () => Log("Transfers page", "Page viewed (v2)"),
+      1000
+    );
+    return () => clearTimeout(logView);
+  }, []);
 
   const VoteContainer = () => (
     <div
@@ -473,7 +474,7 @@ const Transfers = () => {
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>to</i> each
-                  server. Servers with a high transfer count are gaining players
+                  server. Servers with a high transfer count have gained players
                   from other servers.{" "}
                   <span className="lfm-number">
                     This is a cumulative count.
@@ -550,8 +551,8 @@ const Transfers = () => {
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>from</i>{" "}
-                  each server in the last 90 days. Servers with a high transfer
-                  count are losing players to other servers.{" "}
+                  each server. Servers with a high transfer count have lost
+                  players to other servers.{" "}
                   <span className="lfm-number">
                     This is a cumulative count.
                   </span>
