@@ -185,35 +185,35 @@ const runTransferReport = (players) => {
 	}
 
 	lastTransferCountData[0].data.push({
-		x: moment().startOf("day").toISOString(),
+		x: moment().startOf("hour").toISOString(),
 		y: totalTransferCount,
 	});
 	transfersFromCount.forEach((count, i) => {
 		lastTransferFromData[i].data.push({
-			x: moment().startOf("day"),
+			x: moment().startOf("hour"),
 			y: count,
 		});
 	});
 	transfersToCount.forEach((count, i) => {
 		lastTransferToData[i].data.push({
-			x: moment().startOf("day"),
+			x: moment().startOf("hour"),
 			y: count,
 		});
 	});
 
 	lastTransferCountDataIgnoreHCL[0].data.push({
-		x: moment().startOf("day").toISOString(),
+		x: moment().startOf("hour").toISOString(),
 		y: totalTransferCountIgnoreHCL,
 	});
 	transfersFromCountIgnoreHCL.forEach((count, i) => {
 		lastTransferFromDataIgnoreHCL[i].data.push({
-			x: moment().startOf("day"),
+			x: moment().startOf("hour"),
 			y: count,
 		});
 	});
 	transfersToCountIgnoreHCL.forEach((count, i) => {
 		lastTransferToDataIgnoreHCL[i].data.push({
-			x: moment().startOf("day"),
+			x: moment().startOf("hour"),
 			y: count,
 		});
 	});

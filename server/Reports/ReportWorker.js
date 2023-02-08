@@ -261,12 +261,15 @@ con.connect((err) => {
 			runRaceDistribution(players, races, "banks");
 			runLevelDistribution(players, "banks");
 			runUniqueReport(players);
-			runTransferReport(players);
 		});
 	});
 
 	// Every hour
-	cron.schedule("0 0-22 * * *", () => {});
+	cron.schedule("0 * * * *", () => {
+		getPlayerData(91).then(() => {
+			runTransferReport(players);
+		});
+	});
 
 	// Every 5 minutes
 	cron.schedule("1-56/5 * * * *", () => {
