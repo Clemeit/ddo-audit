@@ -1004,6 +1004,18 @@ body {
   max-width: 300px;
 }
 
+.toggle-button-container.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.toggle-button-container.wide.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
 .toggle-button-inner {
   display: flex;
   gap: 0px;

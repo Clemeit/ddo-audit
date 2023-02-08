@@ -55,6 +55,12 @@ const Transfers = () => {
   const [ignoreHCLCounts, setIgnoreHCLCounts] = React.useState(true);
   const [ignoreHCLTo, setIgnoreHCLTo] = React.useState(true);
 
+  const [activeAndIgnoreHCLCounts, setActiveAndIgnoreHCLCounts] =
+    React.useState(false);
+  const [activeAndIgnoreHCLTo, setActiveAndIgnoreHCLTo] = React.useState(false);
+  const [activeAndIgnoreHCLFrom, setActiveAndIgnoreHCLFrom] =
+    React.useState(false);
+
   function dataFailedToLoad() {
     setPopupMessage({
       title: "Some data failed to load",
@@ -71,27 +77,10 @@ const Transfers = () => {
   const [transfersFrom, setTransfersFrom] = React.useState(null);
 
   React.useEffect(() => {
-    const logView = setTimeout(
-      () => Log("Transfers page", "Page viewed"),
-      1000
-    );
-
-    Fetch("https://api.ddoaudit.com/population/transfersfrom", 5000)
-      .then((val) => {
-        setTransfersFrom(val.filter((set) => set.id !== "Hardcore").reverse());
-      })
-      .catch((err) => {
-        dataFailedToLoad();
-      });
-
-    return () => clearTimeout(logView);
-  }, []);
-
-  React.useEffect(() => {
     Fetch(
       `https://api.ddoaudit.com/population/transfercounts${
-        ignoreHCLCounts ? "_ignorehcl" : ""
-      }`,
+        activeAndIgnoreHCLCounts ? "_active" : ""
+      }${ignoreHCLCounts ? "_ignorehcl" : ""}`,
       5000
     )
       .then((val) => {
@@ -100,13 +89,13 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLCounts]);
+  }, [ignoreHCLCounts, activeAndIgnoreHCLCounts]);
 
   React.useEffect(() => {
     Fetch(
       `https://api.ddoaudit.com/population/transfersto${
-        ignoreHCLTo ? "_ignorehcl" : ""
-      }`,
+        activeAndIgnoreHCLTo ? "_active" : ""
+      }${ignoreHCLTo ? "_ignorehcl" : ""}`,
       5000
     )
       .then((val) => {
@@ -115,7 +104,29 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLTo]);
+  }, [ignoreHCLTo, activeAndIgnoreHCLTo]);
+
+  React.useEffect(() => {
+    const logView = setTimeout(
+      () => Log("Transfers page", "Page viewed"),
+      1000
+    );
+
+    Fetch(
+      `https://api.ddoaudit.com/population/transfersfrom${
+        activeAndIgnoreHCLFrom ? "_active_ignorehcl" : ""
+      }`,
+      5000
+    )
+      .then((val) => {
+        setTransfersFrom(val.filter((set) => set.id !== "Hardcore").reverse());
+      })
+      .catch((err) => {
+        dataFailedToLoad();
+      });
+
+    return () => clearTimeout(logView);
+  }, [activeAndIgnoreHCLFrom]);
 
   const VoteContainer = () => (
     <div
@@ -277,19 +288,45 @@ const Transfers = () => {
                   This is NOT the number of character transfers per day.
                 </span>
               </p>
-              <ToggleButton
-                className="wide"
-                textA="Exclude HCL Transfers"
-                textB="Include HCL Transfers"
-                isA={ignoreHCLCounts}
-                isB={!ignoreHCLCounts}
-                doA={() => {
-                  setIgnoreHCLCounts(true);
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: "10px",
                 }}
-                doB={() => {
-                  setIgnoreHCLCounts(false);
-                }}
-              />
+              >
+                <ToggleButton
+                  className="wide"
+                  textA="All Characters"
+                  textB="Active Characters"
+                  isA={!activeAndIgnoreHCLCounts}
+                  isB={activeAndIgnoreHCLCounts}
+                  doA={() => {
+                    setActiveAndIgnoreHCLCounts(false);
+                  }}
+                  doB={() => {
+                    setIgnoreHCLCounts(true);
+                    setActiveAndIgnoreHCLCounts(true);
+                  }}
+                />
+                <ToggleButton
+                  className={`wide${
+                    activeAndIgnoreHCLCounts ? " disabled" : ""
+                  }`}
+                  textA="Exclude HCL Transfers"
+                  textB="Include HCL Transfers"
+                  isA={ignoreHCLCounts}
+                  isB={!ignoreHCLCounts}
+                  doA={() => {
+                    setIgnoreHCLCounts(true);
+                  }}
+                  doB={() => {
+                    setIgnoreHCLCounts(false);
+                    setActiveAndIgnoreHCLCounts(false);
+                  }}
+                />
+              </div>
             </>
           }
         >
@@ -319,19 +356,42 @@ const Transfers = () => {
                 server. Servers with a high transfer count are gaining players
                 from other servers.
               </p>
-              <ToggleButton
-                className="wide"
-                textA="Exclude HCL Transfers"
-                textB="Include HCL Transfers"
-                isA={ignoreHCLTo}
-                isB={!ignoreHCLTo}
-                doA={() => {
-                  setIgnoreHCLTo(true);
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: "10px",
                 }}
-                doB={() => {
-                  setIgnoreHCLTo(false);
-                }}
-              />
+              >
+                <ToggleButton
+                  className="wide"
+                  textA="All Characters"
+                  textB="Active Characters"
+                  isA={!activeAndIgnoreHCLTo}
+                  isB={activeAndIgnoreHCLTo}
+                  doA={() => {
+                    setActiveAndIgnoreHCLTo(false);
+                  }}
+                  doB={() => {
+                    setIgnoreHCLTo(true);
+                    setActiveAndIgnoreHCLTo(true);
+                  }}
+                />
+                <ToggleButton
+                  className={`wide${activeAndIgnoreHCLTo ? " disabled" : ""}`}
+                  textA="Exclude HCL Transfers"
+                  textB="Include HCL Transfers"
+                  isA={ignoreHCLTo}
+                  isB={!ignoreHCLTo}
+                  doA={() => {
+                    setIgnoreHCLTo(true);
+                  }}
+                  doB={() => {
+                    setIgnoreHCLTo(false);
+                  }}
+                />
+              </div>
             </>
           }
         >
@@ -355,13 +415,26 @@ const Transfers = () => {
         <ContentCluster
           title={`Transfers "From"`}
           description={
-            <span>
+            <>
               <p>
                 The total number of characters transferred <i>from</i> each
                 server. Servers with a high transfer count are losing players to
                 other servers.
               </p>
-            </span>
+              <ToggleButton
+                className="wide"
+                textA="All Characters"
+                textB="Active Characters"
+                isA={!activeAndIgnoreHCLFrom}
+                isB={activeAndIgnoreHCLFrom}
+                doA={() => {
+                  setActiveAndIgnoreHCLFrom(false);
+                }}
+                doB={() => {
+                  setActiveAndIgnoreHCLFrom(true);
+                }}
+              />
+            </>
           }
         >
           <ChartLine

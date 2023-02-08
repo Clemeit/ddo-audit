@@ -23,6 +23,9 @@ const populationApi = (api) => {
 		["transfercounts_ignorehcl", "transfercounts_ignorehcl"],
 		["transfersfrom_ignorehcl", "transfersfrom_ignorehcl"],
 		["transfersto_ignorehcl", "transfersto_ignorehcl"],
+		["transfercounts_active_ignorehcl", "transfercounts_active_ignorehcl"],
+		["transfersfrom_active_ignorehcl", "transfersfrom_active_ignorehcl"],
+		["transfersto_active_ignorehcl", "transfersto_active_ignorehcl"],
 	];
 
 	population.forEach((entry) => {

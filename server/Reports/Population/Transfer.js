@@ -1,5 +1,6 @@
 import moment from "moment";
 import { cloneDeep } from "lodash-es";
+import isPlayerActive from "../ActivePredicate.js";
 import fs from "fs";
 
 const runTransferReport = (players) => {
@@ -94,34 +95,66 @@ const runTransferReport = (players) => {
 	let transfersFromCountIgnoreHCL = [];
 	let transfersToCountIgnoreHCL = [];
 
+	let totalTransferCountActiveAndIgnoreHCL = 0;
+	let transfersFromCountActiveAndIgnoreHCL = [];
+	let transfersToCountActiveAndIgnoreHCL = [];
+
 	SERVER_NAMES.forEach((server) => {
 		transfersFromCount.push(0);
 		transfersToCount.push(0);
 		transfersFromCountIgnoreHCL.push(0);
 		transfersToCountIgnoreHCL.push(0);
+		transfersFromCountActiveAndIgnoreHCL.push(0);
+		transfersToCountActiveAndIgnoreHCL.push(0);
 	});
 
-	players.forEach(({ server, homeserver }) => {
-		let serverIndex = SERVER_NAMES.indexOf(server);
-		let homeServerIndex = SERVER_NAMES.indexOf(homeserver);
-		if (serverIndex !== -1) {
-			if (server !== homeserver) {
-				totalTransferCount++;
-				transfersToCount[serverIndex]++;
-				if (homeServerIndex !== -1) {
-					transfersFromCount[homeServerIndex]++;
-				}
-
-				if (homeserver !== "Hardcore") {
-					totalTransferCountIgnoreHCL++;
-					transfersToCountIgnoreHCL[serverIndex]++;
+	players.forEach(
+		({
+			server,
+			homeserver,
+			lastseen,
+			lastactive,
+			lastmovement,
+			lastlevelup,
+			totallevel,
+		}) => {
+			let serverIndex = SERVER_NAMES.indexOf(server);
+			let homeServerIndex = SERVER_NAMES.indexOf(homeserver);
+			if (serverIndex !== -1) {
+				if (server !== homeserver) {
+					totalTransferCount++;
+					transfersToCount[serverIndex]++;
 					if (homeServerIndex !== -1) {
-						transfersFromCountIgnoreHCL[homeServerIndex]++;
+						transfersFromCount[homeServerIndex]++;
+					}
+
+					if (homeserver !== "Hardcore") {
+						totalTransferCountIgnoreHCL++;
+						transfersToCountIgnoreHCL[serverIndex]++;
+						if (homeServerIndex !== -1) {
+							transfersFromCountIgnoreHCL[homeServerIndex]++;
+						}
+
+						if (
+							isPlayerActive(
+								lastseen,
+								lastactive,
+								lastmovement,
+								lastlevelup,
+								totallevel
+							)
+						) {
+							totalTransferCountActiveAndIgnoreHCL++;
+							transfersToCountActiveAndIgnoreHCL[serverIndex]++;
+							if (homeServerIndex !== -1) {
+								transfersFromCountActiveAndIgnoreHCL[homeServerIndex]++;
+							}
+						}
 					}
 				}
 			}
 		}
-	});
+	);
 
 	// load last data
 	let lastTransferCountData;
@@ -181,6 +214,41 @@ const runTransferReport = (players) => {
 		lastTransferToDataIgnoreHCL = cloneDeep(templateMultiData);
 	}
 
+	// load last data (active and ignore hcl)
+	let lastTransferCountDataActiveAndIgnoreHCL;
+	let lastTransferFromDataActiveAndIgnoreHCL;
+	let lastTransferToDataActiveAndIgnoreHCL;
+	try {
+		lastTransferCountDataActiveAndIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfercounts_active_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferCountDataActiveAndIgnoreHCL = cloneDeep(templateSingleData);
+	}
+	try {
+		lastTransferFromDataActiveAndIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfersfrom_active_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferFromDataActiveAndIgnoreHCL = cloneDeep(templateMultiData);
+	}
+	try {
+		lastTransferToDataActiveAndIgnoreHCL = JSON.parse(
+			fs.readFileSync(
+				"../api_v1/population/transfersto_active_ignorehcl.json",
+				"utf8"
+			)
+		);
+	} catch {
+		lastTransferToDataActiveAndIgnoreHCL = cloneDeep(templateMultiData);
+	}
+
 	lastTransferCountData[0].data.push({
 		x: moment().startOf("hour").toISOString(),
 		y: totalTransferCount,
@@ -215,6 +283,23 @@ const runTransferReport = (players) => {
 		});
 	});
 
+	lastTransferCountDataActiveAndIgnoreHCL[0].data.push({
+		x: moment().startOf("hour").toISOString(),
+		y: totalTransferCountActiveAndIgnoreHCL,
+	});
+	transfersFromCountActiveAndIgnoreHCL.forEach((count, i) => {
+		lastTransferFromDataActiveAndIgnoreHCL[i].data.push({
+			x: moment().startOf("hour"),
+			y: count,
+		});
+	});
+	transfersToCountActiveAndIgnoreHCL.forEach((count, i) => {
+		lastTransferToDataActiveAndIgnoreHCL[i].data.push({
+			x: moment().startOf("hour"),
+			y: count,
+		});
+	});
+
 	writeAndRetry(
 		"../api_v1/population/transfercounts.json",
 		lastTransferCountData,
@@ -240,6 +325,22 @@ const runTransferReport = (players) => {
 	writeAndRetry(
 		"../api_v1/population/transfersto_ignorehcl.json",
 		lastTransferToDataIgnoreHCL,
+		2
+	);
+
+	writeAndRetry(
+		"../api_v1/population/transfercounts_active_ignorehcl.json",
+		lastTransferCountDataActiveAndIgnoreHCL,
+		2
+	);
+	writeAndRetry(
+		"../api_v1/population/transfersfrom_active_ignorehcl.json",
+		lastTransferFromDataActiveAndIgnoreHCL,
+		2
+	);
+	writeAndRetry(
+		"../api_v1/population/transfersto_active_ignorehcl.json",
+		lastTransferToDataActiveAndIgnoreHCL,
 		2
 	);
 
