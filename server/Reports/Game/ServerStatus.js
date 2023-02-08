@@ -143,7 +143,7 @@ const runServerStatusReport = () => {
 		})
 		.catch((err) => {
 			// Game worlds are down for maintenance
-			worlds = [];
+			const worlds = [];
 			SERVERS.forEach((server) => {
 				worlds.push({
 					Name: server,
