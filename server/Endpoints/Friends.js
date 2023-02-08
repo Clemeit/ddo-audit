@@ -22,8 +22,8 @@ const friendsApi = (api) => {
 					let query = `SELECT CAST(p.playerid AS CHAR) as playerid, p.name, p.server, p.guild, p.totallevel 
                         FROM \`players\` p 
                         WHERE p.anonymous = 0 AND p.name != 'Anonymous' AND p.name LIKE ${con.escape(
-							`${cname}`
-						)} 
+													`${cname}`
+												)} 
                         LIMIT 10;`;
 
 					con.query(query, (err, result, fields) => {
@@ -76,8 +76,8 @@ const friendsApi = (api) => {
 					let query = `SELECT CAST(p.playerid AS CHAR) as playerid, p.name, p.server, p.guild, p.totallevel 
                         FROM \`players\` p 
                         WHERE p.anonymous = 0 AND p.name != 'Anonymous' AND p.server = ${con.escape(
-							gserver
-						)} AND p.guild = ${con.escape(gname)} 
+													gserver
+												)} AND p.guild = ${con.escape(gname)} 
                         ORDER BY p.lastseen DESC 
                         LIMIT 50;`;
 
@@ -232,9 +232,7 @@ const friendsApi = (api) => {
 						con.query(query, (err, result, fields) => {
 							if (err) {
 								if (final) {
-									console.log(
-										"Failed to reconnect. Aborting!"
-									);
+									console.log("Failed to reconnect. Aborting!");
 									reject(err);
 								} else {
 									console.log("Attempting to reconnect...");

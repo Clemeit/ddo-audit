@@ -151,15 +151,12 @@ const runLevelDistribution = (players, reporttype) => {
 	for (let i = 0; i < MAX_LEVEL; i++) {
 		Argonnessen.data[i].y =
 			Math.round((Argonnessen.data[i].y / a_count) * 10000) / 100;
-		Cannith.data[i].y =
-			Math.round((Cannith.data[i].y / c_count) * 10000) / 100;
+		Cannith.data[i].y = Math.round((Cannith.data[i].y / c_count) * 10000) / 100;
 		Ghallanda.data[i].y =
 			Math.round((Ghallanda.data[i].y / g_count) * 10000) / 100;
-		Khyber.data[i].y =
-			Math.round((Khyber.data[i].y / k_count) * 10000) / 100;
+		Khyber.data[i].y = Math.round((Khyber.data[i].y / k_count) * 10000) / 100;
 		Orien.data[i].y = Math.round((Orien.data[i].y / o_count) * 10000) / 100;
-		Sarlona.data[i].y =
-			Math.round((Sarlona.data[i].y / s_count) * 10000) / 100;
+		Sarlona.data[i].y = Math.round((Sarlona.data[i].y / s_count) * 10000) / 100;
 		Thelanis.data[i].y =
 			Math.round((Thelanis.data[i].y / t_count) * 10000) / 100;
 		Wayfinder.data[i].y =

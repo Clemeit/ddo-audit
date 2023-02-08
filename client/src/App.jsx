@@ -54,99 +54,99 @@ const Friends = lazy(() => import("./components/friends/Friends"));
 const Steps = lazy(() => import("./components/iot/Steps"));
 const Timers = lazy(() => import("./components/timers/Timers"));
 const CharacterRegistration = lazy(() =>
-    import("./components/global/CharacterRegistration")
+  import("./components/global/CharacterRegistration")
 );
 
 export default () => {
-    const theme = localStorage.getItem("theme");
-    if (theme) {
-        document.body.classList.add(theme);
-    } else {
-        document.body.classList.add("dark-theme");
-    }
+  const theme = localStorage.getItem("theme");
+  if (theme) {
+    document.body.classList.add(theme);
+  } else {
+    document.body.classList.add("dark-theme");
+  }
 
-    return (
-        <Suspense fallback={<div></div>}>
-            <Router history={history}>
-                <Layout>
-                    <Mail />
-                    <ScrollToTop />
-                    <Switch>
-                        <Route exact path="/">
-                            <Directory />
-                        </Route>
-                        <Route exact path="/live">
-                            <Live />
-                        </Route>
-                        <Route exact path="/transfers">
-                            <Transfers />
-                        </Route>
-                        <Route exact path="/servers">
-                            <Servers />
-                        </Route>
-                        <Route exact path="/servers/:serverName">
-                            <ServersSpecific />
-                        </Route>
-                        <Route exact path="/quests">
-                            <Quests />
-                        </Route>
-                        {/* <Route exact path="/guilds">
+  return (
+    <Suspense fallback={<div></div>}>
+      <Router history={history}>
+        <Layout>
+          <Mail />
+          <ScrollToTop />
+          <Switch>
+            <Route exact path="/">
+              <Directory />
+            </Route>
+            <Route exact path="/live">
+              <Live />
+            </Route>
+            <Route exact path="/transfers">
+              <Transfers />
+            </Route>
+            <Route exact path="/servers">
+              <Servers />
+            </Route>
+            <Route exact path="/servers/:serverName">
+              <ServersSpecific />
+            </Route>
+            <Route exact path="/quests">
+              <Quests />
+            </Route>
+            {/* <Route exact path="/guilds">
                             <Guilds />
                         </Route> */}
-                        <Route exact path="/grouping">
-                            <Grouping />
-                        </Route>
-                        <Route exact path="/registration">
-                            <CharacterRegistration />
-                        </Route>
-                        <Route exact path="/grouping/:serverName">
-                            <GroupingSpecific />
-                        </Route>
-                        <Route exact path="/notifications">
-                            <NotificationForm />
-                        </Route>
-                        <Route exact path="/timers">
-                            <Timers />
-                        </Route>
-                        <Route exact path="/who">
-                            <Who />
-                        </Route>
-                        <Route exact path="/friends">
-                            <Friends />
-                        </Route>
-                        <Route exact path="/trends">
-                            <Trends />
-                        </Route>
-                        <Route exact path="/who/:serverName">
-                            <WhoSpecific />
-                        </Route>
-                        <Route exact path="/about">
-                            <About />
-                        </Route>
-                        <Route exact path="/suggestions">
-                            <Suggestions />
-                        </Route>
-                        {/* <Route exact path="/community">
+            <Route exact path="/grouping">
+              <Grouping />
+            </Route>
+            <Route exact path="/registration">
+              <CharacterRegistration />
+            </Route>
+            <Route exact path="/grouping/:serverName">
+              <GroupingSpecific />
+            </Route>
+            <Route exact path="/notifications">
+              <NotificationForm />
+            </Route>
+            <Route exact path="/timers">
+              <Timers />
+            </Route>
+            <Route exact path="/who">
+              <Who />
+            </Route>
+            <Route exact path="/friends">
+              <Friends />
+            </Route>
+            <Route exact path="/trends">
+              <Trends />
+            </Route>
+            <Route exact path="/who/:serverName">
+              <WhoSpecific />
+            </Route>
+            <Route exact path="/about">
+              <About />
+            </Route>
+            <Route exact path="/suggestions">
+              <Suggestions />
+            </Route>
+            {/* <Route exact path="/community">
                             <Community />
                         </Route> */}
-                        <Route exact path="/api">
-                            <Api />
-                        </Route>
-                        <Route exact path="/timeline">
-                            <Timeline />
-                        </Route>
-                        {/* <Route exact path="/steps">
+            <Route exact path="/api">
+              <Api />
+            </Route>
+            <Route exact path="/timeline">
+              <Timeline />
+            </Route>
+            {/* <Route exact path="/steps">
                             <Steps />
                         </Route> */}
-                        {/* <Route exact path="/dev">
+            {/* <Route exact path="/dev">
                             <ActivityTesting />
                         </Route> */}
-                        <Route>
-                            <NotFound />
-                        </Route>
-                    </Switch>
-                </Layout>
-            </Router>
-        </Suspense>
-    );
+            <Route>
+              <NotFound />
+            </Route>
+          </Switch>
+        </Layout>
+      </Router>
+    </Suspense>
+  );
 };

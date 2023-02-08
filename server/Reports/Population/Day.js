@@ -80,10 +80,7 @@ const runDayReport = (population, reporttype) => {
 			wayfinder_lfmcount,
 			hardcore_lfmcount,
 		}) => {
-			if (
-				new Date().getTime() - datetime.getTime() <=
-				1000 * 60 * 60 * 24
-			) {
+			if (new Date().getTime() - datetime.getTime() <= 1000 * 60 * 60 * 24) {
 				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				let totalpopulation =
 					argonnessen_playercount +

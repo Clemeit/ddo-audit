@@ -235,9 +235,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Sunday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -278,9 +276,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Monday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -321,9 +317,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Tuesday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -331,8 +325,7 @@ const runDailyDistribution = (population, reporttype) => {
 							break;
 						case 3:
 							if (argonnessen_playercount || !IGNORE_DOWNTIME) {
-								Wednesday.Argonnessen +=
-									argonnessen_playercount;
+								Wednesday.Argonnessen += argonnessen_playercount;
 								a_count[dayofweek]++;
 							}
 							if (cannith_playercount || !IGNORE_DOWNTIME) {
@@ -365,9 +358,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Wednesday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -408,9 +399,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Thursday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -451,9 +440,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Friday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -494,9 +481,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Saturday.Hardcore += hardcore_playercount;
 								h_count[dayofweek]++;
@@ -540,9 +525,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Sunday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -583,9 +566,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Monday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -626,9 +607,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Tuesday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -669,9 +648,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Wednesday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -712,9 +689,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Thursday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -755,9 +730,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Friday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -798,9 +771,7 @@ const runDailyDistribution = (population, reporttype) => {
 							}
 							if (
 								(hardcore_playercount || !IGNORE_DOWNTIME) &&
-								datetime.getTime() -
-									hardcoreSeasonStart.getTime() >
-									0
+								datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 							) {
 								Saturday.Hardcore += hardcore_lfmcount;
 								h_count[dayofweek]++;
@@ -838,26 +809,22 @@ const runDailyDistribution = (population, reporttype) => {
 	Tuesday.Argonnessen =
 		Math.round((Tuesday.Argonnessen / a_count[2]) * 100) / 100;
 	Tuesday.Cannith = Math.round((Tuesday.Cannith / c_count[2]) * 100) / 100;
-	Tuesday.Ghallanda =
-		Math.round((Tuesday.Ghallanda / g_count[2]) * 100) / 100;
+	Tuesday.Ghallanda = Math.round((Tuesday.Ghallanda / g_count[2]) * 100) / 100;
 	Tuesday.Khyber = Math.round((Tuesday.Khyber / k_count[2]) * 100) / 100;
 	Tuesday.Orien = Math.round((Tuesday.Orien / o_count[2]) * 100) / 100;
 	Tuesday.Sarlona = Math.round((Tuesday.Sarlona / s_count[2]) * 100) / 100;
 	Tuesday.Thelanis = Math.round((Tuesday.Thelanis / t_count[2]) * 100) / 100;
-	Tuesday.Wayfinder =
-		Math.round((Tuesday.Wayfinder / w_count[2]) * 100) / 100;
+	Tuesday.Wayfinder = Math.round((Tuesday.Wayfinder / w_count[2]) * 100) / 100;
 	Tuesday.Hardcore = Math.round((Tuesday.Hardcore / h_count[2]) * 100) / 100;
 
 	Wednesday.Argonnessen =
 		Math.round((Wednesday.Argonnessen / a_count[3]) * 100) / 100;
-	Wednesday.Cannith =
-		Math.round((Wednesday.Cannith / c_count[3]) * 100) / 100;
+	Wednesday.Cannith = Math.round((Wednesday.Cannith / c_count[3]) * 100) / 100;
 	Wednesday.Ghallanda =
 		Math.round((Wednesday.Ghallanda / g_count[3]) * 100) / 100;
 	Wednesday.Khyber = Math.round((Wednesday.Khyber / k_count[3]) * 100) / 100;
 	Wednesday.Orien = Math.round((Wednesday.Orien / o_count[3]) * 100) / 100;
-	Wednesday.Sarlona =
-		Math.round((Wednesday.Sarlona / s_count[3]) * 100) / 100;
+	Wednesday.Sarlona = Math.round((Wednesday.Sarlona / s_count[3]) * 100) / 100;
 	Wednesday.Thelanis =
 		Math.round((Wednesday.Thelanis / t_count[3]) * 100) / 100;
 	Wednesday.Wayfinder =
@@ -873,12 +840,10 @@ const runDailyDistribution = (population, reporttype) => {
 	Thursday.Khyber = Math.round((Thursday.Khyber / k_count[4]) * 100) / 100;
 	Thursday.Orien = Math.round((Thursday.Orien / o_count[4]) * 100) / 100;
 	Thursday.Sarlona = Math.round((Thursday.Sarlona / s_count[4]) * 100) / 100;
-	Thursday.Thelanis =
-		Math.round((Thursday.Thelanis / t_count[4]) * 100) / 100;
+	Thursday.Thelanis = Math.round((Thursday.Thelanis / t_count[4]) * 100) / 100;
 	Thursday.Wayfinder =
 		Math.round((Thursday.Wayfinder / w_count[4]) * 100) / 100;
-	Thursday.Hardcore =
-		Math.round((Thursday.Hardcore / h_count[4]) * 100) / 100;
+	Thursday.Hardcore = Math.round((Thursday.Hardcore / h_count[4]) * 100) / 100;
 
 	Friday.Argonnessen =
 		Math.round((Friday.Argonnessen / a_count[5]) * 100) / 100;
@@ -899,22 +864,12 @@ const runDailyDistribution = (population, reporttype) => {
 	Saturday.Khyber = Math.round((Saturday.Khyber / k_count[6]) * 100) / 100;
 	Saturday.Orien = Math.round((Saturday.Orien / o_count[6]) * 100) / 100;
 	Saturday.Sarlona = Math.round((Saturday.Sarlona / s_count[6]) * 100) / 100;
-	Saturday.Thelanis =
-		Math.round((Saturday.Thelanis / t_count[6]) * 100) / 100;
+	Saturday.Thelanis = Math.round((Saturday.Thelanis / t_count[6]) * 100) / 100;
 	Saturday.Wayfinder =
 		Math.round((Saturday.Wayfinder / w_count[6]) * 100) / 100;
-	Saturday.Hardcore =
-		Math.round((Saturday.Hardcore / h_count[6]) * 100) / 100;
+	Saturday.Hardcore = Math.round((Saturday.Hardcore / h_count[6]) * 100) / 100;
 
-	let output = [
-		Sunday,
-		Monday,
-		Tuesday,
-		Wednesday,
-		Thursday,
-		Friday,
-		Saturday,
-	];
+	let output = [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
 
 	fs.writeFile(
 		`../api_v1/population/dailydistributionquarter${

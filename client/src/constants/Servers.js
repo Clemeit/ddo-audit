@@ -1,15 +1,15 @@
 import { getConfig, getValueFromLabel } from "../services/CaaS";
 
 const SERVER_LIST = [
-    "Argonnessen",
-    "Cannith",
-    "Ghallanda",
-    "Khyber",
-    "Orien",
-    "Sarlona",
-    "Thelanis",
-    "Wayfinder",
-    "Hardcore",
+  "Argonnessen",
+  "Cannith",
+  "Ghallanda",
+  "Khyber",
+  "Orien",
+  "Sarlona",
+  "Thelanis",
+  "Wayfinder",
+  "Hardcore",
 ];
 
 const SERVER_LIST_LOWERCASE = SERVER_LIST.map((server) => server.toLowerCase());
@@ -20,12 +20,12 @@ const SERVER_LIST_LOWERCASE = SERVER_LIST.map((server) => server.toLowerCase());
  * @returns Array of server names
  */
 async function getServers() {
-    const caas = await getConfig();
-    if (getValueFromLabel(caas, "hardcore") === "true") {
-        return SERVER_LIST;
-    } else {
-        return SERVER_LIST.filter((server) => server !== "Hardcore");
-    }
+  const caas = await getConfig();
+  if (getValueFromLabel(caas, "hardcore") === "true") {
+    return SERVER_LIST;
+  } else {
+    return SERVER_LIST.filter((server) => server !== "Hardcore");
+  }
 }
 
 export { getServers, SERVER_LIST, SERVER_LIST_LOWERCASE };

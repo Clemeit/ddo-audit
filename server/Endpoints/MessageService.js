@@ -166,8 +166,7 @@ const messageServiceApi = (api) => {
 						reject(err);
 					} else {
 						if (result && result.length) {
-							result[0].comment =
-								result[0].comment.split("(Contact:")[0];
+							result[0].comment = result[0].comment.split("(Contact:")[0];
 						}
 						resolve(result);
 					}

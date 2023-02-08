@@ -18,14 +18,7 @@ const runRaceDistribution = (players, races, reporttype) => {
 	});
 
 	players.forEach(
-		({
-			race,
-			lastseen,
-			lastactive,
-			lastmovement,
-			lastlevelup,
-			totallevel,
-		}) => {
+		({ race, lastseen, lastactive, lastmovement, lastlevelup, totallevel }) => {
 			if (
 				reporttype === "normal"
 					? isPlayerActive(

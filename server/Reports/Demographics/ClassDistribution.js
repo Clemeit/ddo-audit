@@ -119,25 +119,13 @@ const runClassDistribution = (players, classes, reporttype) => {
 				let class4_n = classIdToName(class4, classes);
 
 				let primaryclass = class1_n;
-				if (
-					class2 != null &&
-					class2_n != "Epic" &&
-					class2_n != "Legendary"
-				) {
+				if (class2 != null && class2_n != "Epic" && class2_n != "Legendary") {
 					if (level2 > level1) primaryclass = class2_n;
 				}
-				if (
-					class3 != null &&
-					class3_n != "Epic" &&
-					class3_n != "Legendary"
-				) {
+				if (class3 != null && class3_n != "Epic" && class3_n != "Legendary") {
 					if (level3 > level2) primaryclass = class3_n;
 				}
-				if (
-					class4 != null &&
-					class4_n != "Epic" &&
-					class4_n != "Legendary"
-				) {
+				if (class4 != null && class4_n != "Epic" && class4_n != "Legendary") {
 					if (level4 > level3) primaryclass = class4_n;
 				}
 

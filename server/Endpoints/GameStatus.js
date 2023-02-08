@@ -57,10 +57,8 @@ const gameStatusApi = (api) => {
 							servers.forEach((server) => {
 								ret.push({
 									ServerName: server[0],
-									PlayerCount:
-										result[0][`${server[1]}_playercount`],
-									LfmCount:
-										result[0][`${server[1]}_lfmcount`],
+									PlayerCount: result[0][`${server[1]}_playercount`],
+									LfmCount: result[0][`${server[1]}_lfmcount`],
 								});
 							});
 

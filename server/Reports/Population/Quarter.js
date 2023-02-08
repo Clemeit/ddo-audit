@@ -101,8 +101,7 @@ const runQuarterReport = (population, reporttype) => {
 				) {
 					// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 					datetime = new Date(
-						new Date(Date.parse(datetime.toDateString())) -
-							60000 * 60 * 12
+						new Date(Date.parse(datetime.toDateString())) - 60000 * 60 * 12
 					);
 					let thisDay = new Date(Date.parse(datetime)).getUTCDate();
 					if (lastDay === -1) {
@@ -161,9 +160,7 @@ const runQuarterReport = (population, reporttype) => {
 
 							Argonnessen.data[Argonnessen.data.length - 1].y =
 								Math.round(
-									(Argonnessen.data[
-										Argonnessen.data.length - 1
-									].y /
+									(Argonnessen.data[Argonnessen.data.length - 1].y /
 										entriesThisDay[0]) *
 										100
 								) / 100;
@@ -177,23 +174,20 @@ const runQuarterReport = (population, reporttype) => {
 
 							Ghallanda.data[Ghallanda.data.length - 1].y =
 								Math.round(
-									(Ghallanda.data[Ghallanda.data.length - 1]
-										.y /
+									(Ghallanda.data[Ghallanda.data.length - 1].y /
 										entriesThisDay[2]) *
 										100
 								) / 100;
 
 							Khyber.data[Khyber.data.length - 1].y =
 								Math.round(
-									(Khyber.data[Khyber.data.length - 1].y /
-										entriesThisDay[3]) *
+									(Khyber.data[Khyber.data.length - 1].y / entriesThisDay[3]) *
 										100
 								) / 100;
 
 							Orien.data[Orien.data.length - 1].y =
 								Math.round(
-									(Orien.data[Orien.data.length - 1].y /
-										entriesThisDay[4]) *
+									(Orien.data[Orien.data.length - 1].y / entriesThisDay[4]) *
 										100
 								) / 100;
 
@@ -213,8 +207,7 @@ const runQuarterReport = (population, reporttype) => {
 
 							Wayfinder.data[Wayfinder.data.length - 1].y =
 								Math.round(
-									(Wayfinder.data[Wayfinder.data.length - 1]
-										.y /
+									(Wayfinder.data[Wayfinder.data.length - 1].y /
 										entriesThisDay[7]) *
 										100
 								) / 100;
@@ -228,8 +221,7 @@ const runQuarterReport = (population, reporttype) => {
 
 							Total.data[Total.data.length - 1].y =
 								Math.round(
-									(Total.data[Total.data.length - 1].y /
-										entriesThisDay[9]) *
+									(Total.data[Total.data.length - 1].y / entriesThisDay[9]) *
 										100
 								) / 100;
 
@@ -292,9 +284,8 @@ const runQuarterReport = (population, reporttype) => {
 							let totalnow = 0;
 							if (reporttype === "population") {
 								if (argonnessen_playercount) {
-									Argonnessen.data[
-										Argonnessen.data.length - 1
-									].y += argonnessen_playercount;
+									Argonnessen.data[Argonnessen.data.length - 1].y +=
+										argonnessen_playercount;
 									entriesThisDay[0]++;
 								}
 
@@ -305,21 +296,18 @@ const runQuarterReport = (population, reporttype) => {
 								}
 
 								if (ghallanda_playercount) {
-									Ghallanda.data[
-										Ghallanda.data.length - 1
-									].y += ghallanda_playercount;
+									Ghallanda.data[Ghallanda.data.length - 1].y +=
+										ghallanda_playercount;
 									entriesThisDay[2]++;
 								}
 
 								if (khyber_playercount) {
-									Khyber.data[Khyber.data.length - 1].y +=
-										khyber_playercount;
+									Khyber.data[Khyber.data.length - 1].y += khyber_playercount;
 									entriesThisDay[3]++;
 								}
 
 								if (orien_playercount) {
-									Orien.data[Orien.data.length - 1].y +=
-										orien_playercount;
+									Orien.data[Orien.data.length - 1].y += orien_playercount;
 									entriesThisDay[4]++;
 								}
 
@@ -336,9 +324,8 @@ const runQuarterReport = (population, reporttype) => {
 								}
 
 								if (wayfinder_playercount) {
-									Wayfinder.data[
-										Wayfinder.data.length - 1
-									].y += wayfinder_playercount;
+									Wayfinder.data[Wayfinder.data.length - 1].y +=
+										wayfinder_playercount;
 									entriesThisDay[7]++;
 								}
 
@@ -359,33 +346,27 @@ const runQuarterReport = (population, reporttype) => {
 									wayfinder_playercount +
 									hardcore_playercount;
 							} else {
-								Argonnessen.data[
-									Argonnessen.data.length - 1
-								].y += argonnessen_lfmcount;
+								Argonnessen.data[Argonnessen.data.length - 1].y +=
+									argonnessen_lfmcount;
 								entriesThisDay[0]++;
 
-								Cannith.data[Cannith.data.length - 1].y +=
-									cannith_lfmcount;
+								Cannith.data[Cannith.data.length - 1].y += cannith_lfmcount;
 								entriesThisDay[1]++;
 
 								Ghallanda.data[Ghallanda.data.length - 1].y +=
 									ghallanda_lfmcount;
 								entriesThisDay[2]++;
 
-								Khyber.data[Khyber.data.length - 1].y +=
-									khyber_lfmcount;
+								Khyber.data[Khyber.data.length - 1].y += khyber_lfmcount;
 								entriesThisDay[3]++;
 
-								Orien.data[Orien.data.length - 1].y +=
-									orien_lfmcount;
+								Orien.data[Orien.data.length - 1].y += orien_lfmcount;
 								entriesThisDay[4]++;
 
-								Sarlona.data[Sarlona.data.length - 1].y +=
-									sarlona_lfmcount;
+								Sarlona.data[Sarlona.data.length - 1].y += sarlona_lfmcount;
 								entriesThisDay[5]++;
 
-								Thelanis.data[Thelanis.data.length - 1].y +=
-									thelanis_lfmcount;
+								Thelanis.data[Thelanis.data.length - 1].y += thelanis_lfmcount;
 								entriesThisDay[6]++;
 
 								Wayfinder.data[Wayfinder.data.length - 1].y +=
@@ -397,8 +378,7 @@ const runQuarterReport = (population, reporttype) => {
 								// 		hardcoreSeasonStart.getTime() >
 								// 	0
 								// ) {
-								Hardcore.data[Hardcore.data.length - 1].y +=
-									hardcore_lfmcount;
+								Hardcore.data[Hardcore.data.length - 1].y += hardcore_lfmcount;
 								entriesThisDay[8]++;
 								// }
 
@@ -419,16 +399,10 @@ const runQuarterReport = (population, reporttype) => {
 								entriesThisDay[9]++;
 							}
 
-							if (
-								totalnow > maximumThisDay ||
-								maximumThisDay === -1
-							) {
+							if (totalnow > maximumThisDay || maximumThisDay === -1) {
 								maximumThisDay = totalnow;
 							}
-							if (
-								totalnow < minimumThisDay ||
-								minimumThisDay === -1
-							) {
+							if (totalnow < minimumThisDay || minimumThisDay === -1) {
 								minimumThisDay = totalnow;
 							}
 						}
@@ -446,28 +420,23 @@ const runQuarterReport = (population, reporttype) => {
 
 		Argonnessen.data[Argonnessen.data.length - 1].y =
 			Math.round(
-				(Argonnessen.data[Argonnessen.data.length - 1].y /
-					entriesThisDay[0]) *
+				(Argonnessen.data[Argonnessen.data.length - 1].y / entriesThisDay[0]) *
 					100
 			) / 100;
 
 		Cannith.data[Cannith.data.length - 1].y =
 			Math.round(
-				(Cannith.data[Cannith.data.length - 1].y / entriesThisDay[1]) *
-					100
+				(Cannith.data[Cannith.data.length - 1].y / entriesThisDay[1]) * 100
 			) / 100;
 
 		Ghallanda.data[Ghallanda.data.length - 1].y =
 			Math.round(
-				(Ghallanda.data[Ghallanda.data.length - 1].y /
-					entriesThisDay[2]) *
-					100
+				(Ghallanda.data[Ghallanda.data.length - 1].y / entriesThisDay[2]) * 100
 			) / 100;
 
 		Khyber.data[Khyber.data.length - 1].y =
 			Math.round(
-				(Khyber.data[Khyber.data.length - 1].y / entriesThisDay[3]) *
-					100
+				(Khyber.data[Khyber.data.length - 1].y / entriesThisDay[3]) * 100
 			) / 100;
 
 		Orien.data[Orien.data.length - 1].y =
@@ -477,29 +446,22 @@ const runQuarterReport = (population, reporttype) => {
 
 		Sarlona.data[Sarlona.data.length - 1].y =
 			Math.round(
-				(Sarlona.data[Sarlona.data.length - 1].y / entriesThisDay[5]) *
-					100
+				(Sarlona.data[Sarlona.data.length - 1].y / entriesThisDay[5]) * 100
 			) / 100;
 
 		Thelanis.data[Thelanis.data.length - 1].y =
 			Math.round(
-				(Thelanis.data[Thelanis.data.length - 1].y /
-					entriesThisDay[6]) *
-					100
+				(Thelanis.data[Thelanis.data.length - 1].y / entriesThisDay[6]) * 100
 			) / 100;
 
 		Wayfinder.data[Wayfinder.data.length - 1].y =
 			Math.round(
-				(Wayfinder.data[Wayfinder.data.length - 1].y /
-					entriesThisDay[7]) *
-					100
+				(Wayfinder.data[Wayfinder.data.length - 1].y / entriesThisDay[7]) * 100
 			) / 100;
 
 		Hardcore.data[Hardcore.data.length - 1].y =
 			Math.round(
-				(Hardcore.data[Hardcore.data.length - 1].y /
-					entriesThisDay[8]) *
-					100
+				(Hardcore.data[Hardcore.data.length - 1].y / entriesThisDay[8]) * 100
 			) / 100;
 
 		Total.data[Total.data.length - 1].y =

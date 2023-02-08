@@ -44,8 +44,7 @@ con.connect((err) => {
 	let classes = [];
 	function getClassData() {
 		classes.length = 0;
-		let classquery =
-			"SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
+		let classquery = "SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
 		con.query(classquery, (err, result, fields) => {
 			if (err) throw err;
 
@@ -97,8 +96,7 @@ con.connect((err) => {
 				"SELECT * FROM `players` WHERE `lastseen` >= '" +
 				GetDateString(
 					new Date(
-						new Date(new Date().toDateString()) -
-							1000 * 60 * 60 * 24 * days
+						new Date(new Date().toDateString()) - 1000 * 60 * 60 * 24 * days
 					)
 				) +
 				"';";
@@ -200,9 +198,7 @@ con.connect((err) => {
 			population.length = 0;
 			let query =
 				"SELECT * FROM `population` WHERE `datetime` >= '" +
-				GetDateString(
-					new Date(new Date().getTime() - 60000 * 60 * 24 * days)
-				) +
+				GetDateString(new Date(new Date().getTime() - 60000 * 60 * 24 * days)) +
 				"' ORDER BY `population`.`datetime` ASC;";
 			con.query(query, (err, result, fields) => {
 				if (err) throw err;
@@ -212,9 +208,7 @@ con.connect((err) => {
 					population.push(data);
 				});
 
-				console.log(
-					`Retrieved ${population.length} population data points`
-				);
+				console.log(`Retrieved ${population.length} population data points`);
 				resolve();
 			});
 		});

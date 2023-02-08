@@ -134,16 +134,14 @@ const runWeekReport = (population) => {
 
 						Argonnessen.data[Argonnessen.data.length - 1].y =
 							Math.round(
-								(Argonnessen.data[Argonnessen.data.length - 1]
-									.y /
+								(Argonnessen.data[Argonnessen.data.length - 1].y /
 									entriesThisHour[0]) *
 									100
 							) / 100;
 
 						Cannith.data[Cannith.data.length - 1].y =
 							Math.round(
-								(Cannith.data[Cannith.data.length - 1].y /
-									entriesThisHour[1]) *
+								(Cannith.data[Cannith.data.length - 1].y / entriesThisHour[1]) *
 									100
 							) / 100;
 
@@ -156,22 +154,18 @@ const runWeekReport = (population) => {
 
 						Khyber.data[Khyber.data.length - 1].y =
 							Math.round(
-								(Khyber.data[Khyber.data.length - 1].y /
-									entriesThisHour[3]) *
+								(Khyber.data[Khyber.data.length - 1].y / entriesThisHour[3]) *
 									100
 							) / 100;
 
 						Orien.data[Orien.data.length - 1].y =
 							Math.round(
-								(Orien.data[Orien.data.length - 1].y /
-									entriesThisHour[4]) *
-									100
+								(Orien.data[Orien.data.length - 1].y / entriesThisHour[4]) * 100
 							) / 100;
 
 						Sarlona.data[Sarlona.data.length - 1].y =
 							Math.round(
-								(Sarlona.data[Sarlona.data.length - 1].y /
-									entriesThisHour[5]) *
+								(Sarlona.data[Sarlona.data.length - 1].y / entriesThisHour[5]) *
 									100
 							) / 100;
 
@@ -198,9 +192,7 @@ const runWeekReport = (population) => {
 
 						Total.data[Total.data.length - 1].y =
 							Math.round(
-								(Total.data[Total.data.length - 1].y /
-									entriesThisHour[9]) *
-									100
+								(Total.data[Total.data.length - 1].y / entriesThisHour[9]) * 100
 							) / 100;
 
 						Argonnessen.data.push({
@@ -255,8 +247,7 @@ const runWeekReport = (population) => {
 						}
 
 						if (cannith_playercount) {
-							Cannith.data[Cannith.data.length - 1].y +=
-								cannith_playercount;
+							Cannith.data[Cannith.data.length - 1].y += cannith_playercount;
 							entriesThisHour[1]++;
 						}
 
@@ -267,26 +258,22 @@ const runWeekReport = (population) => {
 						}
 
 						if (khyber_playercount) {
-							Khyber.data[Khyber.data.length - 1].y +=
-								khyber_playercount;
+							Khyber.data[Khyber.data.length - 1].y += khyber_playercount;
 							entriesThisHour[3]++;
 						}
 
 						if (orien_playercount) {
-							Orien.data[Orien.data.length - 1].y +=
-								orien_playercount;
+							Orien.data[Orien.data.length - 1].y += orien_playercount;
 							entriesThisHour[4]++;
 						}
 
 						if (sarlona_playercount) {
-							Sarlona.data[Sarlona.data.length - 1].y +=
-								sarlona_playercount;
+							Sarlona.data[Sarlona.data.length - 1].y += sarlona_playercount;
 							entriesThisHour[5]++;
 						}
 
 						if (thelanis_playercount) {
-							Thelanis.data[Thelanis.data.length - 1].y +=
-								thelanis_playercount;
+							Thelanis.data[Thelanis.data.length - 1].y += thelanis_playercount;
 							entriesThisHour[6]++;
 						}
 
@@ -297,8 +284,7 @@ const runWeekReport = (population) => {
 						}
 
 						if (hardcore_playercount) {
-							Hardcore.data[Hardcore.data.length - 1].y +=
-								hardcore_playercount;
+							Hardcore.data[Hardcore.data.length - 1].y += hardcore_playercount;
 							entriesThisHour[8]++;
 						}
 
@@ -340,8 +326,7 @@ const runWeekReport = (population) => {
 
 	Argonnessen.data[Argonnessen.data.length - 1].y =
 		Math.round(
-			(Argonnessen.data[Argonnessen.data.length - 1].y /
-				entriesThisHour[0]) *
+			(Argonnessen.data[Argonnessen.data.length - 1].y / entriesThisHour[0]) *
 				100
 		) / 100;
 
@@ -352,8 +337,7 @@ const runWeekReport = (population) => {
 
 	Ghallanda.data[Ghallanda.data.length - 1].y =
 		Math.round(
-			(Ghallanda.data[Ghallanda.data.length - 1].y / entriesThisHour[2]) *
-				100
+			(Ghallanda.data[Ghallanda.data.length - 1].y / entriesThisHour[2]) * 100
 		) / 100;
 
 	Khyber.data[Khyber.data.length - 1].y =
@@ -373,20 +357,17 @@ const runWeekReport = (population) => {
 
 	Thelanis.data[Thelanis.data.length - 1].y =
 		Math.round(
-			(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) *
-				100
+			(Thelanis.data[Thelanis.data.length - 1].y / entriesThisHour[6]) * 100
 		) / 100;
 
 	Wayfinder.data[Wayfinder.data.length - 1].y =
 		Math.round(
-			(Wayfinder.data[Wayfinder.data.length - 1].y / entriesThisHour[7]) *
-				100
+			(Wayfinder.data[Wayfinder.data.length - 1].y / entriesThisHour[7]) * 100
 		) / 100;
 
 	Hardcore.data[Hardcore.data.length - 1].y =
 		Math.round(
-			(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) *
-				100
+			(Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) * 100
 		) / 100;
 
 	Total.data[Total.data.length - 1].y =

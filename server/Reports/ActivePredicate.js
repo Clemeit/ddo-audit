@@ -14,8 +14,7 @@ const isPlayerActive = (
 	let active = lastactive == null ? 0 : new Date(lastactive + "Z").getTime();
 	let movement =
 		lastmovement == null ? 0 : new Date(lastmovement + "Z").getTime();
-	let levelup =
-		lastlevelup == null ? 0 : new Date(lastlevelup + "Z").getTime();
+	let levelup = lastlevelup == null ? 0 : new Date(lastlevelup + "Z").getTime();
 
 	let isactive = true;
 

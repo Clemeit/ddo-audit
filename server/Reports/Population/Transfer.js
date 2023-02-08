@@ -175,10 +175,7 @@ const runTransferReport = (players) => {
 	}
 	try {
 		lastTransferToDataIgnoreHCL = JSON.parse(
-			fs.readFileSync(
-				"../api_v1/population/transfersto_ignorehcl.json",
-				"utf8"
-			)
+			fs.readFileSync("../api_v1/population/transfersto_ignorehcl.json", "utf8")
 		);
 	} catch {
 		lastTransferToDataIgnoreHCL = cloneDeep(templateMultiData);
@@ -228,11 +225,7 @@ const runTransferReport = (players) => {
 		lastTransferFromData,
 		2
 	);
-	writeAndRetry(
-		"../api_v1/population/transfersto.json",
-		lastTransferToData,
-		2
-	);
+	writeAndRetry("../api_v1/population/transfersto.json", lastTransferToData, 2);
 
 	writeAndRetry(
 		"../api_v1/population/transfercounts_ignorehcl.json",

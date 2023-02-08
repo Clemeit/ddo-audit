@@ -51,9 +51,7 @@ const groupsApi = (api) => {
 									console.log("Reconnected!");
 									if (server == "all") {
 										resolve([
-											JSON.parse(
-												result[0]["argonnessen"]
-											),
+											JSON.parse(result[0]["argonnessen"]),
 											JSON.parse(result[0]["cannith"]),
 											JSON.parse(result[0]["ghallanda"]),
 											JSON.parse(result[0]["khyber"]),
@@ -77,59 +75,22 @@ const groupsApi = (api) => {
 								if (result && result[0]) {
 									resolve([
 										JSON.parse(
-											result[0] != null
-												? result[0]["argonnessen"]
-												: {}
+											result[0] != null ? result[0]["argonnessen"] : {}
 										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["cannith"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["ghallanda"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["khyber"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["orien"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["sarlona"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["thelanis"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["wayfinder"]
-												: {}
-										),
-										JSON.parse(
-											result[0] != null
-												? result[0]["hardcore"]
-												: {}
-										),
+										JSON.parse(result[0] != null ? result[0]["cannith"] : {}),
+										JSON.parse(result[0] != null ? result[0]["ghallanda"] : {}),
+										JSON.parse(result[0] != null ? result[0]["khyber"] : {}),
+										JSON.parse(result[0] != null ? result[0]["orien"] : {}),
+										JSON.parse(result[0] != null ? result[0]["sarlona"] : {}),
+										JSON.parse(result[0] != null ? result[0]["thelanis"] : {}),
+										JSON.parse(result[0] != null ? result[0]["wayfinder"] : {}),
+										JSON.parse(result[0] != null ? result[0]["hardcore"] : {}),
 									]);
 								} else {
 									reject("null data");
 								}
 							} else {
-								if (
-									result == undefined ||
-									result[0] == undefined
-								) {
+								if (result == undefined || result[0] == undefined) {
 									reject("null data");
 								} else {
 									resolve(result[0][server]);

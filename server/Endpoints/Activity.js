@@ -34,12 +34,7 @@ const activityApi = (api) => {
 								password: process.env.DB_PASS,
 								database: process.env.DB_NAME,
 							});
-							getQuestActivity(
-								questid,
-								minimumlevel,
-								maximumlevel,
-								true
-							)
+							getQuestActivity(questid, minimumlevel, maximumlevel, true)
 								.then((result) => {
 									console.log("Reconnected!");
 									resolve(result);
@@ -96,11 +91,7 @@ const activityApi = (api) => {
 
 		api.post(`/activity`, (req, res) => {
 			res.setHeader("Content-Type", "application/json");
-			if (
-				req.body.questid &&
-				req.body.minimumlevel &&
-				req.body.maximumlevel
-			) {
+			if (req.body.questid && req.body.minimumlevel && req.body.maximumlevel) {
 				getQuestActivity(
 					req.body.questid,
 					req.body.minimumlevel,

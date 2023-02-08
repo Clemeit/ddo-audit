@@ -198,12 +198,9 @@ const iotApi = (api) => {
 			console.log(
 				`Step detected [INTENSITY=${intensity
 					.toString()
-					.padStart(4, "0")}] at ${new Date().toLocaleString(
-					"en-US",
-					{
-						timeZone: "America/Denver",
-					}
-				)}`
+					.padStart(4, "0")}] at ${new Date().toLocaleString("en-US", {
+					timeZone: "America/Denver",
+				})}`
 			);
 			postStep(intensity)
 				.then(() => {

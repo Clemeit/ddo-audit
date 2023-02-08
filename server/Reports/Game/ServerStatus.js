@@ -81,20 +81,12 @@ const runServerStatusReport = () => {
 							const pattern =
 								/<allow_billing_role>(?<roles>.*?)<\/allow_billing_role>/;
 							if (pattern.test(data)) {
-								let billingroles = pattern
-									.exec(data)
-									.groups.roles.split(",");
+								let billingroles = pattern.exec(data).groups.roles.split(",");
 								world.BillingRoles = billingroles;
 								if (
-									world.BillingRoles.includes(
-										"StormreachGuest"
-									) ||
-									world.BillingRoles.includes(
-										"StormreachStandard"
-									) ||
-									world.BillingRoles.includes(
-										"StormreachLimited"
-									)
+									world.BillingRoles.includes("StormreachGuest") ||
+									world.BillingRoles.includes("StormreachStandard") ||
+									world.BillingRoles.includes("StormreachLimited")
 								) {
 									world.Status = 1;
 								} else {

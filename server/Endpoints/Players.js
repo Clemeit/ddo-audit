@@ -165,8 +165,8 @@ const playersApi = (api) => {
                 LEFT JOIN classes c4 ON p.class4 = c4.id 
                 LEFT JOIN classes c5 ON p.class5 = c5.id
                 WHERE p.name LIKE ${con.escape(
-					name
-				)} AND p.anonymous = 0 ORDER BY p.lastseen DESC LIMIT 10`;
+									name
+								)} AND p.anonymous = 0 ORDER BY p.lastseen DESC LIMIT 10`;
 
 				con.query(query, (err, result, fields) => {
 					if (err) {
@@ -501,8 +501,8 @@ const playersApi = (api) => {
 					let query = `SELECT CAST(p.playerid AS CHAR) as playerid 
                         FROM \`players\` p 
                         WHERE p.anonymous = 0 AND p.name != 'Anonymous' AND p.server = ${con.escape(
-							gserver
-						)} AND p.guild = ${con.escape(gname)} 
+													gserver
+												)} AND p.guild = ${con.escape(gname)} 
                         ORDER BY p.lastseen DESC 
                         LIMIT 50;`;
 
@@ -706,14 +706,9 @@ const playersApi = (api) => {
 
 					lookupAllPlayersByName(name)
 						.then((playerresult) => {
-							if (
-								playerresult.length === 1 &&
-								playerresult[0].data !== null
-							) {
+							if (playerresult.length === 1 && playerresult[0].data !== null) {
 								playerresult[0].data.forEach((player) => {
-									player.PlayerId = encryptId(
-										player.PlayerId
-									);
+									player.PlayerId = encryptId(player.PlayerId);
 								});
 								returnData.players = playerresult[0].data;
 							}
@@ -725,17 +720,11 @@ const playersApi = (api) => {
 										returnData.guilds = guildresult;
 									})
 									.finally(() => {
-										res.setHeader(
-											"Content-Type",
-											"application/json"
-										);
+										res.setHeader("Content-Type", "application/json");
 										res.send(returnData);
 									});
 							} else {
-								res.setHeader(
-									"Content-Type",
-									"application/json"
-								);
+								res.setHeader("Content-Type", "application/json");
 								res.send(returnData.players);
 							}
 						});
@@ -751,9 +740,7 @@ const playersApi = (api) => {
 							}
 						} else if (result.length > 1) {
 							res.setHeader("Content-Type", "application/json");
-							const sorted = result.sort(
-								(a, b) => b.lastseen - a.lastseen
-							);
+							const sorted = result.sort((a, b) => b.lastseen - a.lastseen);
 							if (sorted[0].anonymous === 1) {
 								res.send({ error: "Anonymous" });
 							} else {

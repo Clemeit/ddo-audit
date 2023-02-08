@@ -191,10 +191,7 @@ const runHourlyDistribution = (population, reporttype) => {
 					Wayfinder.data[hour].y += wayfinder_lfmcount;
 					w_count[hour]++;
 
-					if (
-						datetime.getTime() - hardcoreSeasonStart.getTime() >
-						0
-					) {
+					if (datetime.getTime() - hardcoreSeasonStart.getTime() > 0) {
 						Hardcore.data[hour].y += hardcore_lfmcount;
 						h_count[hour]++;
 					}
@@ -210,10 +207,8 @@ const runHourlyDistribution = (population, reporttype) => {
 			Math.round((Cannith.data[i].y / c_count[i]) * 100) / 100;
 		Ghallanda.data[i].y =
 			Math.round((Ghallanda.data[i].y / g_count[i]) * 100) / 100;
-		Khyber.data[i].y =
-			Math.round((Khyber.data[i].y / k_count[i]) * 100) / 100;
-		Orien.data[i].y =
-			Math.round((Orien.data[i].y / o_count[i]) * 100) / 100;
+		Khyber.data[i].y = Math.round((Khyber.data[i].y / k_count[i]) * 100) / 100;
+		Orien.data[i].y = Math.round((Orien.data[i].y / o_count[i]) * 100) / 100;
 		Sarlona.data[i].y =
 			Math.round((Sarlona.data[i].y / s_count[i]) * 100) / 100;
 		Thelanis.data[i].y =
