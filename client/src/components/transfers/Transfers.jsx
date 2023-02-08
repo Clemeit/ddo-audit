@@ -72,6 +72,7 @@ const Transfers = () => {
     });
   }
 
+  const [performDerivation, setPerformDerivation] = React.useState(true);
   const [transferCounts, setTransferCounts] = React.useState(null);
   const [transfersTo, setTransfersTo] = React.useState(null);
   const [transfersFrom, setTransfersFrom] = React.useState(null);
@@ -84,12 +85,32 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (performDerivation) {
+          // first derivative
+          val.forEach((server) => {
+            let lastTime = server.data[0].x;
+            let lastValue = server.data[0].y;
+            server.data.forEach((dataPoint) => {
+              const diff = dataPoint.y - lastValue;
+              const timeDiff = Math.max(
+                (new Date(dataPoint.x).getTime() -
+                  new Date(lastTime).getTime()) /
+                  (1000 * 60 * 60),
+                1
+              );
+              lastValue = dataPoint.y;
+              lastTime = dataPoint.x;
+              dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
+            });
+          });
+        }
+
         setTransferCounts(val.reverse());
       })
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLCounts, activeAndIgnoreHCLCounts]);
+  }, [ignoreHCLCounts, activeAndIgnoreHCLCounts, performDerivation]);
 
   React.useEffect(() => {
     Fetch(
@@ -99,16 +120,36 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (performDerivation) {
+          // first derivative
+          val.forEach((server) => {
+            let lastTime = server.data[0].x;
+            let lastValue = server.data[0].y;
+            server.data.forEach((dataPoint) => {
+              const diff = dataPoint.y - lastValue;
+              const timeDiff = Math.max(
+                (new Date(dataPoint.x).getTime() -
+                  new Date(lastTime).getTime()) /
+                  (1000 * 60 * 60),
+                1
+              );
+              lastValue = dataPoint.y;
+              lastTime = dataPoint.x;
+              dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
+            });
+          });
+        }
+
         setTransfersTo(val.filter((set) => set.id !== "Hardcore").reverse());
       })
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLTo, activeAndIgnoreHCLTo]);
+  }, [ignoreHCLTo, activeAndIgnoreHCLTo, performDerivation]);
 
   React.useEffect(() => {
     const logView = setTimeout(
-      () => Log("Transfers page", "Page viewed"),
+      () => Log("Transfers page", "Page viewed (v2)"),
       1000
     );
 
@@ -119,6 +160,26 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (performDerivation) {
+          // first derivative
+          val.forEach((server) => {
+            let lastTime = server.data[0].x;
+            let lastValue = server.data[0].y;
+            server.data.forEach((dataPoint) => {
+              const diff = dataPoint.y - lastValue;
+              const timeDiff = Math.max(
+                (new Date(dataPoint.x).getTime() -
+                  new Date(lastTime).getTime()) /
+                  (1000 * 60 * 60),
+                1
+              );
+              lastValue = dataPoint.y;
+              lastTime = dataPoint.x;
+              dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
+            });
+          });
+        }
+
         setTransfersFrom(val.filter((set) => set.id !== "Hardcore").reverse());
       })
       .catch((err) => {
@@ -126,7 +187,7 @@ const Transfers = () => {
       });
 
     return () => clearTimeout(logView);
-  }, [activeAndIgnoreHCLFrom]);
+  }, [activeAndIgnoreHCLFrom, performDerivation]);
 
   const VoteContainer = () => (
     <div
@@ -230,6 +291,46 @@ const Transfers = () => {
         <BannerMessage page="transfers" />
         <div className="top-content-padding shrink-on-mobile" />
         <ContentCluster
+          title="Important Changes"
+          description={
+            <>
+              <p>
+                The original reports were rather confusing and led to a lot of
+                misinformation being circulated.{" "}
+                <span className="lfm-number">
+                  I've changed how the data is presented to be more in line with
+                  what players expected.
+                </span>
+              </p>
+              <p>
+                The unfortunate side effect of this change is that the data
+                prior to February 8 holds very little meaning and can mostly be
+                ignored.
+              </p>
+              <p>
+                For anyone curious, the reports now display the instantaneous
+                rate of change - or first derivative - of the underlying data.
+                You can swap between the two methods with the toggle button
+                below.
+              </p>
+              <ToggleButton
+                className="wide"
+                textA="New Reports (Instantaneous)"
+                textB="Old Reports (Cumulative)"
+                isA={performDerivation}
+                isB={!performDerivation}
+                doA={() => {
+                  setPerformDerivation(true);
+                }}
+                doB={() => {
+                  setPerformDerivation(false);
+                }}
+              />
+            </>
+          }
+          smallBottomMargin={true}
+        />
+        <ContentCluster
           title="About Server Transfers"
           description={
             <span>
@@ -250,8 +351,10 @@ const Transfers = () => {
                   but you can include them with the toggle buttons.
                 </li>
                 <li>
-                  This is a new feature, and it deals with a new set of data.
-                  There may be inconsistencies.
+                  This is a new feature, and it deals with a new set of data.{" "}
+                  <span className="lfm-number">
+                    There may be inconsistencies.
+                  </span>
                 </li>
               </ul>
               <div
@@ -279,15 +382,24 @@ const Transfers = () => {
           smallBottomMargin={true}
         />
         <ContentCluster
-          title="Total Transfer Characters"
+          title="Total Counts"
           description={
             <>
-              <p>
-                The total number of transfer characters online on any given day.{" "}
-                <span className="lfm-number">
-                  This is NOT the number of character transfers per day.
-                </span>
-              </p>
+              {performDerivation ? (
+                <p>
+                  An approximation of the number of character transfers per
+                  hour.
+                </p>
+              ) : (
+                <p>
+                  The total number of transfer characters online on any given
+                  day.{" "}
+                  <span className="lfm-number">
+                    This is a cumulative count, NOT the number of character
+                    transfers per day.
+                  </span>
+                </p>
+              )}
               <div
                 style={{
                   display: "flex",
@@ -331,6 +443,7 @@ const Transfers = () => {
           }
         >
           <ChartLine
+            curve="linear"
             keys={null}
             indexBy={null}
             legendBottom="Day"
@@ -351,11 +464,22 @@ const Transfers = () => {
           title={`Transfers "To"`}
           description={
             <>
-              <p>
-                The total number of characters transferred <i>to</i> each
-                server. Servers with a high transfer count are gaining players
-                from other servers.
-              </p>
+              {performDerivation ? (
+                <p>
+                  An approximation of the number of character transfers per hour{" "}
+                  <i>to</i> each server. Servers with a high transfer count are
+                  gaining players from other servers.
+                </p>
+              ) : (
+                <p>
+                  The cumulative number of characters transferred <i>to</i> each
+                  server. Servers with a high transfer count are gaining players
+                  from other servers.{" "}
+                  <span className="lfm-number">
+                    This is a cumulative count.
+                  </span>
+                </p>
+              )}
               <div
                 style={{
                   display: "flex",
@@ -396,6 +520,7 @@ const Transfers = () => {
           }
         >
           <ChartLine
+            curve="linear"
             keys={null}
             indexBy={null}
             legendBottom="Day"
@@ -416,11 +541,22 @@ const Transfers = () => {
           title={`Transfers "From"`}
           description={
             <>
-              <p>
-                The total number of characters transferred <i>from</i> each
-                server. Servers with a high transfer count are losing players to
-                other servers.
-              </p>
+              {performDerivation ? (
+                <p>
+                  An approximation of the number of character transfers per hour{" "}
+                  <i>from</i> each server. Servers with a high transfer count
+                  are losing players to other servers.
+                </p>
+              ) : (
+                <p>
+                  The cumulative number of characters transferred <i>from</i>{" "}
+                  each server in the last 90 days. Servers with a high transfer
+                  count are losing players to other servers.{" "}
+                  <span className="lfm-number">
+                    This is a cumulative count.
+                  </span>
+                </p>
+              )}
               <ToggleButton
                 className="wide"
                 textA="All Characters"
@@ -438,6 +574,7 @@ const Transfers = () => {
           }
         >
           <ChartLine
+            curve="linear"
             keys={null}
             indexBy={null}
             legendBottom="Day"
