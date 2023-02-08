@@ -432,7 +432,18 @@ const Directory = (props) => {
                             <>
                                 We're now reporting data on character transfers.
                                 Check it out on the{" "}
-                                <Link to="/transfers">Transfers</Link> page.
+                                <Link
+                                    onClick={() =>
+                                        Log(
+                                            "Transfers page",
+                                            "From Servers message"
+                                        )
+                                    }
+                                    to="/transfers"
+                                >
+                                    Transfers
+                                </Link>{" "}
+                                page.
                             </>
                         }
                         fontSize={1.4}
@@ -869,6 +880,12 @@ const Directory = (props) => {
                         </Link>
                         {showTransferPage && (
                             <Link
+                                onClick={() =>
+                                    Log(
+                                        "Transfers page",
+                                        "From Servers card link"
+                                    )
+                                }
                                 to="/transfers"
                                 className="nav-box shrinkable"
                                 style={{

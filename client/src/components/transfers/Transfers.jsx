@@ -71,7 +71,10 @@ const Transfers = () => {
     const [transfersFrom, setTransfersFrom] = React.useState(null);
 
     React.useEffect(() => {
-        Log("Transfers page", "Page viewed");
+        const logView = setTimeout(
+            () => Log("Transfers page", "Page viewed"),
+            1000
+        );
 
         Fetch("https://api.ddoaudit.com/population/transfersfrom", 5000)
             .then((val) => {
@@ -82,6 +85,8 @@ const Transfers = () => {
             .catch((err) => {
                 dataFailedToLoad();
             });
+
+        return () => clearTimeout(logView);
     }, []);
 
     React.useEffect(() => {
@@ -245,9 +250,7 @@ const Transfers = () => {
                                 <li>
                                     This is a new feature, and it deals with a
                                     new set of data. There may be
-                                    inconsistencies. Numbers may not be exact,
-                                    but they should provide excellent insight
-                                    into overarching trends.
+                                    inconsistencies.
                                 </li>
                             </ul>
                             <div

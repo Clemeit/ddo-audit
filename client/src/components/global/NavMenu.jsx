@@ -12,6 +12,7 @@ import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
 import ServerHook from "../../hooks/ServerHook";
 import { SERVER_LIST } from "../../constants/Servers";
 import FeatureFlagHook from "../../hooks/FeatureFlagHook";
+import { Log } from "../../services/CommunicationService";
 
 const NavMenu = () => {
     const SERVERS = ServerHook();
@@ -99,7 +100,11 @@ const NavMenu = () => {
                     <span className="nav-title">Quests</span>
                 </NavItem> */}
                 {showTransferPage && (
-                    <NavItem to="/transfers" className="hide-on-mobile">
+                    <NavItem
+                        onClick={() => Log("Transfers page", "From NavMenu")}
+                        to="/transfers"
+                        className="hide-on-mobile"
+                    >
                         <TransferSVG className="nav-icon" />
                         <span className="nav-title">Transfers</span>
                     </NavItem>

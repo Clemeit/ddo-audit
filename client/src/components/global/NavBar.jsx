@@ -16,6 +16,7 @@ const NavItem = (props) => {
 
     return (
         <Link
+            onClick={props.onClick}
             to={props.to}
             className={
                 "nav-item " +
