@@ -4,16 +4,51 @@ import isPlayerActive from "../ActivePredicate.js";
 import fs from "fs";
 
 const runTransferReport = (players) => {
-	function writeAndRetry(path, data, count) {
-		fs.writeFile(path, JSON.stringify(data), (err) => {
-			if (err) {
-				if (count <= 0) {
-					throw err;
-				} else {
-					writeAndRetry(path, data, count - 1);
+	if (players.length > 500000) {
+		console.log(
+			"Too many players for the transfer report! Player count:",
+			players.length
+		);
+		return;
+	}
+
+	function writeAndRetry(fileName, data, count) {
+		writeMain(fileName, data, count);
+		writeBackup(fileName, data, count);
+	}
+
+	function writeMain(fileName, data, count) {
+		fs.writeFile(
+			`../api_v1/population/${fileName}.json`,
+			JSON.stringify(data),
+			(err) => {
+				if (err) {
+					if (count <= 0) {
+						throw err;
+					} else {
+						writeMain(fileName, data, count - 1);
+					}
 				}
 			}
-		});
+		);
+	}
+
+	function writeBackup(fileName, data, count) {
+		fs.writeFile(
+			`../api_v1/population/backups/${fileName}-${moment().format(
+				"YYYY-MM-DD"
+			)}.json`,
+			JSON.stringify(data),
+			(err) => {
+				if (err) {
+					if (count <= 0) {
+						throw err;
+					} else {
+						writeBackup(fileName, data, count - 1);
+					}
+				}
+			}
+		);
 	}
 
 	const SERVER_NAMES = [
@@ -300,46 +335,26 @@ const runTransferReport = (players) => {
 		});
 	});
 
-	writeAndRetry(
-		"../api_v1/population/transfercounts.json",
-		lastTransferCountData,
-		2
-	);
-	writeAndRetry(
-		"../api_v1/population/transfersfrom.json",
-		lastTransferFromData,
-		2
-	);
-	writeAndRetry("../api_v1/population/transfersto.json", lastTransferToData, 2);
+	writeAndRetry("transfercounts", lastTransferCountData, 2);
+	writeAndRetry("transfersfrom", lastTransferFromData, 2);
+	writeAndRetry("transfersto", lastTransferToData, 2);
+
+	writeAndRetry("transfercounts_ignorehcl", lastTransferCountDataIgnoreHCL, 2);
+	writeAndRetry("transfersfrom_ignorehcl", lastTransferFromDataIgnoreHCL, 2);
+	writeAndRetry("transfersto_ignorehcl", lastTransferToDataIgnoreHCL, 2);
 
 	writeAndRetry(
-		"../api_v1/population/transfercounts_ignorehcl.json",
-		lastTransferCountDataIgnoreHCL,
-		2
-	);
-	writeAndRetry(
-		"../api_v1/population/transfersfrom_ignorehcl.json",
-		lastTransferFromDataIgnoreHCL,
-		2
-	);
-	writeAndRetry(
-		"../api_v1/population/transfersto_ignorehcl.json",
-		lastTransferToDataIgnoreHCL,
-		2
-	);
-
-	writeAndRetry(
-		"../api_v1/population/transfercounts_active_ignorehcl.json",
+		"transfercounts_active_ignorehcl",
 		lastTransferCountDataActiveAndIgnoreHCL,
 		2
 	);
 	writeAndRetry(
-		"../api_v1/population/transfersfrom_active_ignorehcl.json",
+		"transfersfrom_active_ignorehcl",
 		lastTransferFromDataActiveAndIgnoreHCL,
 		2
 	);
 	writeAndRetry(
-		"../api_v1/population/transfersto_active_ignorehcl.json",
+		"transfersto_active_ignorehcl",
 		lastTransferToDataActiveAndIgnoreHCL,
 		2
 	);
