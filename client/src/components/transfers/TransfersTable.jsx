@@ -74,7 +74,10 @@ const TransfersTable = (props) => {
               i
             ) => (
               <tr key={i}>
-                <td>{server}</td>
+                <td>
+                  {server}
+                  {server === "Orien" || server === "Sarlona" ? " (FREE)" : ""}
+                </td>
                 <td style={{ textAlign: "right" }}>{activeTotal}</td>
                 <td style={{ textAlign: "right" }}>
                   {getCellText(activeTransfersFrom, activeTotal, "red-text")}
