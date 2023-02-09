@@ -87,8 +87,16 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
-        if (truncateDataRange)
-          val.forEach((server) => (server.data = server.data.slice(4)));
+        if (truncateDataRange) {
+          val.forEach((server) => {
+            let firstGoodIndex = 0;
+            server.data.forEach((dataPoint, i) => {
+              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+                firstGoodIndex = i;
+            });
+            server.data = server.data.slice(firstGoodIndex);
+          });
+        }
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -145,8 +153,16 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
-        if (truncateDataRange)
-          val.forEach((server) => (server.data = server.data.slice(4)));
+        if (truncateDataRange) {
+          val.forEach((server) => {
+            let firstGoodIndex = 0;
+            server.data.forEach((dataPoint, i) => {
+              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+                firstGoodIndex = i;
+            });
+            server.data = server.data.slice(firstGoodIndex);
+          });
+        }
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -198,8 +214,16 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
-        if (truncateDataRange)
-          val.forEach((server) => (server.data = server.data.slice(4)));
+        if (truncateDataRange) {
+          val.forEach((server) => {
+            let firstGoodIndex = 0;
+            server.data.forEach((dataPoint, i) => {
+              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+                firstGoodIndex = i;
+            });
+            server.data = server.data.slice(firstGoodIndex);
+          });
+        }
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -363,11 +387,6 @@ const Transfers = () => {
                   I've changed how the data is presented to be more in line with
                   what players expected.
                 </span>
-              </p>
-              <p>
-                The unfortunate side effect of this change is that the data
-                prior to February 8 holds very little meaning and can mostly be
-                ignored.
               </p>
               <p>
                 For anyone curious, the reports now display the instantaneous
