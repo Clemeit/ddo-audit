@@ -91,7 +91,6 @@ con.connect((err) => {
 	let players = [];
 	function getPlayerData(days) {
 		return new Promise(async (resolve, reject) => {
-			players.length = 0;
 			let query =
 				"SELECT * FROM `players` WHERE `lastseen` >= '" +
 				GetDateString(
@@ -102,6 +101,7 @@ con.connect((err) => {
 				"';";
 			con.query(query, (err, result, fields) => {
 				if (err) throw reject(err);
+				players.length = 0;
 
 				result.forEach((player) => {
 					players.push(player);
@@ -258,8 +258,8 @@ con.connect((err) => {
 		});
 	});
 
-	// Every hour
-	cron.schedule("0 * * * *", () => {
+	// Every hour (not midnight because we get duplicate data)
+	cron.schedule("0 1-23 * * *", () => {
 		getPlayerData(91).then(() => {
 			runTransferReport(players);
 		});
