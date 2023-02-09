@@ -134,7 +134,7 @@ const runTransferReport = (players) => {
 	let transfersFromCountActiveAndIgnoreHCL = [];
 	let transfersToCountActiveAndIgnoreHCL = [];
 
-	SERVER_NAMES.forEach((server) => {
+	SERVER_NAMES.forEach(() => {
 		transfersFromCount.push(0);
 		transfersToCount.push(0);
 		transfersFromCountIgnoreHCL.push(0);
