@@ -91,7 +91,7 @@ const Transfers = () => {
           val.forEach((server) => {
             let firstGoodIndex = 0;
             server.data.forEach((dataPoint, i) => {
-              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+              if (dataPoint.x === "2023-02-07T00:00:00.000Z")
                 firstGoodIndex = i;
             });
             server.data = server.data.slice(firstGoodIndex);
@@ -157,7 +157,7 @@ const Transfers = () => {
           val.forEach((server) => {
             let firstGoodIndex = 0;
             server.data.forEach((dataPoint, i) => {
-              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+              if (dataPoint.x === "2023-02-07T00:00:00.000Z")
                 firstGoodIndex = i;
             });
             server.data = server.data.slice(firstGoodIndex);
@@ -218,7 +218,7 @@ const Transfers = () => {
           val.forEach((server) => {
             let firstGoodIndex = 0;
             server.data.forEach((dataPoint, i) => {
-              if (dataPoint.x === "2023-02-08T00:00:00.000Z")
+              if (dataPoint.x === "2023-02-07T00:00:00.000Z")
                 firstGoodIndex = i;
             });
             server.data = server.data.slice(firstGoodIndex);
