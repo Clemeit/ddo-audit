@@ -72,6 +72,8 @@ const Transfers = () => {
     });
   }
 
+  const [zeroedOnFeb8, setZeroedOnFeb8] = React.useState(true);
+  const truncateDataRange = true;
   const [performDerivation, setPerformDerivation] = React.useState(true);
   const [transferCounts, setTransferCounts] = React.useState(null);
   const [transfersTo, setTransfersTo] = React.useState(null);
@@ -85,6 +87,8 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (truncateDataRange)
+          val.forEach((server) => (server.data = server.data.slice(4)));
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -103,6 +107,22 @@ const Transfers = () => {
               dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
             });
           });
+        } else {
+          if (zeroedOnFeb8) {
+            val.forEach((server) => {
+              let feb8Count = -1;
+              server.data.forEach((dataPoint) => {
+                if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                  feb8Count = dataPoint.y;
+                }
+                if (feb8Count === -1) {
+                  dataPoint.y = 0;
+                } else {
+                  dataPoint.y = Math.max(dataPoint.y - feb8Count, 0);
+                }
+              });
+            });
+          }
         }
 
         setTransferCounts(val.reverse());
@@ -110,7 +130,12 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLCounts, activeAndIgnoreHCLCounts, performDerivation]);
+  }, [
+    ignoreHCLCounts,
+    activeAndIgnoreHCLCounts,
+    performDerivation,
+    zeroedOnFeb8,
+  ]);
 
   React.useEffect(() => {
     Fetch(
@@ -120,6 +145,8 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (truncateDataRange)
+          val.forEach((server) => (server.data = server.data.slice(4)));
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -138,6 +165,22 @@ const Transfers = () => {
               dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
             });
           });
+        } else {
+          if (zeroedOnFeb8) {
+            val.forEach((server) => {
+              let feb8Count = -1;
+              server.data.forEach((dataPoint) => {
+                if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                  feb8Count = dataPoint.y;
+                }
+                if (feb8Count === -1) {
+                  dataPoint.y = 0;
+                } else {
+                  dataPoint.y = Math.max(dataPoint.y - feb8Count, 0);
+                }
+              });
+            });
+          }
         }
 
         setTransfersTo(val.filter((set) => set.id !== "Hardcore").reverse());
@@ -145,7 +188,7 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [ignoreHCLTo, activeAndIgnoreHCLTo, performDerivation]);
+  }, [ignoreHCLTo, activeAndIgnoreHCLTo, performDerivation, zeroedOnFeb8]);
 
   React.useEffect(() => {
     Fetch(
@@ -155,6 +198,8 @@ const Transfers = () => {
       5000
     )
       .then((val) => {
+        if (truncateDataRange)
+          val.forEach((server) => (server.data = server.data.slice(4)));
         if (performDerivation) {
           // first derivative
           val.forEach((server) => {
@@ -173,6 +218,22 @@ const Transfers = () => {
               dataPoint.y = Math.round(Math.abs(diff, 0) / timeDiff);
             });
           });
+        } else {
+          if (zeroedOnFeb8) {
+            val.forEach((server) => {
+              let feb8Count = -1;
+              server.data.forEach((dataPoint) => {
+                if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                  feb8Count = dataPoint.y;
+                }
+                if (feb8Count === -1) {
+                  dataPoint.y = 0;
+                } else {
+                  dataPoint.y = Math.max(dataPoint.y - feb8Count, 0);
+                }
+              });
+            });
+          }
         }
 
         setTransfersFrom(val.filter((set) => set.id !== "Hardcore").reverse());
@@ -180,7 +241,7 @@ const Transfers = () => {
       .catch((err) => {
         dataFailedToLoad();
       });
-  }, [activeAndIgnoreHCLFrom, performDerivation]);
+  }, [activeAndIgnoreHCLFrom, performDerivation, zeroedOnFeb8]);
 
   React.useEffect(() => {
     const logView = setTimeout(
@@ -327,6 +388,20 @@ const Transfers = () => {
                   setPerformDerivation(false);
                 }}
               />
+              {!performDerivation && (
+                <label style={{ marginTop: "10px" }}>
+                  <input
+                    className="input-radio"
+                    name="showeligiblecharacters"
+                    type="checkbox"
+                    checked={zeroedOnFeb8}
+                    onChange={() => {
+                      setZeroedOnFeb8((lastVal) => !lastVal);
+                    }}
+                  />
+                  Zeroed at the start of the free transfer period
+                </label>
+              )}
             </>
           }
           smallBottomMargin={true}
@@ -388,16 +463,18 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of character transfers per
-                  hour.
+                  An approximation of the number of{" "}
+                  <span className="lfm-number">
+                    character transfers per hour
+                  </span>
+                  .
                 </p>
               ) : (
                 <p>
                   The total number of transfer characters online on any given
                   day.{" "}
                   <span className="lfm-number">
-                    This is a cumulative count, NOT the number of character
-                    transfers per day.
+                    This is a cumulative count.
                   </span>
                 </p>
               )}
@@ -467,7 +544,10 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of character transfers per hour{" "}
+                  An approximation of the number of{" "}
+                  <span className="lfm-number">
+                    character transfers per hour
+                  </span>{" "}
                   <i>to</i> each server. Servers with a high transfer count are
                   gaining players from other servers.
                 </p>
@@ -544,7 +624,10 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of character transfers per hour{" "}
+                  An approximation of the number of{" "}
+                  <span className="lfm-number">
+                    character transfers per hour
+                  </span>{" "}
                   <i>from</i> each server. Servers with a high transfer count
                   are losing players to other servers.
                 </p>
