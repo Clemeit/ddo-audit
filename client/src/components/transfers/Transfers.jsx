@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
+import TransfersTable from "./TransfersTable";
 
 const Transfers = () => {
   const TITLE = "Server Transfers";
@@ -25,6 +26,7 @@ const Transfers = () => {
   // Popup message
   var [popupMessage, setPopupMessage] = React.useState(null);
 
+  const [uniqueData, setUniqueData] = React.useState(null);
   const [voteMessage, setVoteMessage] = React.useState(null);
   const [mayVote, setMayVote] = React.useState(false);
   const [hasVoted, setHasVoted] = React.useState(false);
@@ -38,7 +40,7 @@ const Transfers = () => {
   }, []);
   function vote(response) {
     if (response != null) {
-      Submit("Feature: Server Transfers (v2)", response);
+      Submit("Feature: Server Transfers (v3)", response);
       if (response === "Like") {
         setVoteMessage("positive");
       } else {
@@ -72,12 +74,171 @@ const Transfers = () => {
     });
   }
 
+  function readAbout() {
+    Log("Transfers page", "Read about active characters");
+    setPopupMessage({
+      title: "Active Characters",
+      message: (
+        <span>
+          We consider a character "active" when they meet ALL of the following
+          criteria:
+          <ul>
+            <li>
+              A character has moved areas (public or private) within 2 days of
+              last being online, AND
+            </li>
+            <li>
+              A character has run a quest (solo or in a group) within 7 days of
+              last being online, AND
+            </li>
+            <li>
+              A character has increased in level within 20 days of last being
+              online (max-level characters are excluded)
+            </li>
+          </ul>
+          <p>Transfering servers does not directly affect any of these.</p>
+          <p className="lfm-number">
+            This is an art, not a science. If you have suggestions for improving
+            this algorithm, <Link to="/suggestions">please let me know</Link>.
+          </p>
+        </span>
+      ),
+      icon: "info",
+      fullscreen: true,
+    });
+  }
+
   const [zeroedOnFeb8, setZeroedOnFeb8] = React.useState(true);
   const truncateDataRange = true;
   const [performDerivation, setPerformDerivation] = React.useState(true);
   const [transferCounts, setTransferCounts] = React.useState(null);
   const [transfersTo, setTransfersTo] = React.useState(null);
   const [transfersFrom, setTransfersFrom] = React.useState(null);
+
+  const [tableAllTo, setTableAllTo] = React.useState(null);
+  const [tableActiveTo, setTableActiveTo] = React.useState(null);
+  const [tableAllFrom, setTableAllFrom] = React.useState(null);
+  const [tableActiveFrom, setTableActiveFrom] = React.useState(null);
+
+  React.useEffect(() => {
+    let fetchDelay = setTimeout(() => {
+      Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
+        .then((val) => {
+          setUniqueData(val);
+        })
+        .catch((err) => {
+          dataFailedToLoad();
+        });
+
+      Fetch(`https://api.ddoaudit.com/population/transfersto_ignorehcl`, 5000)
+        .then((val) => {
+          let tableData = [];
+
+          val.forEach((server) => {
+            let feb8Count = -1;
+            let finalCount = -1;
+            server.data.forEach((dataPoint) => {
+              if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                feb8Count = dataPoint.y;
+              }
+              finalCount = dataPoint.y;
+            });
+            tableData.push({
+              server: server.id,
+              delta: finalCount - feb8Count,
+            });
+          });
+
+          setTableAllTo(tableData);
+        })
+        .catch((err) => {
+          dataFailedToLoad();
+        });
+
+      Fetch(
+        `https://api.ddoaudit.com/population/transfersto_active_ignorehcl`,
+        5000
+      )
+        .then((val) => {
+          let tableData = [];
+
+          val.forEach((server) => {
+            let feb8Count = -1;
+            let finalCount = -1;
+            server.data.forEach((dataPoint) => {
+              if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                feb8Count = dataPoint.y;
+              }
+              finalCount = dataPoint.y;
+            });
+            tableData.push({
+              server: server.id,
+              delta: finalCount - feb8Count,
+            });
+          });
+
+          setTableActiveTo(tableData);
+        })
+        .catch((err) => {
+          dataFailedToLoad();
+        });
+
+      Fetch(`https://api.ddoaudit.com/population/transfersfrom_ignorehcl`, 5000)
+        .then((val) => {
+          let tableData = [];
+
+          val.forEach((server) => {
+            let feb8Count = -1;
+            let finalCount = -1;
+            server.data.forEach((dataPoint) => {
+              if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                feb8Count = dataPoint.y;
+              }
+              finalCount = dataPoint.y;
+            });
+            tableData.push({
+              server: server.id,
+              delta: finalCount - feb8Count,
+            });
+          });
+
+          setTableAllFrom(tableData);
+        })
+        .catch((err) => {
+          dataFailedToLoad();
+        });
+
+      Fetch(
+        `https://api.ddoaudit.com/population/transfersfrom_active_ignorehcl`,
+        5000
+      )
+        .then((val) => {
+          let tableData = [];
+
+          val.forEach((server) => {
+            let feb8Count = -1;
+            let finalCount = -1;
+            server.data.forEach((dataPoint) => {
+              if (dataPoint.x === "2023-02-08T15:00:00.000Z") {
+                feb8Count = dataPoint.y;
+              }
+              finalCount = dataPoint.y;
+            });
+            tableData.push({
+              server: server.id,
+              delta: finalCount - feb8Count,
+            });
+          });
+
+          setTableActiveFrom(tableData);
+        })
+        .catch((err) => {
+          dataFailedToLoad();
+        });
+    }, 1000);
+
+    return () => clearTimeout(fetchDelay);
+  }, []);
 
   React.useEffect(() => {
     Fetch(
@@ -269,7 +430,7 @@ const Transfers = () => {
 
   React.useEffect(() => {
     const logView = setTimeout(
-      () => Log("Transfers page", "Page viewed (v2)"),
+      () => Log("Transfers page", "Page viewed (v3)"),
       1000
     );
     return () => clearTimeout(logView);
@@ -451,6 +612,13 @@ const Transfers = () => {
                     There may be inconsistencies.
                   </span>
                 </li>
+                <li>
+                  Information about{" "}
+                  <span className="faux-link" onClick={() => readAbout()}>
+                    "active characters"
+                  </span>
+                  .
+                </li>
               </ul>
               <div
                 style={{
@@ -476,6 +644,32 @@ const Transfers = () => {
           }
           smallBottomMargin={true}
         />
+        <ContentCluster
+          title="Summary Table"
+          description={
+            <span>
+              Total transfer counts and transfer counts as a percentage of total
+              server population. Hardcore League is ignored completely. Some
+              information is unavailable or statistically insignificant.
+            </span>
+          }
+        >
+          {uniqueData &&
+          tableAllTo &&
+          tableActiveTo &&
+          tableAllFrom &&
+          tableActiveFrom ? (
+            <TransfersTable
+              uniqueData={uniqueData}
+              transfersToData={tableAllTo}
+              transfersActiveToData={tableActiveTo}
+              transfersFromData={tableAllFrom}
+              transfersActiveFromData={tableActiveFrom}
+            />
+          ) : (
+            <p style={{ width: "100%", textAlign: "center" }}>Loading...</p>
+          )}
+        </ContentCluster>
         <ContentCluster
           title="Total Counts"
           description={
