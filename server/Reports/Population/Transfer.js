@@ -36,7 +36,7 @@ const runTransferReport = (players) => {
 	function writeBackup(fileName, data, count) {
 		fs.writeFile(
 			`../api_v1/population/backups/${fileName}-${moment().format(
-				"YYYY-MM-DD"
+				"YYYY-MM-DD-HH-mm"
 			)}.json`,
 			JSON.stringify(data),
 			(err) => {
