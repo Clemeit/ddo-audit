@@ -593,8 +593,7 @@ const Transfers = () => {
               <ul>
                 <li>
                   Like most of the demographic reports on DDO Audit, the reports
-                  shown here only count characters that have logged in within
-                  the last 90 days.
+                  shown here only count characters in a 90 day rolling window.
                 </li>
                 <li>
                   A "transfer character" is defined as a character that is
@@ -762,13 +761,13 @@ const Transfers = () => {
                     character transfers per hour
                   </span>{" "}
                   <i>to</i> each server. Servers with a high transfer count are
-                  gaining players from other servers.
+                  gaining characters from other servers.
                 </p>
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>to</i> each
-                  server. Servers with a high transfer count have gained players
-                  from other servers.{" "}
+                  server. Servers with a high transfer count have gained
+                  characters from other servers.{" "}
                   <span className="lfm-number">
                     This is a cumulative count.
                   </span>
@@ -842,13 +841,13 @@ const Transfers = () => {
                     character transfers per hour
                   </span>{" "}
                   <i>from</i> each server. Servers with a high transfer count
-                  are losing players to other servers.
+                  are losing characters to other servers.
                 </p>
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>from</i>{" "}
                   each server. Servers with a high transfer count have lost
-                  players to other servers.{" "}
+                  characters to other servers.{" "}
                   <span className="lfm-number">
                     This is a cumulative count.
                   </span>

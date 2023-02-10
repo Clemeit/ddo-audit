@@ -201,7 +201,7 @@ const Directory = (props) => {
 
   React.useEffect(() => {
     Fetch(
-      `https://api.ddoaudit.com/population/serverdistribution${
+      `https://api.ddoaudit.com/population/serverdistributionmonth${
         serverDistributionType === "population" ? "" : "_groups"
       }`,
       5000
@@ -274,7 +274,7 @@ const Directory = (props) => {
       .catch((err) => {
         dataFailedToLoad();
       });
-    Fetch("https://api.ddoaudit.com/population/serverdistribution", 5000)
+    Fetch("https://api.ddoaudit.com/population/serverdistributionmonth", 5000)
       .then((val) => {
         setServerDistributionData(val);
       })
@@ -471,7 +471,7 @@ const Directory = (props) => {
               {`${
                 serverDistributionType === "population" ? "Population" : "LFM"
               } distribution across the servers over the
-                            last 90 days.`}
+                            last 30 days.`}
             </span>
           }
         >

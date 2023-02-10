@@ -7,74 +7,133 @@ const runServerDistribution = (population, reporttype) => {
 
 	const IGNORE_DOWNTIME = true;
 
-	let a_count = 0;
-	let c_count = 0;
-	let g_count = 0;
-	let k_count = 0;
-	let o_count = 0;
-	let s_count = 0;
-	let t_count = 0;
-	let w_count = 0;
-	let h_count = 0;
+	let a_count_quarter = 0;
+	let c_count_quarter = 0;
+	let g_count_quarter = 0;
+	let k_count_quarter = 0;
+	let o_count_quarter = 0;
+	let s_count_quarter = 0;
+	let t_count_quarter = 0;
+	let w_count_quarter = 0;
+	let h_count_quarter = 0;
 
-	let Argonnessen = {
+	let a_count_month = 0;
+	let c_count_month = 0;
+	let g_count_month = 0;
+	let k_count_month = 0;
+	let o_count_month = 0;
+	let s_count_month = 0;
+	let t_count_month = 0;
+	let w_count_month = 0;
+	let h_count_month = 0;
+
+	let ArgonnessenQuarter = {
 		id: "Argonnessen",
 		label: "Argonnessen",
 		color: "hsl(205, 70%, 41%)",
 		value: 0,
 	};
-	let Cannith = {
+	let CannithQuarter = {
 		id: "Cannith",
 		label: "Cannith",
 		color: "hsl(28, 100%, 53%)",
 		value: 0,
 	};
-	let Ghallanda = {
+	let GhallandaQuarter = {
 		id: "Ghallanda",
 		label: "Ghallanda",
 		color: "hsl(120, 57%, 40%)",
 		value: 0,
 	};
-	let Khyber = {
+	let KhyberQuarter = {
 		id: "Khyber",
 		label: "Khyber",
 		color: "hsl(360, 69%, 50%)",
 		value: 0,
 	};
-	let Orien = {
+	let OrienQuarter = {
 		id: "Orien",
 		label: "Orien",
 		color: "hsl(271, 39%, 57%)",
 		value: 0,
 	};
-	let Sarlona = {
+	let SarlonaQuarter = {
 		id: "Sarlona",
 		label: "Sarlona",
 		color: "hsl(10, 30%, 42%)",
 		value: 0,
 	};
-	let Thelanis = {
+	let ThelanisQuarter = {
 		id: "Thelanis",
 		label: "Thelanis",
 		color: "hsl(318, 66%, 68%)",
 		value: 0,
 	};
-	let Wayfinder = {
+	let WayfinderQuarter = {
 		id: "Wayfinder",
 		label: "Wayfinder",
 		color: "hsl(0, 0%, 50%)",
 		value: 0,
 	};
-	let Hardcore = {
+	let HardcoreQuarter = {
 		id: "Hardcore",
 		label: "Hardcore",
 		color: "hsl(60, 70%, 44%)",
 		value: 0,
 	};
-	let Total = {
-		id: "Total",
-		label: "Total",
-		color: "hsl(208, 100%, 50%)",
+
+	let ArgonnessenMonth = {
+		id: "Argonnessen",
+		label: "Argonnessen",
+		color: "hsl(205, 70%, 41%)",
+		value: 0,
+	};
+	let CannithMonth = {
+		id: "Cannith",
+		label: "Cannith",
+		color: "hsl(28, 100%, 53%)",
+		value: 0,
+	};
+	let GhallandaMonth = {
+		id: "Ghallanda",
+		label: "Ghallanda",
+		color: "hsl(120, 57%, 40%)",
+		value: 0,
+	};
+	let KhyberMonth = {
+		id: "Khyber",
+		label: "Khyber",
+		color: "hsl(360, 69%, 50%)",
+		value: 0,
+	};
+	let OrienMonth = {
+		id: "Orien",
+		label: "Orien",
+		color: "hsl(271, 39%, 57%)",
+		value: 0,
+	};
+	let SarlonaMonth = {
+		id: "Sarlona",
+		label: "Sarlona",
+		color: "hsl(10, 30%, 42%)",
+		value: 0,
+	};
+	let ThelanisMonth = {
+		id: "Thelanis",
+		label: "Thelanis",
+		color: "hsl(318, 66%, 68%)",
+		value: 0,
+	};
+	let WayfinderMonth = {
+		id: "Wayfinder",
+		label: "Wayfinder",
+		color: "hsl(0, 0%, 50%)",
+		value: 0,
+	};
+	let HardcoreMonth = {
+		id: "Hardcore",
+		label: "Hardcore",
+		color: "hsl(60, 70%, 44%)",
 		value: 0,
 	};
 
@@ -107,109 +166,237 @@ const runServerDistribution = (population, reporttype) => {
 				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				if (reporttype === "population") {
 					if (argonnessen_playercount || !IGNORE_DOWNTIME) {
-						Argonnessen.value += argonnessen_playercount;
-						a_count++;
+						ArgonnessenQuarter.value += argonnessen_playercount;
+						a_count_quarter++;
 					}
 					if (cannith_playercount || !IGNORE_DOWNTIME) {
-						Cannith.value += cannith_playercount;
-						c_count++;
+						CannithQuarter.value += cannith_playercount;
+						c_count_quarter++;
 					}
 					if (ghallanda_playercount || !IGNORE_DOWNTIME) {
-						Ghallanda.value += ghallanda_playercount;
-						g_count++;
+						GhallandaQuarter.value += ghallanda_playercount;
+						g_count_quarter++;
 					}
 					if (khyber_playercount || !IGNORE_DOWNTIME) {
-						Khyber.value += khyber_playercount;
-						k_count++;
+						KhyberQuarter.value += khyber_playercount;
+						k_count_quarter++;
 					}
 					if (orien_playercount || !IGNORE_DOWNTIME) {
-						Orien.value += orien_playercount;
-						o_count++;
+						OrienQuarter.value += orien_playercount;
+						o_count_quarter++;
 					}
 					if (sarlona_playercount || !IGNORE_DOWNTIME) {
-						Sarlona.value += sarlona_playercount;
-						s_count++;
+						SarlonaQuarter.value += sarlona_playercount;
+						s_count_quarter++;
 					}
 					if (thelanis_playercount || !IGNORE_DOWNTIME) {
-						Thelanis.value += thelanis_playercount;
-						t_count++;
+						ThelanisQuarter.value += thelanis_playercount;
+						t_count_quarter++;
 					}
 					if (wayfinder_playercount || !IGNORE_DOWNTIME) {
-						Wayfinder.value += wayfinder_playercount;
-						w_count++;
+						WayfinderQuarter.value += wayfinder_playercount;
+						w_count_quarter++;
 					}
 					if (
 						(hardcore_playercount || !IGNORE_DOWNTIME) &&
 						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 					) {
-						Hardcore.value += hardcore_playercount;
-						h_count++;
+						HardcoreQuarter.value += hardcore_playercount;
+						h_count_quarter++;
 					}
 				} else {
-					Argonnessen.value += argonnessen_lfmcount;
-					a_count++;
+					ArgonnessenQuarter.value += argonnessen_lfmcount;
+					a_count_quarter++;
 
-					Cannith.value += cannith_lfmcount;
-					c_count++;
+					CannithQuarter.value += cannith_lfmcount;
+					c_count_quarter++;
 
-					Ghallanda.value += ghallanda_lfmcount;
-					g_count++;
+					GhallandaQuarter.value += ghallanda_lfmcount;
+					g_count_quarter++;
 
-					Khyber.value += khyber_lfmcount;
-					k_count++;
+					KhyberQuarter.value += khyber_lfmcount;
+					k_count_quarter++;
 
-					Orien.value += orien_lfmcount;
-					o_count++;
+					OrienQuarter.value += orien_lfmcount;
+					o_count_quarter++;
 
-					Sarlona.value += sarlona_lfmcount;
-					s_count++;
+					SarlonaQuarter.value += sarlona_lfmcount;
+					s_count_quarter++;
 
-					Thelanis.value += thelanis_lfmcount;
-					t_count++;
+					ThelanisQuarter.value += thelanis_lfmcount;
+					t_count_quarter++;
 
-					Wayfinder.value += wayfinder_lfmcount;
-					w_count++;
+					WayfinderQuarter.value += wayfinder_lfmcount;
+					w_count_quarter++;
 
-					Hardcore.value += hardcore_lfmcount;
+					HardcoreQuarter.value += hardcore_lfmcount;
 					if (
 						hardcore_lfmcount &&
 						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
 					)
-						h_count++;
+						h_count_quarter++;
+				}
+			}
+			if (
+				new Date().getTime() - datetime.getTime() <=
+				1000 * 60 * 60 * 24 * 30
+			) {
+				// datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
+				if (reporttype === "population") {
+					if (argonnessen_playercount || !IGNORE_DOWNTIME) {
+						ArgonnessenMonth.value += argonnessen_playercount;
+						a_count_month++;
+					}
+					if (cannith_playercount || !IGNORE_DOWNTIME) {
+						CannithMonth.value += cannith_playercount;
+						c_count_month++;
+					}
+					if (ghallanda_playercount || !IGNORE_DOWNTIME) {
+						GhallandaMonth.value += ghallanda_playercount;
+						g_count_month++;
+					}
+					if (khyber_playercount || !IGNORE_DOWNTIME) {
+						KhyberMonth.value += khyber_playercount;
+						k_count_month++;
+					}
+					if (orien_playercount || !IGNORE_DOWNTIME) {
+						OrienMonth.value += orien_playercount;
+						o_count_month++;
+					}
+					if (sarlona_playercount || !IGNORE_DOWNTIME) {
+						SarlonaMonth.value += sarlona_playercount;
+						s_count_month++;
+					}
+					if (thelanis_playercount || !IGNORE_DOWNTIME) {
+						ThelanisMonth.value += thelanis_playercount;
+						t_count_month++;
+					}
+					if (wayfinder_playercount || !IGNORE_DOWNTIME) {
+						WayfinderMonth.value += wayfinder_playercount;
+						w_count_month++;
+					}
+					if (
+						(hardcore_playercount || !IGNORE_DOWNTIME) &&
+						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
+					) {
+						HardcoreMonth.value += hardcore_playercount;
+						h_count_month++;
+					}
+				} else {
+					ArgonnessenMonth.value += argonnessen_lfmcount;
+					a_count_month++;
+
+					CannithMonth.value += cannith_lfmcount;
+					c_count_month++;
+
+					GhallandaMonth.value += ghallanda_lfmcount;
+					g_count_month++;
+
+					KhyberMonth.value += khyber_lfmcount;
+					k_count_month++;
+
+					OrienMonth.value += orien_lfmcount;
+					o_count_month++;
+
+					SarlonaMonth.value += sarlona_lfmcount;
+					s_count_month++;
+
+					ThelanisMonth.value += thelanis_lfmcount;
+					t_count_month++;
+
+					WayfinderMonth.value += wayfinder_lfmcount;
+					w_count_month++;
+
+					HardcoreMonth.value += hardcore_lfmcount;
+					if (
+						hardcore_lfmcount &&
+						datetime.getTime() - hardcoreSeasonStart.getTime() > 0
+					)
+						h_count_month++;
 				}
 			}
 		}
 	);
 
-	Argonnessen.value = Math.round((Argonnessen.value / a_count) * 100) / 100;
-	Cannith.value = Math.round((Cannith.value / c_count) * 100) / 100;
-	Ghallanda.value = Math.round((Ghallanda.value / g_count) * 100) / 100;
-	Khyber.value = Math.round((Khyber.value / k_count) * 100) / 100;
-	Orien.value = Math.round((Orien.value / o_count) * 100) / 100;
-	Sarlona.value = Math.round((Sarlona.value / s_count) * 100) / 100;
-	Thelanis.value = Math.round((Thelanis.value / t_count) * 100) / 100;
-	Wayfinder.value = Math.round((Wayfinder.value / w_count) * 100) / 100;
-	Hardcore.value = Math.round((Hardcore.value / h_count) * 100) / 100;
+	ArgonnessenQuarter.value =
+		Math.round((ArgonnessenQuarter.value / a_count_quarter) * 100) / 100;
+	CannithQuarter.value =
+		Math.round((CannithQuarter.value / c_count_quarter) * 100) / 100;
+	GhallandaQuarter.value =
+		Math.round((GhallandaQuarter.value / g_count_quarter) * 100) / 100;
+	KhyberQuarter.value =
+		Math.round((KhyberQuarter.value / k_count_quarter) * 100) / 100;
+	OrienQuarter.value =
+		Math.round((OrienQuarter.value / o_count_quarter) * 100) / 100;
+	SarlonaQuarter.value =
+		Math.round((SarlonaQuarter.value / s_count_quarter) * 100) / 100;
+	ThelanisQuarter.value =
+		Math.round((ThelanisQuarter.value / t_count_quarter) * 100) / 100;
+	WayfinderQuarter.value =
+		Math.round((WayfinderQuarter.value / w_count_quarter) * 100) / 100;
+	HardcoreQuarter.value =
+		Math.round((HardcoreQuarter.value / h_count_quarter) * 100) / 100;
 
-	let output = [
-		Argonnessen,
-		Cannith,
-		Ghallanda,
-		Khyber,
-		Orien,
-		Sarlona,
-		Thelanis,
-		Wayfinder,
-		Hardcore,
+	ArgonnessenMonth.value =
+		Math.round((ArgonnessenMonth.value / a_count_month) * 100) / 100;
+	CannithMonth.value =
+		Math.round((CannithMonth.value / c_count_month) * 100) / 100;
+	GhallandaMonth.value =
+		Math.round((GhallandaMonth.value / g_count_month) * 100) / 100;
+	KhyberMonth.value =
+		Math.round((KhyberMonth.value / k_count_month) * 100) / 100;
+	OrienMonth.value = Math.round((OrienMonth.value / o_count_month) * 100) / 100;
+	SarlonaMonth.value =
+		Math.round((SarlonaMonth.value / s_count_month) * 100) / 100;
+	ThelanisMonth.value =
+		Math.round((ThelanisMonth.value / t_count_month) * 100) / 100;
+	WayfinderMonth.value =
+		Math.round((WayfinderMonth.value / w_count_month) * 100) / 100;
+	HardcoreMonth.value =
+		Math.round((HardcoreMonth.value / h_count_month) * 100) / 100;
+
+	let outputQuarter = [
+		ArgonnessenQuarter,
+		CannithQuarter,
+		GhallandaQuarter,
+		KhyberQuarter,
+		OrienQuarter,
+		SarlonaQuarter,
+		ThelanisQuarter,
+		WayfinderQuarter,
+		HardcoreQuarter,
 	];
 
-	output.reverse();
+	let outputMonth = [
+		ArgonnessenMonth,
+		CannithMonth,
+		GhallandaMonth,
+		KhyberMonth,
+		OrienMonth,
+		SarlonaMonth,
+		ThelanisMonth,
+		WayfinderMonth,
+		HardcoreMonth,
+	];
+
+	outputQuarter.reverse();
+	outputMonth.reverse();
 
 	fs.writeFile(
 		`../api_v1/population/serverdistributionquarter${
 			reporttype === "population" ? "" : "_groups"
 		}.json`,
-		JSON.stringify(output),
+		JSON.stringify(outputQuarter),
+		(err) => {
+			if (err) throw err;
+		}
+	);
+
+	fs.writeFile(
+		`../api_v1/population/serverdistributionmonth${
+			reporttype === "population" ? "" : "_groups"
+		}.json`,
+		JSON.stringify(outputMonth),
 		(err) => {
 			if (err) throw err;
 		}
