@@ -50,10 +50,10 @@ const TransfersTable = (props) => {
       <thead>
         <tr>
           <th>Server</th>
-          <th>Active Population</th>
+          <th>Active Characters</th>
           <th>Active Transfers From</th>
           <th>Active Transfers To</th>
-          <th>Total Population</th>
+          <th>Total Characters</th>
           <th>Total Transfers From</th>
           <th>Total Transfers To</th>
         </tr>
