@@ -12,6 +12,7 @@ import ChartBar from "../global/ChartBar";
 import CurrentCountsSubtitle from "./CurrentCountsSubtitle";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
+import DataClassification from "../global/DataClassification";
 
 const ServersSpecific = () => {
   const TITLE = "Population and Character Demographics";
@@ -306,7 +307,8 @@ const ServersSpecific = () => {
       />
       <div className="content-container">
         <BannerMessage page={"servers"} />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="mixed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <ContentCluster
           title={`${currentServer} Population`}
           altTitle="Population"

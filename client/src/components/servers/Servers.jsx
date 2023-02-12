@@ -22,6 +22,7 @@ import ToggleButton from "../global/ToggleButton";
 import { SERVER_LIST } from "../../constants/Servers";
 import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import PageMessage from "../global/PageMessage";
+import DataClassification from "../global/DataClassification";
 
 // no-change
 
@@ -398,7 +399,8 @@ const Directory = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="servers" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="mixed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         {showTransfersNote && (
           <PageMessage
             type="info"

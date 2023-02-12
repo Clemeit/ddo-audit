@@ -13,6 +13,7 @@ import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import TransfersTable from "./TransfersTable";
+import DataClassification from "../global/DataClassification";
 
 const Transfers = () => {
   const TITLE = "Server Transfers";
@@ -536,7 +537,8 @@ const Transfers = () => {
       />
       <div className="content-container">
         <BannerMessage page="transfers" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="inferred" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <ContentCluster
           title="Important Changes"
           description={

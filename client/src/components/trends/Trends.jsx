@@ -8,6 +8,7 @@ import ChartLine from "../global/ChartLine";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
 import PopupMessage from "../global/PopupMessage";
+import DataClassification from "../global/DataClassification";
 
 const Trends = (props) => {
   const TITLE = "DDO Population Data Trends";
@@ -162,7 +163,8 @@ const Trends = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="trends" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="mixed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <NoMobileOptimization />
         <ContentCluster
           title="Server Population Trends"

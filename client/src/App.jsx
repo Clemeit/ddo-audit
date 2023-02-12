@@ -53,6 +53,9 @@ const Timeline = lazy(() => import("./components/about/Timeline"));
 const Friends = lazy(() => import("./components/friends/Friends"));
 const Steps = lazy(() => import("./components/iot/Steps"));
 const Timers = lazy(() => import("./components/timers/Timers"));
+const DataClassification = lazy(() =>
+  import("./components/dataClassification/DataClassification")
+);
 const CharacterRegistration = lazy(() =>
   import("./components/global/CharacterRegistration")
 );
@@ -134,6 +137,9 @@ export default () => {
             </Route>
             <Route exact path="/timeline">
               <Timeline />
+            </Route>
+            <Route exact path="/data/:classification">
+              <DataClassification />
             </Route>
             {/* <Route exact path="/steps">
                             <Steps />

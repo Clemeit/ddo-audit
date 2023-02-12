@@ -11,6 +11,7 @@ import ContentCluster from "../global/ContentCluster";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import { Submit } from "../../services/CommunicationService";
 import TimerList from "./TimerList";
+import DataClassification from "../global/DataClassification";
 
 const Timers = (props) => {
   const TITLE = "Raid Timers";
@@ -86,7 +87,8 @@ const Timers = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="timers" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="inferred" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <NoMobileOptimization />
         <ContentCluster
           title="Raid Timers"

@@ -8,12 +8,12 @@ import ChartLine from "../global/ChartLine";
 import ServerStatusDisplay from "../global/ServerStatusDisplay";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
-import { Log } from "../../services/CommunicationService";
 import ToggleButton from "../global/ToggleButton";
+import DataClassification from "../global/DataClassification";
 
 const Live = (props) => {
   const TITLE = "DDO Server Status";
@@ -195,7 +195,8 @@ const Live = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="live" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="observed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <ServerStatusDisplay data={serverStatusData} />
         <QuickInfo
           unique={uniqueCountsData}

@@ -17,6 +17,7 @@ import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
 import RaidGroupCluster from "./RaidGroupCluster";
 import ServerHook from "../../hooks/ServerHook";
+import DataClassification from "../global/DataClassification";
 
 const Grouping = () => {
   const TITLE = "DDO Live LFM Viewer";
@@ -263,7 +264,8 @@ const Grouping = () => {
       />
       <div className="content-container">
         <BannerMessage page="grouping" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="observed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <ContentCluster title="Select a Server">
           <div className="content-cluster-options">
             {SERVERS.map((name, i) => (

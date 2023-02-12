@@ -422,6 +422,22 @@ body {
   height: 3rem;
 }
 
+.top-content-padding-small {
+  height: 1rem;
+}
+
+.data-classification-content {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  text-decoration: none !important;
+  color: var(--text) !important;
+}
+
+.data-classification-content:hover .data-classification-icon {
+  filter: grayscale(0%) !important;
+}
+
 .link-icon.pin {
   transform: rotate(30deg);
   transition: transform 300ms;
@@ -1996,6 +2012,9 @@ th {
   }
   .top-content-padding.shrink-on-mobile {
     height: 20px;
+  }
+  .top-content-padding-small.shrink-on-mobile {
+    height: 10px;
   }
   .nav-bar {
     position: fixed;

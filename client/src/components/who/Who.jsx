@@ -14,6 +14,7 @@ import BannerMessage from "../global/BannerMessage";
 import PopupMessage from "../global/PopupMessage";
 import ContentCluster from "../global/ContentCluster";
 import ServerHook from "../../hooks/ServerHook";
+import DataClassification from "../global/DataClassification";
 
 const Who = (props) => {
   const TITLE = "DDO Live Who Panel";
@@ -178,7 +179,8 @@ const Who = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="who" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="observed" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <ContentCluster title="Select a Server">
           <div className="content-cluster-options">
             {SERVERS.map((name, i) => (

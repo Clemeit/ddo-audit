@@ -14,7 +14,7 @@ import ChartLine from "../global/ChartLine";
 import QuestTable from "./QuestTable";
 import PopupMessage from "../global/PopupMessage";
 import ChartBar from "../global/ChartBar";
-import { Fetch, Post } from "../../services/DataLoader";
+import { Post } from "../../services/DataLoader";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import NoMobileOptimization from "../global/NoMobileOptimization";
 import BannerMessage from "../global/BannerMessage";
@@ -22,6 +22,7 @@ import LoadingOverlay from "./LoadingOverlay";
 import ContentCluster from "../global/ContentCluster";
 import { SERVER_LIST } from "../../constants/Servers";
 import { std as mathStd } from "mathjs";
+import DataClassification from "../global/DataClassification";
 
 const TITLE = "DDO Quest Activity";
 
@@ -615,7 +616,8 @@ const Quests = (props) => {
       />
       <div className="content-container">
         <BannerMessage page="quests" />
-        <div className="top-content-padding shrink-on-mobile" />
+        <DataClassification classification="inferred" />
+        <div className="top-content-padding-small shrink-on-mobile" />
         <NoMobileOptimization />
         {!questList && (
           <ContentCluster
