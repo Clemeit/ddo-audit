@@ -20,7 +20,28 @@ const CustomBarLegend = (props) => {
         "chart-legend " + (props.isMobileLoaded ? "" : " hide-on-mobile")
       }
     >
-      {props.data &&
+      {props.legendKeys &&
+        props.legendKeys.map(({ key, color }, i) => (
+          <div
+            key={i}
+            className={
+              "chart-legend-item" +
+              (props.excludedSeries.includes(key) ? " excluded" : "")
+            }
+            onClick={() => props.switchExcludedSeries(key)}
+          >
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                backgroundColor: color,
+              }}
+            />
+            <span>{key}</span>
+          </div>
+        ))}
+      {!props.legendKeys &&
+        props.data &&
         SERVER_LIST.map((server, i) => (
           <div
             key={i}

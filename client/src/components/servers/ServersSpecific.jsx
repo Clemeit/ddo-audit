@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link, useLocation } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
+import { Fetch, Get, Post, VerifyPlayerData } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import UniqueCountsSubtitle from "./UniqueCountsSubtitle";
@@ -13,9 +13,43 @@ import CurrentCountsSubtitle from "./CurrentCountsSubtitle";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
 import DataClassification from "../global/DataClassification";
+import moment from "moment";
+import ToggleButton from "../global/ToggleButton";
 
 const ServersSpecific = () => {
   const TITLE = "Population and Character Demographics";
+  const COLORS = [
+    "hsl(205, 70%, 41%)",
+    "hsl(28, 100%, 53%)",
+    "hsl(120, 57%, 40%)",
+    "hsl(360, 69%, 50%)",
+    "hsl(271, 39%, 57%)",
+    "hsl(10, 30%, 42%)",
+    "hsl(318, 66%, 68%)",
+    "hsl(0, 0%, 50%)",
+    "hsl(60, 70%, 44%)",
+  ];
+  const GRAY = "hsl(0, 0%, 80%)";
+  const SERVERS = [
+    "Argonnessen",
+    "Cannith",
+    "Ghallanda",
+    "Khyber",
+    "Orien",
+    "Sarlona",
+    "Thelanis",
+    "Wayfinder",
+    "Hardcore",
+  ];
+  const DAYS = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   function getBreadcrumbs(servername) {
     // prettier-ignore
@@ -40,6 +74,10 @@ const ServersSpecific = () => {
 
   const [population1Year, setPopulation1Year] = React.useState(null);
   const [population1Quarter, setPopulation1Quarter] = React.useState(null);
+
+  const [quarterlyData, setQuarterlyData] = React.useState(null);
+  const [byHourType, setByHourType] = React.useState("population");
+  const [byDayType, setByDayType] = React.useState("population");
 
   const [dailyLfmDistribution, setDailyLfmDistribution] = React.useState(null);
   const [hourlyLfmDistribution, setHourlyLfmDistribution] =
@@ -139,22 +177,37 @@ const ServersSpecific = () => {
     if (SERVER_LIST.includes(serverName)) {
       // Good server
       setCurrentServer(serverName);
+
+      // Potential race condition!
       setUniqueData(null);
+      setQuarterlyData(null);
+      setByHourChartData(null);
+      setByDayChartData(null);
+
+      fetchRange(serverName);
     } else {
       // Bad server
       setCurrentServer(SERVER_LIST[0]); // Just default to the first server in the good list
     }
   }, [window.location.pathname]);
 
-  const [timeNowEvent, setTimeNowEvent] = React.useState([]);
+  const [markedEvents, setMarkedEvents] = React.useState([]);
 
   React.useEffect(() => {
-    setTimeNowEvent([
+    setMarkedEvents([
       {
         id: 0,
         date: (((new Date().getUTCHours() - 5) % 24) + 24) % 24,
         type: "timeevent",
         message: "Current Time EST",
+        color: "#FF0000",
+        width: 4,
+      },
+      {
+        id: 0,
+        date: moment().hour(),
+        type: "timeevent",
+        message: "Current Time Local",
         color: "#FF0000",
         width: 4,
       },
@@ -194,6 +247,34 @@ const ServersSpecific = () => {
           icon: "warning",
           fullscreen: false,
           reportMessage: "Could not fetch ServerStatus. Timeout",
+        });
+      });
+  }
+
+  function fetchRange(server) {
+    Post(
+      "https://api.ddoaudit.com/population/range",
+      {
+        server: server,
+        startDate: moment()
+          .startOf("day")
+          .subtract(90, "days")
+          .format("YYYY-MM-DD hh:mm:ss.00000"),
+        endDate: moment().startOf("day").format("YYYY-MM-DD hh:mm:ss.00000"),
+      },
+      5000
+    )
+      .then((val) => {
+        setQuarterlyData(val);
+      })
+      .catch(() => {
+        setPopupMessage({
+          title: "Couldn't Fetch Unique Data",
+          message:
+            "We weren't able to find information on this server. You can refresh the page or report the issue.",
+          icon: "warning",
+          fullscreen: false,
+          reportMessage: "Could not fetch unique data. Timeout",
         });
       });
   }
@@ -274,6 +355,139 @@ const ServersSpecific = () => {
     return `${currentServer}${currentServer === "Thelanis" ? "'" : "'s"}`;
   }
 
+  const [byHourChartData, setByHourChartData] = React.useState(null);
+  React.useEffect(() => {
+    function generateByHourChart() {
+      if (!quarterlyData) return;
+      const totalPerHourQuarter = Array(24).fill(0);
+      const dataPointsPerHourQuarter = Array(24).fill(0);
+      const totalPerHourWeek = Array(24).fill(0);
+      const dataPointsPerHourWeek = Array(24).fill(0);
+      const playercountField = `${currentServer.toLowerCase()}_playercount`;
+      const lfmcountField = `${currentServer.toLowerCase()}_lfmcount`;
+      quarterlyData.forEach(
+        ({
+          datetime,
+          [playercountField]: playerCount,
+          [lfmcountField]: lfmCount,
+        }) => {
+          const relevantData =
+            byHourType === "population" ? playerCount : lfmCount;
+          const hour = moment(datetime).hour();
+
+          // quarter
+          totalPerHourQuarter[hour] += relevantData;
+          if (relevantData) dataPointsPerHourQuarter[hour]++;
+
+          // week
+          if (moment().diff(moment(datetime)) < 1000 * 60 * 60 * 24 * 7) {
+            totalPerHourWeek[hour] += relevantData;
+            if (relevantData) dataPointsPerHourWeek[hour]++;
+          }
+        }
+      );
+
+      const decimalCount = byHourType === "population" ? 0 : 2;
+
+      const hourlyAveragesQuarter = totalPerHourQuarter.map(
+        (total, i) =>
+          Math.round(
+            (total / dataPointsPerHourQuarter[i]) * Math.pow(10, decimalCount)
+          ) / Math.pow(10, decimalCount)
+      );
+      const hourlyAveragesWeek = totalPerHourWeek.map(
+        (total, i) =>
+          Math.round(
+            (total / dataPointsPerHourWeek[i]) * Math.pow(10, decimalCount)
+          ) / Math.pow(10, decimalCount)
+      );
+
+      const chartData = [
+        {
+          id: "Week",
+          color: GRAY,
+          data: hourlyAveragesWeek.map((average, hour) => ({
+            x: hour,
+            y: average,
+          })),
+        },
+        {
+          id: "Quarter",
+          color: COLORS[SERVERS.indexOf(currentServer)],
+          data: hourlyAveragesQuarter.map((average, hour) => ({
+            x: hour,
+            y: average,
+          })),
+        },
+      ];
+
+      setByHourChartData(chartData);
+    }
+
+    generateByHourChart();
+  }, [quarterlyData, byHourType]);
+
+  const [byDayChartData, setByDayChartData] = React.useState(null);
+  React.useEffect(() => {
+    function generateByDayChart() {
+      if (!quarterlyData) return;
+      const totalPerDayQuarter = Array(7).fill(0);
+      const dataPointsPerDayQuarter = Array(7).fill(0);
+      const totalPerDayWeek = Array(7).fill(0);
+      const dataPointsPerDayWeek = Array(7).fill(0);
+      const playercountField = `${currentServer.toLowerCase()}_playercount`;
+      const lfmcountField = `${currentServer.toLowerCase()}_lfmcount`;
+      quarterlyData.forEach(
+        ({
+          datetime,
+          [playercountField]: playerCount,
+          [lfmcountField]: lfmCount,
+        }) => {
+          const relevantData =
+            byDayType === "population" ? playerCount : lfmCount;
+          const day = moment(datetime).day();
+
+          // quarter
+          totalPerDayQuarter[day] += relevantData;
+          if (relevantData) dataPointsPerDayQuarter[day]++;
+
+          // week
+          if (moment().diff(moment(datetime)) < 1000 * 60 * 60 * 24 * 7) {
+            totalPerDayWeek[day] += relevantData;
+            if (relevantData) dataPointsPerDayWeek[day]++;
+          }
+        }
+      );
+
+      const decimalCount = byDayType === "population" ? 0 : 2;
+
+      const dailyAveragesQuarter = totalPerDayQuarter.map(
+        (total, i) =>
+          Math.round(
+            (total / dataPointsPerDayQuarter[i]) * Math.pow(10, decimalCount)
+          ) / Math.pow(10, decimalCount)
+      );
+      const dailyAveragesWeek = totalPerDayWeek.map(
+        (total, i) =>
+          Math.round(
+            (total / dataPointsPerDayWeek[i]) * Math.pow(10, decimalCount)
+          ) / Math.pow(10, decimalCount)
+      );
+
+      const chartData = DAYS.map((day, index) => ({
+        Day: day,
+        Quarter: dailyAveragesQuarter[index],
+        QuarterColor: COLORS[SERVERS.indexOf(currentServer)],
+        Week: dailyAveragesWeek[index],
+        WeekColor: GRAY,
+      }));
+
+      setByDayChartData(chartData);
+    }
+
+    generateByDayChart();
+  }, [quarterlyData, byDayType]);
+
   return (
     <div>
       <script type="application/ld+json">
@@ -339,42 +553,78 @@ const ServersSpecific = () => {
           }
         />
         <ContentCluster
-          title="Hourly LFM Activity"
-          description="Average LFM count for each hour of the day. Data is from the last quarter."
+          title={`${
+            byHourType === "population" ? "Population" : "LFM"
+          } Activity by Hour`}
+          altTitle="Hourly Activity"
+          description={`Average ${
+            byHourType === "population" ? "population" : "LFM count"
+          } for each hour of the day. Data displayed from the last quarter and the last week.`}
         >
+          <ToggleButton
+            textA="Population data"
+            textB="LFM data"
+            isA={byHourType === "population"}
+            isB={byHourType === "lfms"}
+            doA={() => {
+              setByHourType("population");
+            }}
+            doB={() => {
+              setByHourType("lfms");
+            }}
+          />
           <ChartLine
             keys={null}
             indexBy={null}
-            legendBottom="Time of day (EST)"
-            legendLeft="LFM Count"
-            data={
-              hourlyLfmDistribution &&
-              hourlyLfmDistribution.filter(
-                (series) => series.id === currentServer
-              )
+            legendBottom="Time of day"
+            legendLeft={
+              byHourType === "population" ? "Player count" : "LFM count"
             }
+            data={byHourChartData}
             noAnim={true}
             title="Distribution"
-            markedEvents={timeNowEvent}
+            markedEvents={markedEvents}
             markedEventsType="numeric"
             marginBottom={60}
             trendType=""
             noArea={false}
             straightLegend={true}
-            tooltipPrefix="Hour"
+            tooltipPrefix={
+              byHourType === "population" ? "Players - Hour" : "LFMs - Hour"
+            }
             forceHardcore={true}
+            areaOpacity={0.1}
           />
         </ContentCluster>
         <ContentCluster
-          title="Daily LFM Activity"
-          description="Average LFM count for each day of the week. Data is from the last quarter."
+          title={`${
+            byDayType === "population" ? "Population" : "LFM"
+          } Activity by Day`}
+          altTitle="Daily Activity"
+          description={`Average ${
+            byDayType === "population" ? "population" : "LFM count"
+          } for each day of the week. Data displayed from the last quarter and the last week.`}
         >
+          <ToggleButton
+            textA="Population data"
+            textB="LFM data"
+            isA={byDayType === "population"}
+            isB={byDayType === "lfms"}
+            doA={() => {
+              setByDayType("population");
+            }}
+            doB={() => {
+              setByDayType("lfms");
+            }}
+          />
           <ChartBar
-            keys={[...SERVER_LIST.filter((server) => server === currentServer)]}
+            keys={["Quarter", "Week"]}
             indexBy="Day"
-            legendBottom="Day of Week"
-            legendLeft="LFM Count"
-            data={dailyLfmDistribution}
+            legendBottom="Day of week"
+            legendLeft={
+              byDayType === "population" ? "Player count" : "LFM count"
+            }
+            data={byDayChartData}
             noAnim={true}
             display="grouped"
             straightLegend={true}
@@ -382,6 +632,10 @@ const ServersSpecific = () => {
             dataIncludesColors={true}
             paddingBottom={60}
             forceHardcore={true}
+            legendKeys={[
+              { key: "Quarter", color: COLORS[SERVERS.indexOf(currentServer)] },
+              { key: "Week", color: GRAY },
+            ]}
           />
         </ContentCluster>
         <ContentCluster

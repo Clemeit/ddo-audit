@@ -24,6 +24,7 @@
         "jquery": "^3.6.0",
         "mathjs": "^9.4.4",
         "merge": "1.2.1",
+        "moment": "^2.29.4",
         "popper.js": "^1.16.0",
         "pwa-asset-generator": "^4.1.1",
         "react": "16.11.0",

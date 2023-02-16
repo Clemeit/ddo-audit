@@ -221,6 +221,7 @@ const ChartBar = (props) => {
       {!props.hideLegend && (
         <CustomBarLegend
           data={props.data}
+          legendKeys={props.legendKeys}
           isMobileLoaded={isMobileLoaded}
           excludedSeries={excludedSeries}
           switchExcludedSeries={(server) => switchExcludedSeries(server)}
