@@ -3,6 +3,7 @@ import isPlayerActive from "../ActivePredicate.js";
 
 const runRaceDistribution = (players, races, reporttype) => {
 	const IGNORE_DOWNTIME = true;
+	const includeLastSeen = true;
 
 	var t0 = new Date();
 	console.log("Running Race Distribution report");
@@ -26,14 +27,16 @@ const runRaceDistribution = (players, races, reporttype) => {
 							lastactive,
 							lastmovement,
 							lastlevelup,
-							totallevel
+							totallevel,
+							includeLastSeen
 					  )
 					: !isPlayerActive(
 							lastseen,
 							lastactive,
 							lastmovement,
 							lastlevelup,
-							totallevel
+							totallevel,
+							includeLastSeen
 					  )
 			) {
 				for (let i = 0; i < races.length; i++) {

@@ -16,6 +16,7 @@ const runClassDistribution = (players, classes, reporttype) => {
 		"Wayfinder",
 		"Hardcore",
 	];
+	const includeLastSeen = true;
 
 	var t0 = new Date();
 	console.log("Running Class Distribution report");
@@ -103,14 +104,16 @@ const runClassDistribution = (players, classes, reporttype) => {
 							lastactive,
 							lastmovement,
 							lastlevelup,
-							totallevel
+							totallevel,
+							includeLastSeen
 					  )
 					: !isPlayerActive(
 							lastseen,
 							lastactive,
 							lastmovement,
 							lastlevelup,
-							totallevel
+							totallevel,
+							includeLastSeen
 					  )
 			) {
 				let class1_n = classIdToName(class1, classes);

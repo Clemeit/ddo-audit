@@ -3,6 +3,7 @@ import isPlayerActive from "../ActivePredicate.js";
 
 const runLevelDistribution = (players, reporttype) => {
 	const IGNORE_DOWNTIME = true;
+	const includeLastSeen = true;
 	const MAX_LEVEL = 32;
 
 	var t0 = new Date();
@@ -95,14 +96,16 @@ const runLevelDistribution = (players, reporttype) => {
 								lastactive,
 								lastmovement,
 								lastlevelup,
-								totallevel
+								totallevel,
+								includeLastSeen
 						  )
 						: !isPlayerActive(
 								lastseen,
 								lastactive,
 								lastmovement,
 								lastlevelup,
-								totallevel
+								totallevel,
+								includeLastSeen
 						  )
 				) {
 					switch (server) {

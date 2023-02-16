@@ -5,6 +5,7 @@ const runHourlyDistribution = (population, reporttype) => {
 		return ((n % m) + m) % m;
 	}
 
+	const days = 30;
 	const hardcoreSeasonStart = new Date(2022, 11, 7);
 	var t0 = new Date();
 	console.log("Running Hourly Distribution report");
@@ -121,7 +122,7 @@ const runHourlyDistribution = (population, reporttype) => {
 		}) => {
 			if (
 				new Date().getTime() - datetime.getTime() <=
-				1000 * 60 * 60 * 24 * 91
+				1000 * 60 * 60 * 24 * days
 			) {
 				// Get the current hour:
 				let hour = mod(datetime.getUTCHours() - 5, 24); // UTC -> EST

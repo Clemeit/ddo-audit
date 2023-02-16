@@ -4,6 +4,7 @@ const runDailyDistribution = (population, reporttype) => {
 	var t0 = new Date();
 	console.log("Running Daily Distribution report");
 
+	const days = 30;
 	const hardcoreSeasonStart = new Date(2022, 11, 7);
 	const IGNORE_DOWNTIME = true;
 
@@ -189,7 +190,7 @@ const runDailyDistribution = (population, reporttype) => {
 		}) => {
 			if (
 				new Date().getTime() - datetime.getTime() <=
-				1000 * 60 * 60 * 24 * 91
+				1000 * 60 * 60 * 24 * days
 			) {
 				datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
 				// Get the current day of week:
