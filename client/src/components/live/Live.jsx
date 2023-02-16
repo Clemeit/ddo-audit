@@ -125,7 +125,7 @@ const Live = (props) => {
         setPlayerAndLFMCountData(null);
       });
 
-    Fetch("https://api.ddoaudit.com/population/serverdistribution", 5000)
+    Fetch("https://api.ddoaudit.com/population/serverdistributionmonth", 5000)
       .then((val) => {
         setServerDistributionData(val);
       })
