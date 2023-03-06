@@ -119,6 +119,7 @@ const Steps = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Steps"
         subtitle="Step Detector"
       />

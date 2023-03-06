@@ -76,6 +76,7 @@ const CharacterRegistration = () => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Characters"
         subtitle="Character Registration"
       />

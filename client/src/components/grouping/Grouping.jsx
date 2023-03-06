@@ -252,6 +252,7 @@ const Grouping = () => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Grouping"
         subtitle="Live LFM Viewer"
       />

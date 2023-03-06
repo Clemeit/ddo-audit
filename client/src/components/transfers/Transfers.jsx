@@ -525,6 +525,7 @@ const Transfers = () => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Server Transfers"
         subtitle="The Movement of Characters"
       />
@@ -545,17 +546,13 @@ const Transfers = () => {
             <>
               <p>
                 The original reports were rather confusing and led to a lot of
-                misinformation being circulated.{" "}
-                <span className="lfm-number">
-                  I've changed how the data is presented to be more in line with
-                  what players expected.
-                </span>
+                misinformation being circulated. I've changed how the data is
+                presented to be more in line with what players expected.
               </p>
               <p>
-                For anyone curious, the reports now display the instantaneous
-                rate of change - or first derivative - of the underlying data.
-                You can swap between the two methods with the toggle button
-                below.
+                For anyone curious, the reports now display the first derivative
+                of the underlying data. You can swap between the two methods
+                with the toggle button below.
               </p>
               <ToggleButton
                 className="wide"
@@ -594,21 +591,22 @@ const Transfers = () => {
             <span>
               <ul>
                 <li>
-                  Like most of the demographic reports on DDO Audit, the reports
-                  shown here only count characters in a 90 day rolling window.
-                </li>
-                <li>
                   A "transfer character" is defined as a character that is
                   currently playing on a different server than the one they were
                   created on.
                 </li>
                 <li>
-                  A lot of character transfers result from the existence of the
-                  Hardcore server. These transfers are filtered out by default,
-                  but you can include them with the toggle buttons.
+                  <span className="lfm-number">
+                    A transfer is counted when the transferred character logs in
+                    for the first time on the new server, NOT at the time of the
+                    transfer being completed.
+                  </span>{" "}
+                  This means there <i>may</i> be many more characters that have
+                  been transferred but haven't been counted yet.
                 </li>
                 <li>
-                  This is a new feature, and it deals with a new set of data.{" "}
+                  This is a experimental feature, and it deals with a new set of
+                  data.{" "}
                   <span className="lfm-number">
                     There may be inconsistencies.
                   </span>
@@ -677,19 +675,20 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of{" "}
+                  An approximation of the number of character transfers per
+                  hour.{" "}
                   <span className="lfm-number">
-                    character transfers per hour
+                    Transfers are counted the first time the character logs in,
+                    NOT necessarily when the transfer is made.
                   </span>
-                  .
                 </p>
               ) : (
                 <p>
-                  The total number of transfer characters online on any given
-                  day.{" "}
+                  The total number of transfer characters{" "}
                   <span className="lfm-number">
-                    This is a cumulative count.
+                    online within the last 90 days
                   </span>
+                  . This is a cumulative count.
                 </p>
               )}
               <div
@@ -758,21 +757,23 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of{" "}
-                  <span className="lfm-number">
-                    character transfers per hour
-                  </span>{" "}
+                  An approximation of the number of character transfers per hour{" "}
                   <i>to</i> each server. Servers with a high transfer count are
-                  gaining characters from other servers.
+                  gaining characters from other servers.{" "}
+                  <span className="lfm-number">
+                    Transfers are counted the first time the character logs in,
+                    NOT necessarily when the transfer is made.
+                  </span>
                 </p>
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>to</i> each
-                  server. Servers with a high transfer count have gained
-                  characters from other servers.{" "}
+                  server{" "}
                   <span className="lfm-number">
-                    This is a cumulative count.
+                    online within the last 90 days
                   </span>
+                  . Servers with a high transfer count have gained characters
+                  from other servers. This is a cumulative count.
                 </p>
               )}
               <div
@@ -838,21 +839,23 @@ const Transfers = () => {
             <>
               {performDerivation ? (
                 <p>
-                  An approximation of the number of{" "}
-                  <span className="lfm-number">
-                    character transfers per hour
-                  </span>{" "}
+                  An approximation of the number of character transfers per hour{" "}
                   <i>from</i> each server. Servers with a high transfer count
-                  are losing characters to other servers.
+                  are losing characters to other servers.{" "}
+                  <span className="lfm-number">
+                    Transfers are counted the first time the character logs in,
+                    NOT necessarily when the transfer is made.
+                  </span>
                 </p>
               ) : (
                 <p>
                   The cumulative number of characters transferred <i>from</i>{" "}
-                  each server. Servers with a high transfer count have lost
-                  characters to other servers.{" "}
+                  each server{" "}
                   <span className="lfm-number">
-                    This is a cumulative count.
+                    online within the last 90 days
                   </span>
+                  . Servers with a high transfer count have lost characters to
+                  other servers. This is a cumulative count.
                 </p>
               )}
               <ToggleButton

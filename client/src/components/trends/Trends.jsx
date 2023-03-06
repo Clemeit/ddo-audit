@@ -151,6 +151,7 @@ const Trends = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Trends"
         subtitle="Long-term Population Trends"
       />

@@ -20,16 +20,12 @@ import ChartBar from "../global/ChartBar";
 import { Log } from "../../services/CommunicationService";
 import ToggleButton from "../global/ToggleButton";
 import { SERVER_LIST } from "../../constants/Servers";
-import FeatureFlagHook from "../../hooks/FeatureFlagHook";
-import PageMessage from "../global/PageMessage";
 import DataClassification from "../global/DataClassification";
 
 // no-change
 
 const Directory = (props) => {
   const TITLE = "DDO Server Population and Demographics";
-  const showTransfersNote = FeatureFlagHook("transfers-note");
-  const showTransferPage = FeatureFlagHook("transfers");
 
   const EVENT_THEME = isSpookyTime();
 
@@ -387,6 +383,7 @@ const Directory = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Servers"
         subtitle="Server Population, Demographics, and Trends"
       />
@@ -401,27 +398,6 @@ const Directory = (props) => {
         <BannerMessage page="servers" />
         <DataClassification classification="mixed" />
         <div className="top-content-padding-small shrink-on-mobile" />
-        {showTransfersNote && (
-          <PageMessage
-            type="info"
-            title="Character Transfers - Special Report"
-            message={
-              <>
-                We're now reporting data on character transfers. Check it out on
-                the{" "}
-                <Link
-                  onClick={() => Log("Transfers page", "From Servers message")}
-                  to="/transfers"
-                >
-                  Transfers
-                </Link>{" "}
-                page.
-              </>
-            }
-            fontSize={1.4}
-            padded={true}
-          />
-        )}
         <ContentCluster title="Select a Server">
           <div className="content-cluster-options">
             {SERVER_LIST.map((name, i) => (
@@ -825,26 +801,24 @@ const Directory = (props) => {
                 important game events.
               </p>
             </Link>
-            {showTransferPage && (
-              <Link
-                onClick={() => Log("Transfers page", "From Servers card link")}
-                to="/transfers"
-                className="nav-box shrinkable"
-                style={{
-                  height: "auto",
-                  minHeight: "150px",
-                }}
-              >
-                <div className="nav-box-title">
-                  <TransferSVG className="nav-icon should-invert" />
-                  <h2 className="content-option-title">Server Transfers</h2>
-                </div>
-                <p className="content-option-description">
-                  Which servers are gaining characters and which servers are
-                  losing them.
-                </p>
-              </Link>
-            )}
+            <Link
+              onClick={() => Log("Transfers page", "From Servers card link")}
+              to="/transfers"
+              className="nav-box shrinkable"
+              style={{
+                height: "auto",
+                minHeight: "150px",
+              }}
+            >
+              <div className="nav-box-title">
+                <TransferSVG className="nav-icon should-invert" />
+                <h2 className="content-option-title">Server Transfers</h2>
+              </div>
+              <p className="content-option-description">
+                Which servers are gaining characters and which servers are
+                losing them.
+              </p>
+            </Link>
           </div>
         </ContentCluster>
       </div>

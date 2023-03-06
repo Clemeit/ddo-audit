@@ -167,6 +167,7 @@ const Who = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Who"
         subtitle="Live Who Panel"
       />

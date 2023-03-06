@@ -509,6 +509,7 @@ const ServersSpecific = () => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Population, Demographics, and Trends"
         subtitle={currentServer}
       />

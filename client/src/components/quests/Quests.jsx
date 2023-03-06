@@ -611,6 +611,7 @@ const Quests = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Quests"
         subtitle="Quest Popularity, Average Duration, and XP/min"
       />

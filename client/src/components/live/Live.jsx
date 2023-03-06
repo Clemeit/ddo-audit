@@ -183,6 +183,7 @@ const Live = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Live"
         subtitle="Server Status and Quick Info"
       />

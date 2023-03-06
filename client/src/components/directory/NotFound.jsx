@@ -33,6 +33,7 @@ const NotFound = () => {
         showTitle={true}
         showSubtitle={true}
         showButtons={true}
+        hideVote={true}
         title="DDO Audit"
         subtitle="Real-time Player Concurrency Data and LFM Viewer"
       />

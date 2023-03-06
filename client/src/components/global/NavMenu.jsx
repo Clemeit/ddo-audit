@@ -11,12 +11,10 @@ import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
 import ServerHook from "../../hooks/ServerHook";
 import { SERVER_LIST } from "../../constants/Servers";
-import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import { Log } from "../../services/CommunicationService";
 
 const NavMenu = () => {
   const SERVERS = ServerHook();
-  const showTransferPage = FeatureFlagHook("transfers");
 
   return (
     <div id="main-nav" className="main-nav-menu">
@@ -90,16 +88,14 @@ const NavMenu = () => {
                     <QuestsSVG className="nav-icon" />
                     <span className="nav-title">Quests</span>
                 </NavItem> */}
-        {showTransferPage && (
-          <NavItem
-            onClick={() => Log("Transfers page", "From NavMenu")}
-            to="/transfers"
-            className="hide-on-mobile"
-          >
-            <TransferSVG className="nav-icon" />
-            <span className="nav-title">Transfers</span>
-          </NavItem>
-        )}
+        <NavItem
+          onClick={() => Log("Transfers page", "From NavMenu")}
+          to="/transfers"
+          className="hide-on-mobile"
+        >
+          <TransferSVG className="nav-icon" />
+          <span className="nav-title">Transfers</span>
+        </NavItem>
         <NavItem to="/trends" className="hide-on-mobile">
           <TrendsSVG className="nav-icon" />
           <span className="nav-title">Trends</span>

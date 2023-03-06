@@ -168,6 +168,7 @@ const NotificationForm = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Grouping"
         subtitle="Setup custom group notifications"
       />

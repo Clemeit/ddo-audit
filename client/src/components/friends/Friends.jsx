@@ -53,6 +53,7 @@ const Friends = () => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Friends List"
         subtitle="Are Your Friends Online?"
       />

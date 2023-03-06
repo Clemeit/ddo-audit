@@ -82,6 +82,7 @@ const Timers = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Raid Timers"
         subtitle="Check Raid Timers"
       />

@@ -187,6 +187,7 @@ const WhoSpecific = (props) => {
           showSubtitle={true}
           showButtons={false}
           hideOnMobile={true}
+          hideVote={true}
           title="Live Player Lookup"
           subtitle={currentServer && currentServer}
         />

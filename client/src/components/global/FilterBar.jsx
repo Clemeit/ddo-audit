@@ -34,12 +34,7 @@ const LfmFilterBar = (props) => {
     }
   }, [fullscreen]);
 
-  const [showNewPermalink, setShowNewPermalink] = React.useState(false);
   React.useEffect(() => {
-    let prmlnk = localStorage.getItem("feature-notice-permalink");
-    if (!prmlnk) {
-      setTimeout(() => setShowNewPermalink(true), 3000);
-    }
     document
       .getElementById("filter-bar")
       ?.addEventListener("mouseleave", startCollapseTimeout);
@@ -110,19 +105,12 @@ const LfmFilterBar = (props) => {
               target="_blank"
               onClick={() => {
                 Log("Clicked permalink", props.permalink);
-                localStorage.setItem("feature-notice-permalink", true);
-                setShowNewPermalink(false);
               }}
             >
               <LinkSVG className="nav-icon should-invert" />
               <span className="filter-bar-text settings hide-on-mobile">
                 Permalink
               </span>
-              {showNewPermalink && (
-                <span className="new-tag small" style={{ marginLeft: "7px" }}>
-                  NEW
-                </span>
-              )}
             </a>
           )}
           {!props.minimal && (

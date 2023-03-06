@@ -199,6 +199,12 @@
       <priority>0.6</priority>
    </url>
    <url>
+      <loc>https://www.ddoaudit.com/transfers</loc>
+      <lastmod>2022-02-08T00:00:00+00:00</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.5</priority>
+   </url>
+   <url>
       <loc>https://www.ddoaudit.com/quests</loc>
       <lastmod>2022-02-08T00:00:00+00:00</lastmod>
       <changefreq>weekly</changefreq>

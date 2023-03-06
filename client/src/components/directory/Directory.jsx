@@ -23,12 +23,9 @@ import Banner from "../global/Banner";
 import Footer from "./Footer";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
-import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 
 const Directory = (props) => {
   const TITLE = "DDO Audit | Population Tracking and LFM Viewer";
-  const showTransferPage = FeatureFlagHook("transfers");
-  const glowTransfersButton = FeatureFlagHook("glow-transfers-button");
 
   const NAV_OPTIONS = [
     {
@@ -77,8 +74,6 @@ const Directory = (props) => {
             "Which servers are gaining characters and which servers are losing them.",
           to: "/transfers",
           new: true,
-          glowing: glowTransfersButton,
-          hide: !showTransferPage,
           callback: () => Log("Transfers page", "From Directory"),
         },
       ],

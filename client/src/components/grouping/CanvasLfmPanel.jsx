@@ -1827,7 +1827,8 @@ const CanvasLfmPanel = (props) => {
 
     function isFeytwisted(group) {
       if (
-        group.Comment.toLowerCase().includes("feytwisted") &&
+        (group.Comment.toLowerCase().includes("feytwisted") ||
+          group.Comment.toLowerCase().includes("fey chest")) &&
         group.Quest?.RequiredAdventurePack.toLowerCase().includes("feywild")
       )
         return true;

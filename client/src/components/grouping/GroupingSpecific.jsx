@@ -149,6 +149,7 @@ const GroupingSpecific = (props) => {
           showSubtitle={true}
           showButtons={false}
           hideOnMobile={true}
+          hideVote={true}
           title={"Live LFM Viewer"}
           subtitle={currentServer && currentServer}
         />

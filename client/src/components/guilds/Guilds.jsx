@@ -324,6 +324,7 @@ const Guilds = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Guilds"
         subtitle="Guild Size, Activity, and Members Lists"
       />

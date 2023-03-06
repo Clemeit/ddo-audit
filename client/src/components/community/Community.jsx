@@ -50,6 +50,7 @@ const Community = (props) => {
         showSubtitle={true}
         showButtons={false}
         hideOnMobile={true}
+        hideVote={true}
         title="Community Tools"
         subtitle="Tools developed by the community"
       />
