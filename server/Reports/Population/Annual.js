@@ -1,8 +1,8 @@
 import fs from "fs";
 
-const runAnnualReport = (population) => {
+const runAnnualReport = (population, reportType) => {
 	var t0 = new Date();
-	console.log("Running Annual Population report");
+	console.log(`Running Annual Population report (${reportType})`);
 
 	let Argonnessen = {
 		id: "Argonnessen",
@@ -89,6 +89,15 @@ const runAnnualReport = (population) => {
 			thelanis_playercount,
 			wayfinder_playercount,
 			hardcore_playercount,
+			argonnessen_lfmcount,
+			cannith_lfmcount,
+			ghallanda_lfmcount,
+			khyber_lfmcount,
+			orien_lfmcount,
+			sarlona_lfmcount,
+			thelanis_lfmcount,
+			wayfinder_lfmcount,
+			hardcore_lfmcount,
 		}) => {
 			if (
 				new Date().getTime() - datetime.getTime() <=
@@ -193,81 +202,53 @@ const runAnnualReport = (population) => {
 					lastSunday = dt;
 				}
 
-				if (argonnessen_playercount) {
-					totalsThisWeek[0] += argonnessen_playercount;
-					entriesThisWeek[0]++;
-				}
+				if (reportType === "players") {
+					if (argonnessen_playercount) {
+						totalsThisWeek[0] += argonnessen_playercount;
+						entriesThisWeek[0]++;
+					}
 
-				if (cannith_playercount) {
-					totalsThisWeek[1] += cannith_playercount;
-					entriesThisWeek[1]++;
-				}
+					if (cannith_playercount) {
+						totalsThisWeek[1] += cannith_playercount;
+						entriesThisWeek[1]++;
+					}
 
-				if (ghallanda_playercount) {
-					totalsThisWeek[2] += ghallanda_playercount;
-					entriesThisWeek[2]++;
-				}
+					if (ghallanda_playercount) {
+						totalsThisWeek[2] += ghallanda_playercount;
+						entriesThisWeek[2]++;
+					}
 
-				if (khyber_playercount) {
-					totalsThisWeek[3] += khyber_playercount;
-					entriesThisWeek[3]++;
-				}
+					if (khyber_playercount) {
+						totalsThisWeek[3] += khyber_playercount;
+						entriesThisWeek[3]++;
+					}
 
-				if (orien_playercount) {
-					totalsThisWeek[4] += orien_playercount;
-					entriesThisWeek[4]++;
-				}
+					if (orien_playercount) {
+						totalsThisWeek[4] += orien_playercount;
+						entriesThisWeek[4]++;
+					}
 
-				if (sarlona_playercount) {
-					totalsThisWeek[5] += sarlona_playercount;
-					entriesThisWeek[5]++;
-				}
+					if (sarlona_playercount) {
+						totalsThisWeek[5] += sarlona_playercount;
+						entriesThisWeek[5]++;
+					}
 
-				if (thelanis_playercount) {
-					totalsThisWeek[6] += thelanis_playercount;
-					entriesThisWeek[6]++;
-				}
+					if (thelanis_playercount) {
+						totalsThisWeek[6] += thelanis_playercount;
+						entriesThisWeek[6]++;
+					}
 
-				if (wayfinder_playercount) {
-					totalsThisWeek[7] += wayfinder_playercount;
-					entriesThisWeek[7]++;
-				}
+					if (wayfinder_playercount) {
+						totalsThisWeek[7] += wayfinder_playercount;
+						entriesThisWeek[7]++;
+					}
 
-				if (hardcore_playercount) {
-					totalsThisWeek[8] += hardcore_playercount;
-					entriesThisWeek[8]++;
-				}
+					if (hardcore_playercount) {
+						totalsThisWeek[8] += hardcore_playercount;
+						entriesThisWeek[8]++;
+					}
 
-				let totalnow =
-					argonnessen_playercount +
-					cannith_playercount +
-					ghallanda_playercount +
-					khyber_playercount +
-					orien_playercount +
-					sarlona_playercount +
-					thelanis_playercount +
-					wayfinder_playercount +
-					hardcore_playercount;
-
-				if (totalnow) {
-					totalsThisWeek[9] += totalnow;
-					entriesThisWeek[9]++;
-				}
-				if (totalnow === 0) {
-					lastDowntime = dt;
-				}
-
-				if (
-					argonnessen_playercount ||
-					cannith_playercount ||
-					ghallanda_playercount ||
-					khyber_playercount ||
-					orien_playercount ||
-					sarlona_playercount ||
-					thelanis_playercount ||
-					wayfinder_playercount
-				) {
-					totalsThisWeek[10] +=
+					let totalnow =
 						argonnessen_playercount +
 						cannith_playercount +
 						ghallanda_playercount +
@@ -275,20 +256,148 @@ const runAnnualReport = (population) => {
 						orien_playercount +
 						sarlona_playercount +
 						thelanis_playercount +
-						wayfinder_playercount;
-					entriesThisWeek[10]++;
-				}
+						wayfinder_playercount +
+						hardcore_playercount;
 
-				if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
-					maximumThisWeek = totalnow;
-				}
-				if (
-					(totalnow < minimumThisWeek || minimumThisWeek === -1) &&
-					totalnow !== 0 &&
-					dayofweek !== 3 &&
-					dt - lastDowntime > 1000 * 60 * 60
-				) {
-					minimumThisWeek = totalnow;
+					if (totalnow) {
+						totalsThisWeek[9] += totalnow;
+						entriesThisWeek[9]++;
+					}
+					if (totalnow === 0) {
+						lastDowntime = dt;
+					}
+
+					if (
+						argonnessen_playercount ||
+						cannith_playercount ||
+						ghallanda_playercount ||
+						khyber_playercount ||
+						orien_playercount ||
+						sarlona_playercount ||
+						thelanis_playercount ||
+						wayfinder_playercount
+					) {
+						totalsThisWeek[10] +=
+							argonnessen_playercount +
+							cannith_playercount +
+							ghallanda_playercount +
+							khyber_playercount +
+							orien_playercount +
+							sarlona_playercount +
+							thelanis_playercount +
+							wayfinder_playercount;
+						entriesThisWeek[10]++;
+					}
+
+					if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
+						maximumThisWeek = totalnow;
+					}
+					if (
+						(totalnow < minimumThisWeek || minimumThisWeek === -1) &&
+						totalnow !== 0 &&
+						dayofweek !== 3 &&
+						dt - lastDowntime > 1000 * 60 * 60
+					) {
+						minimumThisWeek = totalnow;
+					}
+				} else if (reportType === "lfms") {
+					if (argonnessen_lfmcount) {
+						totalsThisWeek[0] += argonnessen_lfmcount;
+						entriesThisWeek[0]++;
+					}
+
+					if (cannith_lfmcount) {
+						totalsThisWeek[1] += cannith_lfmcount;
+						entriesThisWeek[1]++;
+					}
+
+					if (ghallanda_lfmcount) {
+						totalsThisWeek[2] += ghallanda_lfmcount;
+						entriesThisWeek[2]++;
+					}
+
+					if (khyber_lfmcount) {
+						totalsThisWeek[3] += khyber_lfmcount;
+						entriesThisWeek[3]++;
+					}
+
+					if (orien_lfmcount) {
+						totalsThisWeek[4] += orien_lfmcount;
+						entriesThisWeek[4]++;
+					}
+
+					if (sarlona_lfmcount) {
+						totalsThisWeek[5] += sarlona_lfmcount;
+						entriesThisWeek[5]++;
+					}
+
+					if (thelanis_lfmcount) {
+						totalsThisWeek[6] += thelanis_lfmcount;
+						entriesThisWeek[6]++;
+					}
+
+					if (wayfinder_lfmcount) {
+						totalsThisWeek[7] += wayfinder_lfmcount;
+						entriesThisWeek[7]++;
+					}
+
+					if (hardcore_lfmcount) {
+						totalsThisWeek[8] += hardcore_lfmcount;
+						entriesThisWeek[8]++;
+					}
+
+					let totalnow =
+						argonnessen_lfmcount +
+						cannith_lfmcount +
+						ghallanda_lfmcount +
+						khyber_lfmcount +
+						orien_lfmcount +
+						sarlona_lfmcount +
+						thelanis_lfmcount +
+						wayfinder_lfmcount +
+						hardcore_lfmcount;
+
+					if (totalnow) {
+						totalsThisWeek[9] += totalnow;
+						entriesThisWeek[9]++;
+					}
+					if (totalnow === 0) {
+						lastDowntime = dt;
+					}
+
+					if (
+						argonnessen_lfmcount ||
+						cannith_lfmcount ||
+						ghallanda_lfmcount ||
+						khyber_lfmcount ||
+						orien_lfmcount ||
+						sarlona_lfmcount ||
+						thelanis_lfmcount ||
+						wayfinder_lfmcount
+					) {
+						totalsThisWeek[10] +=
+							argonnessen_lfmcount +
+							cannith_lfmcount +
+							ghallanda_lfmcount +
+							khyber_lfmcount +
+							orien_lfmcount +
+							sarlona_lfmcount +
+							thelanis_lfmcount +
+							wayfinder_lfmcount;
+						entriesThisWeek[10]++;
+					}
+
+					if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
+						maximumThisWeek = totalnow;
+					}
+					if (
+						(totalnow < minimumThisWeek || minimumThisWeek === -1) &&
+						totalnow !== 0 &&
+						dayofweek !== 3 &&
+						dt - lastDowntime > 1000 * 60 * 60
+					) {
+						minimumThisWeek = totalnow;
+					}
 				}
 			}
 		}
@@ -313,7 +422,9 @@ const runAnnualReport = (population) => {
 	output.reverse();
 
 	fs.writeFile(
-		"../api_v1/population/year.json",
+		`../api_v1/population/year${
+			reportType === "players" ? "" : "_groups"
+		}.json`,
 		JSON.stringify(output),
 		(err) => {
 			if (err) throw err;

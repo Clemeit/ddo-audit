@@ -78,6 +78,8 @@ const ServersSpecific = () => {
   const [quarterlyData, setQuarterlyData] = React.useState(null);
   const [byHourType, setByHourType] = React.useState("population");
   const [byDayType, setByDayType] = React.useState("population");
+  const [annualType, setAnnualType] = React.useState("population");
+  const [quarterlyType, setQuarterlyType] = React.useState("population");
 
   const [dailyLfmDistribution, setDailyLfmDistribution] = React.useState(null);
   const [hourlyLfmDistribution, setHourlyLfmDistribution] =
@@ -314,14 +316,6 @@ const ServersSpecific = () => {
   }
 
   function fetchPopulationData() {
-    Fetch("https://api.ddoaudit.com/population/year", 5000).then((val) => {
-      setPopulation1Year(val);
-    });
-
-    Fetch("https://api.ddoaudit.com/population/quarter", 5000).then((val) => {
-      setPopulation1Quarter(val);
-    });
-
     Fetch(
       "https://api.ddoaudit.com/population/dailydistribution_groups",
       5000
@@ -426,6 +420,28 @@ const ServersSpecific = () => {
 
     generateByHourChart();
   }, [quarterlyData, byHourType]);
+
+  React.useEffect(() => {
+    Fetch(
+      `https://api.ddoaudit.com/population/year${
+        annualType === "population" ? "" : "_groups"
+      }`,
+      5000
+    ).then((val) => {
+      setPopulation1Year(val);
+    });
+  }, [annualType]);
+
+  React.useEffect(() => {
+    Fetch(
+      `https://api.ddoaudit.com/population/quarter${
+        quarterlyType === "population" ? "" : "_groups"
+      }`,
+      5000
+    ).then((val) => {
+      setPopulation1Quarter(val);
+    });
+  }, [quarterlyType]);
 
   const [byDayChartData, setByDayChartData] = React.useState(null);
   React.useEffect(() => {
@@ -640,15 +656,27 @@ const ServersSpecific = () => {
           />
         </ContentCluster>
         <ContentCluster
-          title="Annual Population Data"
-          description={`The last two years of trend data for ${currentServer}. Weekly averages are shown. Server downtimes are ignored.`}
+          title="Quarterly Population Data"
+          description={`The last quarter (92 days) of trend data for ${currentServer}. Daily averages are shown. Server downtimes are ignored.`}
         >
+          <ToggleButton
+            textA="Population data"
+            textB="LFM data"
+            isA={quarterlyType === "population"}
+            isB={quarterlyType === "lfms"}
+            doA={() => {
+              setQuarterlyType("population");
+            }}
+            doB={() => {
+              setQuarterlyType("lfms");
+            }}
+          />
           <ChartLine
             data={
-              population1Year &&
-              population1Year.filter((server) => server.id === currentServer)
+              population1Quarter &&
+              population1Quarter.filter((server) => server.id === currentServer)
             }
-            trendType="annual"
+            trendType="quarter"
             activeFilter="Server Activity"
             showActions={false}
             showLastUpdated={true}
@@ -660,15 +688,27 @@ const ServersSpecific = () => {
           />
         </ContentCluster>
         <ContentCluster
-          title="Quarterly Population Data"
-          description={`The last quarter (92 days) of trend data for ${currentServer}. Daily averages are shown. Server downtimes are ignored.`}
+          title="Annual Population Data"
+          description={`The last two years of trend data for ${currentServer}. Weekly averages are shown. Server downtimes are ignored.`}
         >
+          <ToggleButton
+            textA="Population data"
+            textB="LFM data"
+            isA={annualType === "population"}
+            isB={annualType === "lfms"}
+            doA={() => {
+              setAnnualType("population");
+            }}
+            doB={() => {
+              setAnnualType("lfms");
+            }}
+          />
           <ChartLine
             data={
-              population1Quarter &&
-              population1Quarter.filter((server) => server.id === currentServer)
+              population1Year &&
+              population1Year.filter((server) => server.id === currentServer)
             }
-            trendType="quarter"
+            trendType="annual"
             activeFilter="Server Activity"
             showActions={false}
             showLastUpdated={true}

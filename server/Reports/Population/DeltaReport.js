@@ -8,9 +8,7 @@ const runDeltaReport = (data, reporttype) => {
 		let Delta = {
 			id: "Delta",
 			color:
-				reporttype === "population"
-					? "hsl(208, 100%, 50%)"
-					: "hsl(25, 100%, 50%)",
+				reporttype === "players" ? "hsl(208, 100%, 50%)" : "hsl(25, 100%, 50%)",
 			data: [],
 		};
 
@@ -36,7 +34,7 @@ const runDeltaReport = (data, reporttype) => {
 
 		fs.writeFile(
 			`../api_v1/population/quarter${
-				reporttype === "population" ? "" : "_groups"
+				reporttype === "players" ? "" : "_groups"
 			}_delta.json`,
 			JSON.stringify([Delta]),
 			(err) => {

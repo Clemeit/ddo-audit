@@ -1,11 +1,11 @@
 import fs from "fs";
 
-const runQuarterReport = (population, reporttype) => {
+const runQuarterReport = (population, reportType) => {
 	// const hardcoreSeasonStart = new Date(2022, 11, 7);
 
 	return new Promise(async (resolve, reject) => {
 		var t0 = new Date();
-		console.log("Running Quarterly Population report");
+		console.log(`Running Quarterly Population report (${reportType})`);
 
 		let Argonnessen = {
 			id: "Argonnessen",
@@ -282,7 +282,7 @@ const runQuarterReport = (population, reporttype) => {
 						} else {
 							// Increment
 							let totalnow = 0;
-							if (reporttype === "population") {
+							if (reportType === "players") {
 								if (argonnessen_playercount) {
 									Argonnessen.data[Argonnessen.data.length - 1].y +=
 										argonnessen_playercount;
@@ -488,7 +488,7 @@ const runQuarterReport = (population, reporttype) => {
 
 		fs.writeFile(
 			`../api_v1/population/quarter${
-				reporttype === "population" ? "" : "_groups"
+				reportType === "players" ? "" : "_groups"
 			}.json`,
 			JSON.stringify(nivoData),
 			(err) => {

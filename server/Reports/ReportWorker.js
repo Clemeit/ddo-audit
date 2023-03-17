@@ -217,8 +217,10 @@ con.connect((err) => {
 	// Every week
 	cron.schedule("0 * * * 0", () => {
 		getPopulationData(365 * 5).then(() => {
-			runAnnualReport(population);
-			runQuarterReport(population);
+			runAnnualReport(population, "players");
+			runAnnualReport(population, "lfms");
+			runQuarterReport(population, "players");
+			runQuarterReport(population, "lfms");
 			runWeekReport(population);
 			runDailyDistribution(population);
 			runHourlyDistribution(population);
@@ -229,8 +231,8 @@ con.connect((err) => {
 	// Every day
 	cron.schedule("0 0 * * 1-6", () => {
 		getPopulationData(365).then(() => {
-			runQuarterReport(population, "population").then((val) => {
-				runDeltaReport(val, "population");
+			runQuarterReport(population, "players").then((val) => {
+				runDeltaReport(val, "players");
 			});
 			runQuarterReport(population, "groups").then((val) => {
 				runDeltaReport(val, "groups");
