@@ -277,50 +277,60 @@ const WhoPanel = (props) => {
 
     // if (activeFilters !== null && activeFilters.length !== 0) {
     data = data.filter((player) => {
-      let pass = true;
+      let pass = false;
 
       // Global filters
       let splt = globalFilter.split(",");
       splt.forEach((f) => {
+        const trimmedFilter = f.trim();
         let localmatch = false;
         if (exactMatch) {
-          if (player.Name == f) {
+          if (player.Name === trimmedFilter) {
             localmatch = true;
           }
-          if (player.Location.Name && player.Location.Name == f) {
+          if (player.Location.Name && player.Location.Name === trimmedFilter) {
             localmatch = true;
           }
           if (includeRegion) {
-            if (player.Location.Name && player.Location.Region == f) {
+            if (
+              player.Location.Name &&
+              player.Location.Region === trimmedFilter
+            ) {
               localmatch = true;
             }
           }
-          if (player.Guild == f) {
+          if (player.Guild === trimmedFilter) {
             localmatch = true;
           }
         } else {
-          if (player.Name.toLowerCase().includes(f.toLowerCase())) {
+          if (player.Name.toLowerCase().includes(trimmedFilter.toLowerCase())) {
             localmatch = true;
           }
           if (
             player.Location.Name &&
-            player.Location.Name.toLowerCase().includes(f.toLowerCase())
+            player.Location.Name.toLowerCase().includes(
+              trimmedFilter.toLowerCase()
+            )
           ) {
             localmatch = true;
           }
           if (includeRegion) {
             if (
               player.Location.Name &&
-              player.Location.Region.toLowerCase().includes(f.toLowerCase())
+              player.Location.Region.toLowerCase().includes(
+                trimmedFilter.toLowerCase()
+              )
             ) {
               localmatch = true;
             }
           }
-          if (player.Guild.toLowerCase().includes(f.toLowerCase())) {
+          if (
+            player.Guild.toLowerCase().includes(trimmedFilter.toLowerCase())
+          ) {
             localmatch = true;
           }
         }
-        pass = pass && localmatch;
+        pass = pass || localmatch;
       });
 
       if (player.TotalLevel < minimumLevelFilter) pass = false;
@@ -651,7 +661,11 @@ const WhoPanel = (props) => {
         }
       />
       {filterPanelVisible && (
-        <div>
+        <div
+          style={{
+            zIndex: 99,
+          }}
+        >
           <div
             className="filter-panel-overlay"
             style={{
@@ -700,8 +714,8 @@ const WhoPanel = (props) => {
                   <span className="lfm-number">
                     Best Guild Ever,The Marketplace
                   </span>
-                  " will show characters from the guild "Best Guild Ever" who
-                  are currently in "The Marketplace"
+                  " will show characters who are from the guild "Best Guild
+                  Ever" or who are currently in "The Marketplace"
                 </p>
                 <a
                   className="faux-link"

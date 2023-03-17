@@ -2,6 +2,7 @@ import React from "react";
 import CanvasFriendsPanel from "./CanvasFriendsPanel";
 import { Post } from "../../services/DataLoader";
 import { Log } from "../../services/CommunicationService";
+import FilterBar from "../global/FilterBar";
 // import SelectFriend from "./SelectFriend";
 
 const FriendsPanel = (props) => {
@@ -45,13 +46,15 @@ const FriendsPanel = (props) => {
   const MAX_LIST_SIZE = 50;
 
   function throwError() {
-    props.onError();
+    if (typeof props.onError === "function") {
+      props.onError();
+    }
   }
 
   let refreshFriendsList;
   React.useEffect(() => {
     clearInterval(refreshFriendsList);
-    refreshFriendsList = setInterval(() => reloadData(true), 60000);
+    refreshFriendsList = setInterval(() => reloadData(true), 30000);
 
     // Load friends list from localstorage
     const list = localStorage.getItem("friends-list");
@@ -79,7 +82,7 @@ const FriendsPanel = (props) => {
       showlocations !== null ? showlocations === "true" : false
     );
 
-    return function cleanup() {
+    return () => {
       clearInterval(refreshFriendsList);
     };
   }, []);
@@ -361,119 +364,113 @@ const FriendsPanel = (props) => {
   }
 
   return (
-    <>
-      {/* {selectionScreenVisible && (
-                <SelectFriend
-                    handleClose={() => closeSelectFriend()}
-                    data={friendSelectList}
-                    characterSelected={(character) => {
-                        addCharacter(character);
-                        closeSelectFriend();
-                        setFriendSelectList([]);
-                    }}
-                    guildSelected={(guild) => {
-                        addGuild(guild);
-                        closeSelectFriend();
-                        setFriendSelectList([]);
-                    }}
-                />
-            )} */}
+    <div
+      className={
+        "content-container" + `${props.minimal ? " hide-on-mobile" : ""}`
+      }
+      style={{ minHeight: "700px", width: "706px" }}
+    >
+      {props.secondary && (
+        <FilterBar
+          minimal
+          hideFilterButton
+          currentServer={"Friends"}
+          showNotifications={false}
+          showSave={false}
+          maxWidth={706}
+          returnTo="/friends"
+          closePanel={() => props.closePanel()}
+          permalink={props.permalink}
+        />
+      )}
       <div
-        className={
-          "content-container" + `${props.minimal ? " hide-on-mobile" : ""}`
-        }
-        style={{ minHeight: "700px", width: "706px" }}
+        style={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
+        <CanvasFriendsPanel
+          filterBarShown={!!props.secondary}
+          maxListSize={MAX_LIST_SIZE}
+          data={filteredFriendsList}
+          multiselect={multiselectFriendsList}
+          handlePlayerSelect={(character) => {
+            if (character !== null) {
+              addCharacter(character);
+            }
+            setMultiselectFriendsList(null);
           }}
-        >
-          <CanvasFriendsPanel
-            maxListSize={MAX_LIST_SIZE}
-            data={filteredFriendsList}
-            multiselect={multiselectFriendsList}
-            handlePlayerSelect={(character) => {
-              if (character !== null) {
-                addCharacter(character);
+          handleHideOfflineFriends={() => {
+            localStorage.setItem(
+              "friends-hide-offline",
+              !hideOfflineFriendsRef.current
+            );
+            setHideOfflineFriends((hideOfflineFriends) => !hideOfflineFriends);
+          }}
+          hideOfflineFriends={hideOfflineFriends}
+          handleShowServerNames={(showServerNames) => {
+            localStorage.setItem(
+              "friends-show-servers",
+              !showServerNamesRef.current
+            );
+            setShowServerNames((showServerNames) => !showServerNames);
+          }}
+          showServerNames={showServerNames}
+          handleShowPlayerLocations={() => {
+            localStorage.setItem(
+              "friends-show-locations",
+              !showPlayerLocationsRef.current
+            );
+            setShowPlayerLocations(
+              (showPlayerLocations) => !showPlayerLocations
+            );
+          }}
+          showPlayerLocations={showPlayerLocations}
+          handleSort={(value) => handleSort(value)}
+          playerInput={playerInputValue}
+          handlePlayerInput={(value) => {
+            setPlayerInputValue(value);
+            playerInputValueRef.current = value;
+          }}
+          addName={() => addName()}
+          selectedPlayers={selectedPlayersRef.current.map((pid) => {
+            let i = -1;
+            filteredFriendsListRef.current.forEach((player, playerIndex) => {
+              if (player.PlayerId === pid) {
+                i = playerIndex;
               }
-              setMultiselectFriendsList(null);
-            }}
-            handleHideOfflineFriends={() => {
-              localStorage.setItem(
-                "friends-hide-offline",
-                !hideOfflineFriendsRef.current
-              );
-              setHideOfflineFriends(
-                (hideOfflineFriends) => !hideOfflineFriends
-              );
-            }}
-            hideOfflineFriends={hideOfflineFriends}
-            handleShowServerNames={(showServerNames) => {
-              localStorage.setItem(
-                "friends-show-servers",
-                !showServerNamesRef.current
-              );
-              setShowServerNames((showServerNames) => !showServerNames);
-            }}
-            showServerNames={showServerNames}
-            handleShowPlayerLocations={() => {
-              localStorage.setItem(
-                "friends-show-locations",
-                !showPlayerLocationsRef.current
-              );
-              setShowPlayerLocations(
-                (showPlayerLocations) => !showPlayerLocations
-              );
-            }}
-            showPlayerLocations={showPlayerLocations}
-            handleSort={(value) => handleSort(value)}
-            playerInput={playerInputValue}
-            handlePlayerInput={(value) => {
-              setPlayerInputValue(value);
-              playerInputValueRef.current = value;
-            }}
-            addName={() => addName()}
-            selectedPlayers={selectedPlayersRef.current.map((pid) => {
-              let i = -1;
-              filteredFriendsListRef.current.forEach((player, playerIndex) => {
-                if (player.PlayerId === pid) {
-                  i = playerIndex;
-                }
-              });
-              return i;
-            })}
-            handleSelectPlayer={(index) => {
-              if (
-                index < 0 ||
-                index > filteredFriendsListRef.current.length - 1
-              ) {
-                return;
-              }
+            });
+            return i;
+          })}
+          handleSelectPlayer={(index) => {
+            if (
+              index < 0 ||
+              index > filteredFriendsListRef.current.length - 1
+            ) {
+              return;
+            }
 
-              let indexPid = filteredFriendsListRef.current[index].PlayerId;
+            let indexPid = filteredFriendsListRef.current[index].PlayerId;
 
-              if (selectedPlayersRef.current.includes(indexPid)) {
-                setSelectedPlayers((selectedPlayers) =>
-                  selectedPlayers.filter((i) => i !== indexPid)
-                );
-              } else {
-                setSelectedPlayers((selectedPlayers) => [
-                  ...selectedPlayers,
-                  filteredFriendsListRef.current[index].PlayerId,
-                ]);
-              }
-            }}
-            removePlayer={() => removePlayer()}
-            isLoading={isLoading}
-          />
-        </div>
+            if (selectedPlayersRef.current.includes(indexPid)) {
+              setSelectedPlayers((selectedPlayers) =>
+                selectedPlayers.filter((i) => i !== indexPid)
+              );
+            } else {
+              setSelectedPlayers((selectedPlayers) => [
+                ...selectedPlayers,
+                filteredFriendsListRef.current[index].PlayerId,
+              ]);
+            }
+          }}
+          removePlayer={() => removePlayer()}
+          isLoading={isLoading}
+        />
       </div>
-    </>
+    </div>
   );
 };
 

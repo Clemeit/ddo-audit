@@ -103,8 +103,10 @@ const CanvasFriendsPanel = (props) => {
   }
 
   function handleCanvasResize() {
-    let rect = canvasRef.current.getBoundingClientRect();
-    setCanvasWidth(rect.width);
+    if (canvasRef.current !== null) {
+      let rect = canvasRef.current.getBoundingClientRect();
+      setCanvasWidth(rect.width);
+    }
   }
 
   function computeInputHeight() {
@@ -114,7 +116,11 @@ const CanvasFriendsPanel = (props) => {
 
   function computeInputTop() {
     let mod = window.innerWidth <= 950 ? (24 * canvasWidth) / PANEL_WIDTH : 0;
-    return `${(73 * canvasWidth) / PANEL_WIDTH - mod / 2}px`;
+    return `${
+      (73 * canvasWidth) / PANEL_WIDTH +
+      (props.filterBarShown ? 36 : 0) -
+      mod / 2
+    }px`;
   }
 
   function computeInputTopPadding() {
@@ -122,20 +128,26 @@ const CanvasFriendsPanel = (props) => {
     return `${(((24 * canvasWidth) / PANEL_WIDTH) * mod) / 2}px`;
   }
 
+  const handleKeyListener = (e) => {
+    if (e.key === "Delete") {
+      props.removePlayer();
+    }
+  };
+
   React.useEffect(() => {
     // TODO: Remove listeners
-    canvasRef.current.addEventListener("click", (e) => {
-      HandleMouseOnCanvas(e);
-    });
-    window.addEventListener("resize", (e) => {
-      handleCanvasResize();
-    });
-    window.addEventListener("keyup", (e) => {
-      if (e.key === "Delete") {
-        props.removePlayer();
-      }
-    });
+    canvasRef.current.addEventListener("click", HandleMouseOnCanvas);
+    window.addEventListener("resize", handleCanvasResize);
+    window.addEventListener("keyup", handleKeyListener);
+
     handleCanvasResize();
+
+    // remove listeners from window on unmount
+    return () => {
+      canvasRef.current.removeEventListener("click", HandleMouseOnCanvas);
+      window.removeEventListener("resize", handleCanvasResize);
+      window.removeEventListener("keyup", handleKeyListener);
+    };
   }, [canvasRef]);
 
   React.useEffect(() => {

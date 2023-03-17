@@ -10,6 +10,7 @@ import PanelSelectPopup from "./PanelSelectPopup";
 import WhoPanel from "../who/WhoPanel";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
+import FriendsPanel from "../friends/FriendsPanel";
 
 const GroupingSpecific = (props) => {
   const TITLE = "DDO Live LFM Viewer";
@@ -75,6 +76,13 @@ const GroupingSpecific = (props) => {
     let secondarytype = urlfilters.get("secondarytype");
     let secondaryserver = urlfilters.get("secondaryserver");
 
+    if (secondarytype === "friends") {
+      addPanel({
+        type: secondarytype,
+      });
+      return;
+    }
+
     if (secondarytype && secondaryserver) {
       let sspc = toProperCase(secondaryserver);
       if (
@@ -119,6 +127,17 @@ const GroupingSpecific = (props) => {
           triggerPopup={(message) => setPopupMessage(message)}
           permalink={`https://www.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=who&secondaryserver=${obj.server.toLowerCase()}`}
           bubbleFilter={() => {}}
+        />,
+      ]);
+    } else if (obj.type === "friends") {
+      Log("Added Friends panel", `Grouping ${currentServer}`);
+      setOpenPanels((openPanels) => [
+        ...openPanels,
+        <FriendsPanel
+          secondary
+          minimal
+          closePanel={() => setOpenPanels(openPanels)}
+          permalink={`https://www.ddoaudit.com/grouping/${currentServerRef.current.toLowerCase()}?secondarytype=friends`}
         />,
       ]);
     }

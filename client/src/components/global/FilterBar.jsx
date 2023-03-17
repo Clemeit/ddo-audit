@@ -93,9 +93,11 @@ const LfmFilterBar = (props) => {
           {props.minimal && (
             <div className="filter-bar-item" onClick={() => props.closePanel()}>
               <CloseSVG className="nav-icon should-invert" />
-              <span className="filter-bar-text settings hide-on-mobile">
-                {props.currentServer}
-              </span>
+              {props.currentServer && (
+                <span className="filter-bar-text settings hide-on-mobile">
+                  {props.currentServer}
+                </span>
+              )}
             </div>
           )}
           {props.minimal && (
@@ -151,19 +153,25 @@ const LfmFilterBar = (props) => {
               </span>
             </div>
           )}
-          <div
-            className="filter-bar-item collapsible"
-            style={{
-              marginLeft: props.minimal ? "auto" : props.showSave ? "" : "auto",
-              padding: "3px 7px",
-            }}
-            onClick={props.handleFilterButton}
-          >
-            <FilterSVG className="nav-icon should-invert" />
-            <span className="filter-bar-text settings hide-on-mobile">
-              Filters
-            </span>
-          </div>
+          {!props.hideFilterButton && (
+            <div
+              className="filter-bar-item collapsible"
+              style={{
+                marginLeft: props.minimal
+                  ? "auto"
+                  : props.showSave
+                  ? ""
+                  : "auto",
+                padding: "3px 7px",
+              }}
+              onClick={props.handleFilterButton}
+            >
+              <FilterSVG className="nav-icon should-invert" />
+              <span className="filter-bar-text settings hide-on-mobile">
+                Filters
+              </span>
+            </div>
+          )}
           {props.showNotifications && !props.minimal && (
             <Link
               to="/notifications"

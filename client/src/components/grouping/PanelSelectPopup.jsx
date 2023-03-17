@@ -2,6 +2,7 @@ import React from "react";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
+import { ReactComponent as FriendsSVG } from "../../assets/global/friends.svg";
 import ContentCluster from "../global/ContentCluster";
 import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
 import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
@@ -33,6 +34,8 @@ const PanelSelectPopup = (props) => {
     return () => $(document).unbind("keydown.handleEscape");
   }, []);
 
+  const [panelType, setPanelType] = React.useState(null);
+
   const PANEL_TYPES = [
     {
       icon: <GroupingSVG className="nav-icon should-invert" />,
@@ -45,6 +48,17 @@ const PanelSelectPopup = (props) => {
       title: "Live Who List",
       description: "Explore a list of online players with a live Who panel.",
       onClick: () => setPanelType("who"),
+    },
+    {
+      icon: <FriendsSVG className="nav-icon should-invert" />,
+      title: "Friends List",
+      description: "See what your friends are up to.",
+      onClick: () => {
+        props.userSelected({
+          type: "friends",
+        });
+        close();
+      },
     },
   ];
 
@@ -68,8 +82,6 @@ const PanelSelectPopup = (props) => {
     setPanelType(null);
     props.handleClose();
   }
-
-  const [panelType, setPanelType] = React.useState(null);
 
   return props.visible ? (
     <div className="absolute-center">

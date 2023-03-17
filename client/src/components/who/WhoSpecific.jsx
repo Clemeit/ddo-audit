@@ -10,6 +10,7 @@ import LfmPanel from "../grouping/GroupingPanel";
 import PanelSelectPopup from "../grouping/PanelSelectPopup";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
+import FriendsPanel from "../friends/FriendsPanel";
 
 const WhoSpecific = (props) => {
   // TODO: If this server is currently offline, don't bother checking for players
@@ -99,6 +100,17 @@ const WhoSpecific = (props) => {
           bubbleFilter={() => {}}
         />,
       ]);
+    } else if (obj.type === "friends") {
+      Log("Added Friends panel", `Who ${currentServer}`);
+      setOpenPanels((openPanels) => [
+        ...openPanels,
+        <FriendsPanel
+          secondary
+          minimal
+          closePanel={() => setOpenPanels(openPanels)}
+          permalink={`https://www.ddoaudit.com/who/${currentServerRef.current.toLowerCase()}?secondarytype=friends`}
+        />,
+      ]);
     }
   }
 
@@ -111,6 +123,13 @@ const WhoSpecific = (props) => {
     let urlfilters = new URLSearchParams(window.location.search);
     let secondarytype = urlfilters.get("secondarytype");
     let secondaryserver = urlfilters.get("secondaryserver");
+
+    if (secondarytype === "friends") {
+      addPanel({
+        type: secondarytype,
+      });
+      return;
+    }
 
     if (secondarytype && secondaryserver) {
       let sspc = toProperCase(secondaryserver);
