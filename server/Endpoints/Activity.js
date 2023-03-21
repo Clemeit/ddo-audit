@@ -1,4 +1,4 @@
-import useQuery from "./useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 const activityApi = (api, mysqlConnection) => {
 	const { queryAndRetry } = useQuery(mysqlConnection);

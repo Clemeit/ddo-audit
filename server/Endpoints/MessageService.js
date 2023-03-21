@@ -1,5 +1,5 @@
 import requestIp from "request-ip";
-import useQuery from "./useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 const messageServiceApi = (api, mysqlConnection) => {
 	const { queryAndRetry } = useQuery(mysqlConnection);

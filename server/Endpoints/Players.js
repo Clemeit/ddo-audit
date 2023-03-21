@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import useQuery from "./useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 const SECRET = process.env.CRYPTO_PASS;
 

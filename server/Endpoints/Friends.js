@@ -1,5 +1,5 @@
 import mysql from "mysql2";
-import useQuery from "./useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 const friendsApi = (api, mysqlConnection) => {
 	const { queryAndRetry } = useQuery(mysqlConnection);

@@ -1,5 +1,5 @@
 import path from "path";
-import useQuery from "./useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 const populationApi = (api, mysqlConnection) => {
 	const { queryAndRetry } = useQuery(mysqlConnection);
