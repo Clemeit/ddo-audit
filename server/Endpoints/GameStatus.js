@@ -1,14 +1,8 @@
 import path from "path";
+import useQuery from "./useQuery.js";
 
-import mysql from "mysql2";
-var con = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
-});
-
-const gameStatusApi = (api) => {
+const gameStatusApi = (api, mysqlConnection) => {
+	const { queryAndRetry } = useQuery(mysqlConnection);
 	const servers = [
 		["Argonnessen", "argonnessen"],
 		["Cannith", "cannith"],
@@ -21,164 +15,105 @@ const gameStatusApi = (api) => {
 		["Hardcore", "hardcore"],
 	];
 
-	con.connect((err) => {
-		if (err) throw err;
-		console.log("Game Status API connected to the database");
-
-		function getPlayerAndLfmOverview(final) {
-			return new Promise(async (resolve, reject) => {
-				let classquery = `SELECT * from \`population\` WHERE id=(SELECT max(id) FROM population);`;
-				con.query(classquery, (err, result, fields) => {
-					if (err) {
-						if (final) {
-							console.log("Failed to reconnect. Aborting!");
-							reject(err);
-						} else {
-							console.log("Attempting to reconnect...");
-							// Try to reconnect:
-							con = mysql.createConnection({
-								host: process.env.DB_HOST,
-								user: process.env.DB_USER,
-								password: process.env.DB_PASS,
-								database: process.env.DB_NAME,
-							});
-							getPlayerAndLfmOverview(true)
-								.then((result) => {
-									console.log("Reconnected!");
-									resolve(result);
-								})
-								.catch((err) => reject(err));
-						}
-					} else {
-						if (result == null) {
-							reject("null data");
-						} else {
-							let ret = [];
-							servers.forEach((server) => {
-								ret.push({
-									ServerName: server[0],
-									PlayerCount: result[0][`${server[1]}_playercount`],
-									LfmCount: result[0][`${server[1]}_lfmcount`],
-								});
-							});
-
-							resolve(ret);
-						}
-					}
-				});
-			});
-		}
-
-		function getGroupTableCount() {
-			return new Promise(async (resolve, reject) => {
-				let classquery = `SELECT COUNT(*) AS Count from \`groups\`;`;
-				con.query(classquery, (err, result, fields) => {
-					if (err) {
-						if (final) {
-							console.log("Failed to reconnect. Aborting!");
-							reject(err);
-						} else {
-							console.log("Attempting to reconnect...");
-							// Try to reconnect:
-							con = mysql.createConnection({
-								host: process.env.DB_HOST,
-								user: process.env.DB_USER,
-								password: process.env.DB_PASS,
-								database: process.env.DB_NAME,
-							});
-							getGroupData(server, true)
-								.then((result) => {
-									console.log("Reconnected!");
-									resolve(result);
-								})
-								.catch((err) => reject(err));
-						}
-					} else {
-						if (result == null) {
-							reject("null data");
-						} else {
-							resolve(result[0]);
-						}
-					}
-				});
-			});
-		}
-
-		function getPlayerTableCount(final) {
-			return new Promise(async (resolve, reject) => {
-				let classquery = `SELECT COUNT(*) AS Count from \`players_cached\`;`;
-				con.query(classquery, (err, result, fields) => {
-					if (err) {
-						if (final) {
-							console.log("Failed to reconnect. Aborting!");
-							reject(err);
-						} else {
-							console.log("Attempting to reconnect...");
-							// Try to reconnect:
-							con = mysql.createConnection({
-								host: process.env.DB_HOST,
-								user: process.env.DB_USER,
-								password: process.env.DB_PASS,
-								database: process.env.DB_NAME,
-							});
-							getPlayerTableCount(true)
-								.then((result) => {
-									console.log("Reconnected!");
-									resolve(result);
-								})
-								.catch((err) => reject(err));
-						}
-					} else {
-						if (result == null) {
-							reject("null data");
-						} else {
-							resolve(result[0]);
-						}
-					}
-				});
-			});
-		}
-
-		api.get(`/gamestatus/populationoverview`, (req, res) => {
-			res.setHeader("Content-Type", "application/json");
-			getPlayerAndLfmOverview()
+	function getPlayerAndLfmOverview() {
+		return new Promise(async (resolve, reject) => {
+			const query = `SELECT * from \`population\` WHERE id=(SELECT max(id) FROM population);`;
+			queryAndRetry(query, 3)
 				.then((result) => {
-					res.send(result);
+					if (result) {
+						let ret = [];
+						servers.forEach((server) => {
+							ret.push({
+								ServerName: server[0],
+								PlayerCount: result[0][`${server[1]}_playercount`],
+								LfmCount: result[0][`${server[1]}_lfmcount`],
+							});
+						});
+
+						resolve(ret);
+					} else {
+						reject({ error: "null data" });
+					}
 				})
 				.catch((err) => {
-					console.log(err);
-					return {};
+					reject(err);
 				});
 		});
+	}
 
-		api.get(`/gamestatus/grouptablecount`, (req, res) => {
-			res.setHeader("Content-Type", "application/json");
-			getGroupTableCount()
+	function getGroupTableCount() {
+		return new Promise(async (resolve, reject) => {
+			const query = `SELECT COUNT(*) AS Count from \`groups\`;`;
+			queryAndRetry(query, 3)
 				.then((result) => {
-					res.send(result);
+					if (result && result.length) {
+						resolve(result[0]);
+					} else {
+						reject({ error: "null data" });
+					}
 				})
 				.catch((err) => {
-					console.log(err);
-					return {};
+					reject(err);
 				});
 		});
+	}
 
-		api.get(`/gamestatus/playertablecount`, (req, res) => {
-			res.setHeader("Content-Type", "application/json");
-			getPlayerTableCount()
+	function getPlayerTableCount() {
+		return new Promise(async (resolve, reject) => {
+			const query = `SELECT COUNT(*) AS Count from \`players_cached\`;`;
+			queryAndRetry(query, 3)
 				.then((result) => {
-					res.send(result);
+					if (result) {
+						resolve(result[0]);
+					} else {
+						reject({ error: "null data" });
+					}
 				})
 				.catch((err) => {
-					console.log(err);
-					return {};
+					reject(err);
 				});
 		});
+	}
 
-		api.get(`/gamestatus/serverstatus`, (req, res) => {
-			res.setHeader("Content-Type", "application/json");
-			res.sendFile(path.resolve(`./api_v1/gamestatus/serverstatus.json`));
-		});
+	api.get(`/gamestatus/populationoverview`, (req, res) => {
+		res.setHeader("Content-Type", "application/json");
+		getPlayerAndLfmOverview()
+			.then((result) => {
+				res.send(result);
+			})
+			.catch((err) => {
+				console.log(err);
+				return {};
+			});
+	});
+
+	api.get(`/gamestatus/grouptablecount`, (req, res) => {
+		res.setHeader("Content-Type", "application/json");
+		getGroupTableCount()
+			.then((result) => {
+				res.send(result);
+			})
+			.catch((err) => {
+				console.log(err);
+				return {};
+			});
+	});
+
+	api.get(`/gamestatus/playertablecount`, (req, res) => {
+		res.setHeader("Content-Type", "application/json");
+		getPlayerTableCount()
+			.then((result) => {
+				res.send(result);
+			})
+			.catch((err) => {
+				console.log(err);
+				return {};
+			});
+	});
+
+	api.get(`/gamestatus/serverstatus`, (req, res) => {
+		res.setHeader("Content-Type", "application/json");
+		res.sendFile(path.resolve(`./api_v1/gamestatus/serverstatus.json`));
 	});
 };
 

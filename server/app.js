@@ -12,6 +12,7 @@ import activityApi from "./Endpoints/Activity.js";
 import friendsApi from "./Endpoints/Friends.js";
 import iotApi from "./Endpoints/IOT.js";
 import caasApi from "./Endpoints/CaaS.js";
+import mysql from "mysql2";
 
 // import { initializeApp, applicationDefault } from "firebase-admin/app";
 
@@ -25,17 +26,53 @@ api.use(express.json());
 api.use(bodyParser.json()); // support json encoded bodies
 api.use(bodyParser.urlencoded({ extended: true }));
 
-// Major endpoints
-populationApi(api);
-demographicsApi(api);
-groupsApi(api);
-playersApi(api);
-messageServiceApi(api);
-gameStatusApi(api);
-activityApi(api);
-friendsApi(api);
-iotApi(api);
-caasApi(api);
+async function restartMySql() {
+	return new Promise((resolve, reject) => {
+		let mysqlConnection;
+
+		console.log("MySQL reconnecting...");
+		// Try to reconnect:
+		mysqlConnection = mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME,
+		});
+
+		mysqlConnection.connect((err) => {
+			if (err) {
+				console.log("Failed to reconnect. Aborting!", err);
+				setTimeout(restartMySql, 5000);
+				reject();
+			} else {
+				console.log("Reconnected!");
+				resolve(mysqlConnection);
+			}
+		});
+
+		mysqlConnection.on("error", (err) => {
+			if (err.code === "PROTOCOL_CONNECTION_LOST") {
+				restartMySql();
+			} else {
+				throw err;
+			}
+		});
+	});
+}
+
+restartMySql().then((result) => {
+	// Major endpoints
+	populationApi(api, result);
+	demographicsApi(api, result);
+	groupsApi(api, result);
+	playersApi(api, result);
+	messageServiceApi(api, result);
+	gameStatusApi(api, result);
+	activityApi(api, result);
+	friendsApi(api, result);
+	// iotApi(api);
+	caasApi(api, result);
+});
 
 // Firebase
 // initializeApp({

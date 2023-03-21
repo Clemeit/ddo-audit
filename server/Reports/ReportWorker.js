@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import useQuery from "../Endpoints/useQuery.js";
 
 // Get data once, then run all of the reports using that data...
 import runClassDistribution from "./Demographics/ClassDistribution.js";
@@ -23,67 +24,106 @@ import mysql from "mysql2";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-var con = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
-});
+let mysqlConnection;
 
-function GetDateString(datetime) {
-	return `${datetime.getUTCFullYear()}-${
-		datetime.getUTCMonth() + 1
-	}-${datetime.getUTCDate()} 00-00-00`;
+async function restartMySql() {
+	return new Promise((resolve, reject) => {
+		console.log("MySQL reconnecting...");
+		// Try to reconnect:
+		mysqlConnection = mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME,
+		});
+
+		mysqlConnection.connect((err) => {
+			if (err) {
+				console.log("Failed to reconnect. Aborting!", err);
+				setTimeout(restartMySql, 5000);
+				reject();
+			} else {
+				console.log("Reconnected!");
+				resolve(mysqlConnection);
+			}
+		});
+
+		mysqlConnection.on("error", (err) => {
+			if (err.code === "PROTOCOL_CONNECTION_LOST") {
+				console.log("MySQL connection lost. Reconnecting...");
+				restartMySql();
+			} else {
+				console.log("MySQL connection error:", err);
+				restartMySql();
+			}
+		});
+	});
 }
 
-con.connect((err) => {
-	if (err) throw err;
-	console.log("Connected to database");
+function runReportWorker(mysqlConnection) {
+	const { queryAndRetry } = useQuery(mysqlConnection);
+
+	console.log("Running report worker...");
+	function GetDateString(datetime) {
+		return `${datetime.getUTCFullYear()}-${
+			datetime.getUTCMonth() + 1
+		}-${datetime.getUTCDate()} 00-00-00`;
+	}
 
 	// Get class data:
 	let classes = [];
 	function getClassData() {
-		classes.length = 0;
-		let classquery = "SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
-		con.query(classquery, (err, result, fields) => {
-			if (err) throw err;
-
-			result.forEach(({ id, name }) => {
-				if (name !== "Epic" && name !== "Legendary")
-					classes.push({
-						id,
-						name,
+		return new Promise((resolve, reject) => {
+			classes.length = 0;
+			const query = "SELECT * FROM `classes` ORDER BY `classes`.`name` ASC;";
+			queryAndRetry(query, 3)
+				.then((result) => {
+					result.forEach(({ id, name }) => {
+						if (name !== "Epic" && name !== "Legendary")
+							classes.push({
+								id,
+								name,
+							});
 					});
-			});
 
-			console.log(`Retrieved ${classes.length} classes`);
+					console.log(`Retrieved ${classes.length} classes`);
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error getting class data!", err);
+					reject(err);
+				});
 		});
 	}
 
 	// Get race data:
 	let races = [];
 	function getRaceData() {
-		races.length = 0;
-		let racequery = "SELECT * FROM `races` ORDER BY `races`.`name` ASC;";
-		con.query(racequery, (err, result, fields) => {
-			if (err) throw err;
+		return new Promise((resolve, reject) => {
+			races.length = 0;
+			const query = "SELECT * FROM `races` ORDER BY `races`.`name` ASC;";
+			queryAndRetry(query, 3)
+				.then((result) => {
+					result.forEach(({ name }) => {
+						races.push(name);
+					});
 
-			let total = 0;
+					let output = [];
+					races.forEach((race) => {
+						output.push({
+							id: race,
+							label: race,
+							value: 0,
+						});
+					});
 
-			result.forEach(({ name }) => {
-				races.push(name);
-			});
-
-			let output = [];
-			races.forEach((race) => {
-				output.push({
-					id: race,
-					label: race,
-					value: 0,
+					console.log(`Retrieved ${races.length} races`);
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error getting race data!", err);
+					reject(err);
 				});
-			});
-
-			console.log(`Retrieved ${races.length} races`);
 		});
 	}
 
@@ -99,17 +139,22 @@ con.connect((err) => {
 					)
 				) +
 				"';";
-			con.query(query, (err, result, fields) => {
-				if (err) throw reject(err);
-				players.length = 0;
 
-				result.forEach((player) => {
-					players.push(player);
+			queryAndRetry(query, 3)
+				.then((result) => {
+					players.length = 0;
+
+					result.forEach((player) => {
+						players.push(player);
+					});
+
+					console.log(`Retrieved ${players.length} players`);
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error getting player data!", err);
+					reject(err);
 				});
-
-				console.log(`Retrieved ${players.length} players`);
-				resolve();
-			});
 		});
 	}
 
@@ -117,78 +162,83 @@ con.connect((err) => {
 	let cacheablePlayers = [];
 	function getCacheablePlayerData(seconds) {
 		return new Promise(async (resolve, reject) => {
-			let query = `SELECT JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'Name', IF(p.anonymous, 'Anonymous', p.name),
-                        'Gender', p.gender,
-                        'Race', p.race,
-                        'Guild', IF(p.anonymous, '(redacted)', p.guild),
-                        'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
-                        'TotalLevel', totallevel,
-                        'Server', server,
-						'HomeServer', homeserver,
-                        'GroupId', groupid,
-                        'InParty', IF(groupid = 0, 0, 1),
-                        'Classes', JSON_ARRAY(
-                            JSON_OBJECT(
-                                'Name', c1.name,
-                                'Level', p.level1
-                            ),
-                            JSON_OBJECT(
-                                'Name', c2.name,
-                                'Level', p.level2
-                            ),
-                            JSON_OBJECT(
-                                'Name', c3.name,
-                                'Level', p.level3
-                            ),
-                            JSON_OBJECT(
-                                'Name', c4.name,
-                                'Level', p.level4
-                            ),
-                            JSON_OBJECT(
-                                'Name', c5.name,
-                                'Level', p.level5
-                            )
-                        )
-                    )
-                ) AS data
-                FROM players p 
-                LEFT JOIN areas a ON p.location = a.areaid 
-                LEFT JOIN classes c1 ON p.class1 = c1.id 
-                LEFT JOIN classes c2 ON p.class2 = c2.id 
-                LEFT JOIN classes c3 ON p.class3 = c3.id 
-                LEFT JOIN classes c4 ON p.class4 = c4.id 
-                LEFT JOIN classes c5 ON p.class5 = c5.id 
-                WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -${seconds} SECOND)`;
+			const query = `SELECT JSON_ARRAYAGG(
+											JSON_OBJECT(
+													'Name', IF(p.anonymous, 'Anonymous', p.name),
+													'Gender', p.gender,
+													'Race', p.race,
+													'Guild', IF(p.anonymous, '(redacted)', p.guild),
+													'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
+													'TotalLevel', totallevel,
+													'Server', server,
+							'HomeServer', homeserver,
+													'GroupId', groupid,
+													'InParty', IF(groupid = 0, 0, 1),
+													'Classes', JSON_ARRAY(
+															JSON_OBJECT(
+																	'Name', c1.name,
+																	'Level', p.level1
+															),
+															JSON_OBJECT(
+																	'Name', c2.name,
+																	'Level', p.level2
+															),
+															JSON_OBJECT(
+																	'Name', c3.name,
+																	'Level', p.level3
+															),
+															JSON_OBJECT(
+																	'Name', c4.name,
+																	'Level', p.level4
+															),
+															JSON_OBJECT(
+																	'Name', c5.name,
+																	'Level', p.level5
+															)
+													)
+											)
+									) AS data
+									FROM players p 
+									LEFT JOIN areas a ON p.location = a.areaid 
+									LEFT JOIN classes c1 ON p.class1 = c1.id 
+									LEFT JOIN classes c2 ON p.class2 = c2.id 
+									LEFT JOIN classes c3 ON p.class3 = c3.id 
+									LEFT JOIN classes c4 ON p.class4 = c4.id 
+									LEFT JOIN classes c5 ON p.class5 = c5.id 
+									WHERE p.lastseen > DATE_ADD(UTC_TIMESTAMP(), INTERVAL -${seconds} SECOND)`;
+			queryAndRetry(query, 3)
+				.then((result) => {
+					if (result && result.length && result[0]["data"]) {
+						cacheablePlayers = result[0]["data"];
+					} else {
+						cacheablePlayers = [];
+					}
 
-			con.query(query, (err, result, fields) => {
-				if (err) throw reject(err);
-
-				if (result && result.length && result[0]["data"]) {
-					cacheablePlayers = result[0]["data"];
-				} else {
-					cacheablePlayers = [];
-				}
-
-				console.log(`Retrieved ${cacheablePlayers.length} players`);
-				resolve();
-			});
+					console.log(`Retrieved ${cacheablePlayers.length} players`);
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error getting player data!", err);
+					reject(err);
+				});
 		});
 	}
 
 	function cachePlayerData(servers) {
 		return new Promise(async (resolve, reject) => {
 			// prettier-ignore
-			let query = `INSERT INTO players_cached (datetime, argonnessen, cannith, ghallanda, khyber, orien, sarlona, thelanis, wayfinder, hardcore)
-                         VALUES (CURRENT_TIMESTAMP, ${con.escape(JSON.stringify(servers[0]))}, ${con.escape(JSON.stringify(servers[1]))}, ${con.escape(JSON.stringify(servers[2]))}
-                         , ${con.escape(JSON.stringify(servers[3]))}, ${con.escape(JSON.stringify(servers[4]))}, ${con.escape(JSON.stringify(servers[5]))}, ${con.escape(JSON.stringify(servers[6]))}
-                         , ${con.escape(JSON.stringify(servers[7]))}, ${con.escape(JSON.stringify(servers[8]))})`;
-
-			con.query(query, (err, result, fields) => {
-				if (err) reject(err);
-				resolve();
-			});
+			const query = `INSERT INTO players_cached (datetime, argonnessen, cannith, ghallanda, khyber, orien, sarlona, thelanis, wayfinder, hardcore)
+													 VALUES (CURRENT_TIMESTAMP, ${mysqlConnection.escape(JSON.stringify(servers[0]))}, ${mysqlConnection.escape(JSON.stringify(servers[1]))}, ${mysqlConnection.escape(JSON.stringify(servers[2]))}
+													 , ${mysqlConnection.escape(JSON.stringify(servers[3]))}, ${mysqlConnection.escape(JSON.stringify(servers[4]))}, ${mysqlConnection.escape(JSON.stringify(servers[5]))}, ${mysqlConnection.escape(JSON.stringify(servers[6]))}
+													 , ${mysqlConnection.escape(JSON.stringify(servers[7]))}, ${mysqlConnection.escape(JSON.stringify(servers[8]))})`;
+			queryAndRetry(query, 1)
+				.then(() => {
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error caching player data!", err);
+					reject(err);
+				});
 		});
 	}
 
@@ -196,21 +246,24 @@ con.connect((err) => {
 	function getPopulationData(days) {
 		return new Promise(async (resolve, reject) => {
 			population.length = 0;
-			let query =
+			const query =
 				"SELECT * FROM `population` WHERE `datetime` >= '" +
 				GetDateString(new Date(new Date().getTime() - 60000 * 60 * 24 * days)) +
 				"' ORDER BY `population`.`datetime` ASC;";
-			con.query(query, (err, result, fields) => {
-				if (err) throw err;
+			queryAndRetry(query, 3)
+				.then((result) => {
+					result.forEach((data) => {
+						data.datetime = new Date(data.datetime + "Z");
+						population.push(data);
+					});
 
-				result.forEach((data) => {
-					data.datetime = new Date(data.datetime + "Z");
-					population.push(data);
+					console.log(`Retrieved ${population.length} population data points`);
+					resolve();
+				})
+				.catch((err) => {
+					console.log("Error getting population data!", err);
+					reject(err);
 				});
-
-				console.log(`Retrieved ${population.length} population data points`);
-				resolve();
-			});
 		});
 	}
 
@@ -247,16 +300,16 @@ con.connect((err) => {
 			runServerDistribution(population, "groups");
 		});
 
-		getClassData();
-		getRaceData();
-		getPlayerData(91).then(() => {
-			runClassDistribution(players, classes, "normal");
-			runRaceDistribution(players, races, "normal");
-			runLevelDistribution(players, "normal");
-			runClassDistribution(players, classes, "banks");
-			runRaceDistribution(players, races, "banks");
-			runLevelDistribution(players, "banks");
-			runUniqueReport(players);
+		Promise.all([getClassData(), getRaceData()]).then(() => {
+			getPlayerData(91).then(() => {
+				runClassDistribution(players, classes, "normal");
+				runRaceDistribution(players, races, "normal");
+				runLevelDistribution(players, "normal");
+				runClassDistribution(players, classes, "banks");
+				runRaceDistribution(players, races, "banks");
+				runLevelDistribution(players, "banks");
+				runUniqueReport(players);
+			});
 		});
 	});
 
@@ -288,14 +341,18 @@ con.connect((err) => {
 					var t1 = new Date();
 					console.log(`-> Finished in ${t1 - t0}ms`);
 				} else {
-					cachePlayers(cacheablePlayers).then((servers) =>
-						cachePlayerData(servers).then(() => {
-							var t1 = new Date();
-							console.log(`-> Finished in ${t1 - t0}ms`);
-						})
-					);
+					// cachePlayers(cacheablePlayers).then((servers) =>
+					// 	cachePlayerData(servers).then(() => {
+					// 		var t1 = new Date();
+					// 		console.log(`-> Finished in ${t1 - t0}ms`);
+					// 	})
+					// );
 				}
 			})
 			.catch((err) => console.log(err));
 	});
+}
+
+restartMySql().then((result) => {
+	runReportWorker(result);
 });

@@ -1,6 +1,6 @@
 import path from "path";
 
-const demographicsApi = (api) => {
+const demographicsApi = (api, mysqlConnection) => {
 	const population = [
 		["leveldistribution", "leveldistributionquarter"],
 		["classdistribution", "classdistributionquarter"],

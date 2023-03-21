@@ -1,14 +1,8 @@
 import path from "path";
-import mysql from "mysql2";
+import useQuery from "./useQuery.js";
 
-var con = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
-});
-
-const populationApi = (api) => {
+const populationApi = (api, mysqlConnection) => {
+	const { queryAndRetry } = useQuery(mysqlConnection);
 	const servers = [
 		"argonnessen",
 		"cannith",
@@ -59,71 +53,43 @@ const populationApi = (api) => {
 		});
 	});
 
-	con.connect((err) => {
-		if (err) throw err;
-		console.log("Population API connected to the database");
-
-		function lookupStatsByRange(server, startDate, endDate, final) {
-			return new Promise(async (resolve, reject) => {
-				let query = `SELECT \`id\`, \`datetime\`, \`${server}_playercount\`, \`${server}_lfmcount\` FROM \`population\` WHERE \`datetime\` BETWEEN ${con.escape(
-					startDate
-				)} AND ${con.escape(endDate)}`;
-
-				con.query(query, (err, result, fields) => {
-					if (err) {
-						if (final) {
-							console.log("Failed to reconnect. Aborting!");
-							reject(err);
-						} else {
-							console.log("Attempting to reconnect...");
-							// Try to reconnect:
-							con = mysql.createConnection({
-								host: process.env.DB_HOST,
-								user: process.env.DB_USER,
-								password: process.env.DB_PASS,
-								database: process.env.DB_NAME,
-							});
-							lookupStatsByRange(server, startDate, endDate, true)
-								.then((result) => {
-									console.log("Reconnected!");
-									resolve(result);
-								})
-								.catch((err) => reject(err));
-						}
-					} else {
-						if (result == null) {
-							reject("null data");
-						} else {
-							resolve(result);
-						}
-					}
+	function lookupStatsByRange(server, startDate, endDate) {
+		return new Promise(async (resolve, reject) => {
+			let query = `SELECT \`id\`, \`datetime\`, \`${server}_playercount\`, \`${server}_lfmcount\` FROM \`population\` WHERE \`datetime\` BETWEEN ${mysqlConnection.escape(
+				startDate
+			)} AND ${mysqlConnection.escape(endDate)}`;
+			queryAndRetry(query, 3)
+				.then((result) => {
+					resolve(result);
+				})
+				.catch((err) => {
+					reject(err);
 				});
-			});
-		}
-
-		api.post(`/population/range`, (req, res) => {
-			const server = (req.body.server || "").toLowerCase();
-			const startDate = req.body.startDate;
-			const endDate = req.body.endDate;
-			if (!server || !startDate || !endDate || !servers.includes(server)) {
-				res.setHeader("Content-Type", "application/json");
-				res.send({ error: "Server, start date, or end date is missing" });
-			} else {
-				// range check
-				if (
-					new Date(endDate).getTime() - new Date(startDate).getTime() >
-					1000 * 60 * 60 * 24 * 91 // 32 days
-				) {
-					res.setHeader("Content-Type", "application/json");
-					res.send({ error: "Date range too wide" });
-				} else {
-					lookupStatsByRange(server, startDate, endDate).then((result) => {
-						res.setHeader("Content-Type", "application/json");
-						res.send(result);
-					});
-				}
-			}
 		});
+	}
+
+	api.post(`/population/range`, (req, res) => {
+		const server = (req.body.server || "").toLowerCase();
+		const startDate = req.body.startDate;
+		const endDate = req.body.endDate;
+		if (!server || !startDate || !endDate || !servers.includes(server)) {
+			res.setHeader("Content-Type", "application/json");
+			res.send({ error: "Server, start date, or end date is missing" });
+		} else {
+			// range check
+			if (
+				new Date(endDate).getTime() - new Date(startDate).getTime() >
+				1000 * 60 * 60 * 24 * 91 // 91 days
+			) {
+				res.setHeader("Content-Type", "application/json");
+				res.send({ error: "Date range too wide" });
+			} else {
+				lookupStatsByRange(server, startDate, endDate).then((result) => {
+					res.setHeader("Content-Type", "application/json");
+					res.send(result);
+				});
+			}
+		}
 	});
 };
 
