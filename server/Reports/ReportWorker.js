@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import useQuery from "../Endpoints/useQuery.js";
+import useQuery from "../hooks/useQuery.js";
 
 // Get data once, then run all of the reports using that data...
 import runClassDistribution from "./Demographics/ClassDistribution.js";
@@ -339,14 +339,14 @@ function runReportWorker(mysqlConnection) {
 			.then(() => {
 				if (cacheablePlayers == null || cacheablePlayers.length === 0) {
 					var t1 = new Date();
-					console.log(`-> Finished in ${t1 - t0}ms`);
+					console.log(`-> Finished in ${t1 - t0}ms (NO PLAYERS!)`);
 				} else {
-					// cachePlayers(cacheablePlayers).then((servers) =>
-					// 	cachePlayerData(servers).then(() => {
-					// 		var t1 = new Date();
-					// 		console.log(`-> Finished in ${t1 - t0}ms`);
-					// 	})
-					// );
+					cachePlayers(cacheablePlayers).then((servers) =>
+						cachePlayerData(servers).then(() => {
+							var t1 = new Date();
+							console.log(`-> Finished in ${t1 - t0}ms`);
+						})
+					);
 				}
 			})
 			.catch((err) => console.log(err));
