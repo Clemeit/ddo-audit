@@ -340,10 +340,7 @@ const Grouping = () => {
             >
               <div className="nav-box-title">
                 <RegisterSVG className="nav-icon should-invert" />
-                <h2 className="content-option-title">
-                  Register Characters
-                  <div className="new-tag">NEW</div>
-                </h2>
+                <h2 className="content-option-title">Register Characters</h2>
               </div>
               <p className="content-option-description">
                 Add your characters for automatic LFM filtering and raid timer
@@ -360,10 +357,7 @@ const Grouping = () => {
             >
               <div className="nav-box-title">
                 <TimerSVG className="nav-icon should-invert" />
-                <h2 className="content-option-title">
-                  Raid Timers
-                  <div className="new-tag">NEW</div>
-                </h2>
+                <h2 className="content-option-title">Raid Timers</h2>
               </div>
               <p className="content-option-description">
                 View and manage your current raid timers.
