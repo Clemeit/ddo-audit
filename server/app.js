@@ -30,58 +30,58 @@ api.use(bodyParser.urlencoded({ extended: true }));
 const { sendMessage } = useMail();
 
 async function restartMySql() {
-	return new Promise((resolve, reject) => {
-		let mysqlConnection;
+  return new Promise((resolve, reject) => {
+    let mysqlConnection;
 
-		console.log("MySQL reconnecting...");
-		// Try to reconnect:
-		mysqlConnection = mysql.createConnection({
-			host: process.env.DB_HOST,
-			user: process.env.DB_USER,
-			password: process.env.DB_PASS,
-			database: process.env.DB_NAME,
-		});
+    console.log("MySQL reconnecting...");
+    // Try to reconnect:
+    mysqlConnection = mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+    });
 
-		mysqlConnection.connect((err) => {
-			if (err) {
-				console.log("Failed to reconnect. Aborting!", err);
-				setTimeout(restartMySql, 5000);
-				reject();
-			} else {
-				console.log("Reconnected!");
-				sendMessage("MySQL reconnected");
-				resolve(mysqlConnection);
-			}
-		});
+    mysqlConnection.connect((err) => {
+      if (err) {
+        console.log("Failed to reconnect. Aborting!", err);
+        setTimeout(restartMySql, 5000);
+        reject();
+      } else {
+        console.log("Reconnected!");
+        sendMessage("MySQL reconnected");
+        resolve(mysqlConnection);
+      }
+    });
 
-		mysqlConnection.on("error", (err) => {
-			if (err.code === "PROTOCOL_CONNECTION_LOST") {
-				restartMySql();
-				sendMessage("MySQL connection lost");
-			} else {
-				restartMySql();
-				if (err && err.code) {
-					sendMessage(`MySQL error: ${err.code}`);
-				} else {
-					sendMessage(`MySQL undefined error`);
-				}
-			}
-		});
-	});
+    mysqlConnection.on("error", (err) => {
+      if (err.code === "PROTOCOL_CONNECTION_LOST") {
+        restartMySql();
+        sendMessage("MySQL connection lost");
+      } else {
+        restartMySql();
+        if (err && err.code) {
+          sendMessage(`MySQL error: ${err.code}`);
+        } else {
+          sendMessage(`MySQL undefined error`);
+        }
+      }
+    });
+  });
 }
 
 restartMySql().then((result) => {
-	// Major endpoints
-	populationApi(api, result);
-	demographicsApi(api, result);
-	groupsApi(api, result);
-	playersApi(api, result);
-	messageServiceApi(api, result);
-	gameStatusApi(api, result);
-	activityApi(api, result);
-	friendsApi(api, result);
-	// iotApi(api);
-	caasApi(api, result);
+  // Major endpoints
+  populationApi(api, result);
+  demographicsApi(api, result);
+  groupsApi(api, result);
+  playersApi(api, result);
+  messageServiceApi(api, result);
+  gameStatusApi(api, result);
+  activityApi(api, result);
+  friendsApi(api, result);
+  // iotApi(api);
+  caasApi(api, result);
 });
 
 // Firebase
@@ -90,5 +90,5 @@ restartMySql().then((result) => {
 // });
 
 api.listen(API_PORT, () => {
-	console.log(`API listening on ${API_PORT}`);
+  console.log(`API listening on ${API_PORT}`);
 });
