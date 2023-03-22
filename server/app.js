@@ -10,9 +10,10 @@ import messageServiceApi from "./Endpoints/MessageService.js";
 import gameStatusApi from "./Endpoints/GameStatus.js";
 import activityApi from "./Endpoints/Activity.js";
 import friendsApi from "./Endpoints/Friends.js";
-import iotApi from "./Endpoints/IOT.js";
+// import iotApi from "./Endpoints/IOT.js";
 import caasApi from "./Endpoints/CaaS.js";
 import mysql from "mysql2";
+import useMail from "./hooks/useMail.js";
 
 // import { initializeApp, applicationDefault } from "firebase-admin/app";
 
@@ -25,6 +26,8 @@ api.options("*", cors());
 api.use(express.json());
 api.use(bodyParser.json()); // support json encoded bodies
 api.use(bodyParser.urlencoded({ extended: true }));
+
+const { sendMessage } = useMail();
 
 async function restartMySql() {
 	return new Promise((resolve, reject) => {
@@ -46,6 +49,7 @@ async function restartMySql() {
 				reject();
 			} else {
 				console.log("Reconnected!");
+				sendMessage("MySQL reconnected");
 				resolve(mysqlConnection);
 			}
 		});
@@ -53,8 +57,14 @@ async function restartMySql() {
 		mysqlConnection.on("error", (err) => {
 			if (err.code === "PROTOCOL_CONNECTION_LOST") {
 				restartMySql();
+				sendMessage("MySQL connection lost");
 			} else {
-				throw err;
+				restartMySql();
+				if (err && err.code) {
+					sendMessage(`MySQL error: ${err.code}`);
+				} else {
+					sendMessage(`MySQL undefined error`);
+				}
 			}
 		});
 	});
