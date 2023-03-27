@@ -22,7 +22,10 @@ const DataClassification = (props) => {
         }}
       >
         {location === path && (
-          <ArrowSVG style={{ width: "30px", height: "30px" }} />
+          <ArrowSVG
+            className="nav-icon should-invert"
+            style={{ width: "30px", height: "30px" }}
+          />
         )}
         {text}
       </div>

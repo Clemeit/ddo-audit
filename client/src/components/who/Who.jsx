@@ -217,10 +217,7 @@ const Who = (props) => {
             >
               <div className="nav-box-title">
                 <FriendsSVG className="nav-icon should-invert" />
-                <h2 className="content-option-title">
-                  Friends List
-                  <div className="new-tag">NEW</div>
-                </h2>
+                <h2 className="content-option-title">Friends List</h2>
               </div>
               <p className="content-option-description">
                 Build your own friends list to quickly see who's online.
