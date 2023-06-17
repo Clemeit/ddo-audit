@@ -802,7 +802,6 @@ const Directory = (props) => {
               </p>
             </Link>
             <Link
-              onClick={() => Log("Transfers page", "From Servers card link")}
               to="/transfers"
               className="nav-box shrinkable"
               style={{

@@ -2,7 +2,6 @@ import React from "react";
 import { NavBar, NavItem, NavDropdown, NavSubItem, NavDivider } from "./NavBar";
 import { ReactComponent as HomeSVG } from "../../assets/global/home.svg";
 import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";
-import { ReactComponent as TransferSVG } from "../../assets/global/transfer.svg";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as GroupingSVG } from "../../assets/global/grouping.svg";
 import { ReactComponent as WhoSVG } from "../../assets/global/who.svg";
@@ -11,7 +10,6 @@ import { ReactComponent as AboutSVG } from "../../assets/global/about.svg";
 import { ReactComponent as MenuSVG } from "../../assets/global/menu.svg";
 import ServerHook from "../../hooks/ServerHook";
 import { SERVER_LIST } from "../../constants/Servers";
-import { Log } from "../../services/CommunicationService";
 
 const NavMenu = () => {
   const SERVERS = ServerHook();
@@ -84,18 +82,6 @@ const NavMenu = () => {
             </NavSubItem>
           ))}
         </NavDropdown>
-        {/* <NavItem to="/quests" className="hide-on-mobile">
-                    <QuestsSVG className="nav-icon" />
-                    <span className="nav-title">Quests</span>
-                </NavItem> */}
-        <NavItem
-          onClick={() => Log("Transfers page", "From NavMenu")}
-          to="/transfers"
-          className="hide-on-mobile"
-        >
-          <TransferSVG className="nav-icon" />
-          <span className="nav-title">Transfers</span>
-        </NavItem>
         <NavItem to="/trends" className="hide-on-mobile">
           <TrendsSVG className="nav-icon" />
           <span className="nav-title">Trends</span>

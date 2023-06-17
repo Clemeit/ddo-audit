@@ -8,8 +8,7 @@ export default class Footer extends Component {
           <p className="footer-text">
             DDO Audit is brought to you by Clemeit of Thelanis.
             <br />
-            This free utility generates no revenue and is subject to change
-            without notice.
+            This utility is subject to change without notice.
           </p>
         </center>
       </div>

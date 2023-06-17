@@ -355,9 +355,8 @@ const About = (props) => {
               Daybreak Game Company
             </a>
             . Dungeons and Dragons Online is a registered trademark of Wizards
-            of the Coast LLC. This website generates no revenue and is not used
-            for commercial purposes. I do not host ads nor accept donations. You
-            can support this project by supporting Dungeons and Dragons Online.
+            of the Coast LLC. You can support this project by supporting
+            Dungeons and Dragons Online.
           </p>
         </ContentCluster>
         <ContentCluster title="More Information">

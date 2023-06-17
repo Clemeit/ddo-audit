@@ -73,7 +73,6 @@ const Directory = (props) => {
           description:
             "Which servers are gaining characters and which servers are losing them.",
           to: "/transfers",
-          callback: () => Log("Transfers page", "From Directory"),
         },
       ],
     },
