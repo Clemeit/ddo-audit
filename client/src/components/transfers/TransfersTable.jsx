@@ -1,25 +1,89 @@
 import React from "react";
 
 const TransfersTable = (props) => {
+  const FROZEN_DATA = [
+    {
+      server: "Argonnessen",
+      activeTotal: 21347,
+      activeTransfersFrom: 131,
+      activeTransfersTo: 0,
+      uniqueTotal: 68220,
+      totalTransfersFrom: 1994,
+      totalTransfersTo: 0,
+    },
+    {
+      server: "Cannith",
+      activeTotal: 11896,
+      activeTransfersFrom: 419,
+      activeTransfersTo: 0,
+      uniqueTotal: 43260,
+      totalTransfersFrom: 4123,
+      totalTransfersTo: 0,
+    },
+    {
+      server: "Ghallanda",
+      activeTotal: 28168,
+      activeTransfersFrom: 1143,
+      activeTransfersTo: 0,
+      uniqueTotal: 65831,
+      totalTransfersFrom: 9793,
+      totalTransfersTo: 0,
+    },
+    {
+      server: "Khyber",
+      activeTotal: 11595,
+      activeTransfersFrom: 174,
+      activeTransfersTo: 0,
+      uniqueTotal: 48287,
+      totalTransfersFrom: 2230,
+      totalTransfersTo: 51,
+    },
+
+    {
+      server: "Orien (FREE)",
+      activeTotal: 32862,
+      activeTransfersFrom: 5,
+      activeTransfersTo: 2259,
+      uniqueTotal: 101827,
+      totalTransfersFrom: 571,
+      totalTransfersTo: 20670,
+    },
+    {
+      server: "Sarlona (FREE)",
+      activeTotal: 11420,
+      activeTransfersFrom: 73,
+      activeTransfersTo: 335,
+      uniqueTotal: 55074,
+      totalTransfersFrom: 1243,
+      totalTransfersTo: 5059,
+    },
+    {
+      server: "Thelanis",
+      activeTotal: 12913,
+      activeTransfersFrom: 131,
+      activeTransfersTo: 0,
+      uniqueTotal: 52514,
+      totalTransfersFrom: 2111,
+      totalTransfersTo: 0,
+    },
+    {
+      server: "Wayfinder",
+      activeTotal: 8079,
+      activeTransfersFrom: 126,
+      activeTransfersTo: 0,
+      uniqueTotal: 22002,
+      totalTransfersFrom: 2055,
+      totalTransfersTo: 0,
+    },
+  ];
+
   const [serverAggregateData, setServerAggregateData] = React.useState(null);
   React.useEffect(() => {
-    const {
-      transfersToData,
-      transfersActiveToData,
-      transfersFromData,
-      transfersActiveFromData,
-    } = props;
     let serverAggregate = [];
-    props.uniqueData.forEach((server, i) => {
+    FROZEN_DATA.forEach((server, i) => {
       if (server.Name !== "Hardcore") {
         serverAggregate.push({
-          server: server.Name,
-          uniqueTotal: server.TotalCharacters,
-          activeTotal: server.ActiveCharacters,
-          totalTransfersTo: transfersToData[i].delta,
-          activeTransfersTo: transfersActiveToData[i].delta,
-          totalTransfersFrom: transfersFromData[i].delta,
-          activeTransfersFrom: transfersActiveFromData[i].delta,
+          ...server,
         });
       }
     });
@@ -27,7 +91,7 @@ const TransfersTable = (props) => {
   }, []);
 
   const getCellText = (portion, total, deltaColor) => {
-    return portion < 0 || total <= 0 ? (
+    return portion <= 0 || total <= 0 ? (
       <span style={{ color: "var(--text-faded)" }}>N/A</span>
     ) : (
       <span>

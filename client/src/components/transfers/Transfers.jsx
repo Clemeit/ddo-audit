@@ -4,16 +4,14 @@ import PopupMessage from "../global/PopupMessage";
 import Banner from "../global/Banner";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
-import { Log, Submit } from "../../services/CommunicationService";
+import { Log } from "../../services/CommunicationService";
 import ChartLine from "../global/ChartLine";
 import { Fetch } from "../../services/DataLoader";
 import ToggleButton from "../global/ToggleButton";
 import { Link } from "react-router-dom";
-import { ReactComponent as ThumbsDownSVG } from "../../assets/global/thumbs_down.svg";
-import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg";
-import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import TransfersTable from "./TransfersTable";
 import DataClassification from "../global/DataClassification";
+import PageMessage from "../global/PageMessage";
 
 const Transfers = () => {
   const TITLE = "Server Transfers";
@@ -26,34 +24,6 @@ const Transfers = () => {
 
   // Popup message
   var [popupMessage, setPopupMessage] = React.useState(null);
-
-  const [uniqueData, setUniqueData] = React.useState(null);
-  const [voteMessage, setVoteMessage] = React.useState(null);
-  const [mayVote, setMayVote] = React.useState(false);
-  const [hasVoted, setHasVoted] = React.useState(false);
-  React.useEffect(() => {
-    let ls = localStorage.getItem("feature-vote-server-transfers");
-    if (ls == null) {
-      setMayVote(true);
-    } else {
-      setMayVote(false);
-    }
-  }, []);
-  function vote(response) {
-    if (response != null) {
-      Submit("Feature: Server Transfers (v3)", response);
-      if (response === "Like") {
-        setVoteMessage("positive");
-      } else {
-        setVoteMessage("negative");
-      }
-    } else {
-      setVoteMessage("close");
-      setMayVote(false);
-    }
-    setHasVoted(true);
-    localStorage.setItem("feature-vote-server-transfers", new Date());
-  }
 
   const [ignoreHCLCounts, setIgnoreHCLCounts] = React.useState(true);
   const [ignoreHCLTo, setIgnoreHCLTo] = React.useState(true);
@@ -116,25 +86,10 @@ const Transfers = () => {
   const [transfersTo, setTransfersTo] = React.useState(null);
   const [transfersFrom, setTransfersFrom] = React.useState(null);
 
-  const [tableAllTo, setTableAllTo] = React.useState(null);
-  const [tableActiveTo, setTableActiveTo] = React.useState(null);
-  const [tableAllFrom, setTableAllFrom] = React.useState(null);
-  const [tableActiveFrom, setTableActiveFrom] = React.useState(null);
-
   React.useEffect(() => {
     let fetchDelay = setTimeout(() => {
-      Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
-        .then((val) => {
-          setUniqueData(val);
-        })
-        .catch((err) => {
-          dataFailedToLoad();
-        });
-
       Fetch(`https://api.ddoaudit.com/population/transfersto_ignorehcl`, 5000)
         .then((val) => {
-          let tableData = [];
-
           val.forEach((server) => {
             let feb8Count = -1;
             let finalCount = -1;
@@ -144,13 +99,7 @@ const Transfers = () => {
               }
               finalCount = dataPoint.y;
             });
-            tableData.push({
-              server: server.id,
-              delta: finalCount - feb8Count,
-            });
           });
-
-          setTableAllTo(tableData);
         })
         .catch((err) => {
           dataFailedToLoad();
@@ -161,8 +110,6 @@ const Transfers = () => {
         5000
       )
         .then((val) => {
-          let tableData = [];
-
           val.forEach((server) => {
             let feb8Count = -1;
             let finalCount = -1;
@@ -172,13 +119,7 @@ const Transfers = () => {
               }
               finalCount = dataPoint.y;
             });
-            tableData.push({
-              server: server.id,
-              delta: finalCount - feb8Count,
-            });
           });
-
-          setTableActiveTo(tableData);
         })
         .catch((err) => {
           dataFailedToLoad();
@@ -186,8 +127,6 @@ const Transfers = () => {
 
       Fetch(`https://api.ddoaudit.com/population/transfersfrom_ignorehcl`, 5000)
         .then((val) => {
-          let tableData = [];
-
           val.forEach((server) => {
             let feb8Count = -1;
             let finalCount = -1;
@@ -197,13 +136,7 @@ const Transfers = () => {
               }
               finalCount = dataPoint.y;
             });
-            tableData.push({
-              server: server.id,
-              delta: finalCount - feb8Count,
-            });
           });
-
-          setTableAllFrom(tableData);
         })
         .catch((err) => {
           dataFailedToLoad();
@@ -214,8 +147,6 @@ const Transfers = () => {
         5000
       )
         .then((val) => {
-          let tableData = [];
-
           val.forEach((server) => {
             let feb8Count = -1;
             let finalCount = -1;
@@ -225,13 +156,7 @@ const Transfers = () => {
               }
               finalCount = dataPoint.y;
             });
-            tableData.push({
-              server: server.id,
-              delta: finalCount - feb8Count,
-            });
           });
-
-          setTableActiveFrom(tableData);
         })
         .catch((err) => {
           dataFailedToLoad();
@@ -437,69 +362,6 @@ const Transfers = () => {
     return () => clearTimeout(logView);
   }, []);
 
-  const VoteContainer = () => (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
-      {mayVote &&
-        (hasVoted ? (
-          <div className="feature-vote-container">
-            {voteMessage === "positive" ? (
-              "Thanks!"
-            ) : voteMessage === "negative" ? (
-              <span>
-                Your <Link to="/suggestions">suggestions</Link> are welcome!
-              </span>
-            ) : (
-              ""
-            )}
-          </div>
-        ) : (
-          <div
-            className="feature-vote-container"
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <span
-              style={{
-                cursor: "default",
-              }}
-            >
-              New Feature
-            </span>
-            <ThumbsUpSVG
-              className="nav-icon-small should-invert"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => vote("Like")}
-            />
-            <ThumbsDownSVG
-              className="nav-icon-small should-invert"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => vote("Dislike")}
-            />
-            <CloseSVG
-              className="nav-icon-small should-invert"
-              style={{
-                cursor: "pointer",
-              }}
-              onClick={() => vote(null)}
-            />
-          </div>
-        ))}
-    </div>
-  );
-
   return (
     <div>
       <Helmet>
@@ -540,6 +402,13 @@ const Transfers = () => {
         <BannerMessage page="transfers" />
         <DataClassification classification="inferred" />
         <div className="top-content-padding-small shrink-on-mobile" />
+        <div className="content-cluster" style={{ marginBottom: "2rem" }}>
+          <PageMessage
+            fontSize="1.4"
+            title="Historical Data"
+            message={<>These reports were frozen on April 30, 2023.</>}
+          />
+        </div>
         <ContentCluster
           title="Important Changes"
           description={
@@ -600,9 +469,7 @@ const Transfers = () => {
                     A transfer is counted when the transferred character logs in
                     for the first time on the new server, NOT at the time of the
                     transfer being completed.
-                  </span>{" "}
-                  This means there <i>may</i> be many more characters that have
-                  been transferred but haven't been counted yet.
+                  </span>
                 </li>
                 <li>
                   This is a experimental feature, and it deals with a new set of
@@ -635,9 +502,7 @@ const Transfers = () => {
                   }}
                 >
                   <span>Thanks, Clemeit</span>
-                  <Link to="/suggestions">Make a suggestion</Link>
                 </div>
-                <VoteContainer />
               </div>
             </span>
           }
@@ -653,21 +518,7 @@ const Transfers = () => {
             </span>
           }
         >
-          {uniqueData &&
-          tableAllTo &&
-          tableActiveTo &&
-          tableAllFrom &&
-          tableActiveFrom ? (
-            <TransfersTable
-              uniqueData={uniqueData}
-              transfersToData={tableAllTo}
-              transfersActiveToData={tableActiveTo}
-              transfersFromData={tableAllFrom}
-              transfersActiveFromData={tableActiveFrom}
-            />
-          ) : (
-            <p style={{ width: "100%", textAlign: "center" }}>Loading...</p>
-          )}
+          <TransfersTable />
         </ContentCluster>
         <ContentCluster
           title="Total Counts"
@@ -741,10 +592,9 @@ const Transfers = () => {
             legendLeft="Total Transfer Characters"
             data={transferCounts}
             title="Transfer Characters"
-            marginBottom={60}
-            trendType="week"
+            marginBottom={100}
+            trendType="quarter"
             noArea={true}
-            straightLegend={true}
             tooltipPrefix="Day"
             padLeft={true}
             yMin="auto"
@@ -823,10 +673,9 @@ const Transfers = () => {
             legendLeft="Total Transfer Characters"
             data={transfersTo}
             title="Transfer Characters To"
-            marginBottom={60}
-            trendType="week"
+            marginBottom={100}
+            trendType="quarter"
             noArea={true}
-            straightLegend={true}
             tooltipPrefix="Day"
             padLeft={true}
             yMin="auto"
@@ -882,11 +731,9 @@ const Transfers = () => {
             legendLeft="Total Transfer Characters"
             data={transfersFrom}
             title="Transfer Characters From"
-            x
-            marginBottom={60}
-            trendType="week"
+            marginBottom={100}
+            trendType="quarter"
             noArea={true}
-            straightLegend={true}
             tooltipPrefix="Day"
             padLeft={true}
             yMin="auto"
