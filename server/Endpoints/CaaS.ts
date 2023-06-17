@@ -1,9 +1,16 @@
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
 
-const caasApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
 
-  function getValueFromLabel(label) {
+const caasApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
+
+  function getValueFromLabel(label: string) {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT value from \`caas\` WHERE \`label\` LIKE ${mysqlConnection.escape(
         label || ""
@@ -37,8 +44,9 @@ const caasApi = (api, mysqlConnection) => {
 
   api.get(`/caas`, (req, res) => {
     res.setHeader("Content-Type", "application/json");
-    if (req.query?.label) {
-      getValueFromLabel(req.query?.label)
+    const label: string = req.query?.label?.toString() || "";
+    if (label) {
+      getValueFromLabel(label)
         .then((result) => {
           res.send(result);
         })

@@ -1,9 +1,20 @@
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
 
-const activityApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
 
-  function getQuestActivity(questId, minimumLevel, maximumLevel) {
+const activityApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
+
+  const getQuestActivity = (
+    questId: string,
+    minimumLevel: string,
+    maximumLevel: string
+  ): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT a.playerlevel, a.start, TIME_TO_SEC(TIMEDIFF(end, start)) AS 'duration', a.server FROM activity a WHERE a.questid = ${mysqlConnection.escape(
         questId
@@ -18,9 +29,9 @@ const activityApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getActivityOverview(questType) {
+  const getActivityOverview = (questType: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT * FROM activity_cached a WHERE a.level ${
         questType === "heroic" ? "<" : ">="
@@ -33,7 +44,7 @@ const activityApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
   api.post(`/activity`, (req, res) => {
     res.setHeader("Content-Type", "application/json");

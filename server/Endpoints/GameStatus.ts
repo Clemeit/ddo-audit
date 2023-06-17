@@ -1,8 +1,15 @@
 import path from "path";
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery";
+import express from "express";
+import mysql from "mysql2";
 
-const gameStatusApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
+
+const gameStatusApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
   const servers = [
     ["Argonnessen", "argonnessen"],
     ["Cannith", "cannith"],
@@ -15,13 +22,13 @@ const gameStatusApi = (api, mysqlConnection) => {
     ["Hardcore", "hardcore"],
   ];
 
-  function getPlayerAndLfmOverview() {
+  const getPlayerAndLfmOverview = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT * from \`population\` WHERE id=(SELECT max(id) FROM population);`;
       queryAndRetry(query, 3)
         .then((result) => {
           if (result) {
-            let ret = [];
+            let ret: any[] = [];
             servers.forEach((server) => {
               ret.push({
                 ServerName: server[0],
@@ -39,9 +46,9 @@ const gameStatusApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getGroupTableCount() {
+  const getGroupTableCount = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT COUNT(*) AS Count from \`groups\`;`;
       queryAndRetry(query, 3)
@@ -56,9 +63,9 @@ const gameStatusApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getPlayerTableCount() {
+  const getPlayerTableCount = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT COUNT(*) AS Count from \`players_cached\`;`;
       queryAndRetry(query, 3)
@@ -73,9 +80,9 @@ const gameStatusApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  api.get(`/gamestatus/populationoverview`, (req, res) => {
+  api.get(`/gamestatus/populationoverview`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getPlayerAndLfmOverview()
       .then((result) => {
@@ -87,7 +94,7 @@ const gameStatusApi = (api, mysqlConnection) => {
       });
   });
 
-  api.get(`/gamestatus/grouptablecount`, (req, res) => {
+  api.get(`/gamestatus/grouptablecount`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getGroupTableCount()
       .then((result) => {
@@ -99,7 +106,7 @@ const gameStatusApi = (api, mysqlConnection) => {
       });
   });
 
-  api.get(`/gamestatus/playertablecount`, (req, res) => {
+  api.get(`/gamestatus/playertablecount`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getPlayerTableCount()
       .then((result) => {
@@ -111,7 +118,7 @@ const gameStatusApi = (api, mysqlConnection) => {
       });
   });
 
-  api.get(`/gamestatus/serverstatus`, (req, res) => {
+  api.get(`/gamestatus/serverstatus`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     res.sendFile(path.resolve(`./api_v1/gamestatus/serverstatus.json`));
   });

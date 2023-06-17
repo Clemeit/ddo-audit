@@ -1,5 +1,15 @@
-const useQuery = (mysqlConnection) => {
-  const queryAndRetry = async (query, n) => {
+import mysql from "mysql2";
+
+interface Props {
+  mysqlConnection: mysql.Connection;
+}
+
+interface Hook {
+  queryAndRetry: (query: string, n: number) => Promise<any>;
+}
+
+const useQuery = ({ mysqlConnection }: Props): Hook => {
+  const queryAndRetry = async (query: string, n: number): Promise<any> => {
     return new Promise((resolve, reject) => {
       const retry = () => {
         if (n === 1) {
@@ -9,7 +19,8 @@ const useQuery = (mysqlConnection) => {
           return queryAndRetry(query, n - 1);
         }
       };
-      if (!mysqlConnection || mysqlConnection.state === "disconnected") {
+      if (!mysqlConnection) {
+        console.log(mysqlConnection);
         reject({ error: "MySQL connection is not established" });
       } else {
         try {

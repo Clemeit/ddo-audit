@@ -10,10 +10,9 @@ import messageServiceApi from "./Endpoints/MessageService.js";
 import gameStatusApi from "./Endpoints/GameStatus.js";
 import activityApi from "./Endpoints/Activity.js";
 import friendsApi from "./Endpoints/Friends.js";
-// import iotApi from "./Endpoints/IOT.js";
 import caasApi from "./Endpoints/CaaS.js";
 import mysql from "mysql2";
-import useMail from "./hooks/useMail.js";
+import useMail from "./common/useMail.js";
 
 // import { initializeApp, applicationDefault } from "firebase-admin/app";
 
@@ -29,9 +28,9 @@ api.use(bodyParser.urlencoded({ extended: true }));
 
 const { sendMessage } = useMail();
 
-async function restartMySql() {
+async function restartMySql(): Promise<mysql.Connection> {
   return new Promise((resolve, reject) => {
-    let mysqlConnection;
+    let mysqlConnection: mysql.Connection;
 
     console.log("MySQL reconnecting...");
     // Try to reconnect:
@@ -54,7 +53,7 @@ async function restartMySql() {
       }
     });
 
-    mysqlConnection.on("error", (err) => {
+    mysqlConnection.on("error", (err: any) => {
       if (err.code === "PROTOCOL_CONNECTION_LOST") {
         restartMySql();
         sendMessage("MySQL connection lost");
@@ -70,18 +69,17 @@ async function restartMySql() {
   });
 }
 
-restartMySql().then((result) => {
+restartMySql().then((mysqlConnection: mysql.Connection) => {
   // Major endpoints
-  populationApi(api, result);
-  demographicsApi(api, result);
-  groupsApi(api, result);
-  playersApi(api, result);
-  messageServiceApi(api, result);
-  gameStatusApi(api, result);
-  activityApi(api, result);
-  friendsApi(api, result);
-  // iotApi(api);
-  caasApi(api, result);
+  populationApi({ api, mysqlConnection });
+  demographicsApi({ api });
+  groupsApi({ api, mysqlConnection });
+  playersApi({ api, mysqlConnection });
+  messageServiceApi({ api, mysqlConnection });
+  gameStatusApi({ api, mysqlConnection });
+  activityApi({ api, mysqlConnection });
+  friendsApi({ api, mysqlConnection });
+  caasApi({ api, mysqlConnection });
 });
 
 // Firebase

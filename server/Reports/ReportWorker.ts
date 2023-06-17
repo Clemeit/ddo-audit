@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
 
 // Get data once, then run all of the reports using that data...
 import runClassDistribution from "./Demographics/ClassDistribution.js";
@@ -16,15 +16,16 @@ import runDailyDistribution from "./Population/DailyDistribution.js";
 import runHourlyDistribution from "./Population/HourlyDistribution.js";
 import runServerDistribution from "./Population/ServerDistribution.js";
 import runUniqueReport from "./Population/UniqueCounts.js";
-import runTransferReport from "./Population/Transfer.js";
+// import runTransferReport from "./Population/Transfer.js";
 import cachePlayers from "./Players/Players.js";
 import runServerStatusReport from "./Game/ServerStatus.js";
+
 import mysql from "mysql2";
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
-let mysqlConnection;
+let mysqlConnection: mysql.Connection;
 
 async function restartMySql() {
   return new Promise((resolve, reject) => {
@@ -61,7 +62,7 @@ async function restartMySql() {
 }
 
 function runReportWorker(mysqlConnection) {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+  const { queryAndRetry } = useQuery({ mysqlConnection });
 
   console.log("Running report worker...");
   function GetDateString(datetime) {
@@ -314,11 +315,11 @@ function runReportWorker(mysqlConnection) {
   });
 
   // Every hour (not midnight because we get duplicate data)
-  cron.schedule("0 1-23 * * *", () => {
-    getPlayerData(91).then(() => {
-      runTransferReport(players);
-    });
-  });
+  // cron.schedule("0 1-23 * * *", () => {
+  //   getPlayerData(91).then(() => {
+  //     runTransferReport(players);
+  //   });
+  // });
 
   // Every 5 minutes
   cron.schedule("1-56/5 * * * *", () => {

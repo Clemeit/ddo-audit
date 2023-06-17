@@ -1,8 +1,15 @@
 import path from "path";
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
 
-const populationApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
+
+const populationApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
   const servers = [
     "argonnessen",
     "cannith",
@@ -15,7 +22,7 @@ const populationApi = (api, mysqlConnection) => {
     "hardcore",
   ];
 
-  const population = [
+  const populationMap = [
     ["day", "day"],
     ["day_groups", "day_groups"],
     ["week", "week"],
@@ -46,14 +53,18 @@ const populationApi = (api, mysqlConnection) => {
     ["transfersto_active_ignorehcl", "transfersto_active_ignorehcl"],
   ];
 
-  population.forEach((entry) => {
-    api.get(`/population/${entry[0]}`, (req, res) => {
+  populationMap.forEach((entry: string[]) => {
+    api.get(`/population/${entry[0]}`, (_, res) => {
       res.setHeader("Content-Type", "application/json");
       res.sendFile(path.resolve(`./api_v1/population/${entry[1]}.json`));
     });
   });
 
-  function lookupStatsByRange(server, startDate, endDate) {
+  function lookupStatsByRange(
+    server: string,
+    startDate: string,
+    endDate: string
+  ) {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT \`id\`, \`datetime\`, \`${server}_playercount\`, \`${server}_lfmcount\` FROM \`population\` WHERE \`datetime\` BETWEEN ${mysqlConnection.escape(
         startDate

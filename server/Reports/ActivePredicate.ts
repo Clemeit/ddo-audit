@@ -1,10 +1,20 @@
+/**
+ * Check if the player is active based on the last seen, last active, last movement, last level up and total level.
+ * @param {string} lastseen Last seen
+ * @param {string} lastactive Last active
+ * @param {string} lastmovement Last movement
+ * @param {string} lastlevelup Last level up
+ * @param {string} totallevel Total level
+ * @param {boolean} filterByLastSeen Filter by last seen?
+ * @returns
+ */
 const isPlayerActive = (
-  lastseen,
-  lastactive,
-  lastmovement,
-  lastlevelup,
-  totallevel,
-  filterByLastSeen = false
+  lastseen: string,
+  lastactive: string,
+  lastmovement: string,
+  lastlevelup: string,
+  totallevel: string,
+  filterByLastSeen: boolean = false
 ) => {
   const MAX_LEVEL = 32;
   let MOVEMENT_DAY_THRESHOLD = 2;
@@ -25,7 +35,7 @@ const isPlayerActive = (
   if (seen - active > 1000 * 60 * 60 * 24 * QUESTING_DAY_THRESHOLD)
     isactive = false; // No questing
   if (
-    totallevel < MAX_LEVEL &&
+    +totallevel < MAX_LEVEL &&
     seen - levelup > 1000 * 60 * 60 * 24 * LEVELUP_DAY_THRESHOLD
   )
     isactive = false; // No level-ups (max-level characters excluded)

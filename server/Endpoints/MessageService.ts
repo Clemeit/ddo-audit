@@ -1,10 +1,17 @@
 import requestIp from "request-ip";
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
 
-const messageServiceApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
 
-  function getMarkedEvents() {
+const messageServiceApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
+
+  const getMarkedEvents = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT * from \`marked_events\`;`;
       queryAndRetry(query, 3)
@@ -15,9 +22,9 @@ const messageServiceApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getNews() {
+  const getNews = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT * from \`news\`;`;
       queryAndRetry(query, 3)
@@ -28,9 +35,9 @@ const messageServiceApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getMessages() {
+  const getMessages = (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const query = `SELECT * from \`public_messages\`;`;
       queryAndRetry(query, 3)
@@ -41,9 +48,13 @@ const messageServiceApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function submitMessage(message, ipaddress, ticket) {
+  const submitMessage = (
+    message: any,
+    ipaddress: string,
+    ticket: number
+  ): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       if (
         message == null ||
@@ -62,16 +73,16 @@ const messageServiceApi = (api, mysqlConnection) => {
         }, '0');`;
         queryAndRetry(query, 1)
           .then(() => {
-            resolve();
+            resolve({ success: true });
           })
           .catch((err) => {
             reject(err);
           });
       }
     });
-  }
+  };
 
-  function getPrivateMessages(requestBody) {
+  const getPrivateMessages = (requestBody: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       if (
         requestBody == null ||
@@ -80,8 +91,8 @@ const messageServiceApi = (api, mysqlConnection) => {
       ) {
         reject("Bad ticket");
       }
-      let escapedTickets = [];
-      requestBody.tickets.forEach((ticket) => {
+      let escapedTickets: string[] = [];
+      requestBody.tickets.forEach((ticket: string) => {
         escapedTickets.push(mysqlConnection.escape(ticket));
       });
       const query = `SELECT \`datetime\`, \`ticket\`, \`comment\`, \`response\` FROM \`feedback\` WHERE (ticket = ${escapedTickets.join(
@@ -98,9 +109,9 @@ const messageServiceApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function logEvent(event, ipaddress) {
+  const logEvent = (event: any, ipaddress: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       if (event == null) {
         reject();
@@ -112,16 +123,16 @@ const messageServiceApi = (api, mysqlConnection) => {
         });`;
         queryAndRetry(query, 1)
           .then(() => {
-            resolve();
+            resolve({ success: true });
           })
           .catch((err) => {
             reject(err);
           });
       }
     });
-  }
+  };
 
-  api.get(`/markedevents`, (req, res) => {
+  api.get(`/markedevents`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getMarkedEvents()
       .then((result) => {
@@ -133,7 +144,7 @@ const messageServiceApi = (api, mysqlConnection) => {
       });
   });
 
-  api.get(`/news`, (req, res) => {
+  api.get(`/news`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getNews()
       .then((result) => {
@@ -145,7 +156,7 @@ const messageServiceApi = (api, mysqlConnection) => {
       });
   });
 
-  api.get(`/messageservice`, (req, res) => {
+  api.get(`/messageservice`, (_, res) => {
     res.setHeader("Content-Type", "application/json");
     getMessages()
       .then((result) => {
@@ -158,7 +169,7 @@ const messageServiceApi = (api, mysqlConnection) => {
   });
 
   api.post(`/submitmessage`, (req, res) => {
-    var clientIp = requestIp.getClientIp(req);
+    var clientIp = requestIp.getClientIp(req) || "";
     var ticket = Date.now();
     res.setHeader("Content-Type", "application/json");
     submitMessage(req.body, clientIp, ticket)
@@ -184,7 +195,7 @@ const messageServiceApi = (api, mysqlConnection) => {
   });
 
   api.post(`/log`, (req, res) => {
-    var clientIp = requestIp.getClientIp(req);
+    var clientIp = requestIp.getClientIp(req) || "";
     res.setHeader("Content-Type", "application/json");
     logEvent(req.body, clientIp)
       .then(() => {

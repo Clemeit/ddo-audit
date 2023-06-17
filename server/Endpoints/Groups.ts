@@ -1,7 +1,14 @@
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
 
-const groupsApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
+
+const groupsApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
   const servers = [
     "argonnessen",
     "cannith",
@@ -15,7 +22,7 @@ const groupsApi = (api, mysqlConnection) => {
     "all",
   ];
 
-  function getGroupData(server) {
+  function getGroupData(server: string) {
     return new Promise(async (resolve, reject) => {
       try {
         let query = `SELECT ${

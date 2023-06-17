@@ -1,10 +1,17 @@
+import useQuery from "../common/useQuery.js";
+import express from "express";
 import mysql from "mysql2";
-import useQuery from "../hooks/useQuery.js";
+import { isNumeric } from "mathjs";
 
-const friendsApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
 
-  function lookupPlayerByName(body) {
+const friendsApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
+
+  const lookupPlayerByName = (body: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const re = /^[a-z0-9- ]+$/i;
       let cname = body.name;
@@ -29,9 +36,9 @@ const friendsApi = (api, mysqlConnection) => {
         reject("bad name");
       }
     });
-  }
+  };
 
-  function lookupPlayersByGuild(body) {
+  const lookupPlayersByGuild = (body: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const re = /^[a-z0-9- ]+$/i;
       let gname = body.guild;
@@ -61,9 +68,9 @@ const friendsApi = (api, mysqlConnection) => {
         reject("bad name");
       }
     });
-  }
+  };
 
-  function lookupGuildByName(body) {
+  const lookupGuildByName = (body: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const re = /^[a-z0-9-' ]+$/i;
       let cname = body.name;
@@ -86,16 +93,16 @@ const friendsApi = (api, mysqlConnection) => {
         reject("bad name");
       }
     });
-  }
+  };
 
-  function lookupPlayersById(body) {
+  const lookupPlayersById = (body: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let pids = body.ids;
       let goodrequest = true;
-      let pidformat = [];
-      pids.forEach((pid) => {
+      let pidformat: string[] = [];
+      pids.forEach((pid: string) => {
         try {
-          if (!pid || isNaN(pid)) {
+          if (!pid || !isNumeric(pid)) {
             goodrequest = false;
           } else {
             pidformat.push(`\`playerid\` = ${mysqlConnection.escape(pid)}`);
@@ -161,7 +168,7 @@ const friendsApi = (api, mysqlConnection) => {
         reject();
       }
     });
-  }
+  };
 
   api.post(`/friends`, (req, res) => {
     res.setHeader("Content-Type", "application/json");

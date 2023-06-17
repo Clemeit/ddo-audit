@@ -1,7 +1,12 @@
 import path from "path";
+import express from "express";
 
-const demographicsApi = (api, mysqlConnection) => {
-  const population = [
+interface Props {
+  api: express.Express;
+}
+
+const demographicsApi = ({ api }: Props) => {
+  const demographicsMap = [
     ["leveldistribution", "leveldistributionquarter"],
     ["classdistribution", "classdistributionquarter"],
     ["racedistribution", "racedistributionquarter"],
@@ -10,8 +15,8 @@ const demographicsApi = (api, mysqlConnection) => {
     ["racedistribution_banks", "racedistributionquarter_banks"],
   ];
 
-  population.forEach((entry) => {
-    api.get(`/demographics/${entry[0]}`, (req, res) => {
+  demographicsMap.forEach((entry: string[]) => {
+    api.get(`/demographics/${entry[0]}`, (_, res) => {
       res.setHeader("Content-Type", "application/json");
       res.sendFile(path.resolve(`./api_v1/demographics/${entry[1]}.json`));
     });

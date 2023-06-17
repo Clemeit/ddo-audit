@@ -1,10 +1,17 @@
 import CryptoJS from "crypto-js";
-import useQuery from "../hooks/useQuery.js";
+import useQuery from "../common/useQuery.js";
+import express from "express";
+import mysql from "mysql2";
+
+interface Props {
+  api: express.Express;
+  mysqlConnection: mysql.Connection;
+}
 
 const SECRET = process.env.CRYPTO_PASS;
 
-const playersApi = (api, mysqlConnection) => {
-  const { queryAndRetry } = useQuery(mysqlConnection);
+const playersApi = ({ api, mysqlConnection }: Props) => {
+  const { queryAndRetry } = useQuery({ mysqlConnection });
   const servers = [
     ["Argonnessen", "argonnessen"],
     ["Cannith", "cannith"],
@@ -17,23 +24,23 @@ const playersApi = (api, mysqlConnection) => {
     ["Hardcore", "hardcore"],
   ];
 
-  function encryptId(playerId) {
-    return CryptoJS.AES.encrypt(playerId, CryptoJS.enc.Utf8.parse(SECRET), {
+  const encryptId = (playerId: string): string => {
+    return CryptoJS.AES.encrypt(playerId, CryptoJS.enc.Utf8.parse(SECRET!), {
       mode: CryptoJS.mode.ECB,
     }).toString();
-  }
+  };
 
-  function decryptId(encryptedString) {
+  const decryptId = (encryptedString: string): string => {
     return CryptoJS.AES.decrypt(
       encryptedString,
-      CryptoJS.enc.Utf8.parse(SECRET),
+      CryptoJS.enc.Utf8.parse(SECRET!),
       {
         mode: CryptoJS.mode.ECB,
       }
     ).toString(CryptoJS.enc.Utf8);
-  }
+  };
 
-  function lookupPlayerByName(name) {
+  const lookupPlayerByName = (name: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT \`players\`.\`name\`, \`players\`.\`server\` FROM \`players\` WHERE name LIKE '${name}'`;
       queryAndRetry(query, 3)
@@ -44,9 +51,12 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function lookupPlayerByNameAndServer(name, server) {
+  const lookupPlayerByNameAndServer = (
+    name: string,
+    server: string
+  ): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT CAST(p.playerid as char) as playerid, p.lastseen, p.anonymous FROM players p WHERE p.name LIKE ${mysqlConnection.escape(
         name
@@ -59,9 +69,9 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function lookupAllPlayersByName(name) {
+  const lookupAllPlayersByName = (name: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT JSON_ARRAYAGG(JSON_OBJECT(
                     'PlayerId', CAST(p.playerid as char),
@@ -117,9 +127,9 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function lookupAllGuildsByName(name) {
+  const lookupAllGuildsByName = (name: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT * FROM \`guilds_cached\` g WHERE g.name LIKE ${mysqlConnection.escape(
         name
@@ -132,11 +142,11 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getPlayersByIds(ids) {
+  const getPlayersByIds = (ids: string[]): Promise<any> => {
     return new Promise(async (resolve, reject) => {
-      let escapedIds = [];
+      let escapedIds: string[] = [];
       ids.forEach((id) => {
         escapedIds.push(mysqlConnection.escape(id));
       });
@@ -193,9 +203,9 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getRecentRaidActivity(id) {
+  const getRecentRaidActivity = (id: string): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT a.questid, TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), DATE_ADD(a.end, INTERVAL 3960 MINUTE)) as remaining, q.name, a.id FROM activity a LEFT JOIN quests q ON q.questid = a.questid WHERE a.playerid = ${mysqlConnection.escape(
         id
@@ -208,9 +218,9 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function getCachedPlayerData(server) {
+  const getCachedPlayerData = (server: string) => {
     return new Promise(async (resolve, reject) => {
       let query = `SELECT \`${server}\` AS data FROM players_cached ORDER BY \`players_cached\`.\`datetime\` DESC LIMIT 1;`;
       queryAndRetry(query, 3)
@@ -225,9 +235,9 @@ const playersApi = (api, mysqlConnection) => {
           reject(err);
         });
     });
-  }
+  };
 
-  function lookupPlayersByGuild(body) {
+  const lookupPlayersByGuild = (body: any): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       const re = /^[a-z0-9- ]+$/i;
       let gname = body.guild;
@@ -257,9 +267,9 @@ const playersApi = (api, mysqlConnection) => {
         reject("bad name");
       }
     });
-  }
+  };
 
-  servers.forEach((entry) => {
+  servers.forEach((entry: string[]) => {
     api.get(`/players/${entry[1]}`, (req, res) => {
       res.setHeader("Content-Type", "application/json");
       getCachedPlayerData(entry[0])
@@ -271,9 +281,7 @@ const playersApi = (api, mysqlConnection) => {
           res.send({});
         });
     });
-  });
 
-  servers.forEach((entry) => {
     api.get(`/players_cached/${entry[1]}`, (req, res) => {
       res.setHeader("Content-Type", "application/json");
       getCachedPlayerData(entry[0])
@@ -318,8 +326,8 @@ const playersApi = (api, mysqlConnection) => {
     lookupPlayersByGuild(req.body)
       .then((result) => {
         if (result && result.length > 0) {
-          let returnArray = [];
-          result.forEach((pidObject) => {
+          let returnArray: string[] = [];
+          result.forEach((pidObject: any) => {
             returnArray.push(encryptId(pidObject.playerid));
           });
           res.send(returnArray);
@@ -349,7 +357,7 @@ const playersApi = (api, mysqlConnection) => {
           return;
         }
       } else if (ids) {
-        ids.forEach((encryptedId) => {
+        ids.forEach((encryptedId: string) => {
           if (encryptedId.length === 44) {
             decryptedPlayerIds.push(decryptId(encryptedId));
           }
@@ -363,7 +371,7 @@ const playersApi = (api, mysqlConnection) => {
         if (!result || result.length !== 1) {
           res.send({ error: "No result for playerid" });
         } else {
-          result[0].data.forEach((player) => {
+          result[0].data.forEach((player: any) => {
             player.PlayerId = encryptId(player.PlayerId);
           });
           res.send(result[0].data);
@@ -382,7 +390,7 @@ const playersApi = (api, mysqlConnection) => {
         lookupAllPlayersByName(name)
           .then((playerresult) => {
             if (playerresult.length === 1 && playerresult[0].data !== null) {
-              playerresult[0].data.forEach((player) => {
+              playerresult[0].data.forEach((player: any) => {
                 player.PlayerId = encryptId(player.PlayerId);
               });
               returnData.players = playerresult[0].data;
@@ -415,7 +423,9 @@ const playersApi = (api, mysqlConnection) => {
             }
           } else if (result.length > 1) {
             res.setHeader("Content-Type", "application/json");
-            const sorted = result.sort((a, b) => b.lastseen - a.lastseen);
+            const sorted = result.sort(
+              (a: any, b: any) => b.lastseen - a.lastseen
+            );
             if (sorted[0].anonymous === 1) {
               res.send({ error: "Anonymous" });
             } else {
