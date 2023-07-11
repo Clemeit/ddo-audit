@@ -1,14 +1,18 @@
 import React from "react";
 import PanelSprite from "../../assets/global/whosprite_v3.jpg";
+import CrownSprite from "../../assets/global/crown.png";
+import NAMES from "../../constants/ClemeitNames";
 
 const CanvasWhoPanel = (props) => {
   // Assume that incoming props.data is already filtered according to user preferences
   // TODO: Remove ExactMatch and LocationRegion from the sprite
   const canvasRef = React.useRef(null);
   const spriteRef = React.useRef(null);
+  const crownRef = React.useRef(null);
   const [canvasWidth, setCanvasWidth] = React.useState(0);
 
-  const [isImageLoaded, set_isImageLoaded] = React.useState(false);
+  const [isCrownLoaded, setIsCrownLoaded] = React.useState(false);
+  const [isImageLoaded, setIsImageLoaded] = React.useState(false);
   const classFilterBounds = [
     [119, 83, 30, 30],
     [152, 83, 30, 30],
@@ -154,10 +158,8 @@ const CanvasWhoPanel = (props) => {
   }
 
   React.useEffect(() => {
-    if (!isImageLoaded) {
-      //console.log("Waiting on resources");
-      return;
-    }
+    if (!isImageLoaded) return;
+    if (!isCrownLoaded) return;
     if (props.data === null) {
       //console.log("Waiting on data");
       return;
@@ -166,7 +168,9 @@ const CanvasWhoPanel = (props) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d", { alpha: false });
 
+    // Sprites
     const sprite = spriteRef.current;
+    const crown = crownRef.current;
 
     // Draw the header
     OpenPanel();
@@ -351,6 +355,12 @@ const CanvasWhoPanel = (props) => {
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
         ctx.fillText(player.Name, x + 44, y + 14);
+
+        // Draw crown:
+        if (NAMES.some((name) => player.Name.startsWith(name))) {
+          let nameWidth = ctx.measureText(player.Name).width;
+          ctx.drawImage(crown, x + 48 + nameWidth, y + 4, 18, 18);
+        }
 
         // Draw location: 30, 26
         ctx.font = "12px 'Trebuchet MS'";
@@ -771,6 +781,7 @@ const CanvasWhoPanel = (props) => {
   }, [
     props.data,
     isImageLoaded,
+    isCrownLoaded,
     props.filters,
     props.classFilterStates,
     props.includeRegion,
@@ -788,7 +799,13 @@ const CanvasWhoPanel = (props) => {
       <img
         ref={spriteRef}
         src={PanelSprite}
-        onLoad={() => set_isImageLoaded(true)}
+        onLoad={() => setIsImageLoaded(true)}
+        style={{ display: "none" }}
+      />
+      <img
+        ref={crownRef}
+        src={CrownSprite}
+        onLoad={() => setIsCrownLoaded(true)}
         style={{ display: "none" }}
       />
       <input

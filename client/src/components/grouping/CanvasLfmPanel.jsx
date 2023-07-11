@@ -5,6 +5,7 @@ import CobwebSprite from "../../assets/global/cobweb.png";
 import GhostSprite from "../../assets/global/ghosts.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
 import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
+import NAMES from "../../constants/ClemeitNames";
 
 const CanvasLfmPanel = (props) => {
   // Assume that incoming props.data is already filtered according to user preferences
@@ -624,7 +625,7 @@ const CanvasLfmPanel = (props) => {
         ctx.textAlign = "left";
         ctx.fillText(group.Leader.Name, 49, top + 18 + props.fontModifier / 2);
         let leaderWidth = ctx.measureText(group.Leader.Name).width;
-        if (group.Leader.Name.startsWith("Clemei")) {
+        if (NAMES.some((name) => group.Leader.Name.startsWith(name))) {
           leaderWidth += 22;
           ctx.drawImage(
             sprite,
@@ -1234,7 +1235,7 @@ const CanvasLfmPanel = (props) => {
               10
           );
           let memberWidth = ctx.measureText(member.Name).width;
-          if (member.Name.startsWith("Clemei")) {
+          if (NAMES.some((name) => member.Name.startsWith(name))) {
             memberWidth += 22;
             ctx.drawImage(
               sprite,
