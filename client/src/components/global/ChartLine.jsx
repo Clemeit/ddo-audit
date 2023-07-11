@@ -279,13 +279,15 @@ const ChartLine = (props) => {
             }
             xScale={{
               type:
-                props.title === "Popularity over time"
+                props.title === "Popularity over time" ||
+                props.title === "Average duration over time"
                   ? "time"
                   : props.title === "Distribution"
                   ? "point"
                   : "time",
               format:
-                props.title === "Popularity over time"
+                props.title === "Popularity over time" ||
+                props.title === "Average duration over time"
                   ? "%Y-%m-%d"
                   : props.title === "Distribution"
                   ? ""
@@ -294,7 +296,8 @@ const ChartLine = (props) => {
               // precision: "hour",
             }}
             xFormat={
-              props.title === "Popularity over time"
+              props.title === "Popularity over time" ||
+              props.title === "Average duration over time"
                 ? "time:%Y-%m-%d"
                 : props.title === "Distribution"
                 ? ""

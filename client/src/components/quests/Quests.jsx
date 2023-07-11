@@ -36,6 +36,7 @@ const Quests = (props) => {
   const [durationData, set_durationData] = React.useState(null);
   const [popularityOverTimeData, set_popularityOverTimeData] =
     React.useState(null);
+  const [durationOverTimeData, set_durationOverTimeData] = React.useState(null);
   const [totalTime, set_totalTime] = React.useState(null);
   const [totalDataPoints, set_totalDataPoints] = React.useState(null);
   const [serverDistData, set_serverDistData] = React.useState(null);
@@ -475,7 +476,7 @@ const Quests = (props) => {
               });
               dailyaverageduration.push({
                 x: dateToDateString(entry.start),
-                y: Math.round(thistotalduration / thiscount / 60),
+                y: Math.round((thistotalduration / thiscount / 60) * 100) / 100,
               });
             }
           }
@@ -487,16 +488,23 @@ const Quests = (props) => {
         thiscount++;
       }
 
-      // console.log(dailypopularity);
-
-      let linedata = [
+      let lineDataPopularity = [
         {
           id: "Popularity",
           color: "hsl(180, 70%, 50%)",
           data: dailypopularity,
         },
       ];
-      set_popularityOverTimeData(linedata);
+      set_popularityOverTimeData(lineDataPopularity);
+
+      let lineDataDuration = [
+        {
+          id: "Duration",
+          color: "hsl(180, 70%, 50%)",
+          data: dailyaverageduration,
+        },
+      ];
+      set_durationOverTimeData(lineDataDuration);
 
       setIsLoading(false);
     });
@@ -946,6 +954,36 @@ const Quests = (props) => {
                 loadingMessage="Click on a quest to view data"
                 noAnim={true}
                 title="Popularity over time"
+                marginBottom={100}
+                hideLegend={true}
+                // tickValues="every 1 day"
+                trendType="quarter"
+                curve="linear"
+              />
+            </ContentCluster>
+            <ContentCluster
+              title={
+                <span>
+                  Average Duration Over Time for{" "}
+                  {questName ? (
+                    <span className="lfm-number">{questName}</span>
+                  ) : (
+                    "(no quest selected)"
+                  )}
+                </span>
+              }
+              altTitle="Average Duration Over Time"
+              description="Recent duration of this quest shown as daily averages."
+            >
+              <ChartLine
+                keys={["Instances"]}
+                indexBy="Time"
+                legendBottom="Date"
+                legendLeft="Duration (minutes)"
+                data={durationOverTimeData}
+                loadingMessage="Click on a quest to view data"
+                noAnim={true}
+                title="Average duration over time"
                 marginBottom={100}
                 hideLegend={true}
                 // tickValues="every 1 day"
