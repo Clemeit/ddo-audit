@@ -11,10 +11,13 @@ import PanelSelectPopup from "../grouping/PanelSelectPopup";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
 import FriendsPanel from "../friends/FriendsPanel";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 
 const WhoSpecific = (props) => {
   // TODO: If this server is currently offline, don't bother checking for players
   const TITLE = "DDO Live Who Panel";
+
+  const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 
   function getBreadcrumbs(servername) {
     // prettier-ignore
@@ -216,6 +219,7 @@ const WhoSpecific = (props) => {
           popMessage={() => {
             setPopupMessage(null);
           }}
+          noReport={noReport}
         />
         <PanelSelectPopup
           visible={panelSelectPopupVisibility}
