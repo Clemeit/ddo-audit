@@ -73,6 +73,10 @@ const PopupMessage = (props) => {
     }
   }
   function getMessage() {
+    if (props.noReport) {
+      return "This is a known issue. Reporting is disabled.";
+    }
+
     if (!props.message) return;
     switch (props.message.messageType) {
       case "all servers offline":
@@ -85,6 +89,7 @@ const PopupMessage = (props) => {
         return props.message.message;
     }
   }
+
   return (
     <div
       className={
@@ -180,10 +185,10 @@ const PopupMessage = (props) => {
               <div
                 className={
                   "secondary-button should-invert full-width-mobile" +
-                  (reported ? " disabled" : "")
+                  (reported || props.noReport ? " disabled" : "")
                 }
                 onClick={() => {
-                  if (reported === false) {
+                  if (!(reported || props.noReport)) {
                     Submit(
                       "User reported issue from " + props.page + " popup",
                       props.message.submessage || props.message.reportMessage

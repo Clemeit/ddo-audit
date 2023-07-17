@@ -7,14 +7,13 @@ const CAAS_LIFETIME = 1000 * 60 * 60 * 24; // Cache for 1 day
  * makes a network call to CaaS to fetch an up-to-date config.
  * @returns Config object from cache or CaaS
  */
-async function getConfig() {
+async function getConfig(lifetime = CAAS_LIFETIME) {
   try {
     const cachedCaaS = localStorage.getItem("caas");
     const caas = JSON.parse(cachedCaaS);
     const caasExists = cachedCaaS != null;
     const caasExpired =
-      caas.fetched == null ||
-      new Date().getTime() - caas.fetched > CAAS_LIFETIME;
+      caas.fetched == null || new Date().getTime() - caas.fetched > lifetime;
 
     if (caasExists && !caasExpired) {
       return caas.caas;

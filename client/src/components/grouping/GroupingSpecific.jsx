@@ -11,9 +11,12 @@ import WhoPanel from "../who/WhoPanel";
 import { Log } from "../../services/CommunicationService";
 import { SERVER_LIST } from "../../constants/Servers";
 import FriendsPanel from "../friends/FriendsPanel";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 
-const GroupingSpecific = (props) => {
+const GroupingSpecific = () => {
   const TITLE = "DDO Live LFM Viewer";
+
+  const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 
   function getBreadcrumbs(servername) {
     // prettier-ignore
@@ -178,6 +181,7 @@ const GroupingSpecific = (props) => {
           popMessage={() => {
             setPopupMessage(null);
           }}
+          noReport={noReport}
         />
         <PanelSelectPopup
           visible={panelSelectPopupVisibility}

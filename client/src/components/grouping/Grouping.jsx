@@ -118,6 +118,15 @@ const Grouping = () => {
         </p>
       );
     }
+    if (!Array.isArray(allGroupData))
+      return (
+        <p
+          className="content-option-description"
+          style={{ fontSize: "1.4rem" }}
+        >
+          <span style={{ color: "var(--text-lfm-number)" }}>0 groups </span>
+        </p>
+      );
     let lfmcount = allGroupData.filter((server) => server.Name === name)[0]
       .GroupCount;
 

@@ -229,6 +229,7 @@ const Panel = (props) => {
     return ret;
   }
 
+  let recheck;
   function RefreshLfms() {
     if (props.server === null) return;
     Fetch(

@@ -58,6 +58,7 @@ const RaidGroupCluster = (props) => {
 
   function drawRaidsToPanels() {
     if (!props.data) return;
+    if (!Array.isArray(props.data)) return;
     if (!isImageLoaded) return;
 
     props.data.forEach((server, i) => {
@@ -710,6 +711,7 @@ const RaidGroupCluster = (props) => {
         </span>
       )}
       {props.data &&
+        Array.isArray(props.data) &&
         props.data.map(
           (server, i) =>
             serverRaidCount(server) > 0 && (

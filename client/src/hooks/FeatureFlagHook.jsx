@@ -1,12 +1,12 @@
 import React from "react";
 import { getFeatureFlag } from "../constants/FeatureFlag";
 
-const FeatureFlagHook = (flag) => {
-  const [result, setResult] = React.useState(false);
+const FeatureFlagHook = (flag, lifetime) => {
+  const [result, setResult] = React.useState(null);
 
   React.useEffect(() => {
     async function waitForFlags() {
-      let val = await getFeatureFlag(flag);
+      let val = await getFeatureFlag(flag, lifetime);
       setResult(val);
     }
     waitForFlags();
