@@ -94,6 +94,8 @@
   --beta: #f18ddc;
   --soon: #e48e59;
   --new: #aaffff;
+
+  --donate: #e99b0c;
 }
 
 .dark-theme {
@@ -146,6 +148,8 @@
   --beta: #b64fa0;
   --soon: #aa5e32;
   --new: #339999;
+
+  --donate: #e99b0c;
 }
 
 html {
@@ -929,7 +933,8 @@ body {
 }
 
 .secondary-button,
-.toggle-button {
+.toggle-button,
+.donate-button-large {
   padding: 10px 20px;
   text-decoration: none !important;
   border-radius: 3px;
@@ -980,6 +985,18 @@ body {
 .primary-button:hover,
 .secondary-button:hover {
   box-shadow: 0px 0px 10px 0px var(--primary-button-background);
+}
+
+.donate-button-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: border 500ms, box-shadow 500ms;
+}
+.donate-button-large:hover {
+  box-shadow: 0px 0px 10px 0px var(--donate);
+  border: 1px solid var(--donate);
 }
 
 .primary-button.should-invert:hover,
@@ -1887,6 +1904,24 @@ th {
 
 .mail-body {
   font-size: 1.3rem;
+}
+
+.donate-button-floating {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  background-color: var(--highlighted-0);
+  color: var(--text);
+  filter: drop-shadow(0px 0px 7px rgba(0, 0, 0, 0.835));
+  border-radius: 10px;
+  padding: 5px 15px;
+  text-decoration: none !important;
+  color: var(--text) !important;
+}
+
+.donate-button-floating:hover {
+  background-color: var(--highlighted-1);
 }
 
 @media (max-width: 1800px) {

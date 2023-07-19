@@ -24,7 +24,7 @@ import Footer from "./Footer";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 
-const Directory = (props) => {
+const Directory = () => {
   const TITLE = "DDO Audit | Population Tracking and LFM Viewer";
 
   const NAV_OPTIONS = [

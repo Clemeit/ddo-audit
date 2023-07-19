@@ -6,6 +6,7 @@ import { ReactComponent as TimelineSVG } from "../../assets/global/timeline.svg"
 import Banner from "../global/Banner";
 import ContentCluster from "../global/ContentCluster";
 import { Log } from "../../services/CommunicationService";
+import { LargeDonateButton } from "../donations/DonateButton";
 
 const About = (props) => {
   const TITLE = "About DDO Audit";
@@ -164,6 +165,21 @@ const About = (props) => {
             >
               Visit my GitHub
             </a>
+          </div>
+        </ContentCluster>
+        <ContentCluster title="Donations">
+          <p>
+            DDO Audit has been, and will continue to remain, completely free to
+            use. If you find this tool to be helpful and would like to support
+            the project, you can do so by donating to my PayPal. All donations
+            go toward server costs and future development. Thank you for your
+            support!
+          </p>
+          <div
+            className="action-button-container"
+            style={{ justifyContent: "flex-start" }}
+          >
+            <LargeDonateButton className="donate-button-large full-width-mobile" />
           </div>
         </ContentCluster>
         <ContentCluster title="Development">

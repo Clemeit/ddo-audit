@@ -59,6 +59,9 @@ const DataClassification = lazy(() =>
 const CharacterRegistration = lazy(() =>
   import("./components/global/CharacterRegistration")
 );
+const DonateThankYou = lazy(() =>
+  import("./components/donations/DonateThankYou")
+);
 
 export default () => {
   const theme = localStorage.getItem("theme");
@@ -140,6 +143,9 @@ export default () => {
             </Route>
             <Route exact path="/data/:classification">
               <DataClassification />
+            </Route>
+            <Route exact path="/donated">
+              <DonateThankYou />
             </Route>
             {/* <Route exact path="/steps">
                             <Steps />

@@ -6,6 +6,7 @@ import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
+import { LargeDonateButton } from "../donations/DonateButton";
 
 const Banner = (props) => {
   function getTimeZone() {
@@ -167,6 +168,7 @@ const Banner = (props) => {
                         voteMessage === "Your suggestions are welcome!"
                           ? "17px 25px"
                           : "",
+                      width: "175px",
                     }}
                   >
                     Make a suggestion
@@ -180,9 +182,19 @@ const Banner = (props) => {
                   onClick={() => {
                     Log("Clicked GitHub link", "Banner");
                   }}
+                  style={{
+                    width: "175px",
+                    textAlign: "center",
+                  }}
                 >
                   Visit my GitHub
                 </a>
+                <LargeDonateButton
+                  style={{
+                    width: "175px",
+                    textAlign: "center",
+                  }}
+                />
               </div>
               {!props.hideVote && (
                 <div
