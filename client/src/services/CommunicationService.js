@@ -43,7 +43,7 @@ export async function Submit(title, comment) {
   }
 }
 
-export function Log(event, meta) {
+export function Log(event, meta = "") {
   if (!LOG_USER_EVENTS) return;
   const url = "https://api.ddoaudit.com/log";
   const requestOptions = {

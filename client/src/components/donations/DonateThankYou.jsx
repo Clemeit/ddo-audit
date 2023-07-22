@@ -38,6 +38,7 @@ const DonateThankYou = () => {
         showButtons={false}
         hideOnMobile={false}
         hideVote={true}
+        hideSmallDonateButton={true}
         title="DDO Audit"
         subtitle="Real-time Player Concurrency Data and LFM Viewer"
       />

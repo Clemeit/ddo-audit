@@ -6,7 +6,10 @@ import { ReactComponent as ThumbsUpSVG } from "../../assets/global/thumbs_up.svg
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
-import { LargeDonateButton } from "../donations/DonateButton";
+import {
+  LargeDonateButton,
+  SmallDonateButton,
+} from "../donations/DonateButton";
 
 const Banner = (props) => {
   function getTimeZone() {
@@ -238,6 +241,11 @@ const Banner = (props) => {
           )}
         </div>
         <div className="options-container">
+          {!props.hideSmallDonateButton && (
+            <div>
+              <SmallDonateButton />
+            </div>
+          )}
           <div className="theme-container" onClick={() => toggleTheme()}>
             <DarkThemeSVG className="theme-icon" />
             <span className="hide-on-mobile" style={{ paddingLeft: "5px" }}>

@@ -37,6 +37,7 @@ const About = (props) => {
         showButtons={true}
         hideOnMobile={false}
         hideVote={true}
+        hideSmallDonateButton={true}
         title="About DDO Audit"
         subtitle="Real-time Player Concurrency Data and LFM Viewer"
       />

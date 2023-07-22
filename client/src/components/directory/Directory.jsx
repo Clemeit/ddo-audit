@@ -222,6 +222,7 @@ const Directory = () => {
         showButtons={true}
         hideOnMobile={true}
         hideVote={true}
+        hideSmallDonateButton={true}
         title="DDO Audit"
         subtitle="Real-time Player Concurrency Data and LFM Viewer"
       />

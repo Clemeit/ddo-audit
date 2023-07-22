@@ -25,8 +25,10 @@ const DonateButton = (props) => {
       {...props}
       onClick={() => Log("Clicked donate button")}
       href={paypalLink}
+      rel="noreferrer"
+      target="_blank"
     >
-      {props.variant === "Large" && <GiftIcon fill="var(--donate)" />}
+      <GiftIcon fill="var(--donate)" />
       <span>Donate</span>
     </a>
   );
