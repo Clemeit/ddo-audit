@@ -39,6 +39,14 @@ const Timeline = (props) => {
         <div className="top-content-padding shrink-on-mobile" />
         <ContentCluster title="Timeline">
           <DevEvent
+            title="July 21, 2023 - Data Refreshes Faster"
+            events={[
+              "LFM data: 15 seconds -> 5 seconds",
+              "Who data: 2 minutes -> 30 seconds",
+              "Server status: 1 minute -> 30 seconds",
+            ]}
+          />
+          <DevEvent
             title="July 20, 2023 - Backend Work"
             events={[
               "Major backend overhaul after a breaking game update",
