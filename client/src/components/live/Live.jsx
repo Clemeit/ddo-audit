@@ -146,7 +146,7 @@ const Live = (props) => {
   React.useEffect(() => {
     refreshServerStatus();
     refreshPopulationAndQuickInfo();
-    const interval = setInterval(() => refreshServerStatus(), 30000); // Server status should refresh on this page
+    const interval = setInterval(() => refreshServerStatus(), 15000); // Server status should refresh on this page
     const interval2 = setInterval(
       () => refreshPopulationAndQuickInfo(),
       60000 * 5

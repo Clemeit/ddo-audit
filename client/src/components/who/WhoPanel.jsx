@@ -7,6 +7,8 @@ import { Submit } from "../../services/CommunicationService";
 import ContentCluster from "../global/ContentCluster";
 import { Link } from "react-router-dom";
 import { SERVER_LIST_LOWERCASE } from "../../constants/Servers";
+import { Log } from "../../services/CommunicationService";
+import $ from "jquery";
 
 const WhoPanel = (props) => {
   const MAX_LEVEL = 32;
@@ -469,6 +471,20 @@ const WhoPanel = (props) => {
     );
   }, [filteredPlayerData, pageNumber]);
 
+  const lastManualLookupTimeRef = React.useRef(0);
+  const refreshButtonAngleRef = React.useRef(null);
+  function refreshButtonHandler() {
+    if (Date.now() - lastManualLookupTimeRef.current > 3000) {
+      FetchPlayerData();
+      refreshButtonAngleRef.current += 360;
+      $("#who-refresh-button").css({
+        transform: `rotate(${refreshButtonAngleRef.current}deg)`,
+      });
+      Log("Manual player refresh", "");
+      lastManualLookupTimeRef.current = Date.now();
+    }
+  }
+
   // Let's get some data
   let recheck; // TODO: Clearing this timeout doesn't work
   let refreshdata;
@@ -481,7 +497,7 @@ const WhoPanel = (props) => {
 
     refreshdata = setInterval(() => {
       FetchPlayerData();
-    }, 120000);
+    }, 30000);
     return () => {
       clearInterval(refreshdata);
       clearTimeout(recheck);
@@ -659,6 +675,8 @@ const WhoPanel = (props) => {
           props.permalink +
           (globalFilterRef.current ? "&filter=" + globalFilterRef.current : "")
         }
+        showRefreshButton={true}
+        handleRefreshButton={() => refreshButtonHandler()}
       />
       {filterPanelVisible && (
         <div

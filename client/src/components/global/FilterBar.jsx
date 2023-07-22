@@ -225,7 +225,11 @@ const LfmFilterBar = (props) => {
                 <>
                   <UpdateSVG
                     className="nav-icon should-invert"
-                    id="lfm-refresh-button"
+                    id={
+                      props.returnTo === "/grouping"
+                        ? "lfm-refresh-button"
+                        : "who-refresh-button"
+                    }
                   />
                   <span
                     className="filter-bar-text"
@@ -238,7 +242,11 @@ const LfmFilterBar = (props) => {
                 <>
                   <UpdateSVG
                     className="nav-icon should-invert"
-                    id="lfm-refresh-button"
+                    id={
+                      props.returnTo === "/grouping"
+                        ? "lfm-refresh-button"
+                        : "who-refresh-button"
+                    }
                   />
                   <span
                     className="filter-bar-text"
@@ -250,7 +258,11 @@ const LfmFilterBar = (props) => {
               ) : (
                 <RefreshSVG
                   className="nav-icon should-invert"
-                  id="lfm-refresh-button"
+                  id={
+                    props.returnTo === "/grouping"
+                      ? "lfm-refresh-button"
+                      : "who-refresh-button"
+                  }
                 />
               )}
             </div>

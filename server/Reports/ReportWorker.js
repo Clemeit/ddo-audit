@@ -331,6 +331,11 @@ function runReportWorker(mysqlConnection) {
   // Every minute
   cron.schedule("* * * * *", () => {
     runServerStatusReport();
+  });
+
+  // Every 30 seconds
+  const doCache = () => {
+    runServerStatusReport();
 
     // cache players so that the API can pull from cache instead of master
     var t0 = new Date();
@@ -350,7 +355,8 @@ function runReportWorker(mysqlConnection) {
         }
       })
       .catch((err) => console.log(err));
-  });
+  };
+  setInterval(doCache, 30000);
 }
 
 restartMySql().then((result) => {

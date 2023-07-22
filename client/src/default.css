@@ -1871,7 +1871,8 @@ td:hover .report-quest-button {
   outline: none;
 }
 
-#lfm-refresh-button {
+#lfm-refresh-button,
+#who-refresh-button {
   transition: transform 500ms;
   margin-right: 0px;
 }

@@ -360,7 +360,7 @@ const Panel = (props) => {
   React.useEffect(() => {
     clearInterval(refreshLfmsTimeout);
     RefreshLfms();
-    refreshLfmsTimeout = setInterval(RefreshLfms, 15000);
+    refreshLfmsTimeout = setInterval(RefreshLfms, 5000);
 
     return function cleanup() {
       clearInterval(refreshLfmsTimeout);
