@@ -10,11 +10,15 @@ import Group from "./Group";
 import { Log } from "../../services/CommunicationService";
 import $ from "jquery";
 import { Link } from "react-router-dom";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
   const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
   const MAX_LEVEL = 32;
+
+  const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
+
   // Download canvas
   var download = function () {
     // Redraw panel without names
@@ -1214,10 +1218,10 @@ const Panel = (props) => {
             <div
               className={
                 "secondary-button should-invert full-width-mobile" +
-                (reported ? " disabled" : "")
+                (reported || noReport ? " disabled" : "")
               }
               onClick={() => {
-                if (reported === false) {
+                if ((reported || noReport) === false) {
                   Submit(
                     "User reported issue from grouping/" + props.server,
                     "[Internal] Reported 'server offline' message"

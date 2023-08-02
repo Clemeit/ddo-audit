@@ -8,11 +8,14 @@ import ContentCluster from "../global/ContentCluster";
 import { Link } from "react-router-dom";
 import { SERVER_LIST_LOWERCASE } from "../../constants/Servers";
 import { Log } from "../../services/CommunicationService";
+import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import $ from "jquery";
 
 const WhoPanel = (props) => {
   const MAX_LEVEL = 32;
   const PAGE_SIZE = 10;
+
+  const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 
   // Download canvas
   var download = function () {
@@ -876,10 +879,10 @@ const WhoPanel = (props) => {
             <div
               className={
                 "secondary-button should-invert full-width-mobile" +
-                (reported ? " disabled" : "")
+                (reported || noReport ? " disabled" : "")
               }
               onClick={() => {
-                if (reported === false) {
+                if ((reported || noReport) === false) {
                   Submit(
                     "User reported issue from who/" + props.server,
                     "[Internal] Reported 'server offline' message"
