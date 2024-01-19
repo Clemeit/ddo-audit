@@ -79,7 +79,7 @@ const FAQ = (props) => {
             textDecoration: "underline",
           }}
         >
-          Is DDO still active in 2022?
+          Is DDO still active in {new Date().getFullYear()}?
         </h4>
         <p style={{ fontSize: "1.4rem" }}>
           Yes, DDO is still active and receives periodic updates and content

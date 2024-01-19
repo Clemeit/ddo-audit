@@ -34,7 +34,7 @@ const Grouping = () => {
 
   function isSpookyTime() {
     let dt = new Date();
-    if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+    if (dt.getMonth() === 9 && dt.getDate() >= 4) {
       return "revels";
     }
     return "";
