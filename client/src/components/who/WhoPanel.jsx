@@ -206,6 +206,9 @@ const WhoPanel = (props) => {
       setSortingDirection("ascending");
       setSortingMethod(type);
       sortingMethodRef.current = type;
+      if (type === "groupid") {
+        Log("Group View", "Enabled");
+      }
     }
   }
 
@@ -241,6 +244,8 @@ const WhoPanel = (props) => {
       } else {
         data.sort((a, b) => b.InParty - a.InParty);
       }
+    } else if (sortingMethod === "groupid") {
+      data.sort((a, b) => a.GroupId.localeCompare(b.GroupId));
     } else if (sortingMethod === "class") {
       if (sortingDirection === "ascending") {
         data.sort((a, b) => {
@@ -280,8 +285,24 @@ const WhoPanel = (props) => {
       (player) => player.Name !== "Anonymous" && player.Name !== ""
     );
 
+    // If sortingMethod === "groupid", we want to filter out all players not
+    // in a party, and all players where their party is only themselves.
+    if (sortingMethod === "groupid") {
+      data = data.filter(
+        (player) => player.GroupId !== null && player.GroupId !== "0"
+      );
+
+      data = data.filter((player) => {
+        return (
+          data.filter((inner_player) => inner_player.GroupId === player.GroupId)
+            .length > 1
+        );
+      });
+    }
+
     // if (activeFilters !== null && activeFilters.length !== 0) {
-    data = data.filter((player) => {
+    let passingGroupIds = [];
+    const firstPassData = data.filter((player) => {
       let pass = false;
 
       // Global filters
@@ -359,8 +380,35 @@ const WhoPanel = (props) => {
         }
       });
       if (classresult === false) pass = false;
+
+      if (pass) {
+        if (
+          !passingGroupIds.includes(player.GroupId) &&
+          player.GroupId !== "0"
+        ) {
+          passingGroupIds.push(player.GroupId);
+        }
+      }
+
       return pass;
     });
+    console.log(passingGroupIds);
+    if (sortingMethod === "groupid") {
+      data = data.filter((player) => passingGroupIds.includes(player.GroupId));
+      data = data.sort((a, b) => {
+        if (a.GroupId === b.GroupId) {
+          if (a.TotalLevel === b.TotalLevel) {
+            return a.Name.localeCompare(b.Name);
+          } else {
+            return a.TotalLevel - b.TotalLevel;
+          }
+        } else {
+          return a.GroupId.localeCompare(b.GroupId);
+        }
+      });
+    } else {
+      data = firstPassData;
+    }
     // } else {
     //     // Pull out starred players to be inserted at the top later
     //     let starredplayers = data.filter((p) => IsStarred(p));
@@ -711,6 +759,10 @@ const WhoPanel = (props) => {
               className="nav-icon should-invert"
               onClick={() => setFilterPanelVisible(false)}
             />
+            <div
+              className="hide-on-mobile"
+              style={{ width: "100%", height: "20px" }}
+            />
             <ContentCluster
               title="Filter Players"
               smallBottomMargin
@@ -726,8 +778,12 @@ const WhoPanel = (props) => {
                 }}
               >
                 <p style={{ fontSize: "1.3rem" }}>
-                  You can now filter players by clicking on the text fields
-                  directly in the 'Who' panel.
+                  The Group View feature organizes players by the group they're
+                  in. Groups are distinguished by different colors. Players who
+                  are not in a group (or that are in a group with only hirelings
+                  or offline players) are not shown. Searching by name, guild,
+                  or location will show any player that meets those criteria as
+                  well as all players in their group.
                 </p>
                 <p style={{ fontSize: "1.3rem" }}>
                   When searching by name, guild, or location, you can separate

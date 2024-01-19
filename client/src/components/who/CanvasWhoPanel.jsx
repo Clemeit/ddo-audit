@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whosprite_v3.jpg";
+import PanelSprite from "../../assets/global/whosprite_v4.jpg";
 import CrownSprite from "../../assets/global/crown.png";
 import NAMES from "../../constants/ClemeitNames";
 
@@ -54,9 +54,101 @@ const CanvasWhoPanel = (props) => {
     return result;
   }
 
+  // function HSVtoRGB(h, s, v) {
+  //   var r, g, b, i, f, p, q, t;
+  //   if (arguments.length === 1) {
+  //     (s = h.s), (v = h.v), (h = h.h);
+  //   }
+  //   i = Math.floor(h * 6);
+  //   f = h * 6 - i;
+  //   p = v * (1 - s);
+  //   q = v * (1 - f * s);
+  //   t = v * (1 - (1 - f) * s);
+  //   switch (i % 6) {
+  //     case 0:
+  //       (r = v), (g = t), (b = p);
+  //       break;
+  //     case 1:
+  //       (r = q), (g = v), (b = p);
+  //       break;
+  //     case 2:
+  //       (r = p), (g = v), (b = t);
+  //       break;
+  //     case 3:
+  //       (r = p), (g = q), (b = v);
+  //       break;
+  //     case 4:
+  //       (r = t), (g = p), (b = v);
+  //       break;
+  //     case 5:
+  //       (r = v), (g = p), (b = q);
+  //       break;
+  //   }
+  //   return {
+  //     r: Math.round(r * 255),
+  //     g: Math.round(g * 255),
+  //     b: Math.round(b * 255),
+  //   };
+  // }
+
+  // function rgbToHex(r, g, b) {
+  //   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  // }
+
+  // function componentToHex(c) {
+  //   var hex = c.toString(16);
+  //   return hex.length === 1 ? "0" + hex : hex;
+  // }
+
+  // // Generates a bunch of colors by going around the color wheel, converting to RGB, and then to hex. Adds the colors the the COLOR array.
+  // function generateColors() {
+  //   let hue = 0;
+  //   let saturation = 0.3;
+  //   let value = 0.3;
+  //   let step = 0.37;
+  //   while (COLORS.length < 100) {
+  //     let rgb = HSVtoRGB(hue, saturation, value);
+  //     let hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+  //     COLORS.push(hex);
+  //     hue += step;
+  //     if (hue > 1) {
+  //       hue -= 1;
+  //     }
+  //   }
+  //   console.log(COLORS);
+  // }
+
+  // generateColors();
+
   const PANEL_WIDTH = 706;
   const playerHeight = 42;
   const MAXIMUM_RESULTS = props.minimal ? 100 : 200;
+  const [isGroupMode, setIsGroupMode] = React.useState(false);
+  const isGroupModeRef = React.useRef(isGroupMode);
+  isGroupModeRef.current = isGroupMode;
+  const GROUP_COLORS = [
+    "#4d3636",
+    "#364d3b",
+    "#40364d",
+    "#4d4536",
+    "#364d4a",
+    "#4d364a",
+    "#454d36",
+    "#36404d",
+    "#4d363b",
+    "#364d36",
+    "#3a364d",
+    "#4d3f36",
+    "#364d44",
+    "#49364d",
+    "#4b4d36",
+    "#36464d",
+    "#4d3641",
+    "#3c4d36",
+  ];
+
+  let colorIndex = 0;
+  let groupToColorMap = {};
 
   function HandleMouseOnCanvas(e) {
     var rect = e.target.getBoundingClientRect();
@@ -86,24 +178,39 @@ const CanvasWhoPanel = (props) => {
       props.handleExactMatch();
     }
 
+    if (x > 559 && x < 583 && y > 140 && y < 164) {
+      if (isGroupModeRef.current) {
+        props.handleSort("level");
+        setIsGroupMode(false);
+      } else {
+        props.handleSort("groupid");
+        setIsGroupMode(true);
+      }
+    }
+
     if (x > 21 && x < 41 && y > 230 && y < 251) {
       props.handleSort("inparty");
+      setIsGroupMode(false);
     }
 
     if (x > 41 && x < 271 && y > 230 && y < 251) {
       props.handleSort("name");
+      setIsGroupMode(false);
     }
 
     if (x > 271 && x < 387 && y > 230 && y < 251) {
       props.handleSort("class");
+      setIsGroupMode(false);
     }
 
     if (x > 387 && x < 456 && y > 230 && y < 251) {
       props.handleSort("level");
+      setIsGroupMode(false);
     }
 
     if (x > 456 && x < 684 && y > 230 && y < 251) {
       props.handleSort("guild");
+      setIsGroupMode(false);
     }
   }
 
@@ -200,6 +307,11 @@ const CanvasWhoPanel = (props) => {
         ctx.drawImage(sprite, 467, 340, 16, 16, 401, 171, 16, 16);
       else ctx.drawImage(sprite, 450, 340, 16, 16, 401, 171, 16, 16);
 
+      // Group view
+      if (isGroupMode)
+        ctx.drawImage(sprite, 660, 341, 23, 23, 559, 140, 24, 24);
+      else ctx.drawImage(sprite, 637, 341, 23, 23, 559, 140, 24, 24);
+
       // Draw class toggles
       for (var i = 0; i < 15; i++) {
         drawClassFilter(
@@ -294,6 +406,25 @@ const CanvasWhoPanel = (props) => {
         var width = 660;
         var height = 42;
 
+        // Get the color for this player if they are in a group that has more than one person
+        // First check if their group is already in the map
+        // If not, add it to the map and assign it a color
+        let playerColor = "";
+        if (
+          isGroupMode &&
+          player.GroupId != 0 &&
+          props.data.filter((p) => p.GroupId === player.GroupId).length > 1
+        ) {
+          if (!groupToColorMap.hasOwnProperty(player.GroupId)) {
+            const COLOR = GROUP_COLORS[colorIndex % GROUP_COLORS.length];
+            groupToColorMap[player.GroupId] = COLOR;
+            playerColor = COLOR;
+            colorIndex++;
+          } else {
+            playerColor = groupToColorMap[player.GroupId];
+          }
+        }
+
         // Draw background panel
         ctx.drawImage(sprite, 0, 259, 706, 47, 0, y, 706, 47);
 
@@ -303,7 +434,11 @@ const CanvasWhoPanel = (props) => {
         grad.addColorStop(0.25, "#4c4a31");
         grad.addColorStop(0.75, "#4c4a31");
         grad.addColorStop(1, "#3b3b25");
-        ctx.fillStyle = grad;
+        if (playerColor != "") {
+          ctx.fillStyle = playerColor;
+        } else {
+          ctx.fillStyle = grad;
+        }
         ctx.fillRect(x, y, width, height);
 
         // Draw border:
