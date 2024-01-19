@@ -12,6 +12,7 @@
 		"express": "^4.17.1",
 		"firebase-admin": "^10.0.2",
 		"lodash-es": "^4.17.21",
+		"math.js": "^1.1.46",
 		"moment": "^2.29.4",
 		"mysql": "^2.18.1",
 		"mysql2": "^2.3.3",
