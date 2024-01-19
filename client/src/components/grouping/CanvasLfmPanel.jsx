@@ -4,7 +4,6 @@ import PumpkinSprite from "../../assets/global/pumpkins.png";
 import CobwebSprite from "../../assets/global/cobweb.png";
 import GhostSprite from "../../assets/global/ghosts.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
-import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
 import NAMES from "../../constants/ClemeitNames";
 
 const CanvasLfmPanel = (props) => {
@@ -18,7 +17,8 @@ const CanvasLfmPanel = (props) => {
   const cobwebRef = React.useRef(null);
   const ghostRef = React.useRef(null);
   const wallRef = React.useRef(null);
-  const wallDarkRef = React.useRef(null);
+
+  const UNKNOWN_QUEST_RE = /Unknown \[.*?\]/;
 
   const JOIN_REQUEST_MESSAGES = [
     "You'll have to log in to join {0}",
@@ -48,7 +48,6 @@ const CanvasLfmPanel = (props) => {
   const [isCobwebLoaded, setIsCobwebLoaded] = React.useState(false);
   const [isGhostLoaded, setIsGhostLoaded] = React.useState(false);
   const [isWallLoaded, setIsWallLoaded] = React.useState(false);
-  const [isWallDarkLoaded, setIsWallDarkLoaded] = React.useState(false);
   // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
   // let [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
   let [groupSelection, setGroupSelection] = React.useState({
@@ -73,7 +72,7 @@ const CanvasLfmPanel = (props) => {
 
   function isSpookyTime() {
     let dt = new Date();
-    if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+    if (dt.getMonth() === 9 && dt.getDate() >= 4) {
       return "revels";
     }
     return "";
@@ -108,12 +107,12 @@ const CanvasLfmPanel = (props) => {
     //     else if (x > 375 && lastSide === "right") return;
     // }
 
-    // Double click the quest
     if (e.type === "click" && x > 375 && x < 605) {
       if (
         e.timeStamp - lastclickRef.current.timeStamp < 500 &&
         Math.abs(e.clientY - lastclickRef.current.clientY) < 10
       ) {
+        // Double click the quest
         setGroupSelection({
           groupIndex: index,
           cursorPosition: [x, y],
@@ -121,6 +120,14 @@ const CanvasLfmPanel = (props) => {
           doubleClick: true,
         });
         return;
+      } else {
+        // Single click the quest
+        setGroupSelection({
+          groupIndex: index,
+          cursorPosition: [x, y],
+          side,
+          singleClick: true,
+        });
       }
       lastclickRef.current = e;
     }
@@ -236,17 +243,45 @@ const CanvasLfmPanel = (props) => {
   }
 
   React.useEffect(() => {
+    if (!groupSelection || groupSelection.groupIndex === -1) return;
+    if (groupSelection.doubleClick) {
+      if (
+        groupSelection.groupIndex !== -1 &&
+        groupSelection.groupIndex < props.data.Groups.length &&
+        !UNKNOWN_QUEST_RE.test(
+          props?.data?.Groups?.[groupSelection.groupIndex]?.Quest?.Name
+        )
+      ) {
+        let g = props.data.Groups[groupSelection.groupIndex];
+        if (g.Quest != null) {
+          window.open(
+            "https://ddowiki.com/page/" + g.Quest.Name.replace(/ /g, "_"),
+            "_blank"
+          );
+          return;
+        }
+      }
+    } else if (
+      groupSelection.singleClick &&
+      groupSelection.groupIndex !== -1 &&
+      groupSelection.groupIndex < props.data.Groups.length &&
+      UNKNOWN_QUEST_RE.test(
+        props?.data?.Groups?.[groupSelection.groupIndex]?.Quest?.Name
+      )
+    ) {
+      setGroupSelection({ ...groupSelection, groupIndex: -1 });
+      console.log("unknown quest");
+    }
+  }, [groupSelection]);
+
+  React.useEffect(() => {
     if (!isImageLoaded) {
       return;
     }
 
     if (
       EVENT_THEME === "revels" &&
-      (!isPumpkinLoaded ||
-        !isWallLoaded ||
-        !isWallDarkLoaded ||
-        !isCobwebLoaded ||
-        !isGhostLoaded)
+      (!isPumpkinLoaded || !isWallLoaded || !isCobwebLoaded || !isGhostLoaded)
     ) {
       return;
     }
@@ -260,23 +295,6 @@ const CanvasLfmPanel = (props) => {
     const cobweb = cobwebRef.current;
     const ghost = ghostRef.current;
     const wall = wallRef.current;
-    const wallDark = wallDarkRef.current;
-
-    if (groupSelection.doubleClick) {
-      if (
-        groupSelection.groupIndex !== -1 &&
-        groupSelection.groupIndex < props.data.Groups.length
-      ) {
-        let g = props.data.Groups[groupSelection.groupIndex];
-        if (g.Quest != null) {
-          window.open(
-            "https://ddowiki.com/page/" + g.Quest.Name.replace(/ /g, "_"),
-            "_blank"
-          );
-          return;
-        }
-      }
-    }
 
     // Draw the header
     OpenPanel();
@@ -396,7 +414,9 @@ const CanvasLfmPanel = (props) => {
           if (group.Eligible) {
             ctx.drawImage(wall, 26, top, 802, lfmheight);
           } else {
-            ctx.drawImage(wallDark, 26, top, 802, lfmheight);
+            ctx.filter = "brightness(35%)";
+            ctx.drawImage(wall, 26, top, 802, lfmheight);
+            ctx.filter = "brightness(100%)";
           }
 
           if (
@@ -764,8 +784,13 @@ const CanvasLfmPanel = (props) => {
             18 + props.fontModifier
           }px Arial`;
           ctx.textAlign = "center";
-          let textLines = wrapText(group.Quest.Name, 220);
 
+          let questName = group.Quest.Name;
+          let isQuestUnknown = UNKNOWN_QUEST_RE.test(group.Quest.Name);
+          if (isQuestUnknown) {
+            questName = "Unknown Quest";
+          }
+          let textLines = wrapText(questName, 220);
           if (textLines.length > 1 && SHOW_QUEST_TIP) {
             textLines = [textLines[0]];
             textLines[0] = textLines[0] + "...";
@@ -823,28 +848,43 @@ const CanvasLfmPanel = (props) => {
           }
 
           ctx.font = `${14 + props.fontModifier}px Arial`;
-          ctx.fillStyle = props.highVisibility
-            ? "white"
-            : group.Eligible
-            ? group.Guess
-              ? "#d3f6f6"
-              : "#b6b193"
-            : "#95927e";
-          ctx.fillText(
-            getGroupDifficulty(group),
-            489,
-            top -
-              4 +
-              lfmheight / 2 -
-              (textLines.length -
-                1 +
-                (group.Difficulty.length > 3 ? 1 : 0) -
-                1) *
-                9 +
-              textLines.length * 19 +
-              props.fontModifier +
-              (SHOW_QUEST_TIP ? 10 : 0)
-          );
+          if (isQuestUnknown) {
+            ctx.fillStyle = "#d48824";
+            ctx.fillText(
+              "Click to report missing quest",
+              489,
+              top -
+                7 +
+                lfmheight / 2 +
+                textLines.length * 19 +
+                props.fontModifier +
+                (SHOW_QUEST_TIP ? 10 : 0)
+            );
+          } else {
+            // Draw quest difficulty
+            ctx.fillStyle = props.highVisibility
+              ? "white"
+              : group.Eligible
+              ? group.Guess
+                ? "#d3f6f6"
+                : "#b6b193"
+              : "#95927e";
+            ctx.fillText(
+              getGroupDifficulty(group),
+              489,
+              top -
+                4 +
+                lfmheight / 2 -
+                (textLines.length -
+                  1 +
+                  (group.Difficulty.length > 3 ? 1 : 0) -
+                  1) *
+                  9 +
+                textLines.length * 19 +
+                props.fontModifier +
+                (SHOW_QUEST_TIP ? 10 : 0)
+            );
+          }
         }
 
         // Draw quest completion percentage
@@ -1428,6 +1468,11 @@ const CanvasLfmPanel = (props) => {
     }
 
     function DrawQuestOverlay(group, cursorPosition) {
+      // If unknown quest, draw nothing
+      if (UNKNOWN_QUEST_RE.test(group?.Quest?.Name)) {
+        return;
+      }
+
       if (group === null) return;
       if (group.Quest == null) return;
 
@@ -2109,14 +2154,6 @@ const CanvasLfmPanel = (props) => {
           ref={wallRef}
           src={WallSprite}
           onLoad={() => setIsWallLoaded(true)}
-          style={{ display: "none" }}
-        />
-      )}
-      {EVENT_THEME === "revels" && (
-        <img
-          ref={wallDarkRef}
-          src={WallDarkSprite}
-          onLoad={() => setIsWallDarkLoaded(true)}
           style={{ display: "none" }}
         />
       )}
