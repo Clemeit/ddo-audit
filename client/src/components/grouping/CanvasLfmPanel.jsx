@@ -368,6 +368,18 @@ const CanvasLfmPanel = (props) => {
       if (props.data === null) {
         return;
       }
+      if (props.data.GroupCount > 0 && props.data.Groups.length === 0) {
+        ctx.font = `italic ${20 + props.fontModifier}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = props.highVisibility ? "white" : "#f6f1d3";
+        let templateString = "{0} group{1} been hidden by your filter settings";
+        let string = templateString
+          .replace("{0}", props.data.GroupCount)
+          .replace("{1}", props.data.GroupCount > 1 ? "s have" : " has");
+        ctx.fillText(string, 424, 72 + 45);
+        return;
+      }
       let top = 72;
       props.data.Groups.filter((group) => {
         return group.Eligible || props.showNotEligible;
