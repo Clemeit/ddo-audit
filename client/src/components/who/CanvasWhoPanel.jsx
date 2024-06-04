@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whosprite_v4.jpg";
+import PanelSprite from "../../assets/global/whosprite_v5.jpg";
 import CrownSprite from "../../assets/global/crown.png";
 import NAMES from "../../constants/ClemeitNames";
 
