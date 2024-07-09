@@ -1,5 +1,5 @@
 import React from "react";
-import PanelSprite from "../../assets/global/whosprite_v5.jpg";
+import PanelSprite from "../../assets/global/whosprite_v6.jpg";
 import CrownSprite from "../../assets/global/crown.png";
 import NAMES from "../../constants/ClemeitNames";
 
@@ -764,6 +764,11 @@ const CanvasWhoPanel = (props) => {
           xsrc = 18;
           ysrc = 36;
           break;
+        case "Female Eladrin":
+        case "Female Eladrin Chaosmancer":
+          xsrc = 90;
+          ysrc = 54;
+          break;
         case "Male Aasimar":
         case "Male Aasimar Scourge":
           xsrc = 36;
@@ -823,6 +828,11 @@ const CanvasWhoPanel = (props) => {
         case "Male Warforged":
         case "Male Bladeforged":
           xsrc = 54;
+          ysrc = 72;
+          break;
+        case "Male Eladrin":
+        case "Male Eladrin Chaosmancer":
+          xsrc = 90;
           ysrc = 72;
           break;
         case "Male Tabaxi":

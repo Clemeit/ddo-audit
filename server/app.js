@@ -59,12 +59,12 @@ async function restartMySql() {
         restartMySql();
         sendMessage("MySQL connection lost");
       } else {
-        restartMySql();
         if (err && err.code) {
           sendMessage(`MySQL error: ${err.code}`);
         } else {
           sendMessage(`MySQL undefined error`);
         }
+        restartMySql();
       }
     });
   });
