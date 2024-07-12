@@ -103,11 +103,10 @@ export function VerifyPlayerAndLfmOverview(data) {
 export function VerifyServerLfmData(data) {
   if (data === null) return false;
   let missingfields = false;
-  if (data.Name === undefined) missingfields = true;
-  if (data.LastUpdateTime === undefined) missingfields = true;
-  if (data.GroupCount === undefined) missingfields = true;
-  if (missingfields) return false;
-  return true;
+  if (data.lfms === undefined) missingfields = true;
+  if (data.last_updated === undefined) missingfields = true;
+  if (data.lfm_count === undefined) missingfields = true;
+  return !missingfields;
 }
 
 export function VerifyPlayerData(data) {
