@@ -1,70 +1,70 @@
 import React from "react";
 
-const Group = (props) => {
+const Lfm = (props) => {
   const classnames = [
-    { Name: "Alchemist", Short: "Alc" },
-    { Name: "Artificer", Short: "Art" },
-    { Name: "Barbarian", Short: "Barb" },
-    { Name: "Bard", Short: "Brd" },
-    { Name: "Cleric", Short: "Clr" },
-    { Name: "Druid", Short: "Drd" },
-    { Name: "Favored Soul", Short: "FvS" },
-    { Name: "Fighter", Short: "Ftr" },
-    { Name: "Monk", Short: "Mnk" },
-    { Name: "Paladin", Short: "Pal" },
-    { Name: "Ranger", Short: "Rgr" },
-    { Name: "Rogue", Short: "Rog" },
-    { Name: "Sorcerer", Short: "Sorc" },
-    { Name: "Warlock", Short: "Wlk" },
-    { Name: "Wizard", Short: "Wiz" },
+    { name: "Alchemist", short: "Alc" },
+    { name: "Artificer", short: "Art" },
+    { name: "Barbarian", short: "Barb" },
+    { name: "Bard", short: "Brd" },
+    { name: "Cleric", short: "Clr" },
+    { name: "Druid", short: "Drd" },
+    { name: "Favored Soul", short: "FvS" },
+    { name: "Fighter", short: "Ftr" },
+    { name: "Monk", short: "Mnk" },
+    { name: "Paladin", short: "Pal" },
+    { name: "Ranger", short: "Rgr" },
+    { name: "Rogue", short: "Rog" },
+    { name: "Sorcerer", short: "Sorc" },
+    { name: "Warlock", short: "Wlk" },
+    { name: "Wizard", short: "Wiz" },
   ];
 
-  function GetShortName(cls) {
-    let shortname = "";
+  function getShortName(cls) {
+    let shortName = "";
     classnames.forEach((obj) => {
-      if (obj.Name === cls) shortname = obj.Short;
+      if (obj.name === cls) shortName = obj.short;
     });
-    return shortname || cls;
+    return shortName || cls;
   }
 
   return (
     <div className="group" onClick={props.handleClick}>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <span style={{ fontWeight: "bold", fontSize: "2rem" }}>
-          {props.group.Leader.Name}
+          {props.lfm.leader.name}
         </span>
-        {props.group.MinimumLevel && props.group.MaximumLevel && (
+        {props.lfm.minimum_level && props.lfm.maximum_level && (
           <span style={{ marginLeft: "auto", fontSize: "1.8rem" }}>
-            {props.group.MinimumLevel} - {props.group.MaximumLevel}
+            {props.lfm.minimum_level} - {props.lfm.maximum_level}
           </span>
         )}
       </div>
-      {props.group.Quest ? (
+      {props.lfm.quest ? (
         <span
           style={{
             fontSize: "1.7rem",
             color: "var(--text-lfm-number)",
           }}
         >
-          {props.group.Quest.Name} ({props.group.Difficulty})
+          {props.lfm.quest.name} ({props.lfm.difficulty})
         </span>
       ) : (
         <span></span>
       )}
-      {props.group.Comment && (
-        <span style={{ fontSize: "1.7rem" }}>"{props.group.Comment}"</span>
+      {props.lfm.comment && (
+        <span style={{ fontSize: "1.7rem" }}>"{props.lfm.comment}"</span>
       )}
-      {props.group.AdventureActive !== 0 &&
-        props.group.AdventureActive !== undefined && (
+      {props.lfm.adventure_active !== 0 &&
+        props.lfm.adventure_active !== undefined && (
           <span
             style={{
               fontSize: "1.4rem",
               color: "var(--blue-text)",
             }}
           >
-            Adventure Active: {Math.round(props.group.AdventureActive / 60)}{" "}
+            Adventure Active: {Math.round(props.lfm.adventure_active / 60)}{" "}
             minute
-            {Math.round(props.group.AdventureActive / 60) !== 1 ? "s" : ""}
+            {Math.round(props.lfm.adventure_active / 60) !== 1 ? "s" : ""}
           </span>
         )}
       {props.expanded ? (
@@ -86,7 +86,7 @@ const Group = (props) => {
                       paddingRight: "20px",
                     }}
                   >
-                    {props.group.Leader.Name}
+                    {props.lfm.leader.name}
                   </td>
                   <td
                     style={{
@@ -94,11 +94,11 @@ const Group = (props) => {
                       paddingRight: "20px",
                     }}
                   >
-                    {props.group.Leader.Classes &&
-                      props.group.Leader.Classes.map((cls, i) => (
+                    {props.lfm.leader.classes &&
+                      props.lfm.leader.classes.map((cls, i) => (
                         <span key={i}>
                           {i !== 0 && " / "}
-                          {GetShortName(cls.Name)} {cls.Level}
+                          {getShortName(cls.name)} {cls.level}
                         </span>
                       ))}
                   </td>
@@ -108,12 +108,12 @@ const Group = (props) => {
                       paddingRight: "20px",
                     }}
                   >
-                    {props.group.Leader.Location &&
-                      props.group.Leader.Location.Name}
+                    {props.lfm.leader.location &&
+                      props.lfm.leader.location.name}
                   </td>
                 </tr>
-                {props.group.Members &&
-                  props.group.Members.map((member, i) => (
+                {props.lfm.members &&
+                  props.lfm.members.map((member, i) => (
                     <tr key={i} className="social-member-entry">
                       <td
                         className="social-member-entry name"
@@ -121,7 +121,7 @@ const Group = (props) => {
                           paddingRight: "20px",
                         }}
                       >
-                        {member.Name}
+                        {member.name}
                       </td>
                       <td
                         style={{
@@ -129,11 +129,11 @@ const Group = (props) => {
                           paddingRight: "20px",
                         }}
                       >
-                        {member.Classes &&
-                          member.Classes.map((cls, i) => (
+                        {member.classes &&
+                          member.classes.map((cls, i) => (
                             <span key={i}>
                               {i !== 0 && " / "}
-                              {GetShortName(cls.Name)} {cls.Level}
+                              {getShortName(cls.name)} {cls.level}
                             </span>
                           ))}
                       </td>
@@ -143,7 +143,7 @@ const Group = (props) => {
                           paddingRight: "20px",
                         }}
                       >
-                        {member.Location.Name}
+                        {member.location.name}
                       </td>
                     </tr>
                   ))}
@@ -152,7 +152,7 @@ const Group = (props) => {
           </div>
         </div>
       ) : (
-        props.group.Members.length > 0 && (
+        props.lfm.members.length > 0 && (
           <span
             style={{
               textAlign: "center",
@@ -160,7 +160,7 @@ const Group = (props) => {
               color: "var(--text-faded)",
             }}
           >
-            Click to view all {props.group.Members.length + 1} members
+            Click to view all {props.lfm.members.length + 1} members
           </span>
         )
       )}
@@ -168,4 +168,4 @@ const Group = (props) => {
   );
 };
 
-export default Group;
+export default Lfm;

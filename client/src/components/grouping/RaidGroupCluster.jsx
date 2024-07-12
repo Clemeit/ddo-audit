@@ -32,8 +32,8 @@ const RaidGroupCluster = (props) => {
 
   function serverRaidCount(server) {
     let result = 0;
-    server.Groups.forEach((group) => {
-      if (group.Quest?.GroupSize === "Raid") {
+    server.lfms.forEach((lfm) => {
+      if (lfm.quest?.group_size === "Raid") {
         result += 1;
       }
     });
@@ -44,8 +44,8 @@ const RaidGroupCluster = (props) => {
     if (props.data && props.data.length) {
       let result = 0;
       props.data.forEach((server) => {
-        server.Groups.forEach((group) => {
-          if (group.Quest?.GroupSize === "Raid") {
+        server.lfms.forEach((lfm) => {
+          if (lfm.quest?.group_size === "Raid") {
             result += 1;
           }
         });
@@ -66,10 +66,10 @@ const RaidGroupCluster = (props) => {
         let yOffset = 0;
         canvas = CANVAS_REFS[i].current;
         ctx = canvas.getContext("2d", { alpha: false });
-        server.Groups.forEach((group) => {
-          group.Eligible = true;
-          if (group.Quest?.GroupSize === "Raid") {
-            DrawRaid(group, yOffset);
+        server.lfms.forEach((lfm) => {
+          lfm.eligible = true;
+          if (lfm.quest?.group_size === "Raid") {
+            DrawRaid(lfm, yOffset);
             yOffset += LFM_HEIGHT;
           }
         });
@@ -77,7 +77,7 @@ const RaidGroupCluster = (props) => {
     });
   }
 
-  function DrawRaid(group, yOffset) {
+  function DrawRaid(lfm, yOffset) {
     ctx.drawImage(sprite, 0, 72, 848, LFM_HEIGHT, 0, yOffset, 848, LFM_HEIGHT);
 
     let top = yOffset;
@@ -85,31 +85,31 @@ const RaidGroupCluster = (props) => {
     //     return group.Eligible || props.showNotEligible;
     // }).forEach((group, index) => {
     // Draw background and borders
-    let commentlines = wrapText(group.Comment, 330);
-    let lfmheight = 0;
+    const COMMENT_LINES = wrapText(lfm.comment, 330);
+    const LFM_HEIGHT = 0;
     if (props.expandedInfo) {
-      if (group.Members.length) {
-        lfmheight += group.Members.length * 25 + 30;
+      if (lfm.members.length) {
+        LFM_HEIGHT += lfm.members.length * 25 + 30;
       }
-      if (group.Comment) {
-        lfmheight += commentlines.length * 20 + 5;
+      if (lfm.comment) {
+        LFM_HEIGHT += COMMENT_LINES.length * 20 + 5;
       }
-      if (group.AdventureActive) {
-        lfmheight += 20;
+      if (lfm.adventure_active) {
+        LFM_HEIGHT += 20;
       }
-      if (lfmheight < LFM_HEIGHT) {
-        lfmheight = LFM_HEIGHT;
+      if (LFM_HEIGHT < LFM_HEIGHT) {
+        LFM_HEIGHT = LFM_HEIGHT;
       }
     } else {
-      lfmheight = LFM_HEIGHT;
+      LFM_HEIGHT = LFM_HEIGHT;
     }
 
-    if (isFeytwisted(group)) {
+    if (isFeytwisted(lfm)) {
       let gradient = ctx.createLinearGradient(
         0,
         top,
         PANEL_WIDTH,
-        top + lfmheight
+        top + LFM_HEIGHT
       );
       gradient.addColorStop(0, "#a11d1d");
       gradient.addColorStop(0.2, "#a1a11d");
@@ -119,56 +119,56 @@ const RaidGroupCluster = (props) => {
       gradient.addColorStop(1, "#8f1da1");
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(26, top, 802, lfmheight);
+      ctx.fillRect(26, top, 802, LFM_HEIGHT);
 
-      gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
+      gradient = ctx.createLinearGradient(0, top, 0, top + LFM_HEIGHT);
       gradient.addColorStop(0, "#3b3b25");
       gradient.addColorStop(0.25, "#4c4a31");
       gradient.addColorStop(0.75, "#4c4a31");
       gradient.addColorStop(1, "#3b3b25");
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-    } else if (group.Eligible) {
-      let gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
+      ctx.fillRect(31, top + 5, 792, LFM_HEIGHT - 10);
+    } else if (lfm.eligible) {
+      let gradient = ctx.createLinearGradient(0, top, 0, top + LFM_HEIGHT);
       gradient.addColorStop(0, "#3b3b25");
       gradient.addColorStop(0.25, "#4c4a31");
       gradient.addColorStop(0.75, "#4c4a31");
       gradient.addColorStop(1, "#3b3b25");
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(26, top, 802, lfmheight);
+      ctx.fillRect(26, top, 802, LFM_HEIGHT);
     } else {
       ctx.fillStyle = "#150a06";
-      ctx.fillRect(26, top, 802, lfmheight);
+      ctx.fillRect(26, top, 802, LFM_HEIGHT);
     }
 
     ctx.beginPath();
     ctx.strokeStyle = "#8f8d74";
     ctx.lineWidth = 1;
-    ctx.rect(26, top, 802, lfmheight);
+    ctx.rect(26, top, 802, LFM_HEIGHT);
     ctx.stroke();
 
     ctx.moveTo(375, top);
-    ctx.lineTo(375, top + lfmheight);
+    ctx.lineTo(375, top + LFM_HEIGHT);
     ctx.stroke();
 
     ctx.moveTo(605, top);
-    ctx.lineTo(605, top + lfmheight);
+    ctx.lineTo(605, top + LFM_HEIGHT);
     ctx.stroke();
 
     ctx.moveTo(742, top);
-    ctx.lineTo(742, top + lfmheight);
+    ctx.lineTo(742, top + LFM_HEIGHT);
     ctx.stroke();
 
     // Draw party leader's name
-    ctx.fillStyle = group.Eligible ? "#f6f1d3" : "#988f80";
+    ctx.fillStyle = lfm.eligible ? "#f6f1d3" : "#988f80";
     ctx.textBaseline = "alphabetic";
     ctx.font = `18px 'Trebuchet MS'`;
     ctx.textAlign = "left";
-    ctx.fillText(group.Leader.Name, 49, top + 18);
-    let leaderWidth = ctx.measureText(group.Leader.Name).width;
-    if (group.Leader.Name.startsWith("Clemei")) {
+    ctx.fillText(lfm.leader.name, 49, top + 18);
+    let leaderWidth = ctx.measureText(lfm.leader.name).width;
+    if (lfm.leader.name.startsWith("Clemei")) {
       leaderWidth += 22;
       ctx.drawImage(
         sprite,
@@ -187,8 +187,7 @@ const RaidGroupCluster = (props) => {
     ctx.font = `15px Arial`;
     ctx.textAlign = "center";
     ctx.fillText(
-      group.Leader.TotalLevel ||
-        (group.Leader.Name === "DDO Audit" ? "99" : "0"),
+      lfm.leader.total_level || (lfm.leader.name === "DDO Audit" ? "99" : "0"),
       360,
       17 + top
     );
@@ -198,19 +197,19 @@ const RaidGroupCluster = (props) => {
     ctx.textBaseline = "middle";
     ctx.font = `16px Arial`;
     ctx.fillText(
-      (group.MinimumLevel || "1") + " - " + (group.MaximumLevel || "30"),
+      (lfm.minimum_level || "1") + " - " + (lfm.maximum_level || "30"),
       786,
-      top + lfmheight / 2
+      top + LFM_HEIGHT / 2
     );
     ctx.textBaseline = "alphabetic";
 
     // Draw member count
-    if (group.Members) {
-      if (group.Members.length > 0) {
-        ctx.fillStyle = group.Eligible ? "#b6b193" : "#95927e";
+    if (lfm.members) {
+      if (lfm.members.length > 0) {
+        ctx.fillStyle = lfm.eligible ? "#b6b193" : "#95927e";
         ctx.textAlign = "left";
         ctx.fillText(
-          "(" + (group.Members.length + 1) + " members)",
+          "(" + (lfm.members.length + 1) + " members)",
           49 + leaderWidth + 4,
           top + 18
         );
@@ -218,15 +217,15 @@ const RaidGroupCluster = (props) => {
     }
 
     // Draw quest
-    if (group.Quest != null) {
-      ctx.fillStyle = group.Eligible
-        ? group.Guess
+    if (lfm.quest != null) {
+      ctx.fillStyle = lfm.eligible
+        ? lfm.Guess
           ? "#d3f6f6"
           : "#f6f1d3"
         : "#988f80";
-      ctx.font = `${group.Guess ? "italic " : ""}18px Arial`;
+      ctx.font = `${lfm.guess ? "italic " : ""}18px Arial`;
       ctx.textAlign = "center";
-      let textLines = wrapText(group.Quest.Name, 220);
+      let textLines = wrapText(lfm.guest.name, 220);
       if (textLines.length > 2) {
         textLines = textLines.slice(0, 2);
         textLines[1] = textLines[1] + "...";
@@ -237,40 +236,39 @@ const RaidGroupCluster = (props) => {
           489,
           top -
             7 +
-            lfmheight / 2 -
-            (textLines.length - 1 + (group.Difficulty.length > 3 ? 1 : 0) - 1) *
+            LFM_HEIGHT / 2 -
+            (textLines.length - 1 + (lfm.difficulty.length > 3 ? 1 : 0) - 1) *
               9 +
             i * 19
         );
       }
 
-      if (group.CharactersOnTimer) {
+      if (lfm.characters_on_timer) {
         // draw timer icon
         ctx.drawImage(sprite, 764, 189, 18, 18, 585, top + 2, 18, 18);
       }
 
       ctx.font = `14px Arial`;
-      ctx.fillStyle = group.Eligible
-        ? group.Guess
+      ctx.fillStyle = lfm.eligible
+        ? lfm.guess
           ? "#d3f6f6"
           : "#b6b193"
         : "#95927e";
       ctx.fillText(
-        "(" + getGroupDifficulty(group) + ")",
+        "(" + getLfmDifficulty(lfm) + ")",
         489,
         top -
           4 +
-          lfmheight / 2 -
-          (textLines.length - 1 + (group.Difficulty.length > 3 ? 1 : 0) - 1) *
-            9 +
+          LFM_HEIGHT / 2 -
+          (textLines.length - 1 + (lfm.difficulty.length > 3 ? 1 : 0) - 1) * 9 +
           textLines.length * 19
       );
     }
 
     // Draw race icon
     let raceIconBounds = getRaceIconPosition(
-      group.Leader.Gender + " " + group.Leader.Race,
-      group.Eligible
+      lfm.leader.gender + " " + lfm.leader.race,
+      lfm.eligible
     );
     ctx.drawImage(
       sprite,
@@ -285,10 +283,10 @@ const RaidGroupCluster = (props) => {
     );
 
     // Draw class array
-    if (!group.hasOwnProperty("AcceptedCount")) {
+    if (!lfm.hasOwnProperty("accepted_count")) {
       ctx.drawImage(
         sprite,
-        group.Eligible ? 287 : 390,
+        lfm.eligible ? 287 : 390,
         189,
         102,
         60,
@@ -298,13 +296,10 @@ const RaidGroupCluster = (props) => {
         60
       );
     } else {
-      if (
-        group.AcceptedCount === CLASS_COUNT ||
-        group.AcceptedClasses == null
-      ) {
+      if (lfm.accepted_count === CLASS_COUNT || lfm.accepted_classes == null) {
         ctx.drawImage(
           sprite,
-          group.Eligible ? 287 : 390,
+          lfm.eligible ? 287 : 390,
           189,
           102,
           60,
@@ -314,10 +309,10 @@ const RaidGroupCluster = (props) => {
           60
         );
       } else {
-        group.AcceptedClasses.forEach((playerclass, i) => {
+        lfm.accepted_classes.forEach((playerclass, i) => {
           let classIconPosition = getClassIconPosition(
             playerclass,
-            group.Eligible
+            lfm.eligible
           );
           ctx.drawImage(
             sprite,
@@ -335,11 +330,11 @@ const RaidGroupCluster = (props) => {
     }
 
     // Draw comment
-    ctx.fillStyle = group.Eligible ? "#bfbfbf" : "#7f7472";
+    ctx.fillStyle = lfm.eligible ? "#bfbfbf" : "#7f7472";
     ctx.font = `15px Arial`;
     ctx.textAlign = "left";
-    let textLines = wrapText(group.Comment, 330);
-    if (group.AdventureActive !== 0 && group.AdventureActive !== undefined) {
+    let textLines = wrapText(lfm.comment, 330);
+    if (lfm.adventure_active !== 0 && lfm.adventure_active !== undefined) {
       if (textLines.length > 2 || textLines.length > 1) {
         textLines = textLines.slice(0, 1);
         textLines[textLines.length - 1] =
@@ -361,81 +356,83 @@ const RaidGroupCluster = (props) => {
     }
 
     // Draw active time
-    if (group.AdventureActive != null && group.AdventureActive !== 0) {
-      let modifiedaatime = Math.max(group.AdventureActive, 60);
+    if (lfm.adventure_active != null && lfm.adventure_active !== 0) {
+      let modifiedAdventureActiveTime = Math.max(lfm.adventure_active, 60);
       ctx.fillStyle = "#02adfb";
       ctx.textAlign = "center";
       ctx.fillText(
         "Adventure Active: " +
-          Math.round(modifiedaatime / 60) +
-          (Math.round(modifiedaatime / 60) === 1 ? " minute" : " minutes"),
+          Math.round(modifiedAdventureActiveTime / 60) +
+          (Math.round(modifiedAdventureActiveTime / 60) === 1
+            ? " minute"
+            : " minutes"),
         200,
-        top + lfmheight - 10
+        top + LFM_HEIGHT - 10
       );
     }
-    top += lfmheight;
+    top += LFM_HEIGHT;
     // });
   }
 
   // Helper function for getting group difficulty
-  function getGroupDifficulty(group) {
-    if (!group.Guess && group.Difficulty != "Reaper") {
-      return group.Difficulty;
+  function getLfmDifficulty(lfm) {
+    if (!lfm.guess && lfm.difficulty != "Reaper") {
+      return lfm.difficulty;
     }
 
-    let sanitized = group.Comment.toLowerCase();
-    let normalpattern = /(\bln\b)(\ben\b)|(\bnormal\b)/;
-    let hardpattern = /(\blh\b)(\beh\b)|(\bhard\b)/;
-    let elitepattern = /(\ble\b)(\bee\b)|(\belite\b)/;
-    let reaperpattern = /(\br\b)|(\breaper\b)/;
+    const sanitized = lfm.comment.toLowerCase();
+    const NORMAL_PATTERN = /(\bln\b)(\ben\b)|(\bnormal\b)/;
+    const HARD_PATTERN = /(\blh\b)(\beh\b)|(\bhard\b)/;
+    const ELITE_PATTERN = /(\ble\b)(\bee\b)|(\belite\b)/;
+    const REAPER_PATTERN = /(\br\b)|(\breaper\b)/;
 
-    if (group.Guess) {
-      if (normalpattern.test(sanitized)) {
+    if (lfm.guess) {
+      if (NORMAL_PATTERN.test(sanitized)) {
         return "Normal";
       }
-      if (hardpattern.test(sanitized)) {
+      if (HARD_PATTERN.test(sanitized)) {
         return "Hard";
       }
-      if (elitepattern.test(sanitized)) {
+      if (ELITE_PATTERN.test(sanitized)) {
         return "Elite";
       }
     }
 
-    let skullpattern1 = /r(\d+\+?)/;
-    let skullpattern2 = /reaper (\d+\+?)/;
-    let skullpattern3 = /(\d+\+?) skull/;
-    let skullpattern4 = /(r\+)/;
+    const SKULL_PATTERN_1 = /r(\d+\+?)/;
+    const SKULL_PATTERN_2 = /reaper (\d+\+?)/;
+    const SKULL_PATTERN_3 = /(\d+\+?) skull/;
+    const SKULL_PATTERN_4 = /(r\+)/;
 
-    let skullcount = 0;
-    if (skullpattern1.test(sanitized)) {
-      let num = skullpattern1.exec(sanitized);
-      skullcount = num[1];
+    let skullCount = 0;
+    if (SKULL_PATTERN_1.test(sanitized)) {
+      let num = SKULL_PATTERN_1.exec(sanitized);
+      skullCount = num[1];
     }
 
-    if (skullpattern2.test(sanitized)) {
-      let num = skullpattern2.exec(sanitized);
-      skullcount = num[1];
+    if (SKULL_PATTERN_2.test(sanitized)) {
+      let num = SKULL_PATTERN_2.exec(sanitized);
+      skullCount = num[1];
     }
 
-    if (skullpattern3.test(sanitized)) {
-      let num = skullpattern3.exec(sanitized);
-      skullcount = num[1];
+    if (SKULL_PATTERN_3.test(sanitized)) {
+      let num = SKULL_PATTERN_3.exec(sanitized);
+      skullCount = num[1];
     }
 
-    if (skullpattern4.test(sanitized)) {
-      let num = skullpattern4.exec(sanitized);
-      skullcount = "1+";
+    if (SKULL_PATTERN_4.test(sanitized)) {
+      let num = SKULL_PATTERN_4.exec(sanitized);
+      skullCount = "1+";
     }
 
-    if (+skullcount !== 0) {
-      if (+skullcount > 10) {
-        skullcount = 9001;
+    if (+skullCount !== 0) {
+      if (+skullCount > 10) {
+        skullCount = 9001;
       }
-      return `Reaper ${skullcount}`;
+      return `Reaper ${skullCount}`;
     }
 
-    if (group.Guess) {
-      if (reaperpattern.test(sanitized)) {
+    if (lfm.guess) {
+      if (REAPER_PATTERN.test(sanitized)) {
         return "Reaper";
       }
       return "Normal";
@@ -443,11 +440,11 @@ const RaidGroupCluster = (props) => {
     return "Reaper";
   }
 
-  function isFeytwisted(group) {
+  function isFeytwisted(lfm) {
     if (
-      (group.Comment.toLowerCase().includes("feytwisted") ||
-        group.Comment.toLowerCase().includes("fey chest")) &&
-      group.Quest?.RequiredAdventurePack.toLowerCase().includes("feywild")
+      (lfm.comment.toLowerCase().includes("feytwisted") ||
+        lfm.comment.toLowerCase().includes("fey chest")) &&
+      lfm.quest?.required_adventure_pack.toLowerCase().includes("feywild")
     )
       return true;
     return false;
@@ -707,7 +704,7 @@ const RaidGroupCluster = (props) => {
       />
       {gameRaidCount() === 0 && (
         <span style={{ color: "var(--text-faded)" }}>
-          When a raid group is posted on any server, it'll show up here.
+          When a raid LFM is posted on any server, it'll show up here.
         </span>
       )}
       {props.data &&
@@ -716,7 +713,7 @@ const RaidGroupCluster = (props) => {
           (server, i) =>
             serverRaidCount(server) > 0 && (
               <Link
-                to={`/grouping/${server.Name.toLowerCase()}?highlight=raids`}
+                to={`/grouping/${server.name.toLowerCase()}?highlight=raids`}
                 key={i}
                 className="nav-box shrinkable raid-box"
                 style={{
@@ -729,7 +726,7 @@ const RaidGroupCluster = (props) => {
                 }}
               >
                 <div className="nav-box-title">
-                  <h2 className="raid-server-title">{server.Name}</h2>
+                  <h2 className="raid-server-title">{server.name}</h2>
                 </div>
                 <canvas
                   className="lfm-canvas"

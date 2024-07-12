@@ -21,7 +21,6 @@ const CanvasLfmPanel = (props) => {
   const wallDarkRef = React.useRef(null);
 
   const JOIN_REQUEST_MESSAGES = [
-    "You'll have to log in to join {0}",
     "This is not the group you are looking for",
     "This isn't the real LFM panel - it's better",
     "Log in to DDO to join this fabulous group",
@@ -49,10 +48,10 @@ const CanvasLfmPanel = (props) => {
   const [isGhostLoaded, setIsGhostLoaded] = React.useState(false);
   const [isWallLoaded, setIsWallLoaded] = React.useState(false);
   const [isWallDarkLoaded, setIsWallDarkLoaded] = React.useState(false);
-  // let [selectedGroupIndex, set_selectedGroupIndex] = React.useState(-1);
+  // let [selectedlfmIndex, set_selectedlfmIndex] = React.useState(-1);
   // let [cursorPosition, set_cursorPosition] = React.useState([0, 0]);
-  let [groupSelection, setGroupSelection] = React.useState({
-    groupIndex: -1,
+  let [lfmSelection, setLfmSelection] = React.useState({
+    lfmIndex: -1,
     cursorPosition: [0, 0],
   });
   const [attemptedJoin, setAttemptedJoin] = React.useState(null);
@@ -92,18 +91,18 @@ const CanvasLfmPanel = (props) => {
 
     if (x > 605) {
       // 375 border between group and quest
-      setGroupSelection({ ...groupSelection, groupIndex: -1 });
+      setLfmSelection({ ...lfmSelection, lfmIndex: -1 });
       // drawPanel();
       return;
     }
     if (x < 30) {
-      setGroupSelection({ ...groupSelection, groupIndex: -1 });
+      setLfmSelection({ ...lfmSelection, lfmIndex: -1 });
       // drawPanel();
       return;
     }
 
     let index = Math.floor((y - 72) / 90);
-    // if (groupSelection.groupIndex === index) {
+    // if (lfmSelection.lfmIndex === index) {
     //     if (x < 375 && lastSide === "left") return;
     //     else if (x > 375 && lastSide === "right") return;
     // }
@@ -114,8 +113,8 @@ const CanvasLfmPanel = (props) => {
         e.timeStamp - lastclickRef.current.timeStamp < 500 &&
         Math.abs(e.clientY - lastclickRef.current.clientY) < 10
       ) {
-        setGroupSelection({
-          groupIndex: index,
+        setLfmSelection({
+          lfmIndex: index,
           cursorPosition: [x, y],
           side,
           doubleClick: true,
@@ -125,16 +124,21 @@ const CanvasLfmPanel = (props) => {
       lastclickRef.current = e;
     }
 
-    // Double click a group
+    // Double click an lfm
     if (e.type === "click" && x > 30 && x < 375) {
       if (
         e.timeStamp - lastclickRef.current.timeStamp < 500 &&
         Math.abs(e.clientY - lastclickRef.current.clientY) < 10
       ) {
+        let displayText =
+          JOIN_REQUEST_MESSAGES[
+            Math.floor(Math.random() * JOIN_REQUEST_MESSAGES.length)
+          ];
         setAttemptedJoin({
-          groupIndex: index,
+          lfmIndex: index,
           cursorPosition: [x, y],
           timeStamp: e.timeStamp,
+          displayText: displayText,
         });
         return;
       }
@@ -144,7 +148,7 @@ const CanvasLfmPanel = (props) => {
     // Clear attempted join
     if (
       attemptedJoinRef.current !== null &&
-      attemptedJoinRef.current.groupIndex !== index
+      attemptedJoinRef.current.lfmIndex !== index
     ) {
       setAttemptedJoin(null);
     }
@@ -153,8 +157,8 @@ const CanvasLfmPanel = (props) => {
     if (x < 375) side = "left";
     else if (x > 375) side = "right";
 
-    setGroupSelection({
-      groupIndex: index,
+    setLfmSelection({
+      lfmIndex: index,
       cursorPosition: [x, y],
       side,
     });
@@ -174,18 +178,18 @@ const CanvasLfmPanel = (props) => {
     });
     canvasRef.current.addEventListener("mouseleave", () => {
       clearTimeout(overlayTimeout);
-      setGroupSelection({ ...groupSelection, groupIndex: -1 });
+      setLfmSelection({ ...lfmSelection, lfmIndex: -1 });
       setAttemptedJoin(null);
     });
   }, [canvasRef]);
 
-  function computePanelHeight(groups) {
+  function computePanelHeight(lfms) {
     let top = 0;
 
-    if (groups) {
-      groups
+    if (lfms) {
+      lfms
         .filter((group) => {
-          return group.Eligible || props.showNotEligible;
+          return group.eligible || props.showNotEligible;
         })
         .forEach((group, index) => {
           let lfmheight = 0;
@@ -194,8 +198,8 @@ const CanvasLfmPanel = (props) => {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext("2d", { alpha: false });
 
-            if (group.Comment != null) {
-              let words = group.Comment.split(" ");
+            if (group.comment != null) {
+              let words = group.comment.split(" ");
               let lines = [];
               let currentLine = words[0];
 
@@ -213,13 +217,13 @@ const CanvasLfmPanel = (props) => {
               commentlines = lines;
             }
 
-            if (group.Members.length) {
-              lfmheight += group.Members.length * 25 + 30;
+            if (group.members.length) {
+              lfmheight += group.members.length * 25 + 30;
             }
-            if (group.Comment) {
+            if (group.comment) {
               lfmheight += commentlines.length * 20 + 5;
             }
-            if (group.AdventureActive) {
+            if (group.adventure_active_time) {
               lfmheight += 20;
             }
             if (lfmheight < lfmHeight) {
@@ -262,15 +266,15 @@ const CanvasLfmPanel = (props) => {
     const wall = wallRef.current;
     const wallDark = wallDarkRef.current;
 
-    if (groupSelection.doubleClick) {
+    if (lfmSelection.doubleClick) {
       if (
-        groupSelection.groupIndex !== -1 &&
-        groupSelection.groupIndex < props.data.Groups.length
+        lfmSelection.lfmIndex !== -1 &&
+        lfmSelection.lfmIndex < props.data.lfms.length
       ) {
-        let g = props.data.Groups[groupSelection.groupIndex];
-        if (g.Quest != null) {
+        let lfm = props.data.lfms[lfmSelection.lfmIndex];
+        if (lfm.quest != null) {
           window.open(
-            "https://ddowiki.com/page/" + g.Quest.Name.replace(/ /g, "_"),
+            "https://ddowiki.com/page/" + lfm.quest.name.replace(/ /g, "_"),
             "_blank"
           );
           return;
@@ -288,21 +292,21 @@ const CanvasLfmPanel = (props) => {
     DrawFiller();
     if (props.data !== null) DrawLfms();
 
-    // Draws the header and the lastUpdateTime string
+    // Draws the header and the last_updated string
     function OpenPanel() {
       ctx.drawImage(sprite, 0, 0, 848, 72, 0, 0, 848, 72);
       if (props.data) {
-        let lastUpdateTime = new Date(props.data.LastUpdateTime);
-        let hour = lastUpdateTime.getHours() % 12;
+        let last_updated = new Date(props.data.last_updated);
+        let hour = last_updated.getHours() % 12;
         if (hour == 0) hour = 12;
         let timeText =
           "Last updated " +
           hour +
           ":" +
-          ("0" + lastUpdateTime.getMinutes()).slice(-2) +
+          ("0" + last_updated.getMinutes()).slice(-2) +
           ":" +
-          ("0" + lastUpdateTime.getSeconds()).slice(-2) +
-          (Math.floor(lastUpdateTime.getHours() / 12) == 0 ? " AM" : " PM");
+          ("0" + last_updated.getSeconds()).slice(-2) +
+          (Math.floor(last_updated.getHours() / 12) == 0 ? " AM" : " PM");
         ctx.font = "18px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -331,7 +335,7 @@ const CanvasLfmPanel = (props) => {
         72 +
           (props.data
             ? Math.max(
-                computePanelHeight(props.data.Groups),
+                computePanelHeight(props.data.lfms),
                 MINIMUM_LFM_COUNT * lfmHeight
               )
             : MINIMUM_LFM_COUNT * lfmHeight),
@@ -346,7 +350,7 @@ const CanvasLfmPanel = (props) => {
         let i = 0;
         i <
         (props.data
-          ? Math.max(props.data.Groups.length, MINIMUM_LFM_COUNT)
+          ? Math.max(props.data.lfms.length, MINIMUM_LFM_COUNT)
           : MINIMUM_LFM_COUNT);
         i++
       ) {
@@ -368,790 +372,810 @@ const CanvasLfmPanel = (props) => {
       if (props.data === null) {
         return;
       }
-      if (props.data.GroupCount > 0 && props.data.Groups.length === 0) {
+      if (props.data.lfm_count > 0 && props.data.lfms.length === 0) {
         ctx.font = `italic ${20 + props.fontModifier}px Arial`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = props.highVisibility ? "white" : "#f6f1d3";
         let templateString = "{0} group{1} been hidden by your filter settings";
         let string = templateString
-          .replace("{0}", props.data.GroupCount)
-          .replace("{1}", props.data.GroupCount > 1 ? "s have" : " has");
+          .replace("{0}", props.data.lfm_count)
+          .replace("{1}", props.data.lfm_count > 1 ? "s have" : " has");
         ctx.fillText(string, 424, 72 + 45);
         return;
       }
       let top = 72;
-      props.data.Groups.filter((group) => {
-        return group.Eligible || props.showNotEligible;
-      }).forEach((group, index) => {
-        // Draw background and borders
-        let commentlines = wrapText(group.Comment, 330);
-        let lfmheight = 0;
-        if (props.expandedInfo) {
-          if (group.Members.length) {
-            lfmheight += group.Members.length * 25 + 30;
-          }
-          if (group.Comment) {
-            lfmheight += commentlines.length * 20 + 5;
-          }
-          if (group.AdventureActive) {
-            lfmheight += 20;
-          }
-          if (lfmheight < lfmHeight) {
+      props.data.lfms
+        .filter((lfm) => {
+          return lfm.eligible || props.showNotEligible;
+        })
+        .forEach((lfm, index) => {
+          // Draw background and borders
+          let commentlines = wrapText(lfm.comment, 330);
+          let lfmheight = 0;
+          if (props.expandedInfo) {
+            if (lfm.members.length) {
+              lfmheight += lfm.members.length * 25 + 30;
+            }
+            if (lfm.comment) {
+              lfmheight += commentlines.length * 20 + 5;
+            }
+            if (lfm.adventure_active_time) {
+              lfmheight += 20;
+            }
+            if (lfmheight < lfmHeight) {
+              lfmheight = lfmHeight;
+            }
+          } else {
             lfmheight = lfmHeight;
           }
-        } else {
-          lfmheight = lfmHeight;
-        }
 
-        if (EVENT_THEME === "revels") {
-          if (group.Eligible) {
-            ctx.drawImage(wall, 26, top, 802, lfmheight);
-          } else {
-            ctx.drawImage(wallDark, 26, top, 802, lfmheight);
-          }
-
-          if (
-            SPOOKY_WORDS.filter((word) =>
-              group.Comment.toLowerCase().includes(word)
-            ).length ||
-            SPOOKY_AREAS.filter((word) =>
-              group.Quest?.AdventureArea?.toLowerCase().includes(word)
-            ).length ||
-            SPOOKY_AREAS.filter((word) =>
-              group.Leader.Location?.Name?.toLowerCase().includes(word)
-            ).length
-          ) {
-            ctx.globalAlpha = group.Eligible ? 1 : 0.5;
-            if (group.Leader.Name.length % 2 === 0) {
-              ctx.drawImage(
-                pumpkins,
-                0,
-                0,
-                93,
-                60,
-                280,
-                73 + lfmHeight * index + 28,
-                93,
-                60
-              );
+          if (EVENT_THEME === "revels") {
+            if (lfm.eligible) {
+              ctx.drawImage(wall, 26, top, 802, lfmheight);
             } else {
-              ctx.drawImage(
-                pumpkins,
-                93,
-                0,
-                54,
-                60,
-                315,
-                73 + lfmHeight * index + 28,
-                54,
-                60
-              );
+              ctx.drawImage(wallDark, 26, top, 802, lfmheight);
             }
-          }
 
-          const COBWEB_VALUE =
-            group.Leader.Name.length + group.Quest?.Name?.length;
+            if (
+              SPOOKY_WORDS.filter((word) =>
+                lfm.comment.toLowerCase().includes(word)
+              ).length ||
+              SPOOKY_AREAS.filter((word) =>
+                lfm.quest?.adventure_area?.toLowerCase().includes(word)
+              ).length ||
+              SPOOKY_AREAS.filter((word) =>
+                lfm.leader.location?.name?.toLowerCase().includes(word)
+              ).length
+            ) {
+              ctx.globalAlpha = lfm.eligible ? 1 : 0.5;
+              if (lfm.leader.name.length % 2 === 0) {
+                ctx.drawImage(
+                  pumpkins,
+                  0,
+                  0,
+                  93,
+                  60,
+                  280,
+                  73 + lfmHeight * index + 28,
+                  93,
+                  60
+                );
+              } else {
+                ctx.drawImage(
+                  pumpkins,
+                  93,
+                  0,
+                  54,
+                  60,
+                  315,
+                  73 + lfmHeight * index + 28,
+                  54,
+                  60
+                );
+              }
+            }
 
-          if (COBWEB_VALUE % 7 === 0) {
-            // Draw cobweb
-            ctx.globalAlpha = group.Eligible
-              ? COBWEB_VALUE % 5 === 0
-                ? 0.4
-                : 0.3
-              : 0.2;
-            if (COBWEB_VALUE % 4 === 0) {
+            const COBWEB_VALUE =
+              lfm.leader.name.length + lfm.quest?.name?.length;
+
+            if (COBWEB_VALUE % 7 === 0) {
+              // Draw cobweb
+              ctx.globalAlpha = lfm.eligible
+                ? COBWEB_VALUE % 5 === 0
+                  ? 0.4
+                  : 0.3
+                : 0.2;
+              if (COBWEB_VALUE % 4 === 0) {
+                ctx.drawImage(
+                  cobweb,
+                  0,
+                  0,
+                  80,
+                  88,
+                  525,
+                  45 + lfmHeight * index + 28,
+                  80,
+                  88
+                );
+              } else {
+                ctx.translate(525, 45 + lfmHeight * index + 28);
+                ctx.rotate(-(90 * Math.PI) / 180);
+                ctx.drawImage(cobweb, 0, 0, 80, 88, -78, -149, 80, 88);
+                ctx.rotate((90 * Math.PI) / 180);
+                ctx.translate(-525, -(45 + lfmHeight * index + 28));
+              }
+            }
+
+            const GHOST_MOD = stringToInt(lfm.leader.name + lfm.comment);
+            const GHOST_TYPE = stringToInt(lfm.quest?.name || "undef");
+
+            // Draw ghost
+            if (GHOST_MOD % 7 === 0) {
+              ctx.globalAlpha = lfm.eligible ? 0.7 : 0.5;
               ctx.drawImage(
-                cobweb,
+                ghost,
+                GHOST_TYPE % 2 === 0 ? 90 : 0,
                 0,
-                0,
-                80,
-                88,
-                525,
+                90,
+                90,
+                (GHOST_MOD % 3) * 330 + 50,
                 45 + lfmHeight * index + 28,
-                80,
-                88
+                90,
+                90
               );
-            } else {
-              ctx.translate(525, 45 + lfmHeight * index + 28);
-              ctx.rotate(-(90 * Math.PI) / 180);
-              ctx.drawImage(cobweb, 0, 0, 80, 88, -78, -149, 80, 88);
-              ctx.rotate((90 * Math.PI) / 180);
-              ctx.translate(-525, -(45 + lfmHeight * index + 28));
-            }
-          }
-
-          const GHOST_MOD = stringToInt(group.Leader.Name + group.Comment);
-          const GHOST_TYPE = stringToInt(group.Quest?.Name || "undef");
-
-          // Draw ghost
-          if (GHOST_MOD % 7 === 0) {
-            ctx.globalAlpha = group.Eligible ? 0.7 : 0.5;
-            ctx.drawImage(
-              ghost,
-              GHOST_TYPE % 2 === 0 ? 90 : 0,
-              0,
-              90,
-              90,
-              (GHOST_MOD % 3) * 330 + 50,
-              45 + lfmHeight * index + 28,
-              90,
-              90
-            );
-          }
-
-          ctx.globalAlpha = 1;
-        } else {
-          if (isFeytwisted(group)) {
-            let gradient = ctx.createLinearGradient(
-              0,
-              top,
-              panelWidth,
-              top + lfmheight
-            );
-            gradient.addColorStop(0, "#a11d1d");
-            gradient.addColorStop(0.2, "#a1a11d");
-            gradient.addColorStop(0.4, "#1da11f");
-            gradient.addColorStop(0.6, "#1d9aa1");
-            gradient.addColorStop(0.8, "#1d1da1");
-            gradient.addColorStop(1, "#8f1da1");
-
-            ctx.fillStyle = gradient;
-            ctx.fillRect(26, top, 802, lfmheight);
-
-            if (group.Eligible) {
-              gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
-              gradient.addColorStop(
-                0,
-                props.highVisibility ? "#30301e" : "#3b3b25"
-              );
-              gradient.addColorStop(
-                0.25,
-                props.highVisibility ? "#42402a" : "#4c4a31"
-              );
-              gradient.addColorStop(
-                0.75,
-                props.highVisibility ? "#42402a" : "#4c4a31"
-              );
-              gradient.addColorStop(
-                1,
-                props.highVisibility ? "#30301e" : "#3b3b25"
-              );
-
-              ctx.fillStyle = gradient;
-              ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-            } else {
-              ctx.fillStyle = "#150a06";
-              ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-            }
-          } else if (group.Quest?.GroupSize === "Raid" && highlightRaids) {
-            let gradient = ctx.createLinearGradient(
-              0,
-              top,
-              panelWidth,
-              top + lfmheight
-            );
-            gradient.addColorStop(0, "#1da1a1");
-            gradient.addColorStop(1, "#1d6ca1");
-
-            ctx.fillStyle = gradient;
-            ctx.fillRect(26, top, 802, lfmheight);
-
-            if (group.Eligible) {
-              gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
-              gradient.addColorStop(
-                0,
-                props.highVisibility ? "#30301e" : "#3b3b25"
-              );
-              gradient.addColorStop(
-                0.25,
-                props.highVisibility ? "#42402a" : "#4c4a31"
-              );
-              gradient.addColorStop(
-                0.75,
-                props.highVisibility ? "#42402a" : "#4c4a31"
-              );
-              gradient.addColorStop(
-                1,
-                props.highVisibility ? "#30301e" : "#3b3b25"
-              );
-              ctx.fillStyle = gradient;
-            } else {
-              ctx.fillStyle = "#150a06";
             }
 
-            ctx.fillRect(31, top + 5, 792, lfmheight - 10);
-          } else if (group.Eligible) {
-            let gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
-            gradient.addColorStop(
-              0,
-              props.highVisibility ? "#30301e" : "#3b3b25"
-            );
-            gradient.addColorStop(
-              0.25,
-              props.highVisibility ? "#42402a" : "#4c4a31"
-            );
-            gradient.addColorStop(
-              0.75,
-              props.highVisibility ? "#42402a" : "#4c4a31"
-            );
-            gradient.addColorStop(
-              1,
-              props.highVisibility ? "#30301e" : "#3b3b25"
-            );
-
-            ctx.fillStyle = gradient;
-            ctx.fillRect(26, top, 802, lfmheight);
+            ctx.globalAlpha = 1;
           } else {
-            ctx.fillStyle = "#150a06";
-            ctx.fillRect(26, top, 802, lfmheight);
+            if (isFeytwisted(lfm)) {
+              let gradient = ctx.createLinearGradient(
+                0,
+                top,
+                panelWidth,
+                top + lfmheight
+              );
+              gradient.addColorStop(0, "#a11d1d");
+              gradient.addColorStop(0.2, "#a1a11d");
+              gradient.addColorStop(0.4, "#1da11f");
+              gradient.addColorStop(0.6, "#1d9aa1");
+              gradient.addColorStop(0.8, "#1d1da1");
+              gradient.addColorStop(1, "#8f1da1");
+
+              ctx.fillStyle = gradient;
+              ctx.fillRect(26, top, 802, lfmheight);
+
+              if (lfm.eligible) {
+                gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
+                gradient.addColorStop(
+                  0,
+                  props.highVisibility ? "#30301e" : "#3b3b25"
+                );
+                gradient.addColorStop(
+                  0.25,
+                  props.highVisibility ? "#42402a" : "#4c4a31"
+                );
+                gradient.addColorStop(
+                  0.75,
+                  props.highVisibility ? "#42402a" : "#4c4a31"
+                );
+                gradient.addColorStop(
+                  1,
+                  props.highVisibility ? "#30301e" : "#3b3b25"
+                );
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+              } else {
+                ctx.fillStyle = "#150a06";
+                ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+              }
+            } else if (lfm.quest?.group_size === "Raid" && highlightRaids) {
+              let gradient = ctx.createLinearGradient(
+                0,
+                top,
+                panelWidth,
+                top + lfmheight
+              );
+              gradient.addColorStop(0, "#1da1a1");
+              gradient.addColorStop(1, "#1d6ca1");
+
+              ctx.fillStyle = gradient;
+              ctx.fillRect(26, top, 802, lfmheight);
+
+              if (lfm.eligible) {
+                gradient = ctx.createLinearGradient(0, top, 0, top + lfmheight);
+                gradient.addColorStop(
+                  0,
+                  props.highVisibility ? "#30301e" : "#3b3b25"
+                );
+                gradient.addColorStop(
+                  0.25,
+                  props.highVisibility ? "#42402a" : "#4c4a31"
+                );
+                gradient.addColorStop(
+                  0.75,
+                  props.highVisibility ? "#42402a" : "#4c4a31"
+                );
+                gradient.addColorStop(
+                  1,
+                  props.highVisibility ? "#30301e" : "#3b3b25"
+                );
+                ctx.fillStyle = gradient;
+              } else {
+                ctx.fillStyle = "#150a06";
+              }
+
+              ctx.fillRect(31, top + 5, 792, lfmheight - 10);
+            } else if (lfm.eligible) {
+              let gradient = ctx.createLinearGradient(
+                0,
+                top,
+                0,
+                top + lfmheight
+              );
+              gradient.addColorStop(
+                0,
+                props.highVisibility ? "#30301e" : "#3b3b25"
+              );
+              gradient.addColorStop(
+                0.25,
+                props.highVisibility ? "#42402a" : "#4c4a31"
+              );
+              gradient.addColorStop(
+                0.75,
+                props.highVisibility ? "#42402a" : "#4c4a31"
+              );
+              gradient.addColorStop(
+                1,
+                props.highVisibility ? "#30301e" : "#3b3b25"
+              );
+
+              ctx.fillStyle = gradient;
+              ctx.fillRect(26, top, 802, lfmheight);
+            } else {
+              ctx.fillStyle = "#150a06";
+              ctx.fillRect(26, top, 802, lfmheight);
+            }
           }
-        }
 
-        ctx.beginPath();
-        ctx.strokeStyle = "#8f8d74";
-        ctx.lineWidth = 1;
-        ctx.rect(26, top, 802, lfmheight);
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.strokeStyle = "#8f8d74";
+          ctx.lineWidth = 1;
+          ctx.rect(26, top, 802, lfmheight);
+          ctx.stroke();
 
-        ctx.moveTo(375, top);
-        ctx.lineTo(375, top + lfmheight);
-        ctx.stroke();
+          ctx.moveTo(375, top);
+          ctx.lineTo(375, top + lfmheight);
+          ctx.stroke();
 
-        ctx.moveTo(605, top);
-        ctx.lineTo(605, top + lfmheight);
-        ctx.stroke();
+          ctx.moveTo(605, top);
+          ctx.lineTo(605, top + lfmheight);
+          ctx.stroke();
 
-        ctx.moveTo(742, top);
-        ctx.lineTo(742, top + lfmheight);
-        ctx.stroke();
+          ctx.moveTo(742, top);
+          ctx.lineTo(742, top + lfmheight);
+          ctx.stroke();
 
-        // Draw party leader's name
-        ctx.fillStyle = props.highVisibility
-          ? "white"
-          : group.Eligible
-          ? "#f6f1d3"
-          : "#988f80";
-        ctx.textBaseline = "alphabetic";
-        ctx.font = `${18 + props.fontModifier}px 'Trebuchet MS'`;
-        ctx.textAlign = "left";
-        ctx.fillText(group.Leader.Name, 49, top + 18 + props.fontModifier / 2);
-        let leaderWidth = ctx.measureText(group.Leader.Name).width;
-        if (NAMES.some((name) => group.Leader.Name.startsWith(name))) {
-          leaderWidth += 22;
+          // Draw party leader's name
+          ctx.fillStyle = props.highVisibility
+            ? "white"
+            : lfm.eligible
+            ? "#f6f1d3"
+            : "#988f80";
+          ctx.textBaseline = "alphabetic";
+          ctx.font = `${18 + props.fontModifier}px 'Trebuchet MS'`;
+          ctx.textAlign = "left";
+          ctx.fillText(lfm.leader.name, 49, top + 18 + props.fontModifier / 2);
+          let leaderWidth = ctx.measureText(lfm.leader.name).width;
+          if (NAMES.some((name) => lfm.leader.name.startsWith(name))) {
+            leaderWidth += 22;
+            ctx.drawImage(
+              sprite,
+              728,
+              189,
+              18,
+              18,
+              49 + leaderWidth - 20,
+              top + 3,
+              18,
+              18
+            );
+          }
+
+          // Draw party leader's level or eligible characters
+          if (
+            lfm.eligible_characters &&
+            lfm.eligible_characters.length &&
+            props.showEligibleCharacters
+          ) {
+            ctx.font = `${15}px Arial`;
+            let visibleString =
+              lfm.eligible_characters[0] +
+              (lfm.eligible_characters.length > 1
+                ? `, +${lfm.eligible_characters.length - 1}`
+                : "");
+            ctx.strokeStyle = "#8fcf74";
+            ctx.fillStyle = "#8fcf74";
+            let characterWidth = ctx.measureText(visibleString).width;
+            ctx.textAlign = "right";
+            ctx.fillText(visibleString, 360, 20 + top);
+            ctx.beginPath();
+            ctx.rect(
+              360 - characterWidth - 10,
+              6 + top,
+              characterWidth + 20,
+              17
+            );
+            ctx.stroke();
+            ctx.fillStyle = props.highVisibility
+              ? "white"
+              : lfm.eligible
+              ? "#f6f1d3"
+              : "#988f80";
+          } else {
+            ctx.font = `${15 + props.fontModifier}px Arial`;
+            ctx.textAlign = "center";
+            ctx.fillText(
+              lfm.leader.total_level ||
+                (lfm.leader.name === "DDO Audit" ? "99" : "0"),
+              360,
+              17 + top + props.fontModifier / 2
+            );
+          }
+
+          // Draw level range
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.font = `${16 + props.fontModifier}px Arial`;
+          ctx.fillText(
+            (lfm.minimum_level || "1") + " - " + (lfm.maximum_level || "30"),
+            786,
+            top + lfmheight / 2
+          );
+          ctx.textBaseline = "alphabetic";
+
+          // Draw member count
+          if (props.expandedInfo) {
+            // Classes
+            let x = 40;
+            let y = top + 19;
+            ctx.font = "13px Arial";
+            ctx.textBaseline = "alphabetic";
+            ctx.textAlign = "right";
+            if (lfm.leader.classes != null)
+              for (let c = 0; c < lfm.leader.classes.length; c++) {
+                // First pass for icons
+                let xp = x + 166 + 21 * c;
+                let yp = y - 15;
+
+                ctx.fillStyle = "#3e4641";
+                ctx.fillRect(xp - 1, yp - 1, 20, 20);
+
+                let classIconPosition = getClassIconPosition(
+                  lfm.leader.classes[c].name,
+                  true
+                );
+                ctx.drawImage(
+                  sprite,
+                  classIconPosition[0],
+                  classIconPosition[1],
+                  18,
+                  18,
+                  xp,
+                  yp,
+                  18,
+                  18
+                );
+              }
+            if (lfm.leader.classes != null)
+              for (let c = 0; c < lfm.leader.classes.length; c++) {
+                // Second pass for levels
+                let xp = x + 166 + 21 * c;
+                let yp = y - 15;
+
+                ctx.fillStyle = "black";
+                ctx.fillText(lfm.leader.classes[c].level, xp + 22, yp + 18);
+                ctx.fillStyle = "white";
+                ctx.fillText(lfm.leader.classes[c].level, xp + 21, yp + 17);
+              }
+          } else {
+            if (lfm.members && props.showMemberCount) {
+              if (lfm.members.length > 0) {
+                ctx.fillStyle = props.highVisibility
+                  ? "white"
+                  : lfm.eligible
+                  ? "#b6b193"
+                  : "#95927e";
+                ctx.textAlign = "left";
+                ctx.fillText(
+                  "(" + (lfm.members.length + 1) + " members)",
+                  49 + leaderWidth + 4,
+                  top + 18 + props.fontModifier / 2
+                );
+              }
+            }
+          }
+
+          // Draw quest
+          if (
+            lfm.quest != null &&
+            (!lfm.is_quest_guess || props.showQuestGuesses)
+          ) {
+            const SHOW_QUEST_TIP =
+              lfm.quest.tip != null && props.showQuestTips !== false;
+            ctx.fillStyle = props.highVisibility
+              ? "white"
+              : lfm.eligible
+              ? lfm.is_quest_guess
+                ? "#d3f6f6"
+                : "#f6f1d3"
+              : "#988f80";
+            ctx.font = `${lfm.is_quest_guess ? "italic " : ""}${
+              18 + props.fontModifier
+            }px Arial`;
+            ctx.textAlign = "center";
+            let textLines = wrapText(lfm.quest.name, 220);
+
+            if (textLines.length > 1 && SHOW_QUEST_TIP) {
+              textLines = [textLines[0]];
+              textLines[0] = textLines[0] + "...";
+            } else if (textLines.length > 2 && props.fontModifier > 0) {
+              textLines = textLines.slice(0, 2);
+              textLines[1] = textLines[1] + "...";
+            }
+
+            for (let i = 0; i < textLines.length; i++) {
+              ctx.fillText(
+                textLines[i],
+                489,
+                top -
+                  7 +
+                  lfmheight / 2 -
+                  (textLines.length -
+                    1 +
+                    (lfm.difficulty.length > 3 ? 1 : 0) -
+                    1) *
+                    9 +
+                  i * (19 + props.fontModifier) -
+                  (SHOW_QUEST_TIP ? 8 : 0)
+              );
+            }
+
+            // Draw quest tip
+            if (SHOW_QUEST_TIP) {
+              const questTipLines = wrapText(lfm.quest.tip, 220);
+              if (questTipLines.length > 1) {
+                questTipLines[0] += "...";
+              }
+              ctx.fillStyle = props.highVisibility
+                ? "white"
+                : lfm.eligible
+                ? lfm.is_quest_guess
+                  ? "#d3f6f6"
+                  : "#f6f1d3"
+                : "#988f80";
+              ctx.font = `italic ${14 + props.fontModifier}px Arial`;
+              ctx.fillText(
+                questTipLines[0],
+                489,
+                top -
+                  7 +
+                  lfmheight / 2 -
+                  (SHOW_QUEST_TIP ? 8 : 0) +
+                  20 +
+                  props.fontModifier / 2
+              );
+            }
+
+            if (lfm.characters_on_timer) {
+              // draw timer icon
+              ctx.drawImage(sprite, 764, 189, 18, 18, 585, top + 2, 18, 18);
+            }
+
+            ctx.font = `${14 + props.fontModifier}px Arial`;
+            ctx.fillStyle = props.highVisibility
+              ? "white"
+              : lfm.eligible
+              ? lfm.is_quest_guess
+                ? "#d3f6f6"
+                : "#b6b193"
+              : "#95927e";
+            ctx.fillText(
+              getGroupDifficulty(lfm),
+              489,
+              top -
+                4 +
+                lfmheight / 2 -
+                (textLines.length -
+                  1 +
+                  (lfm.difficulty.length > 3 ? 1 : 0) -
+                  1) *
+                  9 +
+                textLines.length * 19 +
+                props.fontModifier +
+                (SHOW_QUEST_TIP ? 10 : 0)
+            );
+          }
+
+          // Draw quest completion percentage
+          if (
+            lfm.adventure_active_time &&
+            lfm.quest?.average_time &&
+            props.showCompletionPercentage
+          ) {
+            // Draw timeline
+            ctx.closePath();
+            ctx.strokeStyle = "#80b6cf"; //"#02adfb";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(489 - 100, top + lfmheight - 10);
+            ctx.lineTo(489 + 100, top + lfmheight - 10);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Draw completion bar
+            ctx.closePath();
+            ctx.strokeStyle = "#4ba4cc"; //"#02adfb";
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(394, top + lfmheight - 10);
+            // prettier-ignore
+            ctx.lineTo(394 + Math.min(170 * (lfm.adventure_active_time / lfm.quest?.average_time ), 190),
+                        top + lfmheight - 10
+                    );
+            ctx.closePath();
+            ctx.stroke();
+
+            // Draw average time marker
+            ctx.closePath();
+            ctx.strokeStyle = "#d48824"; //"#02adfb";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(564, top + lfmheight - 10 - 5);
+            ctx.lineTo(564, top + lfmheight - 10 + 5);
+            ctx.closePath();
+            ctx.stroke();
+          }
+
+          // Draw race icon
+          let raceIconBounds = getRaceIconPosition(
+            lfm.leader.gender + " " + lfm.leader.race,
+            lfm.eligible
+          );
           ctx.drawImage(
             sprite,
-            728,
-            189,
+            raceIconBounds[0],
+            raceIconBounds[1],
             18,
             18,
-            49 + leaderWidth - 20,
+            28,
             top + 3,
             18,
             18
           );
-        }
 
-        // Draw party leader's level or eligible characters
-        if (
-          group.EligibleCharacters &&
-          group.EligibleCharacters.length &&
-          props.showEligibleCharacters
-        ) {
-          ctx.font = `${15}px Arial`;
-          let visibleString =
-            group.EligibleCharacters[0] +
-            (group.EligibleCharacters.length > 1
-              ? `, +${group.EligibleCharacters.length - 1}`
-              : "");
-          ctx.strokeStyle = "#8fcf74";
-          ctx.fillStyle = "#8fcf74";
-          let characterWidth = ctx.measureText(visibleString).width;
-          ctx.textAlign = "right";
-          ctx.fillText(visibleString, 360, 20 + top);
-          ctx.beginPath();
-          ctx.rect(360 - characterWidth - 10, 6 + top, characterWidth + 20, 17);
-          ctx.stroke();
+          // Draw class array
+          // if (!lfm.hasOwnProperty("AcceptedCount")) {
+          //   ctx.drawImage(
+          //     sprite,
+          //     lfm.Eligible ? 287 : 390,
+          //     189,
+          //     102,
+          //     60,
+          //     608,
+          //     4 + top,
+          //     102,
+          //     60
+          //   );
+          // } else {
+          //   if (
+          //     lfm.AcceptedCount === CLASS_COUNT ||
+          //     lfm.AcceptedClasses == null
+          //   ) {
+          //     ctx.drawImage(
+          //       sprite,
+          //       lfm.Eligible ? 287 : 390,
+          //       189,
+          //       102,
+          //       60,
+          //       608,
+          //       4 + top,
+          //       102,
+          //       60
+          //     );
+          //   } else {
+          //     lfm.AcceptedClasses.forEach((playerclass, i) => {
+          //       let classIconPosition = getClassIconPosition(
+          //         playerclass,
+          //         lfm.Eligible
+          //       );
+          //       ctx.drawImage(
+          //         sprite,
+          //         classIconPosition[0],
+          //         classIconPosition[1],
+          //         18,
+          //         18,
+          //         608 + (i % 5) * 21,
+          //         4 + top + Math.floor(i / 5) * 21,
+          //         18,
+          //         18
+          //       );
+          //     });
+          //   }
+          // }
+
+          // Draw comment
           ctx.fillStyle = props.highVisibility
             ? "white"
-            : group.Eligible
-            ? "#f6f1d3"
-            : "#988f80";
-        } else {
+            : lfm.eligible
+            ? "#bfbfbf"
+            : "#7f7472";
           ctx.font = `${15 + props.fontModifier}px Arial`;
-          ctx.textAlign = "center";
-          ctx.fillText(
-            group.Leader.TotalLevel ||
-              (group.Leader.Name === "DDO Audit" ? "99" : "0"),
-            360,
-            17 + top + props.fontModifier / 2
-          );
-        }
-
-        // Draw level range
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = `${16 + props.fontModifier}px Arial`;
-        ctx.fillText(
-          (group.MinimumLevel || "1") + " - " + (group.MaximumLevel || "30"),
-          786,
-          top + lfmheight / 2
-        );
-        ctx.textBaseline = "alphabetic";
-
-        // Draw member count
-        if (props.expandedInfo) {
-          // Classes
-          let x = 40;
-          let y = top + 19;
-          ctx.font = "13px Arial";
-          ctx.textBaseline = "alphabetic";
-          ctx.textAlign = "right";
-          if (group.Leader.Classes != null)
-            for (let c = 0; c < group.Leader.Classes.length; c++) {
-              // First pass for icons
-              let xp = x + 166 + 21 * c;
-              let yp = y - 15;
-
-              ctx.fillStyle = "#3e4641";
-              ctx.fillRect(xp - 1, yp - 1, 20, 20);
-
-              let classIconPosition = getClassIconPosition(
-                group.Leader.Classes[c].Name,
-                true
-              );
-              ctx.drawImage(
-                sprite,
-                classIconPosition[0],
-                classIconPosition[1],
-                18,
-                18,
-                xp,
-                yp,
-                18,
-                18
-              );
+          ctx.textAlign = "left";
+          let textLines = wrapText(lfm.comment, 330);
+          if (
+            lfm.adventure_active_time !== 0 &&
+            lfm.adventure_active_time !== undefined
+          ) {
+            if (
+              textLines.length > 2 ||
+              (textLines.length > 1 && props.fontModifier > 0)
+            ) {
+              textLines = textLines.slice(0, 1);
+              textLines[textLines.length - 1] =
+                textLines[textLines.length - 1] + "...";
             }
-          if (group.Leader.Classes != null)
-            for (let c = 0; c < group.Leader.Classes.length; c++) {
-              // Second pass for levels
-              let xp = x + 166 + 21 * c;
-              let yp = y - 15;
-
-              ctx.fillStyle = "black";
-              ctx.fillText(group.Leader.Classes[c].Level, xp + 22, yp + 18);
-              ctx.fillStyle = "white";
-              ctx.fillText(group.Leader.Classes[c].Level, xp + 21, yp + 17);
-            }
-        } else {
-          if (group.Members && props.showMemberCount) {
-            if (group.Members.length > 0) {
-              ctx.fillStyle = props.highVisibility
-                ? "white"
-                : group.Eligible
-                ? "#b6b193"
-                : "#95927e";
-              ctx.textAlign = "left";
-              ctx.fillText(
-                "(" + (group.Members.length + 1) + " members)",
-                49 + leaderWidth + 4,
-                top + 18 + props.fontModifier / 2
-              );
+          } else {
+            if (textLines.length > 2 && props.fontModifier > 0) {
+              textLines = textLines.slice(0, 2);
+              textLines[textLines.length - 1] =
+                textLines[textLines.length - 1] + "...";
+            } else if (textLines.length > 3) {
+              textLines = textLines.slice(0, 2);
+              textLines[textLines.length - 1] =
+                textLines[textLines.length - 1] + "...";
             }
           }
-        }
-
-        // Draw quest
-        if (group.Quest != null && (!group.Guess || props.showQuestGuesses)) {
-          const SHOW_QUEST_TIP =
-            group.Quest.Tip !== null && props.showQuestTips !== false;
-          ctx.fillStyle = props.highVisibility
-            ? "white"
-            : group.Eligible
-            ? group.Guess
-              ? "#d3f6f6"
-              : "#f6f1d3"
-            : "#988f80";
-          ctx.font = `${group.Guess ? "italic " : ""}${
-            18 + props.fontModifier
-          }px Arial`;
-          ctx.textAlign = "center";
-          let textLines = wrapText(group.Quest.Name, 220);
-
-          if (textLines.length > 1 && SHOW_QUEST_TIP) {
-            textLines = [textLines[0]];
-            textLines[0] = textLines[0] + "...";
-          } else if (textLines.length > 2 && props.fontModifier > 0) {
-            textLines = textLines.slice(0, 2);
-            textLines[1] = textLines[1] + "...";
-          }
-
-          for (let i = 0; i < textLines.length; i++) {
+          for (let i = 0; i < Math.min(textLines.length, 3); i++) {
             ctx.fillText(
               textLines[i],
-              489,
-              top -
-                7 +
-                lfmheight / 2 -
-                (textLines.length -
-                  1 +
-                  (group.Difficulty.length > 3 ? 1 : 0) -
-                  1) *
-                  9 +
-                i * (19 + props.fontModifier) -
-                (SHOW_QUEST_TIP ? 8 : 0)
+              31,
+              37 +
+                top +
+                (props.expandedInfo ? 5 : 0) +
+                i * (19 + props.fontModifier) +
+                (props.expandedInfo ? lfm.members.length * 21 : 0) +
+                props.fontModifier * 1.5
             );
           }
 
-          // Draw quest tip
-          if (SHOW_QUEST_TIP) {
-            const questTipLines = wrapText(group.Quest.Tip, 220);
-            if (questTipLines.length > 1) {
-              questTipLines[0] += "...";
-            }
-            ctx.fillStyle = props.highVisibility
-              ? "white"
-              : group.Eligible
-              ? group.Guess
-                ? "#d3f6f6"
-                : "#f6f1d3"
-              : "#988f80";
-            ctx.font = `italic ${14 + props.fontModifier}px Arial`;
-            ctx.fillText(
-              questTipLines[0],
-              489,
-              top -
-                7 +
-                lfmheight / 2 -
-                (SHOW_QUEST_TIP ? 8 : 0) +
-                20 +
-                props.fontModifier / 2
-            );
-          }
+          // Draw party members
+          if (props.expandedInfo && lfm.members.length) {
+            ctx.beginPath();
+            ctx.strokeStyle = "white";
+            ctx.moveTo(33, top + 20);
+            ctx.lineTo(33, top + lfm.members.length * 21 + 13);
+            ctx.stroke();
+            if (lfm.members.length) {
+              for (let i = 0; i < lfm.members.length; i++) {
+                ctx.fillStyle = props.highVisibility
+                  ? "white"
+                  : lfm.eligible
+                  ? "#f6f1d3"
+                  : "#988f80";
+                ctx.font = `${15 + props.fontModifier}px Arial`;
+                ctx.textAlign = "left";
+                let member = lfm.members[i];
 
-          if (group.CharactersOnTimer) {
-            // draw timer icon
-            ctx.drawImage(sprite, 764, 189, 18, 18, 585, top + 2, 18, 18);
-          }
+                let x = 40;
+                let y = top + 40 + i * 21;
 
-          ctx.font = `${14 + props.fontModifier}px Arial`;
-          ctx.fillStyle = props.highVisibility
-            ? "white"
-            : group.Eligible
-            ? group.Guess
-              ? "#d3f6f6"
-              : "#b6b193"
-            : "#95927e";
-          ctx.fillText(
-            getGroupDifficulty(group),
-            489,
-            top -
-              4 +
-              lfmheight / 2 -
-              (textLines.length -
-                1 +
-                (group.Difficulty.length > 3 ? 1 : 0) -
-                1) *
-                9 +
-              textLines.length * 19 +
-              props.fontModifier +
-              (SHOW_QUEST_TIP ? 10 : 0)
-          );
-        }
+                ctx.beginPath();
+                ctx.strokeStyle = "white";
+                ctx.moveTo(33, top + 20 + i * 21 + 14);
+                ctx.lineTo(43, top + 20 + i * 21 + 14);
+                ctx.stroke();
 
-        // Draw quest completion percentage
-        if (
-          group.AdventureActive &&
-          group.Quest?.AverageTime &&
-          props.showCompletionPercentage
-        ) {
-          // Draw timeline
-          ctx.closePath();
-          ctx.strokeStyle = "#80b6cf"; //"#02adfb";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(489 - 100, top + lfmheight - 10);
-          ctx.lineTo(489 + 100, top + lfmheight - 10);
-          ctx.closePath();
-          ctx.stroke();
+                // Race
+                let raceIconBounds = getRaceIconPosition(
+                  member.gender + " " + member.race,
+                  lfm.eligible
+                );
+                ctx.drawImage(
+                  sprite,
+                  raceIconBounds[0],
+                  raceIconBounds[1],
+                  18,
+                  18,
+                  x,
+                  y - 15,
+                  18,
+                  18
+                );
 
-          // Draw completion bar
-          ctx.closePath();
-          ctx.strokeStyle = "#4ba4cc"; //"#02adfb";
-          ctx.lineWidth = 6;
-          ctx.beginPath();
-          ctx.moveTo(394, top + lfmheight - 10);
-          // prettier-ignore
-          ctx.lineTo(394 + Math.min(170 * (group.AdventureActive / group.Quest?.AverageTime ), 190),
-                        top + lfmheight - 10
+                // Name
+                ctx.fillText(member.name, x + 20, y);
+
+                // Classes
+                ctx.font = "13px Arial";
+                ctx.textBaseline = "alphabetic";
+                ctx.textAlign = "right";
+                if (member.classes != null)
+                  for (let c = 0; c < member.classes.length; c++) {
+                    // First pass for icons
+                    let xp = x + 166 + 21 * c;
+                    let yp = y - 15;
+
+                    ctx.fillStyle = "#3e4641";
+                    ctx.fillRect(xp - 1, yp - 1, 20, 20);
+
+                    let classIconPosition = getClassIconPosition(
+                      member.classes[c].name,
+                      true
                     );
-          ctx.closePath();
-          ctx.stroke();
+                    ctx.drawImage(
+                      sprite,
+                      classIconPosition[0],
+                      classIconPosition[1],
+                      18,
+                      18,
+                      xp,
+                      yp,
+                      18,
+                      18
+                    );
+                  }
+                if (member.classes != null)
+                  for (let c = 0; c < member.classes.length; c++) {
+                    // Second pass for levels
+                    let xp = x + 166 + 21 * c;
+                    let yp = y - 15;
 
-          // Draw average time marker
-          ctx.closePath();
-          ctx.strokeStyle = "#d48824"; //"#02adfb";
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(564, top + lfmheight - 10 - 5);
-          ctx.lineTo(564, top + lfmheight - 10 + 5);
-          ctx.closePath();
-          ctx.stroke();
-        }
-
-        // Draw race icon
-        let raceIconBounds = getRaceIconPosition(
-          group.Leader.Gender + " " + group.Leader.Race,
-          group.Eligible
-        );
-        ctx.drawImage(
-          sprite,
-          raceIconBounds[0],
-          raceIconBounds[1],
-          18,
-          18,
-          28,
-          top + 3,
-          18,
-          18
-        );
-
-        // Draw class array
-        if (!group.hasOwnProperty("AcceptedCount")) {
-          ctx.drawImage(
-            sprite,
-            group.Eligible ? 287 : 390,
-            189,
-            102,
-            60,
-            608,
-            4 + top,
-            102,
-            60
-          );
-        } else {
-          if (
-            group.AcceptedCount === CLASS_COUNT ||
-            group.AcceptedClasses == null
-          ) {
-            ctx.drawImage(
-              sprite,
-              group.Eligible ? 287 : 390,
-              189,
-              102,
-              60,
-              608,
-              4 + top,
-              102,
-              60
-            );
-          } else {
-            group.AcceptedClasses.forEach((playerclass, i) => {
-              let classIconPosition = getClassIconPosition(
-                playerclass,
-                group.Eligible
-              );
-              ctx.drawImage(
-                sprite,
-                classIconPosition[0],
-                classIconPosition[1],
-                18,
-                18,
-                608 + (i % 5) * 21,
-                4 + top + Math.floor(i / 5) * 21,
-                18,
-                18
-              );
-            });
-          }
-        }
-
-        // Draw comment
-        ctx.fillStyle = props.highVisibility
-          ? "white"
-          : group.Eligible
-          ? "#bfbfbf"
-          : "#7f7472";
-        ctx.font = `${15 + props.fontModifier}px Arial`;
-        ctx.textAlign = "left";
-        let textLines = wrapText(group.Comment, 330);
-        if (
-          group.AdventureActive !== 0 &&
-          group.AdventureActive !== undefined
-        ) {
-          if (
-            textLines.length > 2 ||
-            (textLines.length > 1 && props.fontModifier > 0)
-          ) {
-            textLines = textLines.slice(0, 1);
-            textLines[textLines.length - 1] =
-              textLines[textLines.length - 1] + "...";
-          }
-        } else {
-          if (textLines.length > 2 && props.fontModifier > 0) {
-            textLines = textLines.slice(0, 2);
-            textLines[textLines.length - 1] =
-              textLines[textLines.length - 1] + "...";
-          } else if (textLines.length > 3) {
-            textLines = textLines.slice(0, 2);
-            textLines[textLines.length - 1] =
-              textLines[textLines.length - 1] + "...";
-          }
-        }
-        for (let i = 0; i < Math.min(textLines.length, 3); i++) {
-          ctx.fillText(
-            textLines[i],
-            31,
-            37 +
-              top +
-              (props.expandedInfo ? 5 : 0) +
-              i * (19 + props.fontModifier) +
-              (props.expandedInfo ? group.Members.length * 21 : 0) +
-              props.fontModifier * 1.5
-          );
-        }
-
-        // Draw party members
-        if (props.expandedInfo && group.Members.length) {
-          ctx.beginPath();
-          ctx.strokeStyle = "white";
-          ctx.moveTo(33, top + 20);
-          ctx.lineTo(33, top + group.Members.length * 21 + 13);
-          ctx.stroke();
-          if (group.Members.length) {
-            for (let i = 0; i < group.Members.length; i++) {
-              ctx.fillStyle = props.highVisibility
-                ? "white"
-                : group.Eligible
-                ? "#f6f1d3"
-                : "#988f80";
-              ctx.font = `${15 + props.fontModifier}px Arial`;
-              ctx.textAlign = "left";
-              let member = group.Members[i];
-
-              let x = 40;
-              let y = top + 40 + i * 21;
-
-              ctx.beginPath();
-              ctx.strokeStyle = "white";
-              ctx.moveTo(33, top + 20 + i * 21 + 14);
-              ctx.lineTo(43, top + 20 + i * 21 + 14);
-              ctx.stroke();
-
-              // Race
-              let raceIconBounds = getRaceIconPosition(
-                member.Gender + " " + member.Race,
-                group.Eligible
-              );
-              ctx.drawImage(
-                sprite,
-                raceIconBounds[0],
-                raceIconBounds[1],
-                18,
-                18,
-                x,
-                y - 15,
-                18,
-                18
-              );
-
-              // Name
-              ctx.fillText(member.Name, x + 20, y);
-
-              // Classes
-              ctx.font = "13px Arial";
-              ctx.textBaseline = "alphabetic";
-              ctx.textAlign = "right";
-              if (member.Classes != null)
-                for (let c = 0; c < member.Classes.length; c++) {
-                  // First pass for icons
-                  let xp = x + 166 + 21 * c;
-                  let yp = y - 15;
-
-                  ctx.fillStyle = "#3e4641";
-                  ctx.fillRect(xp - 1, yp - 1, 20, 20);
-
-                  let classIconPosition = getClassIconPosition(
-                    member.Classes[c].Name,
-                    true
-                  );
-                  ctx.drawImage(
-                    sprite,
-                    classIconPosition[0],
-                    classIconPosition[1],
-                    18,
-                    18,
-                    xp,
-                    yp,
-                    18,
-                    18
-                  );
-                }
-              if (member.Classes != null)
-                for (let c = 0; c < member.Classes.length; c++) {
-                  // Second pass for levels
-                  let xp = x + 166 + 21 * c;
-                  let yp = y - 15;
-
-                  ctx.fillStyle = "black";
-                  ctx.fillText(member.Classes[c].Level, xp + 22, yp + 18);
-                  ctx.fillStyle = "white";
-                  ctx.fillText(member.Classes[c].Level, xp + 21, yp + 17);
-                }
+                    ctx.fillStyle = "black";
+                    ctx.fillText(member.classes[c].Level, xp + 22, yp + 18);
+                    ctx.fillStyle = "white";
+                    ctx.fillText(member.classes[c].Level, xp + 21, yp + 17);
+                  }
+              }
             }
           }
-        }
 
-        // Draw active time
-        if (group.AdventureActive != null && group.AdventureActive !== 0) {
-          let modifiedaatime = Math.max(group.AdventureActive, 60);
-          ctx.fillStyle = props.highVisibility ? "#5fcafc" : "#02adfb";
-          ctx.textAlign = "center";
-          ctx.fillText(
-            "Adventure Active: " +
-              Math.round(modifiedaatime / 60) +
-              (Math.round(modifiedaatime / 60) === 1 ? " minute" : " minutes"),
-            200,
-            top + lfmheight - 10
-          );
-        }
-        top += lfmheight;
-      });
+          // Draw active time
+          if (
+            lfm.adventure_active_time != null &&
+            lfm.adventure_active_time !== 0
+          ) {
+            let modifiedaatime = Math.max(lfm.adventure_active_time, 60);
+            ctx.fillStyle = props.highVisibility ? "#5fcafc" : "#02adfb";
+            ctx.textAlign = "center";
+            ctx.fillText(
+              "Adventure Active: " +
+                Math.round(modifiedaatime / 60) +
+                (Math.round(modifiedaatime / 60) === 1
+                  ? " minute"
+                  : " minutes"),
+              200,
+              top + lfmheight - 10
+            );
+          }
+          top += lfmheight;
+        });
 
       if (
-        groupSelection.groupIndex !== -1 &&
-        groupSelection.groupIndex < props.data.Groups.length
+        lfmSelection.lfmIndex !== -1 &&
+        lfmSelection.lfmIndex < props.data.lfms.length
       ) {
-        if (groupSelection.cursorPosition[0] < 375) {
+        if (lfmSelection.cursorPosition[0] < 375) {
           DrawPlayerOverlay(
-            props.data.Groups[groupSelection.groupIndex],
-            groupSelection.cursorPosition
+            props.data.lfms[lfmSelection.lfmIndex],
+            lfmSelection.cursorPosition
           );
         } else {
           DrawQuestOverlay(
-            props.data.Groups[groupSelection.groupIndex],
-            groupSelection.cursorPosition
+            props.data.lfms[lfmSelection.lfmIndex],
+            lfmSelection.cursorPosition
           );
         }
         if (attemptedJoin !== null) {
           DrawJoinRequestOverlay(
-            props.data.Groups[groupSelection.groupIndex],
+            attemptedJoin.displayText,
             attemptedJoin.cursorPosition
           );
         }
       }
     }
 
-    function DrawPlayerOverlay(group, cursorPosition) {
+    function DrawPlayerOverlay(lfm, cursorPosition) {
       const SHOW_GUILD_NAME = props.showGuildNames;
       const GUILD_NAME_HEIGHT = 15;
 
-      if (group === null) return;
+      if (lfm === null) return;
 
       let estimatedBottom =
         cursorPosition[1] +
         3 +
-        (group.Members.length + 1) *
+        (lfm.members.length + 1) *
           (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) +
         26;
       if (estimatedBottom > canvas.height) {
@@ -1173,7 +1197,7 @@ const CanvasLfmPanel = (props) => {
       );
 
       // Each player in the party is 41px in height (+15 for guild name)
-      let memberList = [group.Leader, ...group.Members];
+      let memberList = [lfm.leader, ...lfm.members];
       if (memberList !== null) {
         memberList.forEach((member, i) => {
           ctx.drawImage(
@@ -1214,9 +1238,9 @@ const CanvasLfmPanel = (props) => {
           );
 
           // Race
-          if (member.Gender == "Unknown") member.Gender = "Male";
+          if (member.gender == "Unknown") member.gender = "Male";
           let raceIconPosition = getRaceIconPosition(
-            member.Gender + " " + member.Race,
+            member.gender + " " + member.race,
             true
           );
           ctx.drawImage(
@@ -1239,15 +1263,15 @@ const CanvasLfmPanel = (props) => {
           ctx.font = 18 + fontModifier + "px 'Trebuchet MS'"; // 18px
           ctx.textAlign = "left";
           ctx.fillText(
-            member.Name,
+            member.name,
             cursorPosition[0] + 26,
             cursorPosition[1] +
               3 +
               (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) * i +
               10
           );
-          let memberWidth = ctx.measureText(member.Name).width;
-          if (NAMES.some((name) => member.Name.startsWith(name))) {
+          let memberWidth = ctx.measureText(member.name).width;
+          if (NAMES.some((name) => member.name.startsWith(name))) {
             memberWidth += 22;
             ctx.drawImage(
               sprite,
@@ -1268,10 +1292,10 @@ const CanvasLfmPanel = (props) => {
           if (SHOW_GUILD_NAME) {
             ctx.fillStyle = "#b6b193";
             ctx.font = `${
-              member.Guild === "" ? "italic " : ""
+              member.guild === "" ? "italic " : ""
             }15px 'Trebuchet MS'`;
             ctx.textAlign = "left";
-            let wrappedguildname = wrapText(member.Guild, 200);
+            let wrappedguildname = wrapText(member.guild, 200);
             const truncatedGuildName =
               wrappedguildname[0] + (wrappedguildname.length > 1 ? "..." : "");
             ctx.fillText(
@@ -1286,8 +1310,8 @@ const CanvasLfmPanel = (props) => {
           }
 
           // Location
-          if (member.Location != null) {
-            let wrappedlocation = wrapText(member.Location.Name, 230);
+          if (member.location != null) {
+            let wrappedlocation = wrapText(member.location.name, 230);
             ctx.font = 12 + "px 'Trebuchet MS'";
             ctx.textAlign = "center";
             ctx.fillText(
@@ -1305,7 +1329,7 @@ const CanvasLfmPanel = (props) => {
           ctx.textAlign = "center";
           ctx.font = 17 + fontModifier + "px Arial"; // 15px
           ctx.fillText(
-            member.TotalLevel,
+            member.total_level,
             cursorPosition[0] + 4 + 256,
             cursorPosition[1] +
               3 +
@@ -1317,11 +1341,11 @@ const CanvasLfmPanel = (props) => {
           ctx.font = "13px Arial";
           ctx.textBaseline = "alphabetic";
           ctx.textAlign = "right";
-          if (member.Classes !== null && member.Classes !== undefined) {
-            for (let c = 0; c < member.Classes.length; c++) {
+          if (member.classes !== null && member.classes !== undefined) {
+            for (let c = 0; c < member.classes.length; c++) {
               if (
-                member.Classes[c].Name !== "Epic" &&
-                member.Classes[c].Name !== "Legendary"
+                member.classes[c].name !== "Epic" &&
+                member.classes[c].name !== "Legendary"
               ) {
                 // First pass for icons
                 let xp = cursorPosition[0] + 166 + 21 * c;
@@ -1334,7 +1358,7 @@ const CanvasLfmPanel = (props) => {
                 ctx.fillRect(xp - 1, yp - 1, 20, 20);
 
                 let classIconPosition = getClassIconPosition(
-                  member.Classes[c].Name,
+                  member.classes[c].name,
                   true
                 );
                 ctx.drawImage(
@@ -1351,11 +1375,11 @@ const CanvasLfmPanel = (props) => {
               }
             }
           }
-          if (member.Classes !== null && member.Classes !== undefined) {
-            for (let c = 0; c < member.Classes.length; c++) {
+          if (member.classes !== null && member.classes !== undefined) {
+            for (let c = 0; c < member.classes.length; c++) {
               if (
-                member.Classes[c].Name !== "Epic" &&
-                member.Classes[c].Name !== "Legendary"
+                member.classes[c].name !== "Epic" &&
+                member.classes[c].name !== "Legendary"
               ) {
                 // Second pass for levels
                 let xp = cursorPosition[0] + 166 + 21 * c;
@@ -1365,9 +1389,9 @@ const CanvasLfmPanel = (props) => {
                   (41 + (SHOW_GUILD_NAME ? GUILD_NAME_HEIGHT : 0)) * i;
 
                 ctx.fillStyle = "black";
-                ctx.fillText(member.Classes[c].Level, xp + 22, yp + 18);
+                ctx.fillText(member.classes[c].level, xp + 22, yp + 18);
                 ctx.fillStyle = "white";
-                ctx.fillText(member.Classes[c].Level, xp + 21, yp + 17);
+                ctx.fillText(member.classes[c].level, xp + 21, yp + 17);
               }
             }
           }
@@ -1393,7 +1417,7 @@ const CanvasLfmPanel = (props) => {
       ctx.fillStyle = fontModifier > 0 ? "white" : "#bfbfbf";
       ctx.font = 15 + fontModifier + "px Arial"; // 15px
       ctx.textAlign = "left";
-      let textLines = wrapText(group.Comment, 269);
+      let textLines = wrapText(lfm.comment, 269);
 
       for (let i = 0; i < textLines.length; i++) {
         ctx.drawImage(
@@ -1439,19 +1463,19 @@ const CanvasLfmPanel = (props) => {
       );
     }
 
-    function DrawQuestOverlay(group, cursorPosition) {
-      if (group === null) return;
-      if (group.Quest == null) return;
+    function DrawQuestOverlay(lfm, cursorPosition) {
+      if (lfm === null) return;
+      if (lfm.quest == null) return;
 
       let estimatedBottom =
         cursorPosition[1] +
         3 +
         170 +
         26 +
-        (group.CharactersOnTimer
-          ? group.CharactersOnTimer.length * 20 + 15
+        (lfm.characters_on_timer
+          ? lfm.characters_on_time.length * 20 + 15
           : 0) +
-        (group.Guess && props.showQuestGuesses ? 60 : 0);
+        (lfm.is_quest_guess && props.showQuestGuesses ? 60 : 0);
       if (estimatedBottom > canvas.height) {
         cursorPosition[1] -= estimatedBottom - canvas.height;
       }
@@ -1490,20 +1514,17 @@ const CanvasLfmPanel = (props) => {
       ctx.textBaseline = "middle";
       ctx.fillStyle = "white";
 
-      let quest = group.Quest;
+      let quest = lfm.quest;
       let row = 1;
 
       // raid timers
-      if (group.CharactersOnTimer && group.CharactersOnTimer.length > 0) {
+      if (lfm.characters_on_timer && lfm.characters_on_timer.length > 0) {
         ctx.fillStyle = "#f6d3d3";
         drawOverlayBackground(row);
         drawOverlayTitle("Raid timers", row);
-        group.CharactersOnTimer.forEach((character) => {
+        lfm.characters_on_timer.forEach((character) => {
           let wrapped = wrapText(
-            `${character.Name} (${getTimeTillEnd(
-              character,
-              group.Quest.Name
-            )})`,
+            `${character.name} (${getTimeTillEnd(character, lfm.quest.name)})`,
             220
           );
           for (let i = 0; i < wrapped.length; i++) {
@@ -1517,7 +1538,7 @@ const CanvasLfmPanel = (props) => {
         ctx.fillStyle = "white";
       }
 
-      if (group.Guess && props.showQuestGuesses) {
+      if (lfm.is_quest_guess && props.showQuestGuesses) {
         ctx.fillStyle = "#d3f6f6";
         drawOverlayBackground(row);
         ctx.textAlign = "center";
@@ -1546,10 +1567,10 @@ const CanvasLfmPanel = (props) => {
         ctx.fillStyle = "white";
       }
 
-      if (quest.Name != null) {
+      if (quest.name != null) {
         drawOverlayBackground(row);
         drawOverlayTitle("Quest", row); // 1-based index
-        let wrapped = wrapText(quest.Name, 220);
+        let wrapped = wrapText(quest.name, 220);
         for (let i = 0; i < wrapped.length; i++) {
           if (i > 0) drawOverlayBackground(row);
           drawOverlayInfo(wrapped[i], row);
@@ -1557,10 +1578,10 @@ const CanvasLfmPanel = (props) => {
         }
       }
 
-      if (quest.AdventureArea) {
+      if (quest.adventure_area) {
         drawOverlayBackground(row);
         drawOverlayTitle("Takes place in", row);
-        let wrapped = wrapText(quest.AdventureArea, 220);
+        let wrapped = wrapText(quest.adventure_area, 220);
         for (let i = 0; i < wrapped.length; i++) {
           if (i > 0) drawOverlayBackground(row);
           drawOverlayInfo(wrapped[i], row);
@@ -1568,10 +1589,10 @@ const CanvasLfmPanel = (props) => {
         }
       }
 
-      if (quest.QuestJournalGroup) {
+      if (quest.quest_journal_group) {
         drawOverlayBackground(row);
         drawOverlayTitle("Nearest hub", row);
-        let wrapped = wrapText(quest.QuestJournalGroup, 220);
+        let wrapped = wrapText(quest.quest_journal_group, 220);
         for (let i = 0; i < wrapped.length; i++) {
           if (i > 0) drawOverlayBackground(row);
           drawOverlayInfo(wrapped[i], row);
@@ -1582,11 +1603,15 @@ const CanvasLfmPanel = (props) => {
       drawOverlayBackground(row);
       drawOverlayTitle("Level", row);
       drawOverlayInfo(
-        (quest.HeroicNormalCR != null ? quest.HeroicNormalCR + " Heroic" : "") +
-          (quest.HeroicNormalCR != null && quest.EpicNormalCR != null
+        (quest.level.heroic_normal != null
+          ? quest.level.heroic_normal + " Heroic"
+          : "") +
+          (quest.level.heroic_normal != null && quest.level.epic_normal != null
             ? ", "
             : "") +
-          (quest.EpicNormalCR != null ? quest.EpicNormalCR + " Epic" : ""),
+          (quest.level.epic_normal != null
+            ? quest.level.epic_normal + " Epic"
+            : ""),
         row
       );
       row++;
@@ -1594,7 +1619,7 @@ const CanvasLfmPanel = (props) => {
       drawOverlayBackground(row);
       drawOverlayTitle("Adventure pack", row);
       let wrapped = wrapText(
-        quest.RequiredAdventurePack || "Free to play",
+        quest.required_adventure_pack || "Free to play",
         220
       );
       for (let i = 0; i < wrapped.length; i++) {
@@ -1603,17 +1628,17 @@ const CanvasLfmPanel = (props) => {
         row++;
       }
 
-      if (quest.Patron) {
+      if (quest.patron) {
         drawOverlayBackground(row);
         drawOverlayTitle("Patron", row);
-        drawOverlayInfo(quest.Patron ?? "", row);
+        drawOverlayInfo(quest.patron ?? "", row);
         row++;
       }
 
-      if (quest.AverageTime) {
+      if (quest.average_time) {
         drawOverlayBackground(row);
         drawOverlayTitle("Average time", row);
-        drawOverlayInfo(`${Math.round(quest.AverageTime / 60)} minutes`, row);
+        drawOverlayInfo(`${Math.round(quest.average_time / 60)} minutes`, row);
         row++;
       }
 
@@ -1712,11 +1737,8 @@ const CanvasLfmPanel = (props) => {
       }
     }
 
-    function DrawJoinRequestOverlay(group, cursorPosition) {
+    function DrawJoinRequestOverlay(displayText, cursorPosition) {
       ctx.font = `${18 + props.fontModifier}px 'Trebuchet MS'`;
-      let displayText = JOIN_REQUEST_MESSAGES[
-        Math.floor(Math.random() * JOIN_REQUEST_MESSAGES.length)
-      ].replace("{0}", group.Leader?.Name);
       let textWidth = ctx.measureText(displayText).width;
       let bounds = {
         x: Math.max(30, cursorPosition[0] - textWidth / 2),
@@ -1754,7 +1776,7 @@ const CanvasLfmPanel = (props) => {
 
     // Helper function for wrapping text
     function wrapText(text, maxWidth) {
-      if (text === null) return "";
+      if (text == null) return "";
       let words = text.split(" ");
       let lines = [];
       let currentLine = words[0];
@@ -1774,18 +1796,18 @@ const CanvasLfmPanel = (props) => {
     }
 
     // Helper function for getting group difficulty
-    function getGroupDifficulty(group) {
-      if (!group.Guess && group.Difficulty != "Reaper") {
-        return group.Difficulty;
+    function getGroupDifficulty(lfm) {
+      if (!lfm.is_quest_guess && lfm.difficulty != "Reaper") {
+        return lfm.difficulty;
       }
 
-      let sanitized = group.Comment.toLowerCase();
+      let sanitized = lfm.comment.toLowerCase();
       let normalpattern = /(\bln\b)(\ben\b)|(\bnormal\b)/;
       let hardpattern = /(\blh\b)(\beh\b)|(\bhard\b)/;
       let elitepattern = /(\ble\b)(\bee\b)|(\belite\b)/;
       let reaperpattern = /(\br\b)|(\breaper\b)/;
 
-      if (group.Guess) {
+      if (lfm.is_quest_guess) {
         if (normalpattern.test(sanitized)) {
           return "Normal";
         }
@@ -1829,7 +1851,7 @@ const CanvasLfmPanel = (props) => {
         return `Reaper ${skullcount}`;
       }
 
-      if (group.Guess) {
+      if (lfm.is_quest_guess) {
         if (reaperpattern.test(sanitized)) {
           return "Reaper";
         }
@@ -1838,11 +1860,11 @@ const CanvasLfmPanel = (props) => {
       return "Reaper";
     }
 
-    function isFeytwisted(group) {
+    function isFeytwisted(lfm) {
       if (
-        (group.Comment.toLowerCase().includes("feytwisted") ||
-          group.Comment.toLowerCase().includes("fey chest")) &&
-        group.Quest?.RequiredAdventurePack.toLowerCase().includes("feywild")
+        (lfm.comment.toLowerCase().includes("feytwisted") ||
+          lfm.comment.toLowerCase().includes("fey chest")) &&
+        lfm.quest?.required_adventure_pack.toLowerCase().includes("feywild")
       )
         return true;
       return false;
@@ -2068,9 +2090,9 @@ const CanvasLfmPanel = (props) => {
     props.fontModifier,
     props.highVisibility,
     isImageLoaded,
-    groupSelection.groupIndex,
-    groupSelection.side,
-    groupSelection.doubleClick,
+    lfmSelection.lfmIndex,
+    lfmSelection.side,
+    lfmSelection.doubleClick,
     props.showCompletionPercentage,
     props.showMemberCount,
     props.showQuestGuesses,
@@ -2145,7 +2167,7 @@ const CanvasLfmPanel = (props) => {
         height={
           (props.data
             ? Math.max(
-                computePanelHeight(props.data.Groups),
+                computePanelHeight(props.data.lfms),
                 MINIMUM_LFM_COUNT * lfmHeight
               )
             : MINIMUM_LFM_COUNT * lfmHeight) + 99

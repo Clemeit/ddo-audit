@@ -6,7 +6,7 @@ import ContentCluster from "../global/ContentCluster";
 import CanvasLfmPanel from "./CanvasLfmPanel";
 import LevelRangeSlider from "./LevelRangeSlider";
 import FilterBar from "../global/FilterBar";
-import Group from "./Group";
+import Lfm from "./Lfm";
 import { Log } from "../../services/CommunicationService";
 import $ from "jquery";
 import { Link } from "react-router-dom";
@@ -15,7 +15,12 @@ import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
   const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
+  const REFRESH_LFM_INTERVAL = 2; //seconds
   const MAX_LEVEL = 32;
+  const API_HOST = "http://137.184.2.181";
+  const API_VERSION = "v1";
+  const API_URL = `${API_HOST}/${API_VERSION}`;
+  const LFM_API = `${API_URL}/lfms`;
 
   const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 
@@ -46,7 +51,7 @@ const Panel = (props) => {
   const [unfilteredServerData, setUnfilteredServerData] = React.useState(null);
   const [filteredServerData, setFilteredServerData] = React.useState(null);
   const [showNotEligible, setShowNotEligible] = React.useState(true);
-  const [adjustedGroupCount, setAdjustedGroupCount] = React.useState(4);
+  const [adjustedLfmCount, setAdjustedLfmCount] = React.useState(4);
   const [fontModifier, setFontModifier] = React.useState();
   const [highVisibility, setHighVisibility] = React.useState();
   const [alternativeLook, setAlternativeLook] = React.useState();
@@ -86,7 +91,7 @@ const Panel = (props) => {
   const [failedToFetchCharacters, setFailedToFetchCharacters] =
     React.useState(false);
 
-  async function getGroupTableCount() {
+  async function getLfmTableCount() {
     return Fetch("https://api.ddoaudit.com/grouptablecount", 5000)
       .then((val) => {
         if (val.Count != null) {
@@ -261,7 +266,7 @@ const Panel = (props) => {
         if (serverstatus === true || ignoreServerStatusRef.current) {
           getMyCharacters().finally(() => {
             Fetch(
-              `https://api.ddoaudit.com/groups/${props.server.toLowerCase()}`,
+              `${LFM_API}/${props.server.toLowerCase()}`,
               5000 + failedAttemptRef.current * 500
             )
               .then((val) => {
@@ -280,7 +285,7 @@ const Panel = (props) => {
                         "Pretty descriptive, I know. First try refreshing the page. If the issue continues, please report it.",
                       icon: "warning",
                       fullscreen: false,
-                      reportMessage: `GL127 Bad group data: ${
+                      reportMessage: `GL127 Bad lfm data: ${
                         val ? JSON.stringify(val) : "null"
                       }`,
                     });
@@ -295,19 +300,19 @@ const Panel = (props) => {
                 failedAttemptRef.current++;
                 setFailedAttemptCount(failedAttemptRef.current);
                 if (failedAttemptRef.current > 5) {
-                  getGroupTableCount().then((result) => {
+                  getLfmTableCount().then((result) => {
                     let title = "";
                     let message = "";
                     switch (result) {
                       case -1:
                         // Couldn't connect or errored
-                        title = "Couldn't fetch group data";
+                        title = "Couldn't fetch lfm data";
                         message =
                           "First try refreshing the page. If the issue continues, please report it.";
                         break;
                       case 0:
-                        // No groups in table. Server offline?
-                        title = "No group data found";
+                        // No lfms in table. Server offline?
+                        title = "No lfm data found";
                         message =
                           "The server appears to be online, but we've lost connection. Please try again later.";
                         break;
@@ -323,7 +328,7 @@ const Panel = (props) => {
                       submessage: err && err.toString(),
                       icon: "warning",
                       fullscreen: false,
-                      reportMessage: `GL171 Group data generic error (timeout?): ${
+                      reportMessage: `GL171 Lfm data generic error (timeout?): ${
                         err && err.toString()
                       }`,
                     });
@@ -364,7 +369,7 @@ const Panel = (props) => {
   React.useEffect(() => {
     clearInterval(refreshLfmsTimeout);
     RefreshLfms();
-    refreshLfmsTimeout = setInterval(RefreshLfms, 5000);
+    refreshLfmsTimeout = setInterval(RefreshLfms, REFRESH_LFM_INTERVAL * 1000);
 
     return function cleanup() {
       clearInterval(refreshLfmsTimeout);
@@ -393,21 +398,21 @@ const Panel = (props) => {
   }
 
   // Helper function returns the character on timer for a raid
-  function getTimers(group) {
+  function getTimers(lfm) {
     let characters = [];
     if (
       myCharactersWithRaidActivity &&
       myCharactersWithRaidActivity.length > 0 &&
-      group.Quest != null
+      lfm.quest != null
     ) {
       myCharactersWithRaidActivity.forEach((character) => {
-        if (character.RaidActivity) {
-          character.RaidActivity.forEach((raid) => {
+        if (character.raid_activity) {
+          character.raid_activity.forEach((raid) => {
             if (
-              (raid.questid === group.Quest.Id ||
-                raid.questid === group.Quest.AltId) &&
+              (raid.quest_id === lfm.quest.dd ||
+                raid.quest_id === lfm.quest.alt_id) &&
               raid.remaining &&
-              character.Server === props.server
+              character.server === props.server
             ) {
               characters.push(character);
             }
@@ -420,35 +425,35 @@ const Panel = (props) => {
 
   React.useEffect(() => {
     if (unfilteredServerData === null) return;
-    let groups = unfilteredServerData.Groups;
-    let filteredgroups = [];
-    groups.forEach((group) => {
+    let lfms = unfilteredServerData.lfms;
+    let filtered_lfms = [];
+    Object.entries(lfms).forEach(([lfm_id, lfm]) => {
       let levelpass = false;
       if (filterBasedOnMyLevel) {
-        let eligibleCharacters = [];
+        let eligible_characters = [];
         myCharacters.forEach((character) => {
           if (
-            group.MinimumLevel <= character.TotalLevel &&
-            group.MaximumLevel >= character.TotalLevel &&
+            lfm.minimum_level <= character.total_level &&
+            lfm.maximum_level >= character.total_level &&
             character.Server === props.server
           ) {
-            eligibleCharacters.push(character.Name);
+            eligible_characters.push(character.name);
           }
         });
-        levelpass = eligibleCharacters.length > 0;
-        group.EligibleCharacters = eligibleCharacters;
+        levelpass = eligible_characters.length > 0;
+        lfm.eligible_characters = eligible_characters;
       } else {
         levelpass =
-          (group.MinimumLevel >= minimumLevel &&
-            group.MinimumLevel <= maximumLevel) ||
-          (group.MaximumLevel >= minimumLevel &&
-            group.MaximumLevel <= maximumLevel) ||
-          (group.MinimumLevel <= minimumLevel &&
-            group.MaximumLevel >= maximumLevel);
+          (lfm.minimum_level >= minimumLevel &&
+            lfm.minimum_level <= maximumLevel) ||
+          (lfm.maximum_level >= minimumLevel &&
+            lfm.maximum_level <= maximumLevel) ||
+          (lfm.minimum_level <= minimumLevel &&
+            lfm.maximum_level >= maximumLevel);
       }
-      group.Eligible = levelpass || group.Leader?.Name === "DDO Audit";
-      if (group.Eligible || showNotEligible) {
-        filteredgroups.push(group);
+      lfm.eligible = levelpass || lfm.leader?.name === "DDO Audit";
+      if (lfm.eligible || showNotEligible) {
+        filtered_lfms.push(lfm);
       }
 
       // check raid timers
@@ -457,20 +462,20 @@ const Panel = (props) => {
         myCharactersWithRaidActivity != null &&
         myCharactersWithRaidActivity.length > 0
       ) {
-        const charactersOnTimer = getTimers(group);
+        const charactersOnTimer = getTimers(lfm);
         if (charactersOnTimer.length > 0) {
-          group.CharactersOnTimer = charactersOnTimer;
+          lfm.character_on_timer = charactersOnTimer;
         }
       } else {
-        group.CharactersOnTimer = null;
+        lfm.character_on_timer = null;
       }
     });
     setFilteredServerData({
       ...unfilteredServerData,
-      Groups: filteredgroups.sort((a, b) =>
+      lfms: filtered_lfms.sort((a, b) =>
         sortAscending
-          ? a.MaximumLevel - b.MaximumLevel
-          : b.MaximumLevel - a.MaximumLevel
+          ? a.maximum_level - b.maximum_level
+          : b.maximum_level - a.maximum_level
       ),
     });
   }, [
@@ -493,105 +498,109 @@ const Panel = (props) => {
     setSortAscending((sortAscending) => !sortAscending);
   }
 
-  function IsExpanded(group) {
+  function isExpanded(lfm) {
     let val = false;
-    expandedGroups.forEach((g) => {
-      if (g.Leader.Name === group.Leader.Name) val = true;
+    expandedLfms.forEach((g) => {
+      if (g.leader.name === lfm.leader.name) val = true;
     });
     return val;
   }
-  var [expandedGroups, set_expandedGroups] = React.useState([]);
+  var [expandedLfms, setExpandedLfms] = React.useState([]);
 
   React.useEffect(() => {
     // Load local storage
-    let theme = localStorage.getItem("theme");
-    setTheme(theme);
+    const THEME = localStorage.getItem("theme");
+    setTheme(THEME);
 
-    let minlevel = localStorage.getItem("minimum-level");
-    setMinimumLevel(minlevel || 1);
+    const MIN_LEVEL = localStorage.getItem("minimum-level");
+    setMinimumLevel(MIN_LEVEL || 1);
 
-    let maxlevel = localStorage.getItem("maximum-level");
-    setMaximumLevel(maxlevel || MAX_LEVEL);
+    const MAX_LEVEL = localStorage.getItem("maximum-level");
+    setMaximumLevel(MAX_LEVEL || MAX_LEVEL);
 
-    let filterbymylevel = localStorage.getItem("filter-by-my-level");
+    const FILTER_BY_MY_LEVEL = localStorage.getItem("filter-by-my-level");
     setFilterBasedOnMyLevel(
-      filterbymylevel !== null ? filterbymylevel === "true" : false
+      FILTER_BY_MY_LEVEL !== null ? FILTER_BY_MY_LEVEL === "true" : false
     );
 
     setCharacterIds(
       JSON.parse(localStorage.getItem("registered-characters") || "[]")
     );
 
-    let showeligiblecharacters = localStorage.getItem(
+    const SHOW_ELIGIBLE_CHARACTERS = localStorage.getItem(
       "show-eligible-characters"
     );
     setShowEligibleCharacters(
-      showeligiblecharacters !== null
-        ? showeligiblecharacters === "true"
+      SHOW_ELIGIBLE_CHARACTERS !== null
+        ? SHOW_ELIGIBLE_CHARACTERS === "true"
         : false
     );
 
-    let showguildnames = localStorage.getItem("show-guild-names");
+    const SHOW_GUILD_NAMES = localStorage.getItem("show-guild-names");
     setShowGuildNames(
-      showguildnames !== null ? showguildnames === "true" : false
+      SHOW_GUILD_NAMES !== null ? SHOW_GUILD_NAMES === "true" : false
     );
 
-    let shownoteligible = localStorage.getItem("show-not-eligible");
+    const SHOW_NOT_ELIGIBLE = localStorage.getItem("show-not-eligible");
     setShowNotEligible(
-      shownoteligible !== null ? shownoteligible === "true" : true
+      SHOW_NOT_ELIGIBLE !== null ? SHOW_NOT_ELIGIBLE === "true" : true
     );
 
-    let sortascending = localStorage.getItem("sort-order");
-    setSortAscending(sortascending !== null ? sortascending === "true" : true);
+    const SORT_ASCENDING = localStorage.getItem("sort-order");
+    setSortAscending(
+      SORT_ASCENDING !== null ? SORT_ASCENDING === "true" : true
+    );
 
-    let alternativelook = localStorage.getItem("alternative-lfm-look");
+    const ALTERNATIVE_LOOK = localStorage.getItem("alternative-lfm-look");
     setAlternativeLook(
-      alternativelook !== null ? alternativelook === "true" : false
+      ALTERNATIVE_LOOK !== null ? ALTERNATIVE_LOOK === "true" : false
     );
 
-    let highvisibility = localStorage.getItem("high-visibility");
+    const HIGH_VISIBILITY = localStorage.getItem("high-visibility");
     setHighVisibility(
-      highvisibility !== null ? highvisibility === "true" : false
+      HIGH_VISIBILITY !== null ? HIGH_VISIBILITY === "true" : false
     );
 
-    let fontmodifier = localStorage.getItem("font-modifier");
-    setFontModifier(fontmodifier !== null ? +fontmodifier : 0);
+    const FONT_MODIFIER = localStorage.getItem("font-modifier");
+    setFontModifier(FONT_MODIFIER !== null ? +FONT_MODIFIER : 0);
 
-    let showcompletionpercentage = localStorage.getItem(
+    const SHOW_COMPLETION_PERCENTAGE = localStorage.getItem(
       "completion-percentage"
     );
     setShowCompletionPercentage(
-      showcompletionpercentage !== null
-        ? showcompletionpercentage === "true"
+      SHOW_COMPLETION_PERCENTAGE !== null
+        ? SHOW_COMPLETION_PERCENTAGE === "true"
         : false
     );
 
-    let showmembercount = localStorage.getItem("member-count");
+    const SHOW_MEMBER_COUNT = localStorage.getItem("member-count");
     setShowMemberCount(
-      showmembercount !== null ? showmembercount === "true" : true
+      SHOW_MEMBER_COUNT !== null ? SHOW_MEMBER_COUNT === "true" : true
     );
 
-    let showquestguesses = localStorage.getItem("quest-guess");
+    const SHOW_QUEST_GUESSES = localStorage.getItem("quest-guess");
     setShowQuestGuesses(
-      showquestguesses !== null ? showquestguesses === "true" : true
+      SHOW_QUEST_GUESSES !== null ? SHOW_QUEST_GUESSES === "true" : true
     );
 
-    let showquesttips = localStorage.getItem("quest-tips");
-    setShowQuestTips(showquesttips !== null ? showquesttips === "true" : true);
+    const SHOW_QUEST_TIPS = localStorage.getItem("quest-tips");
+    setShowQuestTips(
+      SHOW_QUEST_TIPS !== null ? SHOW_QUEST_TIPS === "true" : true
+    );
 
-    let showraidtimerindicator = localStorage.getItem(
+    const SHOW_RAID_TIMER_INDICATOR = localStorage.getItem(
       "show-raid-timer-indicator"
     );
     setShowRaidTimerIndicator(
-      showraidtimerindicator !== null
-        ? showraidtimerindicator === "true"
+      SHOW_RAID_TIMER_INDICATOR !== null
+        ? SHOW_RAID_TIMER_INDICATOR === "true"
         : false
     );
 
-    const hiddenTimerIds = JSON.parse(
+    const HIDDEN_TIMER_IDS = JSON.parse(
       localStorage.getItem("hidden-raid-timer-ids") || "[]"
     );
-    setHiddenTimerIds(hiddenTimerIds);
+    setHiddenTimerIds(HIDDEN_TIMER_IDS);
 
     $(document).on("keydown.handleEscape", function (e) {
       if (e.key === "Escape") {
@@ -694,11 +703,7 @@ const Panel = (props) => {
               className="hide-on-mobile"
               style={{ width: "100%", height: "20px" }}
             />
-            <ContentCluster
-              title="Filter Groups"
-              smallBottomMargin
-              noLink={true}
-            >
+            <ContentCluster title="Filter LFMs" smallBottomMargin noLink={true}>
               {filterBasedOnMyLevel ? (
                 <div
                   style={{
@@ -822,7 +827,7 @@ const Panel = (props) => {
                       setFilterBasedOnMyLevel(!filterBasedOnMyLevel);
                     }}
                   />
-                  Filter groups based on my current level
+                  Filter LFMs based on my current level
                 </label>
                 {filterBasedOnMyLevel && (
                   <label
@@ -875,7 +880,7 @@ const Panel = (props) => {
                       setShowNotEligible(!showNotEligible);
                     }}
                   />
-                  Show groups I am not eligible for
+                  Show LFMs I am not eligible for
                 </label>
                 <label className="filter-panel-group-option">
                   <input
@@ -890,7 +895,7 @@ const Panel = (props) => {
                       setSortAscending(!sortAscending);
                     }}
                   />
-                  Sort groups ascending
+                  Sort LFMs ascending
                 </label>
               </div>
             </ContentCluster>
@@ -1106,7 +1111,7 @@ const Panel = (props) => {
         </div>
       )}
       <div className="sr-only">
-        {`The image below is a live preview of ${getServerNamePossessive()} LFM panel where all groups are visible.`}
+        {`The image below is a live preview of ${getServerNamePossessive()} LFM panel where all LFMs are visible.`}
       </div>
       {serverStatus !== false || ignoreServerStatus ? (
         alternativeLook === false ? (
@@ -1114,7 +1119,7 @@ const Panel = (props) => {
             expandedInfo={false}
             data={filteredServerData}
             showNotEligible={showNotEligible}
-            adjustedGroupCount={adjustedGroupCount}
+            adjustedLfmCount={adjustedLfmCount}
             fontModifier={fontModifier}
             highVisibility={highVisibility}
             handleSort={() => handleCanvasSort()}
@@ -1128,25 +1133,25 @@ const Panel = (props) => {
           />
         ) : (
           <div className="social-container">
-            {filteredServerData && filteredServerData.Groups.length ? (
-              filteredServerData.Groups.map(
-                (group, i) =>
-                  group.Eligible && (
-                    <Group
-                      key={i}
+            {filteredServerData && filteredServerData.lfms.length ? (
+              Object.entries(filteredServerData.lfms).map(
+                ([lfm_id, lfm]) =>
+                  lfm.eligible && (
+                    <Lfm
+                      key={lfm_id}
                       handleClick={() => {
-                        if (IsExpanded(group)) {
-                          set_expandedGroups(
-                            expandedGroups.filter((g) => {
-                              return g.Leader.Name !== group.Leader.Name;
+                        if (isExpanded(lfm)) {
+                          setExpandedLfms(
+                            expandedLfms.filter((this_lfm) => {
+                              return this_lfm.leader.name !== lfm.leader.name;
                             })
                           );
                         } else {
-                          set_expandedGroups([...expandedGroups, group]);
+                          setExpandedLfms([...expandedLfms, lfm]);
                         }
                       }}
-                      group={group}
-                      expanded={IsExpanded(group)}
+                      lfm={lfm}
+                      expanded={isExpanded(lfm)}
                     />
                   )
               )
@@ -1160,8 +1165,8 @@ const Panel = (props) => {
                   marginTop: "20px",
                 }}
               >
-                {filteredServerData && filteredServerData.Groups.length === 0
-                  ? "No groups meet your current filter settings"
+                {filteredServerData && filteredServerData.lfms.length === 0
+                  ? "No LFMs meet your current filter settings"
                   : "Loading data..."}
               </span>
             )}
