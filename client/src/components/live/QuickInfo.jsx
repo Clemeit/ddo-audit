@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import { Fetch } from "../../services/DataLoader";
 import ContentCluster from "../global/ContentCluster";
 import FAQ from "./FAQ";
+import { SERVER_LIST_LOWERCASE } from "../../constants/Servers";
 
 const QuickInfo = (props) => {
+  const [SERVER_DATA, LAST_FETCH_TIMESTAMP] = props.serverStatusData;
+
   const FAQ_STRUCTURED = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -35,7 +38,7 @@ const QuickInfo = (props) => {
         name: "How many players does DDO have?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: `There have been ${GetTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
+          text: `There have been ${getTotalUniquePlayerCount()} unique characters on DDO in the last 90 days.`,
         },
       },
       {
@@ -61,7 +64,7 @@ const QuickInfo = (props) => {
         name: `Is DDO still active in ${new Date().getFullYear()}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${GetTotalUniquePlayerCount()} unique characters and ${GetTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
+          text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${getTotalUniquePlayerCount()} unique characters and ${getTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
         },
       },
     ],
@@ -69,29 +72,29 @@ const QuickInfo = (props) => {
 
   const [news, setNews] = React.useState(null);
 
-  function FormatWithCommas(x) {
+  function formatWithCommas(x) {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  function GetTotalUniquePlayerCount() {
+  function getTotalUniquePlayerCount() {
     if (!props.unique) return "N/A";
     let total = 0;
     props.unique.forEach((server) => {
       total += server.TotalCharacters;
     });
-    return FormatWithCommas(total.toString());
+    return formatWithCommas(total.toString());
   }
 
-  function GetTotalUniqueGuildCount() {
+  function getTotalUniqueGuildCount() {
     if (!props.unique) return "N/A";
     let total = 0;
     props.unique.forEach((server) => {
       total += server.TotalGuilds;
     });
-    return FormatWithCommas(total.toString());
+    return formatWithCommas(total.toString());
   }
 
-  function GetNews() {
+  function getNews() {
     Fetch("https://api.ddoaudit.com/news", 5000)
       .then((val) => {
         setNews(val || []);
@@ -112,36 +115,34 @@ const QuickInfo = (props) => {
     );
   }
 
-  function getDefaultServerLink(nameonly = false) {
-    let defaultserver = "";
-    if (
-      props.serverstatus == null ||
-      props.serverstatus.Worlds == null ||
-      props.serverstatus.Worlds.length == 0
-    ) {
+  function isServerDataValid() {
+    if (SERVER_DATA == null) return false;
+    if (Object.keys(SERVER_DATA).length === 0) return false;
+    if (!Object.values(SERVER_DATA)[0].hasOwnProperty("status")) return false;
+    if (!Object.values(SERVER_DATA)[0].hasOwnProperty("index")) return false;
+    if (!Object.values(SERVER_DATA)[0].hasOwnProperty("last_updated"))
+      return false;
+    return true;
+  }
+
+  function getDefaultServerLink() {
+    let defaultServerName = "";
+    if (LAST_FETCH_TIMESTAMP == null) {
+      return <span>unknown (loading...)</span>;
+    }
+    if (!isServerDataValid()) {
       return (
         <span style={{ color: "var(--red-text)" }}>
           unknown (failed to fetch data)
         </span>
       );
     }
-    props.serverstatus.Worlds.forEach((server) => {
-      if (server.Order == null) {
-        defaultserver = "unknown (servers are offline)";
-      } else {
-        if (server.Order == 0) {
-          if (defaultserver == "") {
-            defaultserver = server.Name;
-          } else {
-            defaultserver = "unknown (servers are offline)";
-          }
-        }
+    Object.entries(SERVER_DATA).forEach(([serverName, serverData]) => {
+      if (serverData.index == 0) {
+        defaultServerName = serverName;
       }
     });
-    if (nameonly) {
-      return defaultserver;
-    }
-    if (defaultserver == "unknown (servers are offline)") {
+    if (!SERVER_LIST_LOWERCASE.includes(defaultServerName)) {
       return (
         <span style={{ color: "var(--red-text)" }}>
           unknown (servers are offline)
@@ -152,12 +153,17 @@ const QuickInfo = (props) => {
       <Link
         id="default_server"
         className="blue-link"
-        to={"/servers/" + defaultserver}
+        to={"/servers/" + defaultServerName}
         style={{ textDecoration: "underline" }}
       >
-        {defaultserver}
+        {toSentenceCase(defaultServerName)}
       </Link>
     );
+  }
+
+  function toSentenceCase(str) {
+    if (str === null) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   function getMostPopulatedServerLink(nameonly = false) {
@@ -199,7 +205,7 @@ const QuickInfo = (props) => {
   }
 
   React.useEffect(() => {
-    GetNews();
+    getNews();
   }, []);
 
   return (
@@ -216,12 +222,7 @@ const QuickInfo = (props) => {
             color: "var(--text)",
           }}
         >
-          <li>
-            The default server is{" "}
-            {props.serverstatus === null
-              ? "(Loading...)"
-              : getDefaultServerLink()}
-          </li>
+          <li>The default server is {getDefaultServerLink()}</li>
           <li>
             The most populated server is{" "}
             {props.serverdistribution === null
@@ -233,13 +234,13 @@ const QuickInfo = (props) => {
             <span className="population-number">
               {props.unique === null
                 ? "(Loading...)"
-                : GetTotalUniquePlayerCount()}
+                : getTotalUniquePlayerCount()}
             </span>{" "}
             unique characters and{" "}
             <span className="lfm-number">
               {props.unique === null
                 ? "(Loading...)"
-                : GetTotalUniqueGuildCount()}
+                : getTotalUniqueGuildCount()}
             </span>{" "}
             unique guilds
           </li>
@@ -313,8 +314,8 @@ const QuickInfo = (props) => {
       <FAQ
         mostPopulatedServer={getMostPopulatedServerLink()}
         defaultServer={getDefaultServerLink()}
-        uniquePlayerCount={GetTotalUniquePlayerCount()}
-        uniqueGuildCount={GetTotalUniqueGuildCount()}
+        uniquePlayerCount={getTotalUniquePlayerCount()}
+        uniqueGuildCount={getTotalUniqueGuildCount()}
       />
     </>
   );

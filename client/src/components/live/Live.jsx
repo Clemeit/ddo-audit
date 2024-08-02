@@ -5,7 +5,7 @@ import PopupMessage from "../global/PopupMessage";
 import QuickInfo from "./QuickInfo";
 import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
 import ChartLine from "../global/ChartLine";
-import ServerStatusDisplay from "../global/ServerStatusDisplay";
+import ServerStatusDisplay from "../global/serverStatusDisplay/ServerStatusDisplay";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
 import { Link } from "react-router-dom";
@@ -14,14 +14,16 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 import ToggleButton from "../global/ToggleButton";
 import DataClassification from "../global/DataClassification";
+import LiveHook from "./LiveHook";
 
 const Live = (props) => {
   const TITLE = "DDO Server Status";
+  const { serverStatusData } = LiveHook();
 
   // Popup message
   var [popupMessage, setPopupMessage] = React.useState(null);
 
-  const [serverStatusData, setServerStatusData] = React.useState(null);
+  // const [serverStatusData, setServerStatusData] = React.useState([null, null]);
   const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
   const [playerAndLFMCountData, setPlayerAndLFMCountData] =
     React.useState(null);
@@ -49,29 +51,25 @@ const Live = (props) => {
     });
   }, [population24HoursType]);
 
-  function refreshServerStatus() {
-    Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
-      .then((val) => {
-        setPopupMessage(null);
-        val.Worlds = [
-          ...val.Worlds.filter((w) => w.Name !== "Hardcore"),
-          ...val.Worlds.filter((w) => w.Name === "Hardcore"),
-        ];
-        setServerStatusData(val);
-      })
-      .catch((err) => {
-        setPopupMessage({
-          title: "Couldn't get server status",
-          message:
-            "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
-          icon: "warning",
-          fullscreen: false,
-          reportMessage: (err && err.toString()) || "Server status error",
-          submessage: (err && err.toString()) || "Server status error",
-        });
-        setServerStatusData(null);
-      });
-  }
+  // function refreshServerStatus() {
+  //   Fetch("https://api.hcnxsryjficudzazjxty.com/v1/servers", 5000)
+  //     .then((val) => {
+  //       setPopupMessage(null);
+  //       setServerStatusData([val, Date.now()]);
+  //     })
+  //     .catch((err) => {
+  //       setPopupMessage({
+  //         title: "Couldn't get server status",
+  //         message:
+  //           "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
+  //         icon: "warning",
+  //         fullscreen: false,
+  //         reportMessage: (err && err.toString()) || "Server status error",
+  //         submessage: (err && err.toString()) || "Server status error",
+  //       });
+  //       setServerStatusData([null, null]);
+  //     });
+  // }
 
   function refreshPopulationAndQuickInfo() {
     Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
@@ -144,16 +142,16 @@ const Live = (props) => {
   }
 
   React.useEffect(() => {
-    refreshServerStatus();
+    // refreshServerStatus();
     refreshPopulationAndQuickInfo();
-    const interval = setInterval(() => refreshServerStatus(), 15000); // Server status should refresh on this page
+    // const interval = setInterval(() => refreshServerStatus(), 5000); // Server status should refresh on this page
     const interval2 = setInterval(
       () => refreshPopulationAndQuickInfo(),
       60000 * 5
     );
 
     return () => {
-      clearInterval(interval);
+      // clearInterval(interval);
       clearInterval(interval2);
     };
   }, []);
@@ -198,10 +196,10 @@ const Live = (props) => {
         <BannerMessage page="live" />
         <DataClassification classification="observed" />
         <div className="top-content-padding-small shrink-on-mobile" />
-        <ServerStatusDisplay data={serverStatusData} />
+        <ServerStatusDisplay serverStatusData={serverStatusData} />
         <QuickInfo
           unique={uniqueCountsData}
-          serverstatus={serverStatusData}
+          serverStatusData={serverStatusData}
           serverdistribution={serverDistributionData}
         />
         <ContentCluster
