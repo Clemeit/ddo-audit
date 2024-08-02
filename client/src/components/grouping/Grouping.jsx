@@ -2,7 +2,10 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
+import {
+  Fetch,
+  VerifyCharacterAndLfmOverview,
+} from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
@@ -23,7 +26,7 @@ const Grouping = () => {
   const TITLE = "DDO Live LFM Viewer";
   const SERVERS = ServerHook();
 
-  const API_HOST = "http://137.184.2.181";
+  const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
   const API_VERSION = "v1";
   const API_URL = `${API_HOST}/${API_VERSION}`;
   const LFM_API = `${API_URL}/lfms`;

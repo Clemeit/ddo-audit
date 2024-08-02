@@ -154,16 +154,16 @@
 
 html {
   font-size: 15px;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   scroll-padding-top: 70px;
   overflow-y: scroll !important;
 }
 
-@-moz-document url-prefix() {
+/* @-moz-document url-prefix() {
   html {
     scroll-behavior: auto;
   }
-}
+} */
 
 body {
   font-family: "Times New Roman", Times, serif;

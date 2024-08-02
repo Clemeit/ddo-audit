@@ -296,7 +296,7 @@ const CanvasLfmPanel = (props) => {
     function OpenPanel() {
       ctx.drawImage(sprite, 0, 0, 848, 72, 0, 0, 848, 72);
       if (props.data) {
-        let last_updated = new Date(props.data.last_updated);
+        let last_updated = new Date(props.data.last_updated * 1000);
         let hour = last_updated.getHours() % 12;
         if (hour == 0) hour = 12;
         let timeText =
