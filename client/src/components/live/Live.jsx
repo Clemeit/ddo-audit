@@ -3,7 +3,7 @@ import Banner from "../global/Banner";
 import { Fetch } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import QuickInfo from "./QuickInfo";
-import PlayerAndLfmSubtitle from "./PlayerAndLfmSubtitle";
+import CharacterAndLfmSubtitle from "./CharacterAndLfmSubtitle";
 import ChartLine from "../global/ChartLine";
 import ServerStatusDisplay from "../global/serverStatusDisplay/ServerStatusDisplay";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
@@ -14,270 +14,277 @@ import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
 import ToggleButton from "../global/ToggleButton";
 import DataClassification from "../global/DataClassification";
-import LiveHook from "./LiveHook";
+import usePollGameInfo from "../../hooks/usePollGameInfo";
 
 const Live = (props) => {
-  const TITLE = "DDO Server Status";
-  const { serverStatusData } = LiveHook();
+    const TITLE = "DDO Server Status";
+    const { gameStatusData, isLoaded, isError } = usePollGameInfo();
 
-  // Popup message
-  var [popupMessage, setPopupMessage] = React.useState(null);
+    // Popup message
+    var [popupMessage, setPopupMessage] = React.useState(null);
 
-  // const [serverStatusData, setServerStatusData] = React.useState([null, null]);
-  const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
-  const [playerAndLFMCountData, setPlayerAndLFMCountData] =
-    React.useState(null);
-  const [serverDistributionData, setServerDistributionData] =
-    React.useState(null);
+    // const [serverStatusData, setServerStatusData] = React.useState([null, null]);
+    const [uniqueCountsData, setUniqueCountsData] = React.useState(null);
+    const [playerAndLFMCountData, setPlayerAndLFMCountData] =
+        React.useState(null);
+    const [serverDistributionData, setServerDistributionData] =
+        React.useState(null);
 
-  const [population24HoursData, setPopulation24HoursData] =
-    React.useState(null);
-  const [population24HoursType, setPopulation24HoursType] =
-    React.useState("population");
-  let firstLoadRef = React.useRef(true);
+    const [population24HoursData, setPopulation24HoursData] =
+        React.useState(null);
+    const [population24HoursType, setPopulation24HoursType] =
+        React.useState("population");
+    let firstLoadRef = React.useRef(true);
 
-  React.useEffect(() => {
-    if (firstLoadRef.current === true) {
-      firstLoadRef.current = false;
-      return;
+    React.useEffect(() => {
+        if (firstLoadRef.current === true) {
+            firstLoadRef.current = false;
+            return;
+        }
+        Fetch(
+            `https://api.ddoaudit.com/population/day${
+                population24HoursType === "population" ? "" : "_groups"
+            }`,
+            5000
+        ).then((val) => {
+            setPopulation24HoursData(
+                val.filter((series) => series.id !== "Total")
+            );
+        });
+    }, [population24HoursType]);
+
+    function refreshPopulationAndQuickInfo() {
+        Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
+            .then((val) => {
+                setUniqueCountsData(val);
+            })
+            .catch((err) => {
+                setPopupMessage({
+                    title: "Couldn't get unique data",
+                    message:
+                        "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Unique data error",
+                    submessage: (err && err.toString()) || "Unique data error",
+                });
+                setUniqueCountsData(null);
+            });
+
+        Fetch("https://api.ddoaudit.com/population/day", 5000)
+            .then((val) => {
+                setPopulation24HoursData(
+                    val.filter((series) => series.id !== "Total")
+                );
+            })
+            .catch((err) => {
+                setPopupMessage({
+                    title: "Couldn't get population data",
+                    message:
+                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "24 hour population error",
+                    submessage:
+                        (err && err.toString()) || "24 hour population error",
+                });
+                setPopulation24HoursData(null);
+            });
+
+        Fetch("https://api.ddoaudit.com/population/latest", 5000)
+            .then((val) => {
+                setPlayerAndLFMCountData(val);
+            })
+            .catch((err) => {
+                setPopupMessage({
+                    title: "Couldn't get population data",
+                    message:
+                        "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Current population error",
+                    submessage:
+                        (err && err.toString()) || "Current population error",
+                });
+                setPlayerAndLFMCountData(null);
+            });
+
+        Fetch(
+            "https://api.ddoaudit.com/population/serverdistributionmonth",
+            5000
+        )
+            .then((val) => {
+                setServerDistributionData(val);
+            })
+            .catch((err) => {
+                setPopupMessage({
+                    title: "Couldn't get most populated server",
+                    message:
+                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+                    icon: "warning",
+                    fullscreen: false,
+                    reportMessage:
+                        (err && err.toString()) || "Server distribution error",
+                    submessage:
+                        (err && err.toString()) || "Server distribution error",
+                });
+                setServerDistributionData(null);
+            });
     }
-    Fetch(
-      `https://api.ddoaudit.com/population/day${
-        population24HoursType === "population" ? "" : "_groups"
-      }`,
-      5000
-    ).then((val) => {
-      setPopulation24HoursData(val.filter((series) => series.id !== "Total"));
-    });
-  }, [population24HoursType]);
 
-  // function refreshServerStatus() {
-  //   Fetch("https://api.hcnxsryjficudzazjxty.com/v1/servers", 5000)
-  //     .then((val) => {
-  //       setPopupMessage(null);
-  //       setServerStatusData([val, Date.now()]);
-  //     })
-  //     .catch((err) => {
-  //       setPopupMessage({
-  //         title: "Couldn't get server status",
-  //         message:
-  //           "We failed to look up server staus. Try refreshing the page. If the issue continues, please report it.",
-  //         icon: "warning",
-  //         fullscreen: false,
-  //         reportMessage: (err && err.toString()) || "Server status error",
-  //         submessage: (err && err.toString()) || "Server status error",
-  //       });
-  //       setServerStatusData([null, null]);
-  //     });
-  // }
+    React.useEffect(() => {
+        // refreshServerStatus();
+        refreshPopulationAndQuickInfo();
+        // const interval = setInterval(() => refreshServerStatus(), 5000); // Server status should refresh on this page
+        const interval2 = setInterval(
+            () => refreshPopulationAndQuickInfo(),
+            60000 * 5
+        );
 
-  function refreshPopulationAndQuickInfo() {
-    Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
-      .then((val) => {
-        setUniqueCountsData(val);
-      })
-      .catch((err) => {
-        setPopupMessage({
-          title: "Couldn't get unique data",
-          message:
-            "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
-          icon: "warning",
-          fullscreen: false,
-          reportMessage: (err && err.toString()) || "Unique data error",
-          submessage: (err && err.toString()) || "Unique data error",
-        });
-        setUniqueCountsData(null);
-      });
+        return () => {
+            // clearInterval(interval);
+            clearInterval(interval2);
+        };
+    }, []);
 
-    Fetch("https://api.ddoaudit.com/population/day", 5000)
-      .then((val) => {
-        setPopulation24HoursData(val.filter((series) => series.id !== "Total"));
-      })
-      .catch((err) => {
-        setPopupMessage({
-          title: "Couldn't get population data",
-          message:
-            "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
-          icon: "warning",
-          fullscreen: false,
-          reportMessage: (err && err.toString()) || "24 hour population error",
-          submessage: (err && err.toString()) || "24 hour population error",
-        });
-        setPopulation24HoursData(null);
-      });
-
-    Fetch("https://api.ddoaudit.com/population/latest", 5000)
-      .then((val) => {
-        setPlayerAndLFMCountData(val);
-      })
-      .catch((err) => {
-        setPopupMessage({
-          title: "Couldn't get population data",
-          message:
-            "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
-          icon: "warning",
-          fullscreen: false,
-          reportMessage: (err && err.toString()) || "Current population error",
-          submessage: (err && err.toString()) || "Current population error",
-        });
-        setPlayerAndLFMCountData(null);
-      });
-
-    Fetch("https://api.ddoaudit.com/population/serverdistributionmonth", 5000)
-      .then((val) => {
-        setServerDistributionData(val);
-      })
-      .catch((err) => {
-        setPopupMessage({
-          title: "Couldn't get most populated server",
-          message:
-            "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
-          icon: "warning",
-          fullscreen: false,
-          reportMessage: (err && err.toString()) || "Server distribution error",
-          submessage: (err && err.toString()) || "Server distribution error",
-        });
-        setServerDistributionData(null);
-      });
-  }
-
-  React.useEffect(() => {
-    // refreshServerStatus();
-    refreshPopulationAndQuickInfo();
-    // const interval = setInterval(() => refreshServerStatus(), 5000); // Server status should refresh on this page
-    const interval2 = setInterval(
-      () => refreshPopulationAndQuickInfo(),
-      60000 * 5
+    return (
+        <div>
+            <Helmet>
+                <title>{TITLE}</title>
+                <meta
+                    name="description"
+                    content="DDO server status, most populated server, current default server, and recent population trends."
+                />
+                <meta
+                    property="og:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+                <meta
+                    property="twitter:image"
+                    content="/icons/logo-512px.png"
+                    data-react-helmet="true"
+                />
+            </Helmet>
+            <Banner
+                small={true}
+                showTitle={true}
+                showSubtitle={true}
+                showButtons={false}
+                hideOnMobile={true}
+                hideVote={true}
+                title="Live"
+                subtitle="Server Status and Quick Info"
+            />
+            <PopupMessage
+                page="live"
+                message={popupMessage}
+                popMessage={() => {
+                    setPopupMessage(null);
+                }}
+            />
+            <div className="content-container">
+                <BannerMessage page="live" />
+                <DataClassification classification="observed" />
+                <div className="top-content-padding-small shrink-on-mobile" />
+                <ServerStatusDisplay
+                    gameStatusData={gameStatusData}
+                    isLoaded={isLoaded}
+                    isError={isError}
+                />
+                <QuickInfo
+                    unique={uniqueCountsData}
+                    gameStatusData={gameStatusData}
+                    serverdistribution={serverDistributionData}
+                    isLoaded={isLoaded}
+                    isError={isError}
+                />
+                <ContentCluster
+                    title={`Live ${
+                        population24HoursType === "population"
+                            ? "Population"
+                            : "LFM Count"
+                    }`}
+                    altTitle="Live Data"
+                    description={
+                        <span>
+                            <CharacterAndLfmSubtitle
+                                gameStatusData={gameStatusData}
+                            />
+                        </span>
+                    }
+                >
+                    <ToggleButton
+                        textA="Population data"
+                        textB="LFM data"
+                        isA={population24HoursType === "population"}
+                        isB={population24HoursType === "groups"}
+                        doA={() => {
+                            setPopulation24HoursType("population");
+                        }}
+                        doB={() => {
+                            setPopulation24HoursType("groups");
+                        }}
+                    />
+                    <ChartLine
+                        data={population24HoursData}
+                        trendType="day"
+                        activeFilter="Server Activity"
+                        showActions={false}
+                        showLastUpdated={true}
+                        reportReference={null}
+                        forceHardcore={true}
+                    />
+                </ContentCluster>
+                <ContentCluster
+                    title="Historical Population"
+                    description="These reports have moved to the following locations:"
+                >
+                    <div className="content-cluster-options">
+                        <Link
+                            to="/servers"
+                            className="nav-box shrinkable"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <ServersSVG className="nav-icon should-invert" />
+                                <h2 className="content-option-title">
+                                    Server Statistics
+                                </h2>
+                            </div>
+                            <p className="content-option-description">
+                                Server population, character demographics, and
+                                activity trends.
+                            </p>
+                        </Link>
+                        <Link
+                            to="/trends"
+                            className="nav-box shrinkable"
+                            style={{
+                                height: "auto",
+                                minHeight: "150px",
+                            }}
+                        >
+                            <div className="nav-box-title">
+                                <TrendsSVG className="nav-icon should-invert" />
+                                <h2 className="content-option-title">Trends</h2>
+                            </div>
+                            <p className="content-option-description">
+                                Long-term trends, daily minimum and maximum
+                                population, and important game events.
+                            </p>
+                        </Link>
+                    </div>
+                </ContentCluster>
+            </div>
+        </div>
     );
-
-    return () => {
-      // clearInterval(interval);
-      clearInterval(interval2);
-    };
-  }, []);
-
-  return (
-    <div>
-      <Helmet>
-        <title>{TITLE}</title>
-        <meta
-          name="description"
-          content="DDO server status, most populated server, current default server, and recent population trends."
-        />
-        <meta
-          property="og:image"
-          content="/icons/logo-512px.png"
-          data-react-helmet="true"
-        />
-        <meta
-          property="twitter:image"
-          content="/icons/logo-512px.png"
-          data-react-helmet="true"
-        />
-      </Helmet>
-      <Banner
-        small={true}
-        showTitle={true}
-        showSubtitle={true}
-        showButtons={false}
-        hideOnMobile={true}
-        hideVote={true}
-        title="Live"
-        subtitle="Server Status and Quick Info"
-      />
-      <PopupMessage
-        page="live"
-        message={popupMessage}
-        popMessage={() => {
-          setPopupMessage(null);
-        }}
-      />
-      <div className="content-container">
-        <BannerMessage page="live" />
-        <DataClassification classification="observed" />
-        <div className="top-content-padding-small shrink-on-mobile" />
-        <ServerStatusDisplay serverStatusData={serverStatusData} />
-        <QuickInfo
-          unique={uniqueCountsData}
-          serverStatusData={serverStatusData}
-          serverdistribution={serverDistributionData}
-        />
-        <ContentCluster
-          title={`Live ${
-            population24HoursType === "population" ? "Population" : "LFM Count"
-          }`}
-          altTitle="Live Data"
-          description={
-            <span>
-              <PlayerAndLfmSubtitle data={playerAndLFMCountData} />
-            </span>
-          }
-        >
-          <ToggleButton
-            textA="Population data"
-            textB="LFM data"
-            isA={population24HoursType === "population"}
-            isB={population24HoursType === "groups"}
-            doA={() => {
-              setPopulation24HoursType("population");
-            }}
-            doB={() => {
-              setPopulation24HoursType("groups");
-            }}
-          />
-          <ChartLine
-            data={population24HoursData}
-            trendType="day"
-            activeFilter="Server Activity"
-            showActions={false}
-            showLastUpdated={true}
-            reportReference={null}
-            forceHardcore={true}
-          />
-        </ContentCluster>
-        <ContentCluster
-          title="Historical Population"
-          description="These reports have moved to the following locations:"
-        >
-          <div className="content-cluster-options">
-            <Link
-              to="/servers"
-              className="nav-box shrinkable"
-              style={{
-                height: "auto",
-                minHeight: "150px",
-              }}
-            >
-              <div className="nav-box-title">
-                <ServersSVG className="nav-icon should-invert" />
-                <h2 className="content-option-title">Server Statistics</h2>
-              </div>
-              <p className="content-option-description">
-                Server population, character demographics, and activity trends.
-              </p>
-            </Link>
-            <Link
-              to="/trends"
-              className="nav-box shrinkable"
-              style={{
-                height: "auto",
-                minHeight: "150px",
-              }}
-            >
-              <div className="nav-box-title">
-                <TrendsSVG className="nav-icon should-invert" />
-                <h2 className="content-option-title">Trends</h2>
-              </div>
-              <p className="content-option-description">
-                Long-term trends, daily minimum and maximum population, and
-                important game events.
-              </p>
-            </Link>
-          </div>
-        </ContentCluster>
-      </div>
-    </div>
-  );
 };
 
 export default Live;
