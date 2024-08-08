@@ -4,7 +4,16 @@ import CrownSprite from "../../assets/global/crown.png";
 import NAMES from "../../constants/ClemeitNames";
 
 const CanvasWhoPanel = (props) => {
-  // Assume that incoming props.data is already filtered according to user preferences
+  let last_updated =
+    props.data != null && props.data.characters != null
+      ? props.data.last_updated
+      : null;
+  let characters =
+    props.data != null && props.data.characters != null
+      ? props.data.characters
+      : null;
+
+  // Assume that incoming characters is already filtered according to user preferences
   // TODO: Remove ExactMatch and LocationRegion from the sprite
   const canvasRef = React.useRef(null);
   const spriteRef = React.useRef(null);
@@ -121,7 +130,7 @@ const CanvasWhoPanel = (props) => {
   // generateColors();
 
   const PANEL_WIDTH = 706;
-  const playerHeight = 42;
+  const CHARACTER_HEIGHT = 42;
   const MAXIMUM_RESULTS = props.minimal ? 100 : 200;
   const [isGroupMode, setIsGroupMode] = React.useState(false);
   const isGroupModeRef = React.useRef(isGroupMode);
@@ -267,7 +276,7 @@ const CanvasWhoPanel = (props) => {
   React.useEffect(() => {
     if (!isImageLoaded) return;
     if (!isCrownLoaded) return;
-    if (props.data === null) {
+    if (characters === null) {
       //console.log("Waiting on data");
       return;
     }
@@ -287,7 +296,7 @@ const CanvasWhoPanel = (props) => {
 
     // Draw lfms
     // DrawFiller();
-    if (props.data !== null) DrawPlayers();
+    if (characters != null) drawCharacters();
 
     // Draws the header and the lastUpdateTime string
     function OpenPanel() {
@@ -347,7 +356,7 @@ const CanvasWhoPanel = (props) => {
       ctx.fillText(getNameFilter(), 130, 151);
 
       // Last updated
-      let lastUpdateTime = new Date();
+      let lastUpdateTime = new Date(last_updated * 1000);
       var hour = lastUpdateTime.getHours() % 12;
       if (hour == 0) hour = 12;
       var timeText =
@@ -369,7 +378,7 @@ const CanvasWhoPanel = (props) => {
       // Population
       ctx.fillText(props.currentPopulation || "0", 174, 210);
       ctx.fillText(props.currentAnonymous || "0", 341, 210);
-      ctx.fillText(props.data ? props.data.length : "0", 484, 210);
+      ctx.fillText(characters ? characters.length : "0", 484, 210);
     }
 
     // Draws the chin
@@ -381,8 +390,8 @@ const CanvasWhoPanel = (props) => {
         706,
         25,
         0,
-        (props.data ? Math.min(props.data.length, MAXIMUM_RESULTS) : 4) *
-          playerHeight +
+        (characters ? Math.min(characters.length, MAXIMUM_RESULTS) : 4) *
+          CHARACTER_HEIGHT +
           259,
         706,
         25
@@ -392,36 +401,36 @@ const CanvasWhoPanel = (props) => {
     // Draws filler
     function DrawFiller() {}
 
-    function DrawPlayers() {
-      if (props.data === null) {
+    function drawCharacters() {
+      if (characters === null) {
         //console.log("Waiting on data");
         return;
       }
 
-      for (let i = 0; i < props.data.length; i++) {
-        let player = props.data[i];
+      for (let i = 0; i < characters.length; i++) {
+        let character = characters[i];
         let x = 24;
         let y = 229 + i * 42 + 25;
         // Bounds: 660, 42
         var width = 660;
         var height = 42;
 
-        // Get the color for this player if they are in a group that has more than one person
+        // Get the color for this character if they are in a group that has more than one person
         // First check if their group is already in the map
         // If not, add it to the map and assign it a color
-        let playerColor = "";
+        let characterColor = "";
         if (
           isGroupMode &&
-          player.GroupId != 0 &&
-          props.data.filter((p) => p.GroupId === player.GroupId).length > 1
+          character.group_id != 0 &&
+          characters.filter((p) => p.group_id === character.group_id).length > 1
         ) {
-          if (!groupToColorMap.hasOwnProperty(player.GroupId)) {
+          if (!groupToColorMap.hasOwnProperty(character.group_id)) {
             const COLOR = GROUP_COLORS[colorIndex % GROUP_COLORS.length];
-            groupToColorMap[player.GroupId] = COLOR;
-            playerColor = COLOR;
+            groupToColorMap[character.group_id] = COLOR;
+            characterColor = COLOR;
             colorIndex++;
           } else {
-            playerColor = groupToColorMap[player.GroupId];
+            characterColor = groupToColorMap[character.group_id];
           }
         }
 
@@ -434,8 +443,8 @@ const CanvasWhoPanel = (props) => {
         grad.addColorStop(0.25, "#4c4a31");
         grad.addColorStop(0.75, "#4c4a31");
         grad.addColorStop(1, "#3b3b25");
-        if (playerColor != "") {
-          ctx.fillStyle = playerColor;
+        if (characterColor != "") {
+          ctx.fillStyle = characterColor;
         } else {
           ctx.fillStyle = grad;
         }
@@ -464,12 +473,12 @@ const CanvasWhoPanel = (props) => {
         ctx.stroke();
 
         // Draw group status:
-        if (player.GroupId != 0)
+        if (character.group_id != 0)
           ctx.drawImage(sprite, 211, 401, 16, 20, x + 2, y + 10, 16, 20);
 
         // Draw race icon:
         let raceIconPosition = getRaceIconPosition(
-          player.Gender + " " + player.Race,
+          character.gender + " " + character.race,
           true
         );
         ctx.drawImage(
@@ -489,24 +498,24 @@ const CanvasWhoPanel = (props) => {
         ctx.font = 18 + "px 'Trebuchet MS'"; // 18px
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        ctx.fillText(player.Name, x + 44, y + 14);
+        ctx.fillText(character.name, x + 44, y + 14);
 
         // Draw crown:
-        if (NAMES.some((name) => player.Name.startsWith(name))) {
-          let nameWidth = ctx.measureText(player.Name).width;
+        if (NAMES.some((name) => character.name.startsWith(name))) {
+          let nameWidth = ctx.measureText(character.name).width;
           ctx.drawImage(crown, x + 48 + nameWidth, y + 4, 18, 18);
         }
 
         // Draw location: 30, 26
         ctx.font = "12px 'Trebuchet MS'";
-        if (player.Name == "Anonymous") {
+        if (character.name === "Anonymous") {
           ctx.fillText("The Island of Noneya", x + 30, y + 33);
         } else {
           let baseString;
-          if (player.Location.Name === null) {
+          if (character.location.name == null) {
             baseString = "Somewhere in the Aether";
           } else {
-            baseString = player.Location.Name;
+            baseString = character.location.name;
           }
           let textLines = wrapText(baseString, 200);
           if (textLines.length > 1) {
@@ -520,13 +529,13 @@ const CanvasWhoPanel = (props) => {
         // Draw classes:
         ctx.font = "13px Arial";
         ctx.textAlign = "right";
-        for (var j = 0; j < player.Classes.length; j++) {
-          if (player.Classes[j].Name == null) continue;
-          if (player.Classes[j].Name === "Epic") continue;
-          if (player.Classes[j].Name === "Legendary") continue;
+        for (var j = 0; j < character.classes.length; j++) {
+          if (character.classes[j].name == null) continue;
+          if (character.classes[j].name === "Epic") continue;
+          if (character.classes[j].name === "Legendary") continue;
 
           let classIconPosition = getClassIconPosition(
-            player.Classes[j].Name,
+            character.classes[j].name,
             true
           );
           ctx.drawImage(
@@ -543,13 +552,13 @@ const CanvasWhoPanel = (props) => {
 
           ctx.fillStyle = "black";
           ctx.fillText(
-            player.Classes[j].Level,
+            character.classes[j].level,
             x + 269 + 21 * j + 22,
             y + 20 + 8
           );
           ctx.fillStyle = "white";
           ctx.fillText(
-            player.Classes[j].Level,
+            character.classes[j].level,
             x + 269 + 21 * j + 21,
             y + 20 + 7
           );
@@ -559,22 +568,22 @@ const CanvasWhoPanel = (props) => {
         ctx.fillStyle = "#f6f1d3";
         ctx.textAlign = "center";
         ctx.font = 17 + "px Arial"; // 15px
-        ctx.fillText(player.TotalLevel, x + 400, y + 22);
+        ctx.fillText(character.total_level, x + 400, y + 22);
 
         // Guild name:
         ctx.font = "15px 'Trebuchet MS'";
-        if (player.Name == "Anonymous") {
+        if (character.name == "Anonymous") {
           ctx.fillText("Noneya Business", x + 548, y + 22);
         } else {
-          let guildname = wrapText(player.Guild, 230);
-          if (guildname.length > 1) {
-            ctx.fillText(guildname[0] + "...", x + 548, y + 22);
-          } else if (guildname.length === 1) {
-            ctx.fillText(guildname[0], x + 548, y + 22);
+          let guildName = wrapText(character.guild, 230);
+          if (guildName.length > 1) {
+            ctx.fillText(guildName[0] + "...", x + 548, y + 22);
+          } else if (guildName.length === 1) {
+            ctx.fillText(guildName[0], x + 548, y + 22);
           }
         }
 
-        // Draw text if too many players
+        // Draw text if too many characters
         if (i >= MAXIMUM_RESULTS - 1) {
           ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
           ctx.fillRect(canvas.width / 2 - 160, canvas.height - 80, 320, 30);
@@ -587,7 +596,7 @@ const CanvasWhoPanel = (props) => {
             "Showing the first " +
               MAXIMUM_RESULTS +
               " of " +
-              props.data.length +
+              characters.length +
               " matches",
             canvas.width / 2,
             canvas.height - 65
@@ -597,7 +606,7 @@ const CanvasWhoPanel = (props) => {
       }
     }
 
-    function DrawPlayerOverlay(player, cursorPosition) {}
+    function drawCharacterOverlay(character, cursorPosition) {}
 
     // Helper function for wrapping text
     function wrapText(text, maxWidth) {
@@ -851,10 +860,10 @@ const CanvasWhoPanel = (props) => {
     }
 
     // Helper function for getting race icon position
-    function getClassIconPosition(classname, eligible) {
+    function getClassIconPosition(className, eligible) {
       let xsrc = 0;
       let ysrc = 0;
-      switch (classname) {
+      switch (className) {
         case "Alchemist": // 70032AFE
           xsrc = 21;
           ysrc = 0;
@@ -924,7 +933,7 @@ const CanvasWhoPanel = (props) => {
       return [xsrc + 108, ysrc + 401];
     }
   }, [
-    props.data,
+    characters,
     isImageLoaded,
     isCrownLoaded,
     props.filters,
@@ -1017,8 +1026,8 @@ const CanvasWhoPanel = (props) => {
         }}
         width={PANEL_WIDTH}
         height={
-          (props.data ? Math.min(props.data.length, MAXIMUM_RESULTS) : 4) *
-            playerHeight +
+          (characters ? Math.min(characters.length, MAXIMUM_RESULTS) : 4) *
+            CHARACTER_HEIGHT +
           285
         }
       />

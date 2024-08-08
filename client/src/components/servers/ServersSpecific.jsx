@@ -2,7 +2,12 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link, useLocation } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, Get, Post, VerifyPlayerData } from "../../services/DataLoader";
+import {
+  Fetch,
+  Get,
+  Post,
+  VerifyCharacterData,
+} from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import BannerMessage from "../global/BannerMessage";
 import UniqueCountsSubtitle from "./UniqueCountsSubtitle";

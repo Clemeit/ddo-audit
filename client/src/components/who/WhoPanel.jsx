@@ -1,5 +1,8 @@
 import React from "react";
-import { Fetch, VerifyPlayerData } from "../../services/DataLoader";
+import {
+  Fetch,
+  VerifyCharacterData as verifyCharacterData,
+} from "../../services/DataLoader";
 import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 import FilterBar from "../global/FilterBar";
 import CanvasWhoPanel from "./CanvasWhoPanel";
@@ -14,6 +17,11 @@ import $ from "jquery";
 const WhoPanel = (props) => {
   const MAX_LEVEL = 32;
   const PAGE_SIZE = 10;
+  const REFRESH_LFM_INTERVAL = 5; //seconds
+  const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
+  const API_VERSION = "v1";
+  const API_URL = `${API_HOST}/${API_VERSION}`;
+  const LFM_API = `${API_URL}/characters`;
 
   const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 
@@ -28,18 +36,22 @@ const WhoPanel = (props) => {
 
   // Data
   // const [currentServer, setCurrentServer] = React.useState(null);
-  const [playerData, setPlayerData] = React.useState({
+  const [characterData, setCharacterData] = React.useState({
     timestamp: 0,
     data: null,
   });
   const [currentPopulation, setCurrentPopulation] = React.useState(null);
   const [currentAnonymous, setCurrentAnonymous] = React.useState(null);
-  const [filteredPlayerData, setFilteredPlayerData] = React.useState(null);
-  const [paginatedPlayerData, setPaginatedPlayerData] = React.useState(null);
-  const [playerCount, setPlayerCount] = React.useState(null);
-  const [adjustedPlayerCount, setAdjustedPlayerCount] = React.useState(null);
+  const [filteredCharacterData, setFilteredCharacterData] =
+    React.useState(null);
+  const [paginatedCharacterData, setPaginatedCharacterData] =
+    React.useState(null);
+  const [characterCount, setCharacterCount] = React.useState(null);
+  const [adjustedCharacterCount, setAdjustedCharacterCount] =
+    React.useState(null);
   const [lastFetchTime, setLastFetchTime] = React.useState(null);
-  const [attemptedPlayerFetch, setAttemptedPlayerFetch] = React.useState(null);
+  const [attemptedCharacterFetch, setAttemptedCharacterFetch] =
+    React.useState(null);
   const [classFilterStates, setClassFilterStates] = React.useState([
     true,
     true,
@@ -103,8 +115,8 @@ const WhoPanel = (props) => {
 
   const [pageNumber, setPageNumber] = React.useState(0);
 
-  const [expandedPlayers, setExpandedPlayers] = React.useState([]);
-  const [pinnedPlayers, setPinnedPlayers] = React.useState([]);
+  const [expandedCharacters, setExpandedCharacters] = React.useState([]);
+  const [pinnedCharacters, setPinnedCharacters] = React.useState([]);
 
   const [filterPanelVisible, setFilterPanelVisible] = React.useState(false);
 
@@ -212,97 +224,98 @@ const WhoPanel = (props) => {
     }
   }
 
-  function ApplyFilters(data) {
+  function applyFilters(data) {
     // Apply sorting
     if (sortingMethod === "level") {
       if (sortingDirection === "ascending") {
-        data.sort((a, b) => a.TotalLevel - b.TotalLevel);
+        data.sort((a, b) => a.total_level - b.total_level);
       } else {
-        data.sort((a, b) => b.TotalLevel - a.TotalLevel);
+        data.sort((a, b) => b.total_level - a.total_level);
       }
     } else if (sortingMethod === "guild") {
       if (sortingDirection === "ascending") {
-        data.sort((a, b) => a.Guild.localeCompare(b.Guild));
+        data.sort((a, b) => a.guild.localeCompare(b.guild));
       } else {
-        data.sort((a, b) => b.Guild.localeCompare(a.Guild));
+        data.sort((a, b) => b.guild.localeCompare(a.guild));
       }
     } else if (sortingMethod === "location") {
       if (sortingDirection === "ascending") {
         data.sort((a, b) => {
-          if (a.Location.Name == null || b.Location.Name == null) return 0;
-          return a.Location.Name.localeCompare(b.Location.Name);
+          if (a.location.name == null || b.location.name == null) return 0;
+          return a.location.name.localeCompare(b.location.name);
         });
       } else {
         data.sort((a, b) => {
-          if (a.Location.Name == null || b.Location.Name == null) return 0;
-          return b.Location.Name.localeCompare(a.Location.Name);
+          if (a.location.name == null || b.location.name == null) return 0;
+          return b.location.name.localeCompare(a.location.name);
         });
       }
     } else if (sortingMethod === "inparty") {
       if (sortingDirection === "ascending") {
-        data.sort((a, b) => a.InParty - b.InParty);
+        data.sort((a, b) => a.is_in_party - b.is_in_party);
       } else {
-        data.sort((a, b) => b.InParty - a.InParty);
+        data.sort((a, b) => b.is_in_party - a.is_in_party);
       }
     } else if (sortingMethod === "groupid") {
-      data.sort((a, b) => a.GroupId.localeCompare(b.GroupId));
+      data.sort((a, b) => a.group_id.localeCompare(b.group_id));
     } else if (sortingMethod === "class") {
       if (sortingDirection === "ascending") {
         data.sort((a, b) => {
           let astring = "";
-          a.Classes.forEach((c) => {
-            astring = astring + (c.Name || "");
+          a.classes.forEach((c) => {
+            astring = astring + (c.name || "");
           });
           let bstring = "";
-          b.Classes.forEach((c) => {
-            bstring = bstring + (c.Name || "");
+          b.classes.forEach((c) => {
+            bstring = bstring + (c.name || "");
           });
           return astring.localeCompare(bstring);
         });
       } else {
         data.sort((a, b) => {
           let astring = "";
-          a.Classes.forEach((c) => {
-            astring = astring + (c.Name || "");
+          a.classes.forEach((c) => {
+            astring = astring + (c.name || "");
           });
           let bstring = "";
-          b.Classes.forEach((c) => {
-            bstring = bstring + (c.Name || "");
+          b.classes.forEach((c) => {
+            bstring = bstring + (c.name || "");
           });
           return bstring.localeCompare(astring);
         });
       }
     } else {
       if (sortingDirection === "ascending") {
-        data.sort((a, b) => a.Name.localeCompare(b.Name));
+        data.sort((a, b) => a.name.localeCompare(b.name));
       } else {
-        data.sort((a, b) => b.Name.localeCompare(a.Name));
+        data.sort((a, b) => b.name.localeCompare(a.name));
       }
     }
 
     // Apply filters
     data = data.filter(
-      (player) => player.Name !== "Anonymous" && player.Name !== ""
+      (character) => character.name !== "Anonymous" && character.name !== ""
     );
 
-    // If sortingMethod === "groupid", we want to filter out all players not
-    // in a party, and all players where their party is only themselves.
+    // If sortingMethod === "groupid", we want to filter out all characters not
+    // in a party, and all characters where their party is only themselves.
     if (sortingMethod === "groupid") {
       data = data.filter(
-        (player) => player.GroupId !== null && player.GroupId !== "0"
+        (character) => character.group_id !== null && character.group_id !== "0"
       );
 
-      data = data.filter((player) => {
+      data = data.filter((character) => {
         return (
-          data.filter((inner_player) => inner_player.GroupId === player.GroupId)
-            .length > 1
+          data.filter(
+            (innerCharacter) => innerCharacter.group_id === character.group_id
+          ).length > 1
         );
       });
     }
 
     // if (activeFilters !== null && activeFilters.length !== 0) {
     let passingGroupIds = [];
-    const firstPassData = data.filter((player) => {
+    const firstPassData = data.filter((character) => {
       let pass = false;
 
       // Global filters
@@ -311,47 +324,52 @@ const WhoPanel = (props) => {
         const trimmedFilter = f.trim();
         let localmatch = false;
         if (exactMatch) {
-          if (player.Name === trimmedFilter) {
-            localmatch = true;
-          }
-          if (player.Location.Name && player.Location.Name === trimmedFilter) {
-            localmatch = true;
-          }
-          if (includeRegion) {
-            if (
-              player.Location.Name &&
-              player.Location.Region === trimmedFilter
-            ) {
-              localmatch = true;
-            }
-          }
-          if (player.Guild === trimmedFilter) {
-            localmatch = true;
-          }
-        } else {
-          if (player.Name.toLowerCase().includes(trimmedFilter.toLowerCase())) {
+          if (character.name === trimmedFilter) {
             localmatch = true;
           }
           if (
-            player.Location.Name &&
-            player.Location.Name.toLowerCase().includes(
-              trimmedFilter.toLowerCase()
-            )
+            character.location.name &&
+            character.location.name === trimmedFilter
           ) {
             localmatch = true;
           }
           if (includeRegion) {
             if (
-              player.Location.Name &&
-              player.Location.Region.toLowerCase().includes(
-                trimmedFilter.toLowerCase()
-              )
+              character.location.name &&
+              character.location.region === trimmedFilter
+            ) {
+              localmatch = true;
+            }
+          }
+          if (character.guild === trimmedFilter) {
+            localmatch = true;
+          }
+        } else {
+          if (
+            character.name.toLowerCase().includes(trimmedFilter.toLowerCase())
+          ) {
+            localmatch = true;
+          }
+          if (
+            character.location.name &&
+            character.location.name
+              .toLowerCase()
+              .includes(trimmedFilter.toLowerCase())
+          ) {
+            localmatch = true;
+          }
+          if (includeRegion) {
+            if (
+              character.location.name &&
+              character.location.region
+                .toLowerCase()
+                .includes(trimmedFilter.toLowerCase())
             ) {
               localmatch = true;
             }
           }
           if (
-            player.Guild.toLowerCase().includes(trimmedFilter.toLowerCase())
+            character.guild.toLowerCase().includes(trimmedFilter.toLowerCase())
           ) {
             localmatch = true;
           }
@@ -359,19 +377,16 @@ const WhoPanel = (props) => {
         pass = pass || localmatch;
       });
 
-      if (player.TotalLevel < minimumLevelFilter) pass = false;
-      if (player.TotalLevel > maximumLevelFilter) pass = false;
+      if (character.total_level < minimumLevelFilter) pass = false;
+      if (character.total_level > maximumLevelFilter) pass = false;
 
       let classresult = false;
       classFilterStates.forEach((cls, index) => {
         if (cls === true) {
           let result = false;
-          player.Classes.forEach((playercls) => {
-            if (playercls.Name !== null) {
-              if (
-                playercls.Name.toLowerCase() ===
-                CLASS_NAMES[index].toLowerCase()
-              ) {
+          character.classes.forEach((cls) => {
+            if (cls.name !== null) {
+              if (cls.name.toLowerCase() === CLASS_NAMES[index].toLowerCase()) {
                 result = true;
               }
             }
@@ -383,10 +398,10 @@ const WhoPanel = (props) => {
 
       if (pass) {
         if (
-          !passingGroupIds.includes(player.GroupId) &&
-          player.GroupId !== "0"
+          !passingGroupIds.includes(character.group_id) &&
+          character.group_id !== "0"
         ) {
-          passingGroupIds.push(player.GroupId);
+          passingGroupIds.push(character.group_id);
         }
       }
 
@@ -394,48 +409,50 @@ const WhoPanel = (props) => {
     });
     console.log(passingGroupIds);
     if (sortingMethod === "groupid") {
-      data = data.filter((player) => passingGroupIds.includes(player.GroupId));
+      data = data.filter((character) =>
+        passingGroupIds.includes(character.group_id)
+      );
       data = data.sort((a, b) => {
-        if (a.GroupId === b.GroupId) {
-          if (a.TotalLevel === b.TotalLevel) {
-            return a.Name.localeCompare(b.Name);
+        if (a.group_id === b.group_id) {
+          if (a.total_level === b.total_level) {
+            return a.name.localeCompare(b.name);
           } else {
-            return a.TotalLevel - b.TotalLevel;
+            return a.total_level - b.total_level;
           }
         } else {
-          return a.GroupId.localeCompare(b.GroupId);
+          return a.group_id.localeCompare(b.group_id);
         }
       });
     } else {
       data = firstPassData;
     }
     // } else {
-    //     // Pull out starred players to be inserted at the top later
-    //     let starredplayers = data.filter((p) => IsStarred(p));
+    //     // Pull out starred cahracters to be inserted at the top later
+    //     let starredcahracters = data.filter((p) => IsStarred(p));
     //     data = data.filter((p) => !IsStarred(p));
-    //     data = [...starredplayers, ...data];
+    //     data = [...starredcahracters, ...data];
     // }
 
-    // Pull out starred players to be inserted at the top later
-    let starredplayers = data.filter((p) => IsStarred(p));
-    data = data.filter((p) => !IsStarred(p));
-    data = [...starredplayers, ...data];
+    // Pull out starred cahracters to be inserted at the top later
+    let starredCharacters = data.filter((p) => isStarred(p));
+    data = data.filter((p) => !isStarred(p));
+    data = [...starredCharacters, ...data];
 
     return data;
   }
 
-  function IsExpanded(player) {
+  function isExpanded(character) {
     let val = false;
-    expandedPlayers.forEach((p) => {
-      if (p.Name === player.Name) val = true;
+    expandedCharacters.forEach((p) => {
+      if (p.Name === character.name) val = true;
     });
     return val;
   }
 
-  function IsStarred(player) {
+  function isStarred(character) {
     let val = false;
-    pinnedPlayers.forEach((p) => {
-      if (p.name === player.Name && p.server === currentServer) val = true;
+    pinnedCharacters.forEach((p) => {
+      if (p.name === character.name && p.server === currentServer) val = true;
     });
     return val;
   }
@@ -487,7 +504,7 @@ const WhoPanel = (props) => {
   }, []);
 
   function GetSnarkyMessage() {
-    if (playerCount === 0) {
+    if (characterCount === 0) {
       return "Maybe they're all anonymous.";
     } else {
       return "Are you one of them?";
@@ -496,42 +513,48 @@ const WhoPanel = (props) => {
 
   // Apply filter after filter change
   React.useEffect(() => {
-    if (playerData === null || playerData.data === null) return;
-    setFilteredPlayerData(ApplyFilters(playerData.data.Players));
+    if (characterData == null || characterData.data == null) return;
+    setFilteredCharacterData({
+      last_updated: characterData.data.last_updated,
+      characters: applyFilters(characterData.data.characters),
+    });
   }, [
     globalFilter,
     minimumLevelFilter,
     maximumLevelFilter,
     activeFilters,
-    playerData,
+    characterData,
     sortingMethod,
     sortingDirection,
-    pinnedPlayers,
+    pinnedCharacters,
     classFilterStates,
     includeRegion,
     exactMatch,
   ]);
 
   React.useEffect(() => {
-    if (filteredPlayerData === null) return;
-    setPaginatedPlayerData(
-      filteredPlayerData.slice(
+    if (filteredCharacterData == null) return;
+    setPaginatedCharacterData(
+      filteredCharacterData.characters.slice(
         Math.max(0, pageNumber * PAGE_SIZE),
-        Math.min(pageNumber * PAGE_SIZE + PAGE_SIZE, filteredPlayerData.length)
+        Math.min(
+          pageNumber * PAGE_SIZE + PAGE_SIZE,
+          filteredCharacterData.characters.length
+        )
       )
     );
-  }, [filteredPlayerData, pageNumber]);
+  }, [filteredCharacterData, pageNumber]);
 
   const lastManualLookupTimeRef = React.useRef(0);
   const refreshButtonAngleRef = React.useRef(null);
   function refreshButtonHandler() {
     if (Date.now() - lastManualLookupTimeRef.current > 3000) {
-      FetchPlayerData();
+      fetchCharacterData();
       refreshButtonAngleRef.current += 360;
       $("#who-refresh-button").css({
         transform: `rotate(${refreshButtonAngleRef.current}deg)`,
       });
-      Log("Manual player refresh", "");
+      Log("Manual character refresh", "");
       lastManualLookupTimeRef.current = Date.now();
     }
   }
@@ -541,21 +564,21 @@ const WhoPanel = (props) => {
   let refreshdata;
   React.useEffect(() => {
     clearTimeout(recheck); // TODO: Clearing this timeout doesn't work
-    setFilteredPlayerData(null);
+    setFilteredCharacterData(null);
     if (!props.server) return;
 
-    FetchPlayerData();
+    fetchCharacterData();
 
     refreshdata = setInterval(() => {
-      FetchPlayerData();
-    }, 30000);
+      fetchCharacterData();
+    }, REFRESH_LFM_INTERVAL * 1000);
     return () => {
       clearInterval(refreshdata);
       clearTimeout(recheck);
     };
   }, [props.server]);
 
-  function FetchPlayerData(timeout = 5000) {
+  function fetchCharacterData(timeout = 5000) {
     if (failedAttemptRef.current > 6) {
       return;
     }
@@ -585,32 +608,39 @@ const WhoPanel = (props) => {
           ).then((val) => {
             val.forEach((server) => {
               if (server.ServerName === props.server) {
-                setCurrentPopulation(server.PlayerCount);
+                setCurrentPopulation(server.character_count);
               }
             });
           });
           Fetch(
-            "https://api.ddoaudit.com/players/" +
+            LFM_API +
+              "/" +
               (SERVER_LIST_LOWERCASE.includes(props.server.toLowerCase())
-                ? props.server
+                ? props.server.toLowerCase()
                 : ""),
             timeout
           )
             .then((val) => {
               setLastFetchTime(Date.now());
-              setAttemptedPlayerFetch(true);
-              if (VerifyPlayerData(val)) {
+              setAttemptedCharacterFetch(true);
+              if (verifyCharacterData(val)) {
                 props.triggerPopup(null);
                 failedAttemptRef.current = 0;
                 setFailedAttemptCount(failedAttemptRef.current);
-                setPlayerData({
+                // Convert val.characters to array:
+                let characters = [];
+                Object.entries(val.characters).forEach(([_, character]) => {
+                  characters.push(character);
+                });
+                val.characters = characters;
+                setCharacterData({
                   timestamp: Date.now(),
                   data: val,
                 });
-                setCurrentPopulation(val.Population);
+                setCurrentPopulation(val.character_count);
                 let anon = 0;
-                val.Players.forEach((player) => {
-                  if (player.Name === "Anonymous") anon++;
+                Object.entries(val.characters).forEach(([_, character]) => {
+                  if (character.name === "Anonymous") anon++;
                 });
                 setCurrentAnonymous(anon);
               } else {
@@ -625,14 +655,14 @@ const WhoPanel = (props) => {
                     fullscreen: false,
                     reportMessage:
                       val === null
-                        ? "Player data returned null"
-                        : "Player data verification failed",
+                        ? "Character data returned null"
+                        : "Character data verification failed",
                   });
                   clearTimeout(recheck);
                   clearInterval(refreshdata);
                 } else {
                   recheck = setTimeout(() => {
-                    FetchPlayerData(10000);
+                    fetchCharacterData(10000);
                   }, 200);
                 }
               }
@@ -641,10 +671,10 @@ const WhoPanel = (props) => {
               failedAttemptRef.current++;
               setFailedAttemptCount(failedAttemptRef.current);
               setLastFetchTime(Date.now());
-              setAttemptedPlayerFetch(true);
+              setAttemptedCharacterFetch(true);
               if (failedAttemptRef.current > 3) {
                 props.triggerPopup({
-                  title: "Couldn't fetch player data",
+                  title: "Couldn't fetch character data",
                   message:
                     "Try refreshing the page. If the issue continues, please report it.",
                   submessage: err && err.toString(),
@@ -652,11 +682,11 @@ const WhoPanel = (props) => {
                   fullscreen: false,
                   reportMessage:
                     (err && err.toString()) ||
-                    "Player data generic error (timeout?)",
+                    "Character data generic error (timeout?)",
                 });
               } else {
                 recheck = setTimeout(() => {
-                  FetchPlayerData(10000);
+                  fetchCharacterData(10000);
                 }, 250);
               }
             });
@@ -677,29 +707,29 @@ const WhoPanel = (props) => {
           });
         } else {
           recheck = setTimeout(() => {
-            FetchPlayerData(10000);
+            fetchCharacterData(10000);
           }, 250);
         }
       });
   }
 
   React.useEffect(() => {
-    if (playerData.data === undefined || playerData.data === null) return;
-    setPlayerCount(playerData.data.Players.length);
-  }, [playerData]);
+    if (characterData.data === undefined || characterData.data === null) return;
+    setCharacterCount(characterData.data.character_count);
+  }, [characterData]);
 
   React.useEffect(() => {
-    let pinnedplayers = JSON.parse(localStorage.getItem("pinned-players"));
-    if (pinnedplayers) {
-      setPinnedPlayers(pinnedplayers);
+    let pinnedCharacters = JSON.parse(localStorage.getItem("pinned-players"));
+    if (pinnedCharacters) {
+      setPinnedCharacters(pinnedCharacters);
     } else {
-      setPinnedPlayers([]);
+      setPinnedCharacters([]);
     }
   }, []);
 
   React.useEffect(() => {
-    localStorage.setItem("pinned-players", JSON.stringify(pinnedPlayers));
-  }, [pinnedPlayers]);
+    localStorage.setItem("pinned-players", JSON.stringify(pinnedCharacters));
+  }, [pinnedCharacters]);
 
   function getServerNamePossessive() {
     return `${props.server}${props.server === "Thelanis" ? "'" : "'s"}`;
@@ -764,7 +794,7 @@ const WhoPanel = (props) => {
               style={{ width: "100%", height: "20px" }}
             />
             <ContentCluster
-              title="Filter Players"
+              title="Filter Characters"
               smallBottomMargin
               noLink={true}
             >
@@ -778,12 +808,12 @@ const WhoPanel = (props) => {
                 }}
               >
                 <p style={{ fontSize: "1.3rem" }}>
-                  The Group View feature organizes players by the group they're
-                  in. Groups are distinguished by different colors. Players who
-                  are not in a group (or that are in a group with only hirelings
-                  or offline players) are not shown. Searching by name, guild,
-                  or location will show any player that meets those criteria as
-                  well as all players in their group.
+                  The Group View feature organizes characters by the group
+                  they're in. Groups are distinguished by different colors.
+                  Characters who are not in a group (or that are in a group with
+                  only hirelings or offline characters) are not shown. Searching
+                  by name, guild, or location will show any character that meets
+                  those criteria as well as all characters in their group.
                 </p>
                 <p style={{ fontSize: "1.3rem" }}>
                   When searching by name, guild, or location, you can separate
@@ -814,7 +844,7 @@ const WhoPanel = (props) => {
         </div>
       )}
       {serverStatus !== false || ignoreServerStatus ? (
-        paginatedPlayerData && filteredPlayerData ? (
+        paginatedCharacterData && filteredCharacterData ? (
           <div
             style={{
               width: "100%",
@@ -826,11 +856,11 @@ const WhoPanel = (props) => {
           >
             <div>
               <div className="sr-only">
-                {`The image below is a live preview of ${getServerNamePossessive()} Who panel where all online players are visible.`}
+                {`The image below is a live preview of ${getServerNamePossessive()} Who panel where all online characters are visible.`}
               </div>
               <CanvasWhoPanel
                 minimal={props.minimal}
-                data={filteredPlayerData}
+                data={filteredCharacterData}
                 currentPopulation={currentPopulation}
                 currentAnonymous={currentAnonymous}
                 filters={activeFilters}
@@ -880,8 +910,8 @@ const WhoPanel = (props) => {
             }}
           >
             {failedAttemptCount
-              ? `Loading player data. Attempt ${failedAttemptCount + 1}...`
-              : "Loading player data..."}
+              ? `Loading character data. Attempt ${failedAttemptCount + 1}...`
+              : "Loading character data..."}
           </span>
         )
       ) : (
@@ -927,7 +957,7 @@ const WhoPanel = (props) => {
               className="primary-button should-invert full-width-mobile"
               onClick={() => {
                 setIgnoreServerStatus(true);
-                FetchPlayerData();
+                fetchCharacterData();
               }}
             >
               Load data anyways

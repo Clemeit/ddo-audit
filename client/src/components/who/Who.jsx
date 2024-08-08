@@ -2,7 +2,10 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
+import {
+  Fetch,
+  VerifyCharacterAndLfmOverview,
+} from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
@@ -87,7 +90,7 @@ const Who = (props) => {
         style={{ color: "var(--text-lfm-number)", fontSize: "1.4rem" }}
       >
         {overviewData.filter((server) => server.ServerName === name)[0]
-          .PlayerCount + " players"}
+          .PlayerCount + " characters"}
       </p>
     );
   }
@@ -114,7 +117,7 @@ const Who = (props) => {
 
       Fetch("https://api.ddoaudit.com/gamestatus/populationoverview", 5000)
         .then((val) => {
-          if (VerifyPlayerAndLfmOverview(val)) {
+          if (VerifyCharacterAndLfmOverview(val)) {
             setOverviewData(val);
           } else {
             setPopupMessage({

@@ -87,7 +87,7 @@ export function VerifyLfmData(data) {
   return true;
 }
 
-export function VerifyPlayerAndLfmOverview(data) {
+export function VerifyCharacterAndLfmOverview(data) {
   if (data === null) return false;
   if (data.length !== 9) return false;
   let missingfields = false;
@@ -103,17 +103,16 @@ export function VerifyPlayerAndLfmOverview(data) {
 export function VerifyServerLfmData(data) {
   if (data === null) return false;
   let missingfields = false;
-  if (data.Name === undefined) missingfields = true;
-  if (data.LastUpdateTime === undefined) missingfields = true;
-  if (data.GroupCount === undefined) missingfields = true;
-  if (missingfields) return false;
-  return true;
+  if (data.lfms === undefined) missingfields = true;
+  if (data.last_updated === undefined) missingfields = true;
+  if (data.lfm_count === undefined) missingfields = true;
+  return !missingfields;
 }
 
-export function VerifyPlayerData(data) {
+export function VerifyCharacterData(data) {
   if (data === null) return false;
-  if (data.Population === undefined) return false;
-  if (data.Name === undefined) return false;
-  if (data.Players === undefined) return false;
+  if (data.characters == null) return false;
+  if (data.character_count == null) return false;
+  if (data.last_updated == null) return false;
   return true; // TODO
 }

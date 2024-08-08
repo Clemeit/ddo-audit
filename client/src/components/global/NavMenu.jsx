@@ -1,4 +1,3 @@
-import React from "react";
 import { NavBar, NavItem, NavDropdown, NavSubItem, NavDivider } from "./NavBar";
 import { ReactComponent as HomeSVG } from "../../assets/global/home.svg";
 import { ReactComponent as LiveSVG } from "../../assets/global/live.svg";

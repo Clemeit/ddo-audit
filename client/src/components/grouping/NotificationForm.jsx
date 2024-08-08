@@ -8,7 +8,7 @@ import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import ContentCluster from "../global/ContentCluster";
 
 const NotificationForm = (props) => {
-  const TITLE = "Grouping Notifications";
+  const TITLE = "LFM Notifications";
 
   const [server, setServer] = React.useState("");
   const [leaderName, setLeaderName] = React.useState("");
@@ -170,11 +170,11 @@ const NotificationForm = (props) => {
         hideOnMobile={true}
         hideVote={true}
         title="Grouping"
-        subtitle="Setup custom group notifications"
+        subtitle="Set up custom LFM notifications"
       />
       <Helmet>
         <title>{TITLE}</title>
-        <meta name="description" content="Setup custom group notifications." />
+        <meta name="description" content="Set up custom LFM notifications." />
         <meta
           property="og:image"
           content="/icons/grouping-512px.png"
@@ -271,7 +271,7 @@ const NotificationForm = (props) => {
                 color: "var(--text-faded)",
               }}
             >
-              You will be notified of groups that match <b>any</b> of the
+              You will be notified of LFMs that match <b>any</b> of the
               following entries.
             </p>
           ) : (
@@ -390,9 +390,8 @@ const NotificationForm = (props) => {
           title="Create a New Rule"
           description={
             <>
-              Groups must meet <b>all</b> of the following criteria. Leave a
-              field blank to ignore it. You may separate queries with commas
-              (,).
+              LFMs must meet <b>all</b> of the following criteria. Leave a field
+              blank to ignore it. You may separate queries with commas (,).
             </>
           }
           hidden={!canNotify}
