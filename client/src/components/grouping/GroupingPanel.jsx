@@ -16,7 +16,7 @@ import PageMessage from "../global/PageMessage";
 const Panel = (props) => {
   const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
   const REFRESH_LFM_INTERVAL = 2; //seconds
-  const MAX_LEVEL = 32;
+  const MAX_LEVEL = 34;
   const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
   const API_VERSION = "v1";
   const API_URL = `${API_HOST}/${API_VERSION}`;

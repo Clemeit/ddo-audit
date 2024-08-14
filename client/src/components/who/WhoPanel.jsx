@@ -15,7 +15,7 @@ import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import $ from "jquery";
 
 const WhoPanel = (props) => {
-    const MAX_LEVEL = 32;
+    const MAX_LEVEL = 34;
     const PAGE_SIZE = 10;
     const REFRESH_LFM_INTERVAL = 5; //seconds
     const API_HOST = "https://api.hcnxsryjficudzazjxty.com";

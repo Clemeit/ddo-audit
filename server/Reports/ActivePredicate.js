@@ -6,7 +6,7 @@ const isPlayerActive = (
   totallevel,
   filterByLastSeen = false
 ) => {
-  const MAX_LEVEL = 32;
+  const MAX_LEVEL = 34;
   let MOVEMENT_DAY_THRESHOLD = 2;
   let QUESTING_DAY_THRESHOLD = 7;
   let LEVELUP_DAY_THRESHOLD = 20;
