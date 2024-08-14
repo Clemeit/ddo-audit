@@ -12,7 +12,7 @@ import FeatureFlagHook from "../../hooks/FeatureFlagHook";
 import $ from "jquery";
 
 const WhoPanel = (props) => {
-  const MAX_LEVEL = 32;
+  const MAX_LEVEL = 34;
   const PAGE_SIZE = 10;
 
   const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);

@@ -15,7 +15,7 @@ import PageMessage from "../global/PageMessage";
 
 const Panel = (props) => {
   const REFRESH_CHARACTER_LEVEL_INTERVAL = 60; //seconds
-  const MAX_LEVEL = 32;
+  const MAX_LEVEL = 34;
 
   const noReport = FeatureFlagHook("no-report", 1000 * 60 * 60);
 

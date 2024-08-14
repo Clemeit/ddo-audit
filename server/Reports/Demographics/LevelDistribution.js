@@ -4,7 +4,7 @@ import isPlayerActive from "../ActivePredicate.js";
 const runLevelDistribution = (players, reporttype) => {
   const IGNORE_DOWNTIME = true;
   const includeLastSeen = true;
-  const MAX_LEVEL = 32;
+  const MAX_LEVEL = 34;
 
   var t0 = new Date();
   console.log("Running Level Distribution report");

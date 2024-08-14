@@ -8,7 +8,7 @@ const sliderStyle = {
   height: 50,
 };
 
-const MAX_LEVEL = 32;
+const MAX_LEVEL = 34;
 
 export function Handle({ handle: { id, value, percent }, getHandleProps }) {
   return (
