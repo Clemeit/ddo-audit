@@ -43,14 +43,13 @@ const About = (props) => {
       />
       <div className="content-container">
         <div className="top-content-padding shrink-on-mobile" />
-        <ContentCluster title="Our Mission">
+        <ContentCluster title="Mission">
           <p>
-            We want to provide the community with the most accurate and
-            up-to-date information on DDO's population as possible, foster
-            player interactions by hosting a Live LFM panel and Live 'Who' list,
-            and keep players informed of server status, time zone trends,
-            character demographics, and more! We're not here to push an agenda
-            or to point fingers.{" "}
+            To provide the community with the most accurate and up-to-date
+            information on DDO's population; to foster player interactions by
+            hosting a Live LFM panel and Live 'Who' list; and to keep players
+            informed of server status, time zone trends, character demographics,
+            and more! We're not here to push an agenda or to point fingers.{" "}
             <span style={{ color: "var(--text-lfm-number)" }}>
               Our goal is, and has always been, to provide useful, transparent,
               and unbiased information.
@@ -59,10 +58,9 @@ const About = (props) => {
         </ContentCluster>
         <ContentCluster title="Methodology">
           <p>
-            Data is collected from the game client every 10 seconds. This data
-            contains no personal information; the information that this data
-            contains is visible in the in-game "Who" panel (name, gender, race,
-            etc.).{" "}
+            Data is collected from the game client every few seconds seconds.
+            This data contains information that is visible in the in-game "Who"
+            panel (character name, gender, race, etc.).{" "}
             <span style={{ color: "var(--text-lfm-number)" }}>
               We do not collect, store, or publish personal information.
             </span>{" "}
@@ -81,13 +79,11 @@ const About = (props) => {
             used to track quest popularity and raid timers.
           </p>
           <p>
-            When a character posts a public LFM, the collected data also
+            When a character posts a public LFM, the data we collect also
             includes public comment, quest selection, difficulty selection,
             level range, accepted classes, and the "adventure active" length.
-            Each character in a group is also assigned a Group ID which allows
-            us to reconstruct groups of characters. The group data is then used
-            to generate the LFM panel (that's not a screenshot - it's being
-            drawn in your browser).
+            The group data is then used to generate the LFM panel (that's not a
+            screenshot - it's being drawn in your browser).
           </p>
         </ContentCluster>
         <ContentCluster title="Contributions">
@@ -185,29 +181,34 @@ const About = (props) => {
         </ContentCluster>
         <ContentCluster title="Development">
           <p>
-            This website is the culmination of over two years of hard work and
-            many sleepless nights. When I started DDO Audit I knew little to
-            nothing about web development, server infrastructure, or databases.
-            I learned as I went, browsing countless forum posts, watching
-            YouTube tutorial videos, reading books, and iterating on my designs.
+            This website is the culmination of over four years of hard work. My
+            original vision for the project was nothing more than a population
+            reporting tool to help players choose a server that's right for
+            them. I knew little to nothing about web development, server
+            infrastructure, or databases. I learned as I went, browsing forum
+            posts, watching YouTube tutorial videos, reading books, and
+            iterating on my designs.
           </p>
           <p>
             The original website was written in HTML, JavaScript, and CSS using
             the famous IDE known as Notepad (no joke - I have like 20,000 lines
             of frontend work done using Notepad). The data aggregation and
-            interpretation work was painfully done using C (I'm never using that
-            terrible language again), and the data collection portion was
-            written in Visual Basic (using Visual Studio). The current version
-            of the website is a little less haphazardly thrown together. It's
-            written using JSX and the React framework in an <i>actual</i> IDE -
+            interpretation work was painfully done using C (other than for
+            embedded systems, I'm never using that language again), and the data
+            collection portion was written in Visual Basic (using Visual
+            Studio).
+          </p>
+          <p>
+            The current version of the website is a little less haphazardly
+            thrown together. It's written using JSX and the React framework with
             Visual Studio Code. All of the server infrastructure work is done
             using NodeJS. Data aggregation and interpretation work is now done
             using JavaScript, and the data collection side was recreated using
             C#.
           </p>
           <p>
-            It honestly has been a lot of fun to work on, and I'm sure I'll
-            continue development well into the future. Thanks for stopping by!
+            DDO Audit has been a great learning opportunity, and I'm sure I'll
+            continue development well into the future. Thanks for visiting!
           </p>
           <p>
             See you in game,
@@ -246,7 +247,7 @@ const About = (props) => {
             </li>
             <li>
               <a
-                href="https://www.ddo.com/forums/member.php/384353-Clemeit"
+                href="https://forums.ddo.com/index.php?members/clemeit.381"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -254,12 +255,8 @@ const About = (props) => {
               </a>
             </li>
             <li>
-              <a
-                href="https://twitter.com/DDOAudit"
-                rel="noreferrer"
-                target="_blank"
-              >
-                Twitter: @DDOAudit
+              <a href="https://x.com/DDOAudit" rel="noreferrer" target="_blank">
+                X: @DDOAudit
               </a>
             </li>
           </ul>

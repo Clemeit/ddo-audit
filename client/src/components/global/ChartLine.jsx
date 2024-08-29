@@ -8,8 +8,10 @@ import CustomLegend from "./CustomLegend";
 const ChartLine = (props) => {
   const theme = {
     background: "var(--base)",
-    textColor: "var(--text)",
-    fontSize: 14,
+    text: {
+      fontSize: 14,
+      fill: "var(--text)",
+    },
     axis: {
       domain: {
         line: {

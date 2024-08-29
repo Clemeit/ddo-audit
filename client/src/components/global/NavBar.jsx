@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ReactComponent as ExpandSVG } from "../../assets/global/expand.svg";
 import $ from "jquery";
@@ -14,22 +13,22 @@ const NavBar = (props) => {
 const NavItem = (props) => {
   const location = useLocation();
 
+  function getClassName() {
+    let className = "nav-item " + props.className + " ";
+    if (props.to === "/") {
+      if (location.pathname === props.to) className += " active";
+    } else {
+      if (location.pathname.includes(props.to)) className += " active";
+    }
+    return className;
+  }
+
   return (
     <Link
       onClick={props.onClick}
       to={props.to}
-      className={
-        "nav-item " +
-        (props.className && props.className) +
-        " " +
-        (props.to === "/"
-          ? location.pathname === props.to
-            ? "active"
-            : ""
-          : location.pathname.includes(props.to)
-          ? "active"
-          : "")
-      }
+      className={getClassName()}
+      style={{ textDecoration: "none" }}
     >
       {props.children}
     </Link>

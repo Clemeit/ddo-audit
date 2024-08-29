@@ -392,7 +392,6 @@ const WhoPanel = (props) => {
 
       return pass;
     });
-    console.log(passingGroupIds);
     if (sortingMethod === "groupid") {
       data = data.filter((player) => passingGroupIds.includes(player.GroupId));
       data = data.sort((a, b) => {
