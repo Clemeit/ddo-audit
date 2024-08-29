@@ -2,7 +2,10 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Banner from "../global/Banner";
-import { Fetch, VerifyPlayerAndLfmOverview } from "../../services/DataLoader";
+import {
+  Fetch,
+  VerifyCharacterAndLfmOverview,
+} from "../../services/DataLoader";
 import { ReactComponent as OnlineSVG } from "../../assets/global/online.svg";
 import { ReactComponent as OfflineSVG } from "../../assets/global/offline.svg";
 import { ReactComponent as PendingSVG } from "../../assets/global/pending.svg";
@@ -23,9 +26,14 @@ const Grouping = () => {
   const TITLE = "DDO Live LFM Viewer";
   const SERVERS = ServerHook();
 
+  const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
+  const API_VERSION = "v1";
+  const API_URL = `${API_HOST}/${API_VERSION}`;
+  const LFM_API = `${API_URL}/lfms`;
+
   const [serverStatusData, setServerStatusData] = React.useState(null);
   const [notificationRuleCount, setNotificationRuleCount] = React.useState(0);
-  const [allGroupData, setAllGroupData] = React.useState(null);
+  const [allLfmData, setAllLfmData] = React.useState(null);
 
   // Popup message
   var [popupMessage, setPopupMessage] = React.useState(null);
@@ -75,7 +83,7 @@ const Grouping = () => {
   }
 
   function getMegaServerDescription() {
-    if (allGroupData == null) {
+    if (allLfmData == null) {
       return (
         <p
           className="content-option-description"
@@ -86,21 +94,21 @@ const Grouping = () => {
       );
     }
     let lfmcount = 0;
-    allGroupData.forEach((s) => {
-      lfmcount += s.GroupCount;
+    Object.entries(allLfmData).forEach(([server_name, server]) => {
+      lfmcount += server.lfm_count;
     });
 
     let raidcount = 0;
-    allGroupData.forEach((server) => {
-      server.Groups.forEach((group) => {
-        if (group.Quest && group.Quest.GroupSize === "Raid") raidcount++;
+    Object.entries(allLfmData).forEach(([server_name, server]) => {
+      server.lfms.forEach((lfm) => {
+        if (lfm.quest && lfm.quest.group_size === "Raid") raidcount++;
       });
     });
 
     return (
       <p className="content-option-description" style={{ fontSize: "1.4rem" }}>
         <span style={{ color: "var(--text-lfm-number)" }}>
-          {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}{" "}
+          {`${lfmcount} LFM${lfmcount !== 1 ? "s" : ""}`}{" "}
         </span>
         {raidcount > 0 && `| ${raidcount} raid${raidcount !== 1 ? "s" : ""}`}
       </p>
@@ -108,7 +116,7 @@ const Grouping = () => {
   }
 
   function GetServerDescription(name) {
-    if (allGroupData == null) {
+    if (allLfmData == null) {
       return (
         <p
           className="content-option-description"
@@ -118,23 +126,24 @@ const Grouping = () => {
         </p>
       );
     }
-    if (!Array.isArray(allGroupData))
+    if (!allLfmData)
       return (
         <p
           className="content-option-description"
           style={{ fontSize: "1.4rem" }}
         >
-          <span style={{ color: "var(--text-lfm-number)" }}>0 groups </span>
+          <span style={{ color: "var(--text-lfm-number)" }}>0 LFMs </span>
         </p>
       );
-    let lfmcount = allGroupData.filter((server) => server.Name === name)[0]
-      .GroupCount;
+    let lfmCount = Object.entries(allLfmData).filter(
+      ([server_name, server]) => server_name === name.toLowerCase()
+    )[0][1].lfm_count;
 
-    let raidcount = 0;
-    allGroupData.forEach((server) => {
-      if (server.Name === name) {
-        server.Groups.forEach((group) => {
-          if (group.Quest && group.Quest.GroupSize === "Raid") raidcount++;
+    let raidCount = 0;
+    Object.entries(allLfmData).forEach(([server_name, server]) => {
+      if (server_name === name.toLowerCase()) {
+        Object.entries(server.lfms).forEach(([lfm_id, lfm]) => {
+          if (lfm.quest && lfm.quest.group_size === "Raid") raidCount++;
         });
       }
     });
@@ -142,14 +151,14 @@ const Grouping = () => {
     return (
       <p className="content-option-description" style={{ fontSize: "1.4rem" }}>
         <span style={{ color: "var(--text-lfm-number)" }}>
-          {`${lfmcount} group${lfmcount !== 1 ? "s" : ""}`}{" "}
+          {`${lfmCount} LFM${lfmCount !== 1 ? "s" : ""}`}{" "}
         </span>
-        {raidcount > 0 && `| ${raidcount} raid${raidcount !== 1 ? "s" : ""}`}
+        {raidCount > 0 && `| ${raidCount} raid${raidCount !== 1 ? "s" : ""}`}
       </p>
     );
   }
 
-  function refreshGroupData() {
+  function refreshLfmData() {
     Fetch("https://api.ddoaudit.com/gamestatus/serverstatus", 5000)
       .then((val) => {
         setPopupMessage(null);
@@ -168,27 +177,27 @@ const Grouping = () => {
         setServerStatusData(null);
       });
 
-    Fetch("https://api.ddoaudit.com/groups/all", 5000)
+    Fetch(`${LFM_API}`, 5000)
       .then((val) => {
-        setAllGroupData(val);
+        setAllLfmData(val);
       })
       .catch((err) => {
         setPopupMessage({
-          title: "Couldn't get group data",
+          title: "Couldn't get LFM data",
           message:
-            "We were unable to get group data. Try refreshing the page. If the issue continues, please report it.",
+            "We were unable to get LFM data. Try refreshing the page. If the issue continues, please report it.",
           icon: "warning",
           fullscreen: false,
-          reportMessage: (err && err.toString()) || "Group data error",
-          submessage: (err && err.toString()) || "Group data error",
+          reportMessage: (err && err.toString()) || "LFM data error",
+          submessage: (err && err.toString()) || "LFM data error",
         });
-        setAllGroupData(null);
+        setAllLfmData(null);
       });
   }
 
   React.useEffect(() => {
-    refreshGroupData();
-    const interval = setInterval(() => refreshGroupData(), 60000);
+    refreshLfmData();
+    const interval = setInterval(() => refreshLfmData(), 60000);
 
     setNotificationRuleCount(
       localStorage.getItem("notification-rules")
@@ -199,41 +208,41 @@ const Grouping = () => {
     return () => clearInterval(interval);
   }, []);
 
-  function getRaidGroups() {
-    if (allGroupData == null) return null;
-    let raidgroups = [];
-    allGroupData.forEach((server) => {
-      server.Groups.forEach((group) => {
-        if (group.Quest) {
-          if (group.Quest.GroupSize === "Raid") {
-            group.ServerName = server.Name;
-            raidgroups.push(group);
+  function getRaidLfms() {
+    if (allLfmData == null) return null;
+    let raidLfms = [];
+    allLfmData.forEach((server) => {
+      server.lfms.forEach((lfm) => {
+        if (lfm.quest) {
+          if (lfm.quest.group_size === "Raid") {
+            lfm.server_name = server.name;
+            raidLfms.push(lfm);
           }
         }
       });
     });
-    if (raidgroups.length !== 0) {
-      return raidgroups.map((group, i) => (
+    if (raidLfms.length !== 0) {
+      return raidLfms.map((lfm, i) => (
         <Link
-          to={"/grouping/" + group.ServerName}
+          to={"/grouping/" + lfm.server_name}
           key={i}
           className="nav-box shrinkable"
           onClick={() => {
-            Log("Clicked raid group link", "Grouping");
+            Log("Clicked raid LFM link", "Grouping");
           }}
         >
           <div className="nav-box-title">
-            <h2 className="content-option-title">{group.Quest.Name}</h2>
+            <h2 className="content-option-title">{lfm.quest.name}</h2>
           </div>
           <p
             className="content-option-description"
             style={{ fontSize: "1.5rem" }}
           >
-            <span className="lfm-number">{group.ServerName}</span> |{" "}
-            {group.Leader.Name} |{" "}
+            <span className="lfm-number">{lfm.server_name}</span> |{" "}
+            {lfm.leader.name} |{" "}
             <span style={{ whiteSpace: "nowrap" }}>
-              {`${group.Members.length + 1} member${
-                group.Members.length + 1 !== 1 ? "s" : ""
+              {`${lfm.members.length + 1} member${
+                lfm.members.length + 1 !== 1 ? "s" : ""
               }`}
             </span>
           </p>
@@ -249,7 +258,7 @@ const Grouping = () => {
         <title>{TITLE}</title>
         <meta
           name="description"
-          content="View a live LFM panel to find public groups - before you even log in! See which groups are currently looking for more players and what content is currently being run."
+          content="View a live LFM panel to find public LFMs - before you even log in! See which groups are currently looking for more players and what content is currently being run."
         />
         <meta property="og:image" content="/icons/grouping-512px.png" />
         <meta property="og:site_name" content="DDO Audit" />
@@ -301,11 +310,11 @@ const Grouping = () => {
         </ContentCluster>
         <ContentCluster title="Current Raids">
           <div className="content-cluster-options">
-            {allGroupData ? (
-              <RaidGroupCluster data={allGroupData} />
+            {allLfmData ? (
+              <RaidGroupCluster data={allLfmData} />
             ) : (
               <span className="content-cluster-description">
-                Loading groups...
+                Loading LFMs...
               </span>
             )}
           </div>

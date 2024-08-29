@@ -40,7 +40,7 @@ const PanelSelectPopup = (props) => {
     {
       icon: <GroupingSVG className="nav-icon should-invert" />,
       title: "Live LFM Viewer",
-      description: "Easily find groups with a live LFM panel for every server.",
+      description: "Easily find LFMs with a live LFM panel for every server.",
       onClick: () => setPanelType("lfm"),
     },
     {

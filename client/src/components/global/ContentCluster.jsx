@@ -1,5 +1,4 @@
-import React from "react";
-import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
+import { ReactComponent as LinkSVG } from "assets/global/chain.svg";
 
 const ContentCluster = (props) => {
   function getId() {
