@@ -116,7 +116,7 @@ const CanvasLfmPanel = (props) => {
         setLfmSelection({
           lfmIndex: index,
           cursorPosition: [x, y],
-          side,
+          side: "right",
           doubleClick: true,
         });
         return;
@@ -173,9 +173,7 @@ const CanvasLfmPanel = (props) => {
         HandleMouseOnCanvas(e);
       }, 300);
     });
-    canvasRef.current.addEventListener("click", (e) => {
-      HandleMouseOnCanvas(e);
-    });
+    canvasRef.current.addEventListener("click", HandleMouseOnCanvas);
     canvasRef.current.addEventListener("mouseleave", () => {
       clearTimeout(overlayTimeout);
       setLfmSelection({ ...lfmSelection, lfmIndex: -1 });

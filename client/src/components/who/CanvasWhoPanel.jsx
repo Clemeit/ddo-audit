@@ -270,6 +270,46 @@ const CanvasWhoPanel = (props) => {
     }
 
     React.useEffect(() => {
+        // TODO: Remove listeners
+        canvasRef.current.addEventListener("click", HandleMouseOnCanvas);
+        window.addEventListener("resize", handleCanvasResize);
+        handleCanvasResize();
+    }, [canvasRef]);
+
+    function getNameFilter() {
+        if (!props.filters) return "";
+        let result = "";
+        props.filters.forEach((filter) => {
+            if (filter.type === "Name") {
+                result = filter.value;
+            }
+        });
+        return result.toString();
+    }
+
+    function getLowLevelFilter() {
+        if (!props.filters) return 1;
+        let result = 1;
+        props.filters.forEach((filter) => {
+            if (filter.type === "Min Level") {
+                result = filter.value;
+            }
+        });
+        return result.toString();
+    }
+
+    function getHighLevelFilter() {
+        if (!props.filters) return 30;
+        let result = 30;
+        props.filters.forEach((filter) => {
+            if (filter.type === "Max Level") {
+                result = filter.value;
+            }
+        });
+        return result.toString();
+    }
+
+    React.useEffect(() => {
         if (!isImageLoaded) return;
         if (!isCrownLoaded) return;
         if (characters === null) {
