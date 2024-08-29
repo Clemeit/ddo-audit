@@ -9,13 +9,13 @@ import { ReactComponent as FullscreenExitSVG } from "../../assets/global/fullscr
 import { ReactComponent as LinkSVG } from "../../assets/global/chain.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
 import { ReactComponent as UpdateSVG } from "../../assets/global/update.svg";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import $ from "jquery";
 import { Log } from "../../services/CommunicationService";
 
 const LfmFilterBar = (props) => {
   const [fullscreen, set_fullscreen] = React.useState(false);
-  const history = useHistory();
+  const history = useNavigate();
   const goBack = () => {
     history.goBack();
   };

@@ -1,9 +1,11 @@
 import "bootstrap/dist/css/bootstrap.css";
 
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
+import React, { Suspense } from "react";
+import { RouterProvider } from "react-router-dom";
+import ReactDOM from "react-dom/client";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import browserRouter from "./browserRouter";
+import "../src/default.css";
 
 import {
   getMessaging,
@@ -45,14 +47,14 @@ if (messaging != null) {
   });
 }
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+    <Suspense fallback={<div></div>}>
+      <RouterProvider router={browserRouter} />
+    </Suspense>
+  </React.StrictMode>
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
+// Register the service worker
 serviceWorkerRegistration.register();

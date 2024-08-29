@@ -117,7 +117,7 @@ const CanvasLfmPanel = (props) => {
         setGroupSelection({
           groupIndex: index,
           cursorPosition: [x, y],
-          side,
+          side: "right",
           doubleClick: true,
         });
         return;
@@ -169,9 +169,7 @@ const CanvasLfmPanel = (props) => {
         HandleMouseOnCanvas(e);
       }, 300);
     });
-    canvasRef.current.addEventListener("click", (e) => {
-      HandleMouseOnCanvas(e);
-    });
+    canvasRef.current.addEventListener("click", HandleMouseOnCanvas);
     canvasRef.current.addEventListener("mouseleave", () => {
       clearTimeout(overlayTimeout);
       setGroupSelection({ ...groupSelection, groupIndex: -1 });

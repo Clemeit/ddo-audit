@@ -5,32 +5,34 @@ import CustomLegend from "./CustomLegend";
 // This pie chart is used to show the server distribution.
 // Pages: Servers
 
-const ChartPie = (props) => {
-  const theme = {
-    background: "var(--base)",
-    textColor: "var(--text)",
+const theme = {
+  background: "var(--base)",
+  text: {
     fontSize: 16,
-    tooltip: {
-      container: {
-        background: "var(--base)",
-        color: "inherit",
-        fontSize: "inherit",
-        borderRadius: "2px",
-        boxShadow: "0 0 6px var(--black)",
-        padding: "5px 9px",
-      },
-      basic: {
-        whiteSpace: "pre",
-        display: "flex",
-        alignItems: "center",
-      },
-      table: {},
-      tableCell: {
-        padding: "3px 5px",
-      },
+    fill: "var(--text, white)",
+  },
+  tooltip: {
+    container: {
+      background: "var(--base)",
+      color: "inherit",
+      fontSize: "inherit",
+      borderRadius: "2px",
+      boxShadow: "0 0 6px var(--black)",
+      padding: "5px 9px",
     },
-  };
+    basic: {
+      whiteSpace: "pre",
+      display: "flex",
+      alignItems: "center",
+    },
+    table: {},
+    tableCell: {
+      padding: "3px 5px",
+    },
+  },
+};
 
+const ChartPie = (props) => {
   const [isMobileLoaded, setIsMobileLoaded] = React.useState(
     props.alwaysShow === true ? true : false
   );

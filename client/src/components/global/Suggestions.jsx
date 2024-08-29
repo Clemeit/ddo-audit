@@ -20,18 +20,16 @@ const Suggestions = (props) => {
 
   let t;
   React.useEffect(() => {
-    t = setTimeout(() => {
-      setDisabled(false);
-    }, 3000);
-
-    let ack = localStorage.getItem("suggestions-acknowledgement");
-    if (ack) {
-      setAcknowledge(true);
-    } else {
-      setAcknowledge(false);
-    }
-
-    return () => clearTimeout(t);
+    // t = setTimeout(() => {
+    //   setDisabled(false);
+    // }, 3000);
+    // let ack = localStorage.getItem("suggestions-acknowledgement");
+    // if (ack) {
+    //   setAcknowledge(true);
+    // } else {
+    //   setAcknowledge(false);
+    // }
+    // return () => clearTimeout(t);
   }, []);
 
   function SubmitMessage() {

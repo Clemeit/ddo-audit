@@ -221,13 +221,8 @@ const CanvasWhoPanel = (props) => {
 
   React.useEffect(() => {
     // TODO: Remove listeners
-    canvasRef.current.addEventListener("click", (e) => {
-      HandleMouseOnCanvas(e);
-    });
-    window.addEventListener("resize", (e) => {
-      // setCanvasWidth(canvasRef.current.getBoundingClientRect().width);
-      handleCanvasResize();
-    });
+    canvasRef.current.addEventListener("click", HandleMouseOnCanvas);
+    window.addEventListener("resize", handleCanvasResize);
     handleCanvasResize();
   }, [canvasRef]);
 
