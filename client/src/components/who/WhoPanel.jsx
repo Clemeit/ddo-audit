@@ -296,10 +296,10 @@ const WhoPanel = (props) => {
         }
 
         // Apply filters
-        data = data.filter(
-            (character) =>
-                character.name !== "Anonymous" && character.name !== ""
-        );
+        // data = data.filter(
+        //     (character) =>
+        //         character.name !== "Anonymous" && character.name !== ""
+        // );
 
         // If sortingMethod === "groupid", we want to filter out all characters not
         // in a party, and all characters where their party is only themselves.
@@ -370,7 +370,7 @@ const WhoPanel = (props) => {
                         if (
                             character.location.name &&
                             character.location.region
-                                .toLowerCase()
+                                ?.toLowerCase()
                                 .includes(trimmedFilter.toLowerCase())
                         ) {
                             localmatch = true;
@@ -420,7 +420,6 @@ const WhoPanel = (props) => {
 
             return pass;
         });
-        console.log(passingGroupIds);
         if (sortingMethod === "groupid") {
             data = data.filter((character) =>
                 passingGroupIds.includes(character.group_id)

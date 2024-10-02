@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import NoMobileOptimization from "./NoMobileOptimization";
 import { Submit } from "../../services/CommunicationService";
 import { Log } from "../../services/CommunicationService";
+import { SERVER_LIST } from "../../constants/Servers";
 
 const CharacterRegistration = () => {
   const TITLE = "DDO Audit Character Registration";
@@ -20,6 +21,66 @@ const CharacterRegistration = () => {
   const [mayVote, setMayVote] = React.useState(false);
   const [hasVoted, setHasVoted] = React.useState(false);
   const [voteResponse, setVoteResponse] = React.useState(null);
+
+  // Add character
+  const [server, setServer] = React.useState("Argonnessen");
+  const [characterName, setCharacterName] = React.useState("");
+
+  // Registered characters
+  const [registeredCharacterIds, setRegisteredCharacterIds] = React.useState(
+    []
+  );
+
+  const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
+  const API_VERSION = "v1";
+  const API_URL = `${API_HOST}/${API_VERSION}`;
+  const CHARACTER_ENDPOINT = `${API_URL}/characters`;
+
+  async function addCharacter() {
+    if (!characterName || !server) {
+      return;
+    }
+    let validString = /^[a-zA-Z0-9\-]+$/;
+    if (
+      !validString.test(characterName) ||
+      characterName.length === 0 ||
+      characterName.length > 20
+    ) {
+      return;
+    }
+    let characterId = await getCharacterId(server, characterName);
+    if (characterId) {
+      if (!registeredCharacterIds.includes(characterId)) {
+        setRegisteredCharacterIds([...registeredCharacterIds, characterId]);
+      }
+      setCharacterName("");
+    }
+  }
+
+  function getCharacterId(serverName, characterName) {
+    return new Promise((resolve, reject) => {
+      if (!characterName || !serverName) {
+        reject();
+      }
+      let validString = /^[a-zA-Z0-9\-]+$/;
+      if (
+        !validString.test(characterName) ||
+        characterName.length === 0 ||
+        characterName.length > 20
+      ) {
+        reject();
+      }
+      fetch(`${CHARACTER_ENDPOINT}/${serverName}/${characterName}`)
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.id) {
+            resolve(res.id);
+          } else if (res.error) {
+            reject();
+          }
+        });
+    });
+  }
 
   React.useEffect(() => {
     if (localStorage.getItem("hide-character-registration-disclaimer")) {
@@ -34,6 +95,7 @@ const CharacterRegistration = () => {
     );
     if (registeredCharacters.length > 0 && ls == null) {
       setMayVote(true);
+      setRegisteredCharacterIds(registeredCharacters);
     }
   }, []);
 
@@ -88,7 +150,65 @@ const CharacterRegistration = () => {
           title="Characters"
           description="Register your characters and we'll automatically keep track of your raid timers and filter the LFM panel based on your characters' current levels."
         >
-          <RegistrationList />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "5px",
+            }}
+          >
+            <select
+              id="server-select-field"
+              // disabled={isLoading}
+              style={{ fontSize: "1.3rem" }}
+              value={server}
+              onChange={(e) => {
+                setServer(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                }
+              }}
+            >
+              {SERVER_LIST.map((server) => (
+                <option value={server} key={server}>
+                  {server}
+                </option>
+              ))}
+            </select>
+            <input
+              id="name-input"
+              // disabled={isLoading}
+              style={{
+                fontSize: "1.2rem",
+                // color: "var(--text-faded)",
+                // display: "flex",
+                // flexDirection: "column",
+              }}
+              value={characterName}
+              onChange={(e) => {
+                setCharacterName(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  addCharacter();
+                }
+              }}
+            />
+            <div
+              className="primary-button should-invert"
+              style={{
+                padding: "5px 10px",
+              }}
+              onClick={() => {
+                addCharacter();
+              }}
+            >
+              Add Character
+            </div>
+          </div>
+          <br />
+          <RegistrationList characterIds={registeredCharacterIds} />
           {mayVote && (
             <div
               className="feature-vote-container"

@@ -19,6 +19,13 @@ const CanvasWhoPanel = (props) => {
     const spriteRef = React.useRef(null);
     const crownRef = React.useRef(null);
     const [canvasWidth, setCanvasWidth] = React.useState(0);
+    const HIGHLIGHT_COLOR = "#e09b47";
+
+    const SELECTED_CHARACTER_OVERLAY_WIDTH = 200;
+    const SELECTED_CHARACTER_OVERLAY_HEIGHT = 200;
+    const [selectedCharacter, setSelectedCharacter] = React.useState(null);
+    const selectedCharacterRef = React.useRef(selectedCharacter);
+    selectedCharacterRef.current = selectedCharacter;
 
     const [isCrownLoaded, setIsCrownLoaded] = React.useState(false);
     const [isImageLoaded, setIsImageLoaded] = React.useState(false);
@@ -222,6 +229,17 @@ const CanvasWhoPanel = (props) => {
             props.handleSort("guild");
             setIsGroupMode(false);
         }
+
+        // Click a character in the list
+        if (x > 21 && x < 684 && y > 251) {
+            let index = Math.floor((y - 251.0) / CHARACTER_HEIGHT);
+            let characterId = characters[index]["id"];
+            if (selectedCharacterRef.current === characterId) {
+                setSelectedCharacter(null);
+            } else {
+                setSelectedCharacter({ id: characterId, index: index });
+            }
+        }
     }
 
     function handleCanvasResize() {
@@ -276,39 +294,6 @@ const CanvasWhoPanel = (props) => {
         handleCanvasResize();
     }, [canvasRef]);
 
-    function getNameFilter() {
-        if (!props.filters) return "";
-        let result = "";
-        props.filters.forEach((filter) => {
-            if (filter.type === "Name") {
-                result = filter.value;
-            }
-        });
-        return result.toString();
-    }
-
-    function getLowLevelFilter() {
-        if (!props.filters) return 1;
-        let result = 1;
-        props.filters.forEach((filter) => {
-            if (filter.type === "Min Level") {
-                result = filter.value;
-            }
-        });
-        return result.toString();
-    }
-
-    function getHighLevelFilter() {
-        if (!props.filters) return 30;
-        let result = 30;
-        props.filters.forEach((filter) => {
-            if (filter.type === "Max Level") {
-                result = filter.value;
-            }
-        });
-        return result.toString();
-    }
-
     React.useEffect(() => {
         if (!isImageLoaded) return;
         if (!isCrownLoaded) return;
@@ -333,6 +318,37 @@ const CanvasWhoPanel = (props) => {
         // Draw lfms
         // DrawFiller();
         if (characters != null) drawCharacters();
+
+        if (selectedCharacter != null) drawCharacterOverlay();
+
+        // function drawTextUnderline(ctx, text, x, y) {
+        //     let textMetric = ctx.measureText(text);
+        //     let fontBoundingBoxDescent = textMetric["fontBoundingBoxDescent"];
+        //     ctx.beginPath();
+        //     ctx.strokeStyle = HIGHLIGHT_COLOR;
+        //     ctx.moveTo(x, y + fontBoundingBoxDescent);
+        //     ctx.lineTo(x + textMetric.width, y + fontBoundingBoxDescent);
+        //     ctx.stroke();
+        // }
+
+        function isTextMatch(testString) {
+            if (
+                props.globalFilter == null ||
+                props.globalFilter === "" ||
+                props.globalFilter.trim() === ""
+            )
+                return false;
+            if (testString == null) return false;
+            const sources = props.globalFilter.split(",");
+            const testStringLower = testString.toLowerCase();
+            let result = false;
+            sources.forEach((source) => {
+                if (testStringLower.includes(source)) {
+                    result = true;
+                }
+            });
+            return result;
+        }
 
         // Draws the header and the lastUpdateTime string
         function OpenPanel() {
@@ -432,7 +448,10 @@ const CanvasWhoPanel = (props) => {
                     ? Math.min(characters.length, MAXIMUM_RESULTS)
                     : 4) *
                     CHARACTER_HEIGHT +
-                    259,
+                    254 +
+                    (selectedCharacter != null
+                        ? SELECTED_CHARACTER_OVERLAY_HEIGHT
+                        : 0),
                 706,
                 25
             );
@@ -449,11 +468,20 @@ const CanvasWhoPanel = (props) => {
 
             for (let i = 0; i < characters.length; i++) {
                 let character = characters[i];
+
+                let isCharacterSelected = false;
+                if (
+                    selectedCharacter &&
+                    character["id"] === selectedCharacter.id
+                ) {
+                    isCharacterSelected = true;
+                }
+
                 let x = 24;
-                let y = 229 + i * 42 + 25;
+                let y = 229 + i * CHARACTER_HEIGHT + 25;
                 // Bounds: 660, 42
                 var width = 660;
-                var height = 42;
+                var height = CHARACTER_HEIGHT;
 
                 // Get the color for this character if they are in a group that has more than one person
                 // First check if their group is already in the map
@@ -477,7 +505,17 @@ const CanvasWhoPanel = (props) => {
                 }
 
                 // Draw background panel
-                ctx.drawImage(sprite, 0, 259, 706, 47, 0, y, 706, 47);
+                ctx.drawImage(
+                    sprite,
+                    0,
+                    259,
+                    706,
+                    CHARACTER_HEIGHT,
+                    0,
+                    y,
+                    706,
+                    CHARACTER_HEIGHT
+                );
 
                 // Draw background gradient:
                 var grad = ctx.createLinearGradient(x, y, x, y + height);
@@ -485,6 +523,7 @@ const CanvasWhoPanel = (props) => {
                 grad.addColorStop(0.25, "#4c4a31");
                 grad.addColorStop(0.75, "#4c4a31");
                 grad.addColorStop(1, "#3b3b25");
+
                 if (characterColor != "") {
                     ctx.fillStyle = characterColor;
                 } else {
@@ -502,16 +541,16 @@ const CanvasWhoPanel = (props) => {
                 // Draw dividers:
                 ctx.beginPath();
                 ctx.moveTo(x + 20, y);
-                ctx.lineTo(x + 20, y + 40);
+                ctx.lineTo(x + 20, y + CHARACTER_HEIGHT - 2);
                 ctx.stroke();
                 ctx.moveTo(x + 248, y);
-                ctx.lineTo(x + 248, y + 40);
+                ctx.lineTo(x + 248, y + CHARACTER_HEIGHT - 2);
                 ctx.stroke();
                 ctx.moveTo(x + 365, y);
-                ctx.lineTo(x + 365, y + 40);
+                ctx.lineTo(x + 365, y + CHARACTER_HEIGHT - 2);
                 ctx.stroke();
                 ctx.moveTo(x + 432, y);
-                ctx.lineTo(x + 432, y + 40);
+                ctx.lineTo(x + 432, y + CHARACTER_HEIGHT - 2);
                 ctx.stroke();
 
                 // Draw group status:
@@ -547,10 +586,13 @@ const CanvasWhoPanel = (props) => {
 
                 // Draw name:
                 ctx.fillStyle = "#f6f1d3";
-                ctx.font = 18 + "px 'Trebuchet MS'"; // 18px
+                ctx.font = "18px 'Trebuchet MS'"; // 18px
                 ctx.textAlign = "left";
                 ctx.textBaseline = "middle";
+                if (isTextMatch(character.name))
+                    ctx.fillStyle = HIGHLIGHT_COLOR;
                 ctx.fillText(character.name, x + 44, y + 14);
+                ctx.fillStyle = "#f6f1d3";
 
                 // Draw crown:
                 if (NAMES.some((name) => character.name.startsWith(name))) {
@@ -560,23 +602,30 @@ const CanvasWhoPanel = (props) => {
 
                 // Draw location: 30, 26
                 ctx.font = "12px 'Trebuchet MS'";
-                if (character.name === "Anonymous") {
-                    ctx.fillText("The Island of Noneya", x + 30, y + 33);
+                if (
+                    isTextMatch(character.location.name) ||
+                    (props.includeRegion &&
+                        isTextMatch(character.location.region))
+                )
+                    ctx.fillStyle = HIGHLIGHT_COLOR;
+                // if (character.name === "Anonymous") {
+                //     ctx.fillText("The Island of Noneya", x + 30, y + 33);
+                // } else {
+                let baseString;
+                if (character.location.name == null) {
+                    baseString = "Somewhere in the Aether";
                 } else {
-                    let baseString;
-                    if (character.location.name == null) {
-                        baseString = "Somewhere in the Aether";
-                    } else {
-                        baseString = character.location.name;
-                    }
-                    let textLines = wrapText(baseString, 200);
-                    if (textLines.length > 1) {
-                        var newLines = [];
-                        newLines[0] = textLines[0] + "...";
-                        textLines = newLines;
-                    }
-                    ctx.fillText(textLines[0], x + 30, y + 33);
+                    baseString = character.location.name;
                 }
+                let textLines = wrapText(baseString, 200);
+                if (textLines.length > 1) {
+                    var newLines = [];
+                    newLines[0] = textLines[0] + "...";
+                    textLines = newLines;
+                }
+                ctx.fillText(textLines[0], x + 30, y + 33);
+                // }
+                ctx.fillStyle = "#f6f1d3";
 
                 // Draw classes:
                 ctx.font = "13px Arial";
@@ -624,46 +673,60 @@ const CanvasWhoPanel = (props) => {
 
                 // Guild name:
                 ctx.font = "15px 'Trebuchet MS'";
-                if (character.name == "Anonymous") {
-                    ctx.fillText("Noneya Business", x + 548, y + 22);
-                } else {
-                    let guildName = wrapText(character.guild_name, 230);
-                    if (guildName.length > 1) {
-                        ctx.fillText(guildName[0] + "...", x + 548, y + 22);
-                    } else if (guildName.length === 1) {
-                        ctx.fillText(guildName[0], x + 548, y + 22);
-                    }
+                // if (character.name == "Anonymous") {
+                //     ctx.fillText("Noneya Business", x + 548, y + 22);
+                // } else {
+                if (isTextMatch(character.guild_name))
+                    ctx.fillStyle = HIGHLIGHT_COLOR;
+                let guildName = wrapText(character.guild_name, 230);
+                if (guildName.length > 1) {
+                    ctx.fillText(guildName[0] + "...", x + 548, y + 22);
+                } else if (guildName.length === 1) {
+                    ctx.fillText(guildName[0], x + 548, y + 22);
                 }
+                ctx.fillStyle = "#f6f1d3";
+                // }
 
                 // Draw text if too many characters
-                if (i >= MAXIMUM_RESULTS - 1) {
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-                    ctx.fillRect(
-                        canvas.width / 2 - 160,
-                        canvas.height - 80,
-                        320,
-                        30
-                    );
+                // if (i >= MAXIMUM_RESULTS - 1) {
+                //   ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+                //   ctx.fillRect(canvas.width / 2 - 160, canvas.height - 80, 320, 30);
 
-                    ctx.fillStyle = "white";
-                    ctx.font = "18px 'Trebuchet MS'"; // 18px
-                    ctx.textAlign = "center";
-                    ctx.textBaseline = "middle";
-                    ctx.fillText(
-                        "Showing the first " +
-                            MAXIMUM_RESULTS +
-                            " of " +
-                            characters.length +
-                            " matches",
-                        canvas.width / 2,
-                        canvas.height - 65
-                    );
-                    break;
-                }
+                //   ctx.fillStyle = "white";
+                //   ctx.font = "18px 'Trebuchet MS'"; // 18px
+                //   ctx.textAlign = "center";
+                //   ctx.textBaseline = "middle";
+                //   ctx.fillText(
+                //     "Showing the first " +
+                //       MAXIMUM_RESULTS +
+                //       " of " +
+                //       characters.length +
+                //       " matches",
+                //     canvas.width / 2,
+                //     canvas.height - 65
+                //   );
+                //   break;
+                // }
             }
         }
 
-        function drawCharacterOverlay(character, cursorPosition) {}
+        function drawCharacterOverlay() {
+            // Darken everything
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            let x_bg = 24;
+            let y_bg = 229 + 25;
+            var width_bg = 660;
+            var height_bg = characters.length * CHARACTER_HEIGHT;
+            ctx.fillRect(x_bg, y_bg, width_bg, height_bg);
+
+            // Draw overlay
+            ctx.fillStyle = "rgba(255, 255, 255, 1)";
+            let x_overlay = 24;
+            let y_overlay = 229 + 25;
+            var width_overlay = SELECTED_CHARACTER_OVERLAY_WIDTH;
+            var height_overlay = SELECTED_CHARACTER_OVERLAY_HEIGHT;
+            ctx.fillRect(x_overlay, y_overlay, width_overlay, height_overlay);
+        }
 
         // Helper function for wrapping text
         function wrapText(text, maxWidth) {
@@ -997,6 +1060,7 @@ const CanvasWhoPanel = (props) => {
         props.classFilterStates,
         props.includeRegion,
         props.exactMatch,
+        selectedCharacter,
     ]);
 
     return (
@@ -1087,7 +1151,7 @@ const CanvasWhoPanel = (props) => {
                         ? Math.min(characters.length, MAXIMUM_RESULTS)
                         : 4) *
                         CHARACTER_HEIGHT +
-                    285
+                    280
                 }
             />
         </div>

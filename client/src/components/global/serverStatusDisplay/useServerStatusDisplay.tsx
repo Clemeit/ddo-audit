@@ -60,6 +60,20 @@ const useServerStatusDisplay = (
         );
 
     function getSVGForWorld(serverName: string, serverData: ServerStatusModel) {
+        const updateTime = new Date(serverData.last_status_check * 1000);
+        const elapsedSeconds =
+            (new Date().getTime() - updateTime.getTime()) / 1000;
+        const notRecent = elapsedSeconds > 120;
+
+        if (notRecent) {
+            return (
+                <>
+                    {PENDING_SVG}
+                    <span className="sr-only">{serverName} is loading</span>
+                </>
+            );
+        }
+
         switch (serverData.is_online) {
             case false:
                 return (
@@ -89,11 +103,11 @@ const useServerStatusDisplay = (
         return new Date(timestamp).toLocaleTimeString();
     }
 
-    function getContentClusterDescription() {
-        if (!gameStatusData) return "Loading...";
-
+    function getMostRecentUpdateTime() {
         // get most recently updated server
         let mostRecentUpdateTime = new Date(0);
+        if (!gameStatusData || !gameStatusData.servers)
+            return mostRecentUpdateTime;
         Object.values(gameStatusData.servers).forEach(
             (serverData: ServerStatusModel) => {
                 let newDate = new Date(serverData.last_status_check * 1000);
@@ -102,9 +116,22 @@ const useServerStatusDisplay = (
                 }
             }
         );
+        return mostRecentUpdateTime;
+    }
+
+    function getContentClusterDescription() {
+        if (!gameStatusData) return "Loading...";
+        const mostRecentUpdateTime = getMostRecentUpdateTime();
+        const elapsedSeconds =
+            (new Date().getTime() - mostRecentUpdateTime.getTime()) / 1000;
+        const notRecent = elapsedSeconds > 120;
         return (
-            "Server status was last checked at " +
-            prettyTime(mostRecentUpdateTime.getTime())
+            <span>
+                Server status was last checked at{" "}
+                <span style={notRecent ? { color: "red" } : {}}>
+                    {prettyTime(mostRecentUpdateTime.getTime())}
+                </span>
+            </span>
         );
     }
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CharacterSelectModal from "./CharacterSelectModal";
 import { ReactComponent as DeleteSVG } from "../../assets/global/delete.svg";
 import { ReactComponent as RefreshSVG } from "../../assets/global/refresh.svg";
@@ -8,51 +8,51 @@ import { Link } from "react-router-dom";
 import PageMessage from "./PageMessage";
 
 const RegistrationList = (props) => {
-  const CHARACTER_LIMIT = 15;
+  const [charactersData, setCharactersData] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const [characterIds, setCharacterIds] = React.useState(null);
-  const [characters, setCharacters] = React.useState([]);
-  const [characterSelectModalShown, setCharacterSelectModalShown] =
-    React.useState(false);
-  const [lastServer, setLastServer] = React.useState("Argonnessen");
-  const [characterExists, setCharacterExists] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
-  const [loadingNewCharacter, setLoadingNewCharacter] = React.useState(false);
-  const [showFailedToFetchError, setShowFailedToFetchError] =
-    React.useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    console.log("props.characterIds", props.characterIds);
+    setIsLoading(false);
+  }, [props.characterIds]);
 
-  function addCharacter(characterId) {
-    setLoadingNewCharacter(true);
-    if (characterIds != null && characterIds.includes(characterId)) {
-      setCharacterExists(true);
-      return;
-    }
-    setCharacterExists(false);
-    setCharacterIds((characterIds) => [...(characterIds || []), characterId]);
-    setCharacterSelectModalShown(false);
-  }
+  // const CHARACTER_LIMIT = 15;
 
-  function removeCharacter(index) {
-    setLoadingNewCharacter(true);
-    setCharacterIds((characterIds) =>
-      characterIds.filter((_, i) => i != index)
-    );
-  }
+  // const [characterIds, setCharacterIds] = React.useState(null);
+  // const [characters, setCharacters] = React.useState([]);
+  // const [characterSelectModalShown, setCharacterSelectModalShown] =
+  //   React.useState(false);
+  // const [lastServer, setLastServer] = React.useState("Argonnessen");
+  // const [characterExists, setCharacterExists] = React.useState(false);
+  // const [loading, setLoading] = React.useState(true);
+  // const [loadingNewCharacter, setLoadingNewCharacter] = React.useState(false);
+  // const [showFailedToFetchError, setShowFailedToFetchError] =
+  //   React.useState(false);
 
-  function clearRegisteredCharacters() {
-    setCharacterIds([]);
-    localStorage.setItem("registered-characters", "[]");
-    window.location.reload();
-  }
+  // function addCharacter(characterId) {
+  //   setLoadingNewCharacter(true);
+  //   if (characterIds != null && characterIds.includes(characterId)) {
+  //     setCharacterExists(true);
+  //     return;
+  //   }
+  //   setCharacterExists(false);
+  //   setCharacterIds((characterIds) => [...(characterIds || []), characterId]);
+  //   setCharacterSelectModalShown(false);
+  // }
 
-  React.useEffect(() => {
-    let registeredCharacters = JSON.parse(
-      localStorage.getItem("registered-characters") || "[]"
-    );
-    if (registeredCharacters.length) {
-      setCharacterIds(registeredCharacters);
-    }
-  }, []);
+  // function removeCharacter(index) {
+  //   setLoadingNewCharacter(true);
+  //   setCharacterIds((characterIds) =>
+  //     characterIds.filter((_, i) => i != index)
+  //   );
+  // }
+
+  // function clearRegisteredCharacters() {
+  //   setCharacterIds([]);
+  //   localStorage.setItem("registered-characters", "[]");
+  //   window.location.reload();
+  // }
 
   const refreshButtonAngleRef = React.useRef(null);
   function refreshButtonHandler() {
@@ -62,88 +62,88 @@ const RegistrationList = (props) => {
     });
   }
 
-  function refreshCharacters() {
-    // lookup each character by ID and populate 'characters' list
-    setLoading(true);
-    localStorage.setItem("registered-characters", JSON.stringify(characterIds));
+  // function refreshCharacters() {
+  //   // lookup each character by ID and populate 'characters' list
+  //   setLoading(true);
+  //   localStorage.setItem("registered-characters", JSON.stringify(characterIds));
 
-    Post(
-      "https://api.ddoaudit.com/players/lookup",
-      { playerids: characterIds },
-      10000
-    )
-      .then((response) => {
-        if (response.error) {
-          setCharacters([]);
-        } else {
-          let sortedCharacters = [];
-          if (characterIds != null) {
-            characterIds.forEach((characterId) => {
-              sortedCharacters.push(
-                response.filter(
-                  (character) => character.PlayerId === characterId
-                )?.[0]
-              );
-            });
-          }
-          setCharacters(sortedCharacters);
-        }
-      })
-      .catch(() => setShowFailedToFetchError(true))
-      .finally(() => {
-        setLoading(false);
-        setLoadingNewCharacter(false);
-      });
-  }
+  //   Post(
+  //     "https://api.ddoaudit.com/players/lookup",
+  //     { playerids: characterIds },
+  //     10000
+  //   )
+  //     .then((response) => {
+  //       if (response.error) {
+  //         setCharacters([]);
+  //       } else {
+  //         let sortedCharacters = [];
+  //         if (characterIds != null) {
+  //           characterIds.forEach((characterId) => {
+  //             sortedCharacters.push(
+  //               response.filter(
+  //                 (character) => character.PlayerId === characterId
+  //               )?.[0]
+  //             );
+  //           });
+  //         }
+  //         setCharacters(sortedCharacters);
+  //       }
+  //     })
+  //     .catch(() => setShowFailedToFetchError(true))
+  //     .finally(() => {
+  //       setLoading(false);
+  //       setLoadingNewCharacter(false);
+  //     });
+  // }
 
-  React.useEffect(() => {
-    if (characterIds) {
-      if (characterIds.length) {
-        setLoading(true);
-        refreshCharacters();
-      } else {
-        localStorage.setItem("registered-characters", "[]");
-        setCharacters([]);
-        setLoading(false);
-        setLoadingNewCharacter(false);
-      }
-    } else {
-      setLoading(false);
-      setLoadingNewCharacter(false);
-    }
-  }, [characterIds]);
+  // React.useEffect(() => {
+  //   if (characterIds) {
+  //     if (characterIds.length) {
+  //       setLoading(true);
+  //       refreshCharacters();
+  //     } else {
+  //       localStorage.setItem("registered-characters", "[]");
+  //       setCharacters([]);
+  //       setLoading(false);
+  //       setLoadingNewCharacter(false);
+  //     }
+  //   } else {
+  //     setLoading(false);
+  //     setLoadingNewCharacter(false);
+  //   }
+  // }, [characterIds]);
 
-  function getClassString(character) {
-    let classes = [];
-    character?.Classes?.forEach((cls) => {
-      if (cls.Name != null && cls.Name != "Epic" && cls.Name != "Legendary") {
-        classes.push(`${cls.Name} ${cls.Level}`);
-      }
-    });
-    return classes.join(", ");
-  }
+  // function getClassString(character) {
+  //   let classes = [];
+  //   character?.Classes?.forEach((cls) => {
+  //     if (cls.Name != null && cls.Name != "Epic" && cls.Name != "Legendary") {
+  //       classes.push(`${cls.Name} ${cls.Level}`);
+  //     }
+  //   });
+  //   return classes.join(", ");
+  // }
 
-  function getStatusIndicatorColor(character) {
-    if (!character) return "blue";
-    if (character.Anonymous) {
-      return "blue";
-    } else {
-      return character.Online ? "green" : "red";
-    }
-  }
+  // function getStatusIndicatorColor(character) {
+  //   if (!character) return "blue";
+  //   if (character.Anonymous) {
+  //     return "blue";
+  //   } else {
+  //     return character.Online ? "green" : "red";
+  //   }
+  // }
 
-  function atCharacterLimit() {
-    if (characterIds == null) return false;
-    return characterIds.length >= CHARACTER_LIMIT;
-  }
+  // function atCharacterLimit() {
+  //   if (characterIds == null) return false;
+  //   return characterIds.length >= CHARACTER_LIMIT;
+  // }
 
-  function hasCharacters() {
-    return characters && characters.length > 0;
-  }
+  // function hasCharacters() {
+  //   return characters && characters.length > 0;
+  // }
 
   return (
     <div>
-      {showFailedToFetchError && (
+      {/* {showFailedToFetchError && (
         <PageMessage
           type="error"
           title="Failed to fetch character data"
@@ -169,11 +169,11 @@ const RegistrationList = (props) => {
           close={() => setCharacterSelectModalShown(false)}
           characterExists={characterExists}
         />
-      )}
+      )} */}
       <div>
-        {characters &&
-          characters.length > 0 &&
-          characters.map((character, i) => (
+        {charactersData &&
+          charactersData.length > 0 &&
+          charactersData.map((character, i) => (
             <div key={i}>
               {character && (
                 <div style={{ padding: "10px 0px" }}>
@@ -325,7 +325,7 @@ const RegistrationList = (props) => {
               {i == characters.length - 1 && <div style={{ height: "20px" }} />}
             </div>
           ))}
-        {loading && (!hasCharacters() || loadingNewCharacter) && (
+        {isLoading && (
           <div
             style={{
               minHeight: "150px",
@@ -342,7 +342,7 @@ const RegistrationList = (props) => {
           </div>
         )}
       </div>
-      <div>
+      {/* <div>
         {!atCharacterLimit() && (
           <div
             className="primary-button should-invert"
@@ -365,7 +365,7 @@ const RegistrationList = (props) => {
             registered characters.
           </span>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

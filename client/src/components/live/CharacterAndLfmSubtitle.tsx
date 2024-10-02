@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { GameStatusModel } from "models/GameModel";
 
 interface CharacterAndLfmSubtitleProps {
-    gameStatusData: GameStatusModel;
+    currentCounts:
+        | {
+              characters: number;
+              lfms: number;
+          }
+        | undefined;
 }
 
 const CharacterAndLfmSubtitle: React.FC<CharacterAndLfmSubtitleProps> = ({
-    gameStatusData,
+    currentCounts,
 }) => {
-    const [isLoaded, setIsLoaded] = useState<boolean>(false);
-    const [totalLfms, setTotalLfms] = useState<number>(0);
-    const [totalCharacters, setTotalCharacters] = useState<number>(0);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        if (gameStatusData && gameStatusData.servers) {
-            const servers = gameStatusData.servers;
-            let totalLfms = 0;
-            let totalCharacters = 0;
-            Object.entries(servers).forEach(([_, serverData]) => {
-                totalLfms += serverData.lfm_count;
-                totalCharacters += serverData.character_count;
-            });
-            setTotalLfms(totalLfms);
-            setTotalCharacters(totalCharacters);
+        if (currentCounts) {
             setIsLoaded(true);
         }
-    }, [gameStatusData]);
+    }, [currentCounts]);
 
-    function FormatWithCommas(number_string: string) {
+    function FormatWithCommas(number_string?: string) {
+        if (!number_string) {
+            return "";
+        }
         return number_string.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
@@ -45,16 +41,16 @@ const CharacterAndLfmSubtitle: React.FC<CharacterAndLfmSubtitleProps> = ({
                 There are currently{" "}
                 <span className="population-number">
                     {isLoaded
-                        ? FormatWithCommas(totalCharacters.toString())
+                        ? FormatWithCommas(currentCounts?.characters.toString())
                         : "(Loading...)"}
                 </span>{" "}
-                players online and{" "}
+                characters online and{" "}
                 <span className="lfm-number">
-                    {isLoaded ? totalLfms : "(Loading...)"}
+                    {isLoaded ? currentCounts?.lfms : "(Loading...)"}
                 </span>{" "}
                 LFMs posted.{" "}
                 {isLoaded &&
-                    (totalCharacters
+                    (currentCounts?.characters
                         ? "Are you one of them?"
                         : "Maybe everyone's anonymous.")}
             </p>

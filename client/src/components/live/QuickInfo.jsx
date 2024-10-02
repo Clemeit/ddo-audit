@@ -62,7 +62,7 @@ const QuickInfo = (props) => {
                 name: `Is DDO still active in ${new Date().getFullYear()}?`,
                 acceptedAnswer: {
                     "@type": "Answer",
-                    text: `Yes, DDO is still active and receives periodic updates and content releases. There have been ${getTotalUniquePlayerCount()} unique characters and ${getTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
+                    text: `Yes, DDO is still active and receives frequent updates and content releases. We've seen ${getTotalUniquePlayerCount()} unique characters and ${getTotalUniqueGuildCount()} unique guilds on DDO in the last 90 days.`,
                 },
             },
         ],

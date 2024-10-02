@@ -3,8 +3,6 @@ import Banner from "../global/Banner";
 import { Fetch } from "../../services/DataLoader";
 import PopupMessage from "../global/PopupMessage";
 import QuickInfo from "./QuickInfo";
-import CharacterAndLfmSubtitle from "./CharacterAndLfmSubtitle";
-import ChartLine from "../global/ChartLine";
 import ServerStatusDisplay from "../global/serverStatusDisplay/ServerStatusDisplay";
 import { ReactComponent as ServersSVG } from "../../assets/global/servers.svg";
 import { ReactComponent as TrendsSVG } from "../../assets/global/trends.svg";
@@ -12,12 +10,17 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import BannerMessage from "../global/BannerMessage";
 import ContentCluster from "../global/ContentCluster";
-import ToggleButton from "../global/ToggleButton";
 import DataClassification from "../global/DataClassification";
 import usePollGameInfo from "../../hooks/usePollGameInfo";
+import LiveContentCluster from "./LiveContentCluster";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
+    const API_HOST = "https://api.hcnxsryjficudzazjxty.com";
+    const API_VERSION = "v1";
+    const API_URL = `${API_HOST}/${API_VERSION}`;
+    const GAME_INFO_24HR_API = `${API_URL}/reports/game_info_24_hour`;
+
     const { gameStatusData, isLoaded, isError } = usePollGameInfo();
 
     // Popup message
@@ -29,29 +32,12 @@ const Live = (props) => {
         React.useState(null);
     const [serverDistributionData, setServerDistributionData] =
         React.useState(null);
+    const [game24HourData, setGame24HourData] = React.useState(undefined);
 
-    const [population24HoursData, setPopulation24HoursData] =
-        React.useState(null);
-    const [population24HoursType, setPopulation24HoursType] =
-        React.useState("population");
-    let firstLoadRef = React.useRef(true);
-
-    React.useEffect(() => {
-        if (firstLoadRef.current === true) {
-            firstLoadRef.current = false;
-            return;
-        }
-        Fetch(
-            `https://api.ddoaudit.com/population/day${
-                population24HoursType === "population" ? "" : "_groups"
-            }`,
-            5000
-        ).then((val) => {
-            setPopulation24HoursData(
-                val.filter((series) => series.id !== "Total")
-            );
-        });
-    }, [population24HoursType]);
+    // const [population24HoursData, setPopulation24HoursData] =
+    //     React.useState(null);
+    // const [population24HoursType, setPopulation24HoursType] =
+    //     React.useState("population");
 
     function refreshPopulationAndQuickInfo() {
         Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
@@ -70,27 +56,6 @@ const Live = (props) => {
                     submessage: (err && err.toString()) || "Unique data error",
                 });
                 setUniqueCountsData(null);
-            });
-
-        Fetch("https://api.ddoaudit.com/population/day", 5000)
-            .then((val) => {
-                setPopulation24HoursData(
-                    val.filter((series) => series.id !== "Total")
-                );
-            })
-            .catch((err) => {
-                setPopupMessage({
-                    title: "Couldn't get population data",
-                    message:
-                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
-                    icon: "warning",
-                    fullscreen: false,
-                    reportMessage:
-                        (err && err.toString()) || "24 hour population error",
-                    submessage:
-                        (err && err.toString()) || "24 hour population error",
-                });
-                setPopulation24HoursData(null);
             });
 
         Fetch("https://api.ddoaudit.com/population/latest", 5000)
@@ -134,6 +99,14 @@ const Live = (props) => {
                 setServerDistributionData(null);
             });
     }
+
+    React.useEffect(() => {
+        fetch(GAME_INFO_24HR_API)
+            .then((response) => response.json())
+            .then((data) => {
+                setGame24HourData(data);
+            });
+    }, []);
 
     React.useEffect(() => {
         // refreshServerStatus();
@@ -202,43 +175,10 @@ const Live = (props) => {
                     isLoaded={isLoaded}
                     isError={isError}
                 />
-                <ContentCluster
-                    title={`Live ${
-                        population24HoursType === "population"
-                            ? "Population"
-                            : "LFM Count"
-                    }`}
-                    altTitle="Live Data"
-                    description={
-                        <span>
-                            <CharacterAndLfmSubtitle
-                                gameStatusData={gameStatusData}
-                            />
-                        </span>
-                    }
-                >
-                    <ToggleButton
-                        textA="Population data"
-                        textB="LFM data"
-                        isA={population24HoursType === "population"}
-                        isB={population24HoursType === "groups"}
-                        doA={() => {
-                            setPopulation24HoursType("population");
-                        }}
-                        doB={() => {
-                            setPopulation24HoursType("groups");
-                        }}
-                    />
-                    <ChartLine
-                        data={population24HoursData}
-                        trendType="day"
-                        activeFilter="Server Activity"
-                        showActions={false}
-                        showLastUpdated={true}
-                        reportReference={null}
-                        forceHardcore={true}
-                    />
-                </ContentCluster>
+                <LiveContentCluster
+                    gameStatusData={gameStatusData}
+                    game24HourData={game24HourData}
+                />
                 <ContentCluster
                     title="Historical Population"
                     description="These reports have moved to the following locations:"
