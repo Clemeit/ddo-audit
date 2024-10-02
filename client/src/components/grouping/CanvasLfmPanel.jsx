@@ -4,7 +4,7 @@ import PumpkinSprite from "../../assets/global/pumpkins.png";
 import CobwebSprite from "../../assets/global/cobweb.png";
 import GhostSprite from "../../assets/global/ghosts.png";
 import WallSprite from "../../assets/global/stone_wall.jpg";
-import WallDarkSprite from "../../assets/global/stone_wall_dark.jpg";
+import WallDarkSprite from "../../assets/global/stone_wall_dark_v2.jpg";
 import NAMES from "../../constants/ClemeitNames";
 
 const CanvasLfmPanel = (props) => {
@@ -73,7 +73,7 @@ const CanvasLfmPanel = (props) => {
 
   function isSpookyTime() {
     let dt = new Date();
-    if (dt.getMonth() === 9 && dt.getDate() >= 5) {
+    if (dt.getMonth() === 9 && dt.getDate() >= 1) {
       return "revels";
     }
     return "";
