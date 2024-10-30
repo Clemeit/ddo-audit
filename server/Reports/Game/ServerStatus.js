@@ -48,9 +48,16 @@ const runServerStatusReport = () => {
             /<World><Name>(?<world>.*?)<\/Name>.*?<StatusServerUrl>(?<statusserver>.*?)<\/StatusServerUrl><Order>(?<order>.*?)<\/Order>/g;
           let d = pattern.exec(data);
           do {
+            let serverStatus = d.groups.statusserver;
+            try {
+              serverStatus = d.groups.statusserver.replace(
+                "http://198.252.160.21/GLS.STG.DataCenterServer",
+                "http://gls.ddo.com/GLS.DataCenterServer"
+              );
+            } catch (e) {}
             worlds.push({
               Name: d.groups.world,
-              StatusServerUrl: d.groups.statusserver,
+              StatusServerUrl: serverStatus,
               Order: +d.groups.order,
             });
           } while ((d = pattern.exec(data)) !== null);

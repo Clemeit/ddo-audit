@@ -126,10 +126,10 @@ const Panel = (props) => {
               .catch(() => {
                 setTimeout(() => setFailedToFetchRaidActivity(true), 1000);
                 setMyCharactersWithRaidActivity(myCharacters);
-                Log(
-                  "Failed to fetch raid timers for LFM",
-                  `Timeout for ${character.Name}`
-                );
+                // Log(
+                //   "Failed to fetch raid timers for LFM",
+                //   `Timeout for ${character.Name}`
+                // );
               })
           );
         });
@@ -219,10 +219,10 @@ const Panel = (props) => {
               setUsingCachedCharacterData(true);
               setMyCharacters(JSON.parse(localstore || "[]"));
               setTimeout(() => setFailedToFetchCharacters(true), 1000);
-              Log(
-                "Failed to fetch character data for LFM",
-                `${localstore ? "Fallback: " + localstore : "No fallback data"}`
-              );
+              // Log(
+              //   "Failed to fetch character data for LFM",
+              //   `${localstore ? "Fallback: " + localstore : "No fallback data"}`
+              // );
             })
             .finally(() => resolve());
         } else {
