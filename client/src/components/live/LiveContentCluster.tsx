@@ -142,10 +142,10 @@ const LiveContentCluster: React.FC<LiveContentClusterProps> = ({
                 );
             });
             lineChartDataCharacters = lineChartDataCharacters.sort((a, b) =>
-                b.id.localeCompare(a.id)
+                b.id?.localeCompare(a.id)
             );
             lineChartDataLfms = lineChartDataLfms.sort((a, b) =>
-                b.id.localeCompare(a.id)
+                b.id?.localeCompare(a.id)
             );
             setLineChartDataCharacters(lineChartDataCharacters);
             setLineChartDataLfms(lineChartDataLfms);

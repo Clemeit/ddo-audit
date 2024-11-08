@@ -13,6 +13,9 @@ import ContentCluster from "../global/ContentCluster";
 import DataClassification from "../global/DataClassification";
 import usePollGameInfo from "../../hooks/usePollGameInfo";
 import LiveContentCluster from "./LiveContentCluster";
+import { SERVER_LIST_LOWERCASE } from "../../constants/Servers";
+import News from "./News";
+import FAQ from "./FAQ";
 
 const Live = (props) => {
     const TITLE = "DDO Server Status";
@@ -40,64 +43,72 @@ const Live = (props) => {
     //     React.useState("population");
 
     function refreshPopulationAndQuickInfo() {
-        Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
-            .then((val) => {
-                setUniqueCountsData(val);
-            })
-            .catch((err) => {
-                setPopupMessage({
-                    title: "Couldn't get unique data",
-                    message:
-                        "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
-                    icon: "warning",
-                    fullscreen: false,
-                    reportMessage:
-                        (err && err.toString()) || "Unique data error",
-                    submessage: (err && err.toString()) || "Unique data error",
-                });
-                setUniqueCountsData(null);
-            });
+        // Fetch("https://api.ddoaudit.com/population/uniquedata", 5000)
+        //     .then((val) => {
+        //         setUniqueCountsData(val);
+        //     })
+        //     .catch((err) => {
+        //         setPopupMessage({
+        //             title: "Couldn't get unique data",
+        //             message:
+        //                 "We failed to look up quarterly players and guilds. Try refreshing the page. If the issue continues, please report it.",
+        //             icon: "warning",
+        //             fullscreen: false,
+        //             reportMessage:
+        //                 (err && err.toString()) || "Unique data error",
+        //             submessage: (err && err.toString()) || "Unique data error",
+        //         });
+        //         setUniqueCountsData(null);
+        //     });
+        // Fetch("https://api.ddoaudit.com/population/latest", 5000)
+        //     .then((val) => {
+        //         setPlayerAndLFMCountData(val);
+        //     })
+        //     .catch((err) => {
+        //         setPopupMessage({
+        //             title: "Couldn't get population data",
+        //             message:
+        //                 "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
+        //             icon: "warning",
+        //             fullscreen: false,
+        //             reportMessage:
+        //                 (err && err.toString()) || "Current population error",
+        //             submessage:
+        //                 (err && err.toString()) || "Current population error",
+        //         });
+        //         setPlayerAndLFMCountData(null);
+        //     });
+        // Fetch(
+        //     "https://api.ddoaudit.com/population/serverdistributionmonth",
+        //     5000
+        // )
+        //     .then((val) => {
+        //         setServerDistributionData(val);
+        //     })
+        //     .catch((err) => {
+        //         setPopupMessage({
+        //             title: "Couldn't get most populated server",
+        //             message:
+        //                 "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
+        //             icon: "warning",
+        //             fullscreen: false,
+        //             reportMessage:
+        //                 (err && err.toString()) || "Server distribution error",
+        //             submessage:
+        //                 (err && err.toString()) || "Server distribution error",
+        //         });
+        //         setServerDistributionData(null);
+        //     });
+    }
 
-        Fetch("https://api.ddoaudit.com/population/latest", 5000)
-            .then((val) => {
-                setPlayerAndLFMCountData(val);
-            })
-            .catch((err) => {
-                setPopupMessage({
-                    title: "Couldn't get population data",
-                    message:
-                        "We failed to look up current population data. Try refreshing the page. If the issue continues, please report it.",
-                    icon: "warning",
-                    fullscreen: false,
-                    reportMessage:
-                        (err && err.toString()) || "Current population error",
-                    submessage:
-                        (err && err.toString()) || "Current population error",
-                });
-                setPlayerAndLFMCountData(null);
-            });
+    const [news, setNews] = React.useState(null);
 
-        Fetch(
-            "https://api.ddoaudit.com/population/serverdistributionmonth",
-            5000
-        )
+    function getNews() {
+        Fetch("https://api.ddoaudit.com/news", 5000)
             .then((val) => {
-                setServerDistributionData(val);
+                setNews(val || []);
             })
-            .catch((err) => {
-                setPopupMessage({
-                    title: "Couldn't get most populated server",
-                    message:
-                        "We failed to look up recent population data. Try refreshing the page. If the issue continues, please report it.",
-                    icon: "warning",
-                    fullscreen: false,
-                    reportMessage:
-                        (err && err.toString()) || "Server distribution error",
-                    submessage:
-                        (err && err.toString()) || "Server distribution error",
-                });
-                setServerDistributionData(null);
-            });
+            .catch(() => {});
     }
 
     React.useEffect(() => {
@@ -117,11 +128,112 @@ const Live = (props) => {
             60000 * 5
         );
 
+        getNews();
+
         return () => {
             // clearInterval(interval);
             clearInterval(interval2);
         };
     }, []);
+
+    function getMostPopulatedServerLink(nameonly = false) {
+        let mostpopulatedserver = "";
+        let population = 0;
+        if (serverDistributionData == null || serverDistributionData == []) {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (failed to fetch data)
+                </span>
+            );
+        }
+        serverDistributionData.forEach((series) => {
+            if (series.value > population && series.id !== "Hardcore") {
+                population = series.value;
+                mostpopulatedserver = series.id;
+            }
+        });
+        if (nameonly) {
+            return mostpopulatedserver;
+        }
+        if (mostpopulatedserver == "unknown (servers are offline)") {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (servers are offline)
+                </span>
+            );
+        }
+        return (
+            <Link
+                id="populous_server"
+                className="blue-link"
+                to={"/servers/" + mostpopulatedserver}
+                style={{ textDecoration: "underline" }}
+            >
+                {mostpopulatedserver}
+            </Link>
+        );
+    }
+
+    function getDefaultServerLink() {
+        let defaultServerName = "";
+        if (!isLoaded) {
+            return <span>unknown (loading...)</span>;
+        }
+        if (isError) {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (failed to fetch data)
+                </span>
+            );
+        }
+        Object.entries(gameStatusData.servers).forEach(
+            ([serverName, serverData]) => {
+                if (serverData.index == 0) {
+                    defaultServerName = serverName;
+                }
+            }
+        );
+        if (!SERVER_LIST_LOWERCASE.includes(defaultServerName)) {
+            return (
+                <span style={{ color: "var(--red-text)" }}>
+                    unknown (servers are offline)
+                </span>
+            );
+        }
+        return (
+            <Link
+                id="default_server"
+                className="blue-link"
+                to={"/servers/" + defaultServerName}
+                style={{ textDecoration: "underline" }}
+            >
+                {toSentenceCase(defaultServerName)}
+            </Link>
+        );
+    }
+
+    function toSentenceCase(str) {
+        if (str === null) return "";
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function getTotalUniquePlayerCount() {
+        if (!uniqueCountsData) return "N/A";
+        let total = 0;
+        uniqueCountsData.forEach((server) => {
+            total += server.TotalCharacters;
+        });
+        return formatWithCommas(total.toString());
+    }
+
+    function getTotalUniqueGuildCount() {
+        if (!uniqueCountsData) return "N/A";
+        let total = 0;
+        uniqueCountsData.forEach((server) => {
+            total += server.TotalGuilds;
+        });
+        return formatWithCommas(total.toString());
+    }
 
     return (
         <div>
@@ -174,6 +286,19 @@ const Live = (props) => {
                     serverdistribution={serverDistributionData}
                     isLoaded={isLoaded}
                     isError={isError}
+                    mostPopulatedServerLink={(nameOnly) =>
+                        getMostPopulatedServerLink(nameOnly)
+                    }
+                    defaultServerLink={getDefaultServerLink}
+                    totalUniquePlayerCount={getTotalUniquePlayerCount}
+                    totalUniqueGuildCount={getTotalUniqueGuildCount}
+                />
+                <News news={news} />
+                <FAQ
+                    mostPopulatedServer={getMostPopulatedServerLink()}
+                    defaultServer={getDefaultServerLink()}
+                    uniquePlayerCount={getTotalUniquePlayerCount()}
+                    uniqueGuildCount={getTotalUniqueGuildCount()}
                 />
                 <LiveContentCluster
                     gameStatusData={gameStatusData}
