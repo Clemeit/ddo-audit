@@ -6,6 +6,7 @@ import Poll from "./Poll";
 import ContentCluster from "./ContentCluster";
 import { ReactComponent as WarningSVG } from "../../assets/global/warning.svg";
 import { Link } from "react-router-dom";
+import { ReactComponent as CloseSVG } from "../../assets/global/close.svg";
 
 const Suggestions = (props) => {
   const TITLE = "DDO Audit | Make a Suggestion";
@@ -62,6 +63,27 @@ const Suggestions = (props) => {
     }
   }
 
+  const [showCormyrMessage, setShowCormyrMessage] = React.useState(true);
+  const [canClose, setCanClose] = React.useState(false);
+
+  function close() {
+    setShowCormyrMessage(false);
+  }
+
+  // capture keyboard events, and close the popup if the user presses the escape key:
+  React.useEffect(() => {
+    function handleEscape(e) {
+      if (e.key === "Escape") {
+        close();
+      }
+    }
+    setTimeout(() => {
+      setCanClose(true);
+    }, 1000);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
   return (
     <div>
       <Helmet>
@@ -92,6 +114,57 @@ const Suggestions = (props) => {
         title="DDO Audit"
         subtitle="Real-time Player Concurrency Data and LFM Viewer"
       />
+      {showCormyrMessage && (
+        <div className="absolute-center">
+          <div
+            className="overlay"
+            onClick={() => {
+              if (canClose) {
+                close();
+              }
+            }}
+          />
+          <div
+            className={"popup-message fullscreen"}
+            style={{
+              minWidth: "unset",
+              width: "unset",
+              padding: "20px 0px",
+            }}
+          >
+            <CloseSVG
+              className="link-icon"
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                cursor: "pointer",
+              }}
+              onClick={() => close()}
+            />
+
+            <ContentCluster
+              title="Cormyr"
+              noLink={true}
+              altTitle="Select"
+              description=""
+              noMargin={true}
+            >
+              <p
+                style={{
+                  fontSize: "1.5rem",
+                  textAlign: "justify",
+                }}
+              >
+                A lot of users have expressed interest in seeing Cormyr on DDO
+                Audit. Since adding Cormyr would increase monthly hosting costs,
+                I'm not currently planning to add it. There is a possibility
+                that this may change in the future.
+              </p>
+            </ContentCluster>
+          </div>
+        </div>
+      )}
       <div className="content-container">
         <div className="top-content-padding shrink-on-mobile" />
         {!acknowledge && (
