@@ -7,9 +7,15 @@
 		"start": "concurrently --kill-others \"yarn --cwd .\\server\\ start\" \"yarn --cwd .\\client\\ start\""
 	},
 	"dependencies": {
+		"@types/react-helmet-async": "^1.0.3",
 		"concurrently": "^6.2.0",
 		"dotenv": "^10.0.0",
 		"mathjs": "^9.4.4",
-		"react": "^17.0.2"
+		"react": "^17.0.2",
+		"react-helmet-async": "^2.0.5"
+	},
+	"resolutions": {
+		"react": "^17.0.2",
+		"@types/react-dom": "17.0.2"
 	}
 }
