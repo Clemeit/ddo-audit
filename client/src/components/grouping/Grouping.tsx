@@ -143,7 +143,7 @@ const Grouping = () => {
         );
     }
 
-    function refreshLfmData() {
+    function RefreshLfmDataAndServerInfo() {
         Fetch(SERVER_INFO_API, 5000)
             .then((response_body) => {
                 setServerInfoData(response_body);
@@ -184,8 +184,11 @@ const Grouping = () => {
     }
 
     React.useEffect(() => {
-        refreshLfmData();
-        const interval = setInterval(() => refreshLfmData(), 60000);
+        RefreshLfmDataAndServerInfo();
+        const interval = setInterval(
+            () => RefreshLfmDataAndServerInfo(),
+            60000
+        );
 
         // setNotificationRuleCount(
         //     localStorage.getItem("notification-rules")
