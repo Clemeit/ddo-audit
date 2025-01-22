@@ -1,4 +1,3 @@
-import React from "react";
 import { SERVER_LIST } from "../../constants/Servers";
 
 const CustomBarLegend = (props) => {
@@ -12,6 +11,7 @@ const CustomBarLegend = (props) => {
     "hsl(318, 66%, 68%)",
     "hsl(0, 0%, 50%)",
     "hsl(60, 70%, 44%)",
+    "hsl(167, 72.00%, 49.00%)"
   ];
 
   return (

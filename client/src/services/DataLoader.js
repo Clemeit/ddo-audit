@@ -89,7 +89,7 @@ export function VerifyLfmData(data) {
 
 export function VerifyPlayerAndLfmOverview(data) {
   if (data === null) return false;
-  if (data.length !== 9) return false;
+  if (data.length !== 10) return false;
   let missingfields = false;
   data.forEach((server) => {
     if (server.ServerName === undefined) missingfields = true;

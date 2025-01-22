@@ -28,6 +28,7 @@ const ServersSpecific = () => {
     "hsl(318, 66%, 68%)",
     "hsl(0, 0%, 50%)",
     "hsl(60, 70%, 44%)",
+    "hsl(167, 72.00%, 49.00%)"
   ];
   const GRAY = "hsl(0, 0%, 80%)";
   const SERVERS = [
@@ -40,6 +41,7 @@ const ServersSpecific = () => {
     "Thelanis",
     "Wayfinder",
     "Hardcore",
+    "Cormyr",
   ];
   const DAYS = [
     "Sunday",
@@ -569,7 +571,7 @@ const ServersSpecific = () => {
             )
           }
         />
-        <ContentCluster
+        {currentServer !== "Cormyr" && <><ContentCluster
           title={`${
             byHourType === "population" ? "Population" : "LFM"
           } Activity by Hour`}
@@ -750,7 +752,7 @@ const ServersSpecific = () => {
             areaOpacity={0.1}
             forceHardcore={true}
           />
-        </ContentCluster>
+        </ContentCluster></>}
       </div>
     </div>
   );
