@@ -426,7 +426,7 @@ const Panel = (props) => {
       let levelpass = false;
       if (filterBasedOnMyLevel) {
         let eligibleCharacters = [];
-        myCharacters.forEach((character) => {
+        myCharacters?.forEach((character) => {
           if (
             group.MinimumLevel <= character.TotalLevel &&
             group.MaximumLevel >= character.TotalLevel &&
