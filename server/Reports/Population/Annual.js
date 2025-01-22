@@ -49,6 +49,11 @@ const runAnnualReport = (population, reportType) => {
     color: "hsl(60, 70%, 44%)",
     data: [],
   };
+  let Cormyr = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  };
   let Total = {
     id: "Total",
     color: "hsl(208, 100%, 50%)",
@@ -89,6 +94,7 @@ const runAnnualReport = (population, reportType) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
       argonnessen_lfmcount,
       cannith_lfmcount,
       ghallanda_lfmcount,
@@ -98,6 +104,7 @@ const runAnnualReport = (population, reportType) => {
       thelanis_lfmcount,
       wayfinder_lfmcount,
       hardcore_lfmcount,
+      cormyr_lfmcount,
     }) => {
       if (
         new Date().getTime() - datetime.getTime() <=
@@ -170,16 +177,22 @@ const runAnnualReport = (population, reportType) => {
                 Math.round((totalsThisWeek[8] / entriesThisWeek[8]) * 100) /
                   100 || 0,
             });
-            Total.data.push({
+            Cormyr.data.push({
               x: lastSunday,
               y:
                 Math.round((totalsThisWeek[9] / entriesThisWeek[9]) * 100) /
                   100 || 0,
             });
-            Permanent.data.push({
+            Total.data.push({
               x: lastSunday,
               y:
                 Math.round((totalsThisWeek[10] / entriesThisWeek[10]) * 100) /
+                  100 || 0,
+            });
+            Permanent.data.push({
+              x: lastSunday,
+              y:
+                Math.round((totalsThisWeek[11] / entriesThisWeek[11]) * 100) /
                   100 || 0,
             });
             Maximum.data.push({
@@ -248,6 +261,11 @@ const runAnnualReport = (population, reportType) => {
             entriesThisWeek[8]++;
           }
 
+          if (cormyr_playercount) {
+            totalsThisWeek[9] += cormyr_playercount;
+            entriesThisWeek[9]++;
+          }
+
           let totalnow =
             argonnessen_playercount +
             cannith_playercount +
@@ -257,11 +275,12 @@ const runAnnualReport = (population, reportType) => {
             sarlona_playercount +
             thelanis_playercount +
             wayfinder_playercount +
-            hardcore_playercount;
+            hardcore_playercount +
+            cormyr_playercount;
 
           if (totalnow) {
-            totalsThisWeek[9] += totalnow;
-            entriesThisWeek[9]++;
+            totalsThisWeek[10] += totalnow;
+            entriesThisWeek[10]++;
           }
           if (totalnow === 0) {
             lastDowntime = dt;
@@ -275,9 +294,10 @@ const runAnnualReport = (population, reportType) => {
             orien_playercount ||
             sarlona_playercount ||
             thelanis_playercount ||
-            wayfinder_playercount
+            wayfinder_playercount ||
+            cormyr_playercount
           ) {
-            totalsThisWeek[10] +=
+            totalsThisWeek[11] +=
               argonnessen_playercount +
               cannith_playercount +
               ghallanda_playercount +
@@ -285,8 +305,9 @@ const runAnnualReport = (population, reportType) => {
               orien_playercount +
               sarlona_playercount +
               thelanis_playercount +
-              wayfinder_playercount;
-            entriesThisWeek[10]++;
+              wayfinder_playercount +
+              cormyr_playercount;
+            entriesThisWeek[11]++;
           }
 
           if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
@@ -346,6 +367,11 @@ const runAnnualReport = (population, reportType) => {
             entriesThisWeek[8]++;
           }
 
+          if (cormyr_lfmcount) {
+            totalsThisWeek[9] += cormyr_lfmcount;
+            entriesThisWeek[9]++;
+          }
+
           let totalnow =
             argonnessen_lfmcount +
             cannith_lfmcount +
@@ -355,11 +381,12 @@ const runAnnualReport = (population, reportType) => {
             sarlona_lfmcount +
             thelanis_lfmcount +
             wayfinder_lfmcount +
-            hardcore_lfmcount;
+            hardcore_lfmcount +
+            cormyr_lfmcount;
 
           if (totalnow) {
-            totalsThisWeek[9] += totalnow;
-            entriesThisWeek[9]++;
+            totalsThisWeek[10] += totalnow;
+            entriesThisWeek[10]++;
           }
           if (totalnow === 0) {
             lastDowntime = dt;
@@ -373,9 +400,10 @@ const runAnnualReport = (population, reportType) => {
             orien_lfmcount ||
             sarlona_lfmcount ||
             thelanis_lfmcount ||
-            wayfinder_lfmcount
+            wayfinder_lfmcount ||
+            cormyr_lfmcount
           ) {
-            totalsThisWeek[10] +=
+            totalsThisWeek[11] +=
               argonnessen_lfmcount +
               cannith_lfmcount +
               ghallanda_lfmcount +
@@ -383,8 +411,9 @@ const runAnnualReport = (population, reportType) => {
               orien_lfmcount +
               sarlona_lfmcount +
               thelanis_lfmcount +
-              wayfinder_lfmcount;
-            entriesThisWeek[10]++;
+              wayfinder_lfmcount +
+              cormyr_lfmcount;
+            entriesThisWeek[11]++;
           }
 
           if (totalnow > maximumThisWeek || maximumThisWeek === -1) {
@@ -413,6 +442,7 @@ const runAnnualReport = (population, reportType) => {
     Thelanis,
     Wayfinder,
     Hardcore,
+    Cormyr,
     Total,
     Permanent,
     Maximum,

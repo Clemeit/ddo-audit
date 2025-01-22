@@ -81,6 +81,11 @@ const runServerDistribution = (population, reporttype) => {
     color: "hsl(60, 70%, 44%)",
     value: 0,
   };
+  let CormyrQuarter = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
 
   let ArgonnessenMonth = {
     id: "Argonnessen",
@@ -136,6 +141,11 @@ const runServerDistribution = (population, reporttype) => {
     color: "hsl(60, 70%, 44%)",
     value: 0,
   };
+  let CormyrMonth = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
 
   population.forEach(
     ({
@@ -149,6 +159,7 @@ const runServerDistribution = (population, reporttype) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
       argonnessen_lfmcount,
       cannith_lfmcount,
       ghallanda_lfmcount,
@@ -158,6 +169,7 @@ const runServerDistribution = (population, reporttype) => {
       thelanis_lfmcount,
       wayfinder_lfmcount,
       hardcore_lfmcount,
+      cormyr_lfmcount,
     }) => {
       if (
         new Date().getTime() - datetime.getTime() <=
@@ -204,6 +216,10 @@ const runServerDistribution = (population, reporttype) => {
             HardcoreQuarter.value += hardcore_playercount;
             h_count_quarter++;
           }
+          if (cormyr_playercount || !IGNORE_DOWNTIME) {
+            CormyrQuarter.value += cormyr_playercount;
+            w_count_quarter++;
+          }
         } else {
           ArgonnessenQuarter.value += argonnessen_lfmcount;
           a_count_quarter++;
@@ -235,6 +251,9 @@ const runServerDistribution = (population, reporttype) => {
             datetime.getTime() - hardcoreSeasonStart.getTime() > 0
           )
             h_count_quarter++;
+
+          CormyrQuarter.value += cormyr_lfmcount;
+          w_count_quarter++;
         }
       }
       if (
@@ -282,6 +301,10 @@ const runServerDistribution = (population, reporttype) => {
             HardcoreMonth.value += hardcore_playercount;
             h_count_month++;
           }
+          if (cormyr_playercount || !IGNORE_DOWNTIME) {
+            CormyrMonth.value += cormyr_playercount;
+            w_count_month++;
+          }
         } else {
           ArgonnessenMonth.value += argonnessen_lfmcount;
           a_count_month++;
@@ -313,6 +336,9 @@ const runServerDistribution = (population, reporttype) => {
             datetime.getTime() - hardcoreSeasonStart.getTime() > 0
           )
             h_count_month++;
+
+          CormyrMonth.value += cormyr_lfmcount;
+          w_count_month++;
         }
       }
     }
@@ -336,6 +362,8 @@ const runServerDistribution = (population, reporttype) => {
     Math.round((WayfinderQuarter.value / w_count_quarter) * 100) / 100;
   HardcoreQuarter.value =
     Math.round((HardcoreQuarter.value / h_count_quarter) * 100) / 100;
+  CormyrQuarter.value =
+    Math.round((CormyrQuarter.value / h_count_quarter) * 100) / 100;
 
   ArgonnessenMonth.value =
     Math.round((ArgonnessenMonth.value / a_count_month) * 100) / 100;
@@ -354,6 +382,8 @@ const runServerDistribution = (population, reporttype) => {
     Math.round((WayfinderMonth.value / w_count_month) * 100) / 100;
   HardcoreMonth.value =
     Math.round((HardcoreMonth.value / h_count_month) * 100) / 100;
+  CormyrMonth.value =
+    Math.round((CormyrMonth.value / h_count_month) * 100) / 100;
 
   let outputQuarter = [
     ArgonnessenQuarter,
@@ -365,6 +395,7 @@ const runServerDistribution = (population, reporttype) => {
     ThelanisQuarter,
     WayfinderQuarter,
     HardcoreQuarter,
+    CormyrQuarter,
   ];
 
   let outputMonth = [
@@ -377,6 +408,7 @@ const runServerDistribution = (population, reporttype) => {
     ThelanisMonth,
     WayfinderMonth,
     HardcoreMonth,
+    CormyrMonth,
   ];
 
   outputQuarter.reverse();

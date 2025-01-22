@@ -227,10 +227,10 @@ function runReportWorker(mysqlConnection) {
   function cachePlayerData(servers) {
     return new Promise(async (resolve, reject) => {
       // prettier-ignore
-      const query = `INSERT INTO players_cached (datetime, argonnessen, cannith, ghallanda, khyber, orien, sarlona, thelanis, wayfinder, hardcore)
+      const query = `INSERT INTO players_cached (datetime, argonnessen, cannith, ghallanda, khyber, orien, sarlona, thelanis, wayfinder, hardcore, cormyr)
 													 VALUES (CURRENT_TIMESTAMP, ${mysqlConnection.escape(JSON.stringify(servers[0]))}, ${mysqlConnection.escape(JSON.stringify(servers[1]))}, ${mysqlConnection.escape(JSON.stringify(servers[2]))}
 													 , ${mysqlConnection.escape(JSON.stringify(servers[3]))}, ${mysqlConnection.escape(JSON.stringify(servers[4]))}, ${mysqlConnection.escape(JSON.stringify(servers[5]))}, ${mysqlConnection.escape(JSON.stringify(servers[6]))}
-													 , ${mysqlConnection.escape(JSON.stringify(servers[7]))}, ${mysqlConnection.escape(JSON.stringify(servers[8]))})`;
+													 , ${mysqlConnection.escape(JSON.stringify(servers[7]))}, ${mysqlConnection.escape(JSON.stringify(servers[8]))}, ${mysqlConnection.escape(JSON.stringify(servers[9]))})`;
       queryAndRetry(query, 1)
         .then(() => {
           resolve();
@@ -314,11 +314,11 @@ function runReportWorker(mysqlConnection) {
   });
 
   // Every hour (not midnight because we get duplicate data)
-  cron.schedule("0 1-23 * * *", () => {
-    getPlayerData(91).then(() => {
-      runTransferReport(players);
-    });
-  });
+  // cron.schedule("0 1-23 * * *", () => {
+  //   getPlayerData(91).then(() => {
+  //     runTransferReport(players);
+  //   });
+  // });
 
   // Every 5 minutes
   cron.schedule("1-56/5 * * * *", () => {

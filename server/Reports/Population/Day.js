@@ -49,6 +49,11 @@ const runDayReport = (population, reporttype) => {
     color: "hsl(60, 70%, 44%)",
     data: [],
   };
+  let Cormyr = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
   let Total = {
     id: "Total",
     color: "hsl(208, 100%, 50%)",
@@ -70,6 +75,7 @@ const runDayReport = (population, reporttype) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
       argonnessen_lfmcount,
       cannith_lfmcount,
       ghallanda_lfmcount,
@@ -79,6 +85,7 @@ const runDayReport = (population, reporttype) => {
       thelanis_lfmcount,
       wayfinder_lfmcount,
       hardcore_lfmcount,
+      cormyr_lfmcount,
     }) => {
       if (new Date().getTime() - datetime.getTime() <= 1000 * 60 * 60 * 24) {
         // datetime = new Date(datetime.getTime() - 1000 * 60 * 60 * 5); // UTC -> EST
@@ -91,7 +98,8 @@ const runDayReport = (population, reporttype) => {
           sarlona_playercount +
           thelanis_playercount +
           wayfinder_playercount +
-          hardcore_playercount;
+          hardcore_playercount +
+          cormyr_playercount;
         let totallfms =
           argonnessen_lfmcount +
           cannith_lfmcount +
@@ -101,7 +109,8 @@ const runDayReport = (population, reporttype) => {
           sarlona_lfmcount +
           thelanis_lfmcount +
           wayfinder_lfmcount +
-          hardcore_lfmcount;
+          hardcore_lfmcount +
+          cormyr_lfmcount;
 
         if (reporttype === "population") {
           Argonnessen.data.push({
@@ -139,6 +148,10 @@ const runDayReport = (population, reporttype) => {
           Hardcore.data.push({
             x: datetime,
             y: hardcore_playercount,
+          });
+          Cormyr.data.push({
+            x: datetime,
+            y: cormyr_playercount,
           });
           Total.data.push({
             x: datetime,
@@ -181,6 +194,10 @@ const runDayReport = (population, reporttype) => {
             x: datetime,
             y: hardcore_lfmcount,
           });
+          Cormyr.data.push({
+            x: datetime,
+            y: cormyr_lfmcount,
+          });
           Total.data.push({
             x: datetime,
             y: totallfms,
@@ -203,6 +220,7 @@ const runDayReport = (population, reporttype) => {
     Thelanis,
     Wayfinder,
     Hardcore,
+    Cormyr,
     Total,
   ];
 

@@ -15,6 +15,7 @@ const runClassDistribution = (players, classes, reporttype) => {
     "Thelanis",
     "Wayfinder",
     "Hardcore",
+    "Cormyr",
   ];
   const includeLastSeen = true;
 
@@ -39,6 +40,7 @@ const runClassDistribution = (players, classes, reporttype) => {
     Thelanis: 0,
     Wayfinder: 0,
     Hardcore: 0,
+    Cormyr: 0,
   };
 
   let output = [];
@@ -63,6 +65,8 @@ const runClassDistribution = (players, classes, reporttype) => {
       WayfinderColor: "hsl(0, 0%, 50%)",
       Hardcore: 0,
       HardcoreColor: "hsl(60, 70%, 44%)",
+      Cormyr: 0,
+      CormyrColor: "hsl(167, 72.00%, 49.00%)",
     });
   });
 

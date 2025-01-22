@@ -12,6 +12,7 @@ const runUniqueReport = (players) => {
     "Thelanis",
     "Wayfinder",
     "Hardcore",
+    "Cormyr",
   ];
 
   var t0 = new Date();

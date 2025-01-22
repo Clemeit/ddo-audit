@@ -15,6 +15,7 @@ const playersApi = (api, mysqlConnection) => {
     ["Thelanis", "thelanis"],
     ["Wayfinder", "wayfinder"],
     ["Hardcore", "hardcore"],
+    ["Cormyr", "cormyr"],
   ];
 
   function encryptId(playerId) {

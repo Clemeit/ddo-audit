@@ -38,6 +38,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Monday = {
     Day: "Monday",
@@ -59,6 +61,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Tuesday = {
     Day: "Tuesday",
@@ -80,6 +84,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Wednesday = {
     Day: "Wednesday",
@@ -101,6 +107,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Thursday = {
     Day: "Thursday",
@@ -122,6 +130,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Friday = {
     Day: "Friday",
@@ -143,6 +153,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
   let Saturday = {
     Day: "Saturday",
@@ -164,6 +176,8 @@ const runDailyDistribution = (population, reporttype) => {
     WayfinderColor: "hsl(0, 0%, 50%)",
     Hardcore: 0,
     HardcoreColor: "hsl(60, 70%, 44%)",
+    Cormyr: 0,
+    CormyrColor: "hsl(167, 72.00%, 49.00%)",
   };
 
   population.forEach(
@@ -178,6 +192,7 @@ const runDailyDistribution = (population, reporttype) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
       argonnessen_lfmcount,
       cannith_lfmcount,
       ghallanda_lfmcount,
@@ -187,6 +202,7 @@ const runDailyDistribution = (population, reporttype) => {
       thelanis_lfmcount,
       wayfinder_lfmcount,
       hardcore_lfmcount,
+      cormyr_lfmcount,
     }) => {
       if (
         new Date().getTime() - datetime.getTime() <=
@@ -241,6 +257,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Sunday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Sunday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
+              }
               break;
             case 1:
               if (argonnessen_playercount || !IGNORE_DOWNTIME) {
@@ -281,6 +301,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Monday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Monday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
               }
               break;
             case 2:
@@ -323,6 +347,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Tuesday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Tuesday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
+              }
               break;
             case 3:
               if (argonnessen_playercount || !IGNORE_DOWNTIME) {
@@ -363,6 +391,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Wednesday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Wednesday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
               }
               break;
             case 4:
@@ -405,6 +437,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Thursday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Thursday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
+              }
               break;
             case 5:
               if (argonnessen_playercount || !IGNORE_DOWNTIME) {
@@ -446,6 +482,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Friday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Friday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
+              }
               break;
             case 6:
               if (argonnessen_playercount || !IGNORE_DOWNTIME) {
@@ -486,6 +526,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Saturday.Hardcore += hardcore_playercount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Saturday.Cormyr += cormyr_playercount;
+                w_count[dayofweek]++;
               }
               break;
           }
@@ -531,6 +575,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Sunday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Sunday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
+              }
               break;
             case 1:
               if (argonnessen_lfmcount || !IGNORE_DOWNTIME) {
@@ -571,6 +619,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Monday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Monday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
               }
               break;
             case 2:
@@ -613,6 +665,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Tuesday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Tuesday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
+              }
               break;
             case 3:
               if (argonnessen_lfmcount || !IGNORE_DOWNTIME) {
@@ -653,6 +709,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Wednesday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Wednesday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
               }
               break;
             case 4:
@@ -695,6 +755,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Thursday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Thursday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
+              }
               break;
             case 5:
               if (argonnessen_lfmcount || !IGNORE_DOWNTIME) {
@@ -735,6 +799,10 @@ const runDailyDistribution = (population, reporttype) => {
               ) {
                 Friday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
+              }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Friday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
               }
               break;
             case 6:
@@ -777,6 +845,10 @@ const runDailyDistribution = (population, reporttype) => {
                 Saturday.Hardcore += hardcore_lfmcount;
                 h_count[dayofweek]++;
               }
+              if (cormyr_playercount || !IGNORE_DOWNTIME) {
+                Saturday.Cormyr += cormyr_lfmcount;
+                w_count[dayofweek]++;
+              }
               break;
           }
         }
@@ -795,6 +867,7 @@ const runDailyDistribution = (population, reporttype) => {
   Sunday.Thelanis = Math.round((Sunday.Thelanis / t_count[0]) * 100) / 100;
   Sunday.Wayfinder = Math.round((Sunday.Wayfinder / w_count[0]) * 100) / 100;
   Sunday.Hardcore = Math.round((Sunday.Hardcore / h_count[0]) * 100) / 100;
+  Sunday.Cormyr = Math.round((Sunday.Cormyr / h_count[0]) * 100) / 100;
 
   Monday.Argonnessen =
     Math.round((Monday.Argonnessen / a_count[1]) * 100) / 100;
@@ -806,6 +879,7 @@ const runDailyDistribution = (population, reporttype) => {
   Monday.Thelanis = Math.round((Monday.Thelanis / t_count[1]) * 100) / 100;
   Monday.Wayfinder = Math.round((Monday.Wayfinder / w_count[1]) * 100) / 100;
   Monday.Hardcore = Math.round((Monday.Hardcore / h_count[1]) * 100) / 100;
+  Monday.Cormyr = Math.round((Monday.Cormyr / h_count[1]) * 100) / 100;
 
   Tuesday.Argonnessen =
     Math.round((Tuesday.Argonnessen / a_count[2]) * 100) / 100;
@@ -817,6 +891,7 @@ const runDailyDistribution = (population, reporttype) => {
   Tuesday.Thelanis = Math.round((Tuesday.Thelanis / t_count[2]) * 100) / 100;
   Tuesday.Wayfinder = Math.round((Tuesday.Wayfinder / w_count[2]) * 100) / 100;
   Tuesday.Hardcore = Math.round((Tuesday.Hardcore / h_count[2]) * 100) / 100;
+  Tuesday.Cormyr = Math.round((Tuesday.Hardcore / h_count[2]) * 100) / 100;
 
   Wednesday.Argonnessen =
     Math.round((Wednesday.Argonnessen / a_count[3]) * 100) / 100;
@@ -832,6 +907,8 @@ const runDailyDistribution = (population, reporttype) => {
     Math.round((Wednesday.Wayfinder / w_count[3]) * 100) / 100;
   Wednesday.Hardcore =
     Math.round((Wednesday.Hardcore / h_count[3]) * 100) / 100;
+  Wednesday.Cormyr =
+    Math.round((Wednesday.Cormyr / h_count[3]) * 100) / 100;
 
   Thursday.Argonnessen =
     Math.round((Thursday.Argonnessen / a_count[4]) * 100) / 100;
@@ -845,6 +922,7 @@ const runDailyDistribution = (population, reporttype) => {
   Thursday.Wayfinder =
     Math.round((Thursday.Wayfinder / w_count[4]) * 100) / 100;
   Thursday.Hardcore = Math.round((Thursday.Hardcore / h_count[4]) * 100) / 100;
+  Thursday.Cormyr = Math.round((Thursday.Cormyr / h_count[4]) * 100) / 100;
 
   Friday.Argonnessen =
     Math.round((Friday.Argonnessen / a_count[5]) * 100) / 100;
@@ -856,6 +934,7 @@ const runDailyDistribution = (population, reporttype) => {
   Friday.Thelanis = Math.round((Friday.Thelanis / t_count[5]) * 100) / 100;
   Friday.Wayfinder = Math.round((Friday.Wayfinder / w_count[5]) * 100) / 100;
   Friday.Hardcore = Math.round((Friday.Hardcore / h_count[5]) * 100) / 100;
+  Friday.Cormyr = Math.round((Friday.Cormyr / h_count[5]) * 100) / 100;
 
   Saturday.Argonnessen =
     Math.round((Saturday.Argonnessen / a_count[6]) * 100) / 100;
@@ -869,6 +948,7 @@ const runDailyDistribution = (population, reporttype) => {
   Saturday.Wayfinder =
     Math.round((Saturday.Wayfinder / w_count[6]) * 100) / 100;
   Saturday.Hardcore = Math.round((Saturday.Hardcore / h_count[6]) * 100) / 100;
+  Saturday.Cormyr = Math.round((Saturday.Cormyr / h_count[6]) * 100) / 100;
 
   let output = [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
 
