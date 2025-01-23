@@ -14,6 +14,7 @@ const RaidGroupCluster = (props) => {
     React.useRef(null),
     React.useRef(null),
     React.useRef(null),
+    React.useRef(null),
   ];
   const spriteRef = React.useRef(null);
   const PANEL_WIDTH = 848;
