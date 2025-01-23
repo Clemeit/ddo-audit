@@ -49,6 +49,11 @@ const runWeekReport = (population) => {
     color: "hsl(60, 70%, 44%)",
     data: [],
   };
+  let Cormyr = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
   let Total = {
     id: "Total",
     color: "hsl(208, 100%, 50%)",
@@ -70,6 +75,7 @@ const runWeekReport = (population) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
     }) => {
       if (
         new Date().getTime() - datetime.getTime() <=
@@ -114,6 +120,10 @@ const runWeekReport = (population) => {
             y: 0,
           });
           Hardcore.data.push({
+            x: datetime,
+            y: 0,
+          });
+          Cormyr.data.push({
             x: datetime,
             y: 0,
           });
@@ -190,6 +200,13 @@ const runWeekReport = (population) => {
                   100
               ) / 100;
 
+            Cormyr.data[Cormyr.data.length - 1].y =
+              Math.round(
+                (Cormyr.data[Cormyr.data.length - 1].y /
+                  entriesThisHour[7]) *
+                  100
+              ) / 100;
+
             Total.data[Total.data.length - 1].y =
               Math.round(
                 (Total.data[Total.data.length - 1].y / entriesThisHour[9]) * 100
@@ -228,6 +245,10 @@ const runWeekReport = (population) => {
               y: 0,
             });
             Hardcore.data.push({
+              x: datetime,
+              y: 0,
+            });
+            Cormyr.data.push({
               x: datetime,
               y: 0,
             });
@@ -288,6 +309,11 @@ const runWeekReport = (population) => {
               entriesThisHour[8]++;
             }
 
+            if (cormyr_playercount) {
+              Cormyr.data[Cormyr.data.length - 1].y += cormyr_playercount;
+              entriesThisHour[8]++;
+            }
+
             if (
               argonnessen_playercount ||
               cannith_playercount ||
@@ -297,7 +323,8 @@ const runWeekReport = (population) => {
               sarlona_playercount ||
               thelanis_playercount ||
               wayfinder_playercount ||
-              hardcore_playercount
+              hardcore_playercount ||
+              cormyr_playercount
             ) {
               Total.data[Total.data.length - 1].y +=
                 argonnessen_playercount +
@@ -308,7 +335,8 @@ const runWeekReport = (population) => {
                 sarlona_playercount +
                 thelanis_playercount +
                 wayfinder_playercount +
-                hardcore_playercount;
+                hardcore_playercount +
+                cormyr_playercount;
               entriesThisHour[9]++;
             }
           }
@@ -370,6 +398,11 @@ const runWeekReport = (population) => {
       (Hardcore.data[Hardcore.data.length - 1].y / entriesThisHour[8]) * 100
     ) / 100;
 
+  Cormyr.data[Cormyr.data.length - 1].y =
+    Math.round(
+      (Cormyr.data[Cormyr.data.length - 1].y / entriesThisHour[8]) * 100
+    ) / 100;
+
   Total.data[Total.data.length - 1].y =
     Math.round(
       (Total.data[Total.data.length - 1].y / entriesThisHour[9]) * 100
@@ -385,6 +418,7 @@ const runWeekReport = (population) => {
     Thelanis,
     Wayfinder,
     Hardcore,
+    Cormyr,
     Total,
   ];
 

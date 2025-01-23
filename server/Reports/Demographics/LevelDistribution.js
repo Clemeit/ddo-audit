@@ -64,6 +64,11 @@ const runLevelDistribution = (players, reporttype) => {
     color: "hsl(60, 70%, 44%)",
     data: [],
   };
+  let Cormyr = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
 
   for (let i = 1; i <= MAX_LEVEL; i++) {
     Argonnessen.data.push({ x: i, y: 0 });
@@ -75,6 +80,7 @@ const runLevelDistribution = (players, reporttype) => {
     Thelanis.data.push({ x: i, y: 0 });
     Wayfinder.data.push({ x: i, y: 0 });
     Hardcore.data.push({ x: i, y: 0 });
+    Cormyr.data.push({ x: i, y: 0 });
   }
 
   players.forEach(
@@ -145,6 +151,10 @@ const runLevelDistribution = (players, reporttype) => {
               Hardcore.data[totallevel - 1].y++;
               h_count++;
               break;
+            case "Cormyr":
+              Cormyr.data[totallevel - 1].y++;
+              h_count++;
+              break;
           }
         }
       }
@@ -166,6 +176,8 @@ const runLevelDistribution = (players, reporttype) => {
       Math.round((Wayfinder.data[i].y / w_count) * 10000) / 100;
     Hardcore.data[i].y =
       Math.round((Hardcore.data[i].y / h_count) * 10000) / 100;
+    Cormyr.data[i].y =
+      Math.round((Cormyr.data[i].y / h_count) * 10000) / 100;
   }
 
   let output = [
@@ -178,6 +190,7 @@ const runLevelDistribution = (players, reporttype) => {
     Thelanis,
     Wayfinder,
     Hardcore,
+    Cormyr,
   ];
 
   output.reverse();

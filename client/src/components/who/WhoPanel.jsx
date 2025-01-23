@@ -590,7 +590,7 @@ const WhoPanel = (props) => {
           });
           Fetch(
             "https://api.ddoaudit.com/players/" +
-              (SERVER_LIST_LOWERCASE.includes(props.server.toLowerCase())
+              ((SERVER_LIST_LOWERCASE.includes(props.server.toLowerCase()) || props.server.toLowerCase() === "cormyr")
                 ? props.server
                 : ""),
             timeout

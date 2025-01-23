@@ -138,7 +138,7 @@ const ChartBar = (props) => {
             indexBy={props.indexBy}
             margin={{
               top: 20,
-              right: isMobile ? 40 : 60,
+              right: 0,
               bottom: isMobile ? 80 : props.paddingBottom || 80,
               left: isMobile ? 40 : 60,
             }}

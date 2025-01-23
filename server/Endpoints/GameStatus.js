@@ -13,6 +13,7 @@ const gameStatusApi = (api, mysqlConnection) => {
     ["Thelanis", "thelanis"],
     ["Wayfinder", "wayfinder"],
     ["Hardcore", "hardcore"],
+    ["Cormyr", "cormyr"],
   ];
 
   function getPlayerAndLfmOverview() {

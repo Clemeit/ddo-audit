@@ -13,6 +13,7 @@ const populationApi = (api, mysqlConnection) => {
     "thelanis",
     "wayfinder",
     "hardcore",
+    "cormyr",
   ];
 
   const population = [

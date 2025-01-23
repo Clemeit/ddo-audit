@@ -9,6 +9,7 @@ const cachePlayers = (players) => {
     let thelanis = { Name: "Thelanis", Players: [], Population: 0 };
     let wayfinder = { Name: "Wayfinder", Players: [], Population: 0 };
     let hardcore = { Name: "Hardcore", Players: [], Population: 0 };
+    let cormyr = { Name: "Cormyr", Players: [], Population: 0 };
 
     players.forEach((player, i) => {
       if (player != null && player.Server != null) {
@@ -40,6 +41,9 @@ const cachePlayers = (players) => {
           case "hardcore":
             hardcore.Players.push(player);
             break;
+          case "cormyr":
+            cormyr.Players.push(player);
+            break;
         }
       }
     });
@@ -53,6 +57,7 @@ const cachePlayers = (players) => {
     thelanis.Population = thelanis.Players.length;
     wayfinder.Population = wayfinder.Players.length;
     hardcore.Population = hardcore.Players.length;
+    cormyr.Population = cormyr.Players.length;
 
     resolve([
       argonnessen,
@@ -64,6 +69,7 @@ const cachePlayers = (players) => {
       thelanis,
       wayfinder,
       hardcore,
+      cormyr,
     ]);
   });
 };

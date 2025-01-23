@@ -54,7 +54,7 @@ const WhoSpecific = (props) => {
   React.useEffect(() => {
     let serverName =
       location.substring(0, 1).toUpperCase() + location.substring(1);
-    if (SERVER_LIST.includes(serverName)) {
+    if (SERVER_LIST.includes(serverName) || serverName === "Cormyr") {
       // Good server
       setCurrentServer(serverName);
       currentServerRef.current = serverName;

@@ -52,6 +52,11 @@ const runQuarterReport = (population, reportType) => {
       color: "hsl(60, 70%, 44%)",
       data: [],
     };
+    let Cormyr = {
+      id: "Cormyr",
+      color: "hsl(167, 72.00%, 49.00%)",
+      data: [],
+    }
     let Total = {
       id: "Total",
       color: "hsl(208, 100%, 50%)",
@@ -85,6 +90,7 @@ const runQuarterReport = (population, reportType) => {
         thelanis_playercount,
         wayfinder_playercount,
         hardcore_playercount,
+        cormyr_playercount,
         argonnessen_lfmcount,
         cannith_lfmcount,
         ghallanda_lfmcount,
@@ -94,6 +100,7 @@ const runQuarterReport = (population, reportType) => {
         thelanis_lfmcount,
         wayfinder_lfmcount,
         hardcore_lfmcount,
+        cormyr_lfmcount,
       }) => {
         if (
           new Date().getTime() - datetime.getTime() <=
@@ -140,6 +147,10 @@ const runQuarterReport = (population, reportType) => {
               y: 0,
             });
             Hardcore.data.push({
+              x: datetime,
+              y: 0,
+            });
+            Cormyr.data.push({
               x: datetime,
               y: 0,
             });
@@ -219,6 +230,13 @@ const runQuarterReport = (population, reportType) => {
                     100
                 ) / 100;
 
+              Cormyr.data[Cormyr.data.length - 1].y =
+                Math.round(
+                  (Cormyr.data[Cormyr.data.length - 1].y /
+                    entriesThisDay[7]) *
+                    100
+                ) / 100;
+
               Total.data[Total.data.length - 1].y =
                 Math.round(
                   (Total.data[Total.data.length - 1].y / entriesThisDay[9]) *
@@ -258,6 +276,10 @@ const runQuarterReport = (population, reportType) => {
                 y: 0,
               });
               Hardcore.data.push({
+                x: datetime,
+                y: 0,
+              });
+              Cormyr.data.push({
                 x: datetime,
                 y: 0,
               });
@@ -335,6 +357,12 @@ const runQuarterReport = (population, reportType) => {
                   entriesThisDay[8]++;
                 }
 
+                if (cormyr_playercount) {
+                  Cormyr.data[Cormyr.data.length - 1].y +=
+                    cormyr_playercount;
+                  entriesThisDay[7]++;
+                }
+
                 totalnow =
                   argonnessen_playercount +
                   cannith_playercount +
@@ -344,7 +372,8 @@ const runQuarterReport = (population, reportType) => {
                   sarlona_playercount +
                   thelanis_playercount +
                   wayfinder_playercount +
-                  hardcore_playercount;
+                  hardcore_playercount +
+                  cormyr_playercount;
               } else {
                 Argonnessen.data[Argonnessen.data.length - 1].y +=
                   argonnessen_lfmcount;
@@ -382,6 +411,10 @@ const runQuarterReport = (population, reportType) => {
                 entriesThisDay[8]++;
                 // }
 
+                Cormyr.data[Cormyr.data.length - 1].y +=
+                  cormyr_lfmcount;
+                entriesThisDay[7]++;
+
                 totalnow =
                   argonnessen_lfmcount +
                   cannith_lfmcount +
@@ -391,7 +424,8 @@ const runQuarterReport = (population, reportType) => {
                   sarlona_lfmcount +
                   thelanis_lfmcount +
                   wayfinder_lfmcount +
-                  hardcore_lfmcount;
+                  hardcore_lfmcount +
+                  cormyr_lfmcount;
               }
 
               if (totalnow) {
@@ -464,6 +498,11 @@ const runQuarterReport = (population, reportType) => {
         (Hardcore.data[Hardcore.data.length - 1].y / entriesThisDay[8]) * 100
       ) / 100;
 
+    Cormyr.data[Cormyr.data.length - 1].y =
+      Math.round(
+        (Cormyr.data[Cormyr.data.length - 1].y / entriesThisDay[7]) * 100
+      ) / 100;
+
     Total.data[Total.data.length - 1].y =
       Math.round(
         (Total.data[Total.data.length - 1].y / entriesThisDay[9]) * 100
@@ -479,6 +518,7 @@ const runQuarterReport = (population, reportType) => {
       Thelanis,
       Wayfinder,
       Hardcore,
+      Cormyr,
       Total,
       Minimum,
       Maximum,

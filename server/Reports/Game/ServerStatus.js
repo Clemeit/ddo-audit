@@ -15,6 +15,7 @@ const runServerStatusReport = () => {
     "Thelanis",
     "Wayfinder",
     "Hardcore",
+    "Cormyr",
   ];
 
   function queryWorlds() {

@@ -85,6 +85,11 @@ const runHourlyDistribution = (population, reporttype) => {
     color: "hsl(60, 70%, 44%)",
     data: [],
   };
+  let Cormyr = {
+    id: "Cormyr",
+    color: "hsl(167, 72.00%, 49.00%)",
+    data: [],
+  }
 
   for (let i = 0; i < 24; i++) {
     Argonnessen.data.push({ x: i, y: 0 });
@@ -96,6 +101,7 @@ const runHourlyDistribution = (population, reporttype) => {
     Thelanis.data.push({ x: i, y: 0 });
     Wayfinder.data.push({ x: i, y: 0 });
     Hardcore.data.push({ x: i, y: 0 });
+    Cormyr.data.push({ x: i, y: 0 });
   }
 
   population.forEach(
@@ -110,6 +116,7 @@ const runHourlyDistribution = (population, reporttype) => {
       thelanis_playercount,
       wayfinder_playercount,
       hardcore_playercount,
+      cormyr_playercount,
       argonnessen_lfmcount,
       cannith_lfmcount,
       ghallanda_lfmcount,
@@ -119,6 +126,7 @@ const runHourlyDistribution = (population, reporttype) => {
       thelanis_lfmcount,
       wayfinder_lfmcount,
       hardcore_lfmcount,
+      cormyr_lfmcount,
     }) => {
       if (
         new Date().getTime() - datetime.getTime() <=
@@ -167,6 +175,10 @@ const runHourlyDistribution = (population, reporttype) => {
             Hardcore.data[hour].y += hardcore_playercount;
             h_count[hour]++;
           }
+          if (cormyr_playercount || !IGNORE_DOWNTIME) {
+            Cormyr.data[hour].y += cormyr_playercount;
+            w_count[hour]++;
+          }
         } else {
           Argonnessen.data[hour].y += argonnessen_lfmcount;
           a_count[hour]++;
@@ -196,6 +208,9 @@ const runHourlyDistribution = (population, reporttype) => {
             Hardcore.data[hour].y += hardcore_lfmcount;
             h_count[hour]++;
           }
+
+          Cormyr.data[hour].y += cormyr_lfmcount;
+          w_count[hour]++;
         }
       }
     }
@@ -218,6 +233,8 @@ const runHourlyDistribution = (population, reporttype) => {
       Math.round((Wayfinder.data[i].y / w_count[i]) * 100) / 100;
     Hardcore.data[i].y =
       Math.round((Hardcore.data[i].y / h_count[i]) * 100) / 100;
+    Cormyr.data[i].y =
+      Math.round((Cormyr.data[i].y / h_count[i]) * 100) / 100;
   }
 
   let output = [
@@ -230,6 +247,7 @@ const runHourlyDistribution = (population, reporttype) => {
     Thelanis,
     Wayfinder,
     Hardcore,
+    Cormyr,
   ];
 
   output.reverse();

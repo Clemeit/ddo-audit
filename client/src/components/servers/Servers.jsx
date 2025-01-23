@@ -400,7 +400,7 @@ const Directory = (props) => {
         <div className="top-content-padding-small shrink-on-mobile" />
         <ContentCluster title="Select a Server">
           <div className="content-cluster-options">
-            {SERVER_LIST.map((name, i) => (
+            {SERVER_LIST.filter((name) => name !== "Cormyr").map((name, i) => (
               <Link
                 to={"/servers/" + name.toLowerCase()}
                 key={i}
@@ -615,7 +615,7 @@ const Directory = (props) => {
             />
           </div>
           <ChartBar
-            keys={[...SERVER_LIST]}
+            keys={[...SERVER_LIST.filter((name) => name !== "Cormyr")]}
             indexBy="Day"
             legendBottom="Day of Week"
             legendLeft={
@@ -732,7 +732,7 @@ const Directory = (props) => {
             }}
           />
           <ChartBar
-            keys={[...SERVER_LIST]}
+            keys={[...SERVER_LIST.filter((name) => name !== "Cormyr")]}
             indexBy="Class"
             legendBottom="Class"
             legendLeft="Population Percentage"

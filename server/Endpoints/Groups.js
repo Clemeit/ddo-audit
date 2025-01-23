@@ -12,6 +12,7 @@ const groupsApi = (api, mysqlConnection) => {
     "thelanis",
     "wayfinder",
     "hardcore",
+    "cormyr",
     "all",
   ];
 
@@ -36,6 +37,7 @@ const groupsApi = (api, mysqlConnection) => {
                   JSON.parse(singular["thelanis"]),
                   JSON.parse(singular["wayfinder"]),
                   JSON.parse(singular["hardcore"]),
+                  JSON.parse(singular["cormyr"]),
                 ]);
               } else {
                 resolve(singular[server]);
