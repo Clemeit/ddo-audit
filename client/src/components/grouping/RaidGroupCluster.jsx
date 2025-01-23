@@ -33,6 +33,7 @@ const RaidGroupCluster = (props) => {
 
   function serverRaidCount(server) {
     let result = 0;
+    if (server.Name.toLowerCase() === "cormyr") return 0;
     server.Groups.forEach((group) => {
       if (group.Quest?.GroupSize === "Raid") {
         result += 1;

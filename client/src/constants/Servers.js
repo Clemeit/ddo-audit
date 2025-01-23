@@ -10,7 +10,7 @@ const SERVER_LIST = [
   "Thelanis",
   "Wayfinder",
   "Hardcore",
-  "Cormyr"
+  // "Cormyr"
 ];
 
 const SERVER_LIST_LOWERCASE = SERVER_LIST.map((server) => server.toLowerCase());
