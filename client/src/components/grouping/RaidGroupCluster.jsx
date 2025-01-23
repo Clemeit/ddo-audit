@@ -14,6 +14,7 @@ const RaidGroupCluster = (props) => {
     React.useRef(null),
     React.useRef(null),
     React.useRef(null),
+    React.useRef(null),
   ];
   const spriteRef = React.useRef(null);
   const PANEL_WIDTH = 848;
@@ -31,6 +32,7 @@ const RaidGroupCluster = (props) => {
   }, [props.data, isImageLoaded]);
 
   function serverRaidCount(server) {
+    if (server.Name === "Cormyr") return 0
     let result = 0;
     server.Groups.forEach((group) => {
       if (group.Quest?.GroupSize === "Raid") {
