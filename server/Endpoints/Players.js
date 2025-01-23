@@ -74,7 +74,7 @@ const playersApi = (api, mysqlConnection) => {
                     'TotalLevel', totallevel,
                     'Server', server,
                     'HomeServer', homeserver,
-                    'GroupId', groupid,
+                    'GroupId', CAST(groupid as char),
                     'InParty', IF(groupid = 0, 0, 1),
                     'Classes', JSON_ARRAY(
                         JSON_OBJECT(
@@ -152,7 +152,7 @@ const playersApi = (api, mysqlConnection) => {
                     'TotalLevel', totallevel,
                     'Server', server,
                     'HomeServer', homeserver,
-                    'GroupId', groupid,
+                    'GroupId', CAST(groupid as char),
                     'InParty', IF(groupid = 0, 0, 1),
                     'Classes', JSON_ARRAY(
                         JSON_OBJECT(

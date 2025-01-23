@@ -171,8 +171,8 @@ function runReportWorker(mysqlConnection) {
 													'Location', JSON_OBJECT('Name', IF(p.anonymous, '(redacted)', a.name), 'IsPublicSpace', a.ispublicspace, 'Region', a.region),
 													'TotalLevel', totallevel,
 													'Server', server,
-							'HomeServer', homeserver,
-													'GroupId', groupid,
+							            'HomeServer', homeserver,
+													'GroupId', CAST(groupid as char),
 													'InParty', IF(groupid = 0, 0, 1),
 													'Classes', JSON_ARRAY(
 															JSON_OBJECT(
